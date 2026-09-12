@@ -1,6 +1,6 @@
 > Status: ground-up concept
 > Type: skill — Researcher (implementation-context brief / `context.md`)
-> Companion docs: `20260911-concept.md` (vision), `20260911-process-flow.md`
+> Companion docs: `../concept.md` (vision), `../process-flow.md`
 >
 > Grounding: the "skill" framing follows `pipeline-template`'s `researcher/SKILL.md`; the
 > KILN-specific deltas (the single-lane placement, a local-model caveat, and the fact that there

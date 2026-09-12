@@ -1,6 +1,6 @@
 > Status: ground-up concept
 > Type: concept — the Concept Writer (a *kind* of "writer," not one of a single canonical role)
-> Companion docs: `20260911-concept.md` (vision), `20260911-gates-why-how-what.md`
+> Companion docs: `../concept.md` (vision), `../gates-why-how-what.md`
 >
 > Grounding: in `pipeline-template` there is **no separate "writer" role** — writing is what the
 > *concept-writer*, *techwriter*, and *pr-writer* do, in their own contexts. This doc is therefore

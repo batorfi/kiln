@@ -1,18 +1,19 @@
-# KILN — the UI layers, in depth (ASCII concept)
+# KILN — the UI layers, in depth
 
 > Companion to `20260911-concept.md`. The status layer that replaces the old
-> dashboard, shown entirely as **ASCII TUI concepts with descriptions**. Three
-> surfaces read one shared `FactoryState` and one event stream:
-> **Layer A = Flow HUD** (persistent footer), **Layer B = Flow Popup** (per-gate
-> modal overlay), **Layer C = Roadmap overlay** (deliverable-level zoom-out, the
-> new surface). One rule governs them all: **never poll, never run a server**.
+> dashboard — the three surfaces described as **UI concepts**. Three surfaces
+> read one shared `FactoryState` and one event stream: **Layer A = Flow HUD**
+> (persistent footer), **Layer B = Flow Popup** (per-gate modal overlay),
+> **Layer C = Roadmap overlay** (deliverable-level zoom-out, the new surface).
+> One rule governs them all: **never poll, never run a server**.
 > Date: 2026-09-11 · status: concept (pre-implementation).
 
-> **What a "surface" is here.** Each surface is an ASCII rendering driven by the
-> same `FactoryState`. The doc below *is* the spec: every surface is drawn as a
-> box, then described in a few lines. Layer A and B are per-feature (the
-> per-feature lane); Layer C is **one level up** — it shows the **roadmap** (the
-> ordered, human-approved firing program of a deliverable) and where the current
+> **What a "surface" is here.** Each surface is a rendering driven by the same
+> `FactoryState`; this doc describes each surface and the concepts behind it
+> (it used to carry ASCII mock-ups, now removed — prose, tables, and the type
+> definitions below are the spec). Layer A and B are per-feature (the per-feature
+> lane); Layer C is **one level up** — it shows the **roadmap** (the ordered,
+> human-approved firing program of a deliverable) and where the current
 > implementation sits in it. The headless fallback for every layer is a printed
 > ledger form, **never a silent approval**.
 
@@ -20,27 +21,18 @@
 
 ## 1. The three surfaces, at a glance
 
-```
-+----------------------------------------------------------------------+
-| THREE SURFACES, ONE FACTORY STATE, ONE EVENT STREAM                  |
-| ------------------------------------------------------------------  |
-|  Layer A  Flow HUD       always-on footer       (per-feature lane)     |
-|  Layer B  Flow Popup     modal per-gate overlay (per-feature lane)     |
-|  Layer C  Roadmap overlay deliverable view      (DELIVERABLE-level)    |
-|      |            |               |                                     |
-|      +------------+---------------+-------->  reads  FactoryState      |
-|   pi.on(...) event stream  --->  recompute snapshot  --->  redraw      |
-|   headless (no UI): each surface degrades to a PRINTED LEDGER FORM;     |
-|   a missing surface never silently approves a gate (Gate 0 included).   |
-+----------------------------------------------------------------------+
-```
+Three surfaces, one `FactoryState`, one **event-driven** redraw. A `pi.on(...)`
+handler recomputes the snapshot and redraws on each event; a gate-open event
+raises the relevant popup/overlay; in headless mode each surface degrades to a
+printed ledger form, and **a missing surface never silently approves a gate —
+Gate 0 included**.
 
 | Layer | surface | scope | mechanism |
 | ----- | ------- | ----- | --------- |
 | A | Flow HUD | per-feature lane | `ctx.ui.setStatus(slot)` footer |
 | B | Flow Popup | per-feature lane | `ctx.ui.custom(fn,{overlay})` modal |
 | C | Roadmap overlay | deliverable | `ctx.ui.custom(fn,{overlay})` zoom-out |
-| (fallback) | headless ledger | any | printed `WAIT` / roadmap table |
+| (fallback) | headless ledger | any | printed `WAIT` / roadmap rows |
 
 Confirmed UI primitives (read this session):
 
@@ -63,23 +55,23 @@ pre-lane **Gate 0 — Roadmap**; the per-feature `rail` is Gates 1–9).
 
 ```ts
 interface FactoryState {
-  resident:   { model: string; tier: string } | null;   // head in the lane
-  running:    { duId: string; role: string } | null;     // current DU
-  queue:     QueueEntry[];                               // depth-N, ordered
-  switches:  number;                                      // switch-tax counter
-  wallClock: string;                                      // "HH:MM"
+  resident:    { model: string; tier: string } | null;    // head in the lane
+  running:     { duId: string; role: string } | null;      // current DU
+  queue:     QueueEntry[];                                // depth-N, ordered
+  switches:  number;                                       // switch-tax counter
+  wallClock: string;                                       // "HH:MM"
   // --- Layer C (roadmap) + Gate 0 ---
-  roadmap:   RoadmapRow[];                                // the deliverable's firing program
-  current:   string;                                       // in-flight roadmap row id
-  gate0:     Gate;                                        // Gate 0 -- Roadmap (pre-lane)
-  gate?:     Gate;                                        // open per-feature gate (1-9)
+  roadmap:   RoadmapRow[];                                 // the deliverable's firing program
+  current:   string;                                        // in-flight roadmap row id
+  gate0:     Gate;                                         // Gate 0 -- Roadmap (pre-lane)
+  gate?:     Gate;                                         // open per-feature gate (1-9)
 }
 interface RoadmapRow {
-  id:       string;      // r1, r2, ...
-  short:    string;      // one-line human description
+  id:       string;       // r1, r2, ...
+  short:    string;       // one-line human description
   status:   "not-started" | "in-flight" | "pr" | "merged";
-  deps:     string[];    // other row ids this row waits on
-  gate?:    number;      // current gate (1-9) while in-flight
+  deps:     string[];     // other row ids this row waits on
+  gate?:    number;       // current gate (1-9) while in-flight
 }
 ```
 
@@ -99,31 +91,29 @@ per-feature gates), and *wall clock + switch tax*. It is the cheapest surface,
 kept live while the human works with the director. **Per-feature scope:** it
 shows the in-flight row's own Gates 1–9; the *deliverable* view is Layer C.
 
-```
-+-----------------------------------------------------------------------------+
-| HUD  STRIP        (always-on footer, event-driven; 3 fixed slots)             |
-| ----------------------------------------------------------------------------|
-|  slot1 model/role     :     * qwen3-32b        (CODE)      head in the lane   |
-|  slot2 task / steps    :  T003 worker     1v 2v 3* 4v 5v 6- 7- 8- 9-         |
-|  slot3 rail / gate     :  gate: --        12:47        4 switches today       |
-|  feature in flight     :  r3 "rate-limit / quota per key"   (of r1..r5)      |
-|                                                                          |
-|  event-driven only (no polling): on turn_start / turn_end / agent_end /       |
-|  tool_call, recompute FactoryState then ctx.ui.setStatus(...)               |
-+-----------------------------------------------------------------------------+
-```
+The footer carries four lines:
 
-Glyph legend (single-width ASCII, safe for monospaced footers):
+- **model/role** — the resident head (`* qwen3-32b (CODE)`), the head in the lane.
+- **task / steps** — the in-flight task and its gate rail, e.g.
+  `T003 worker  1v 2v 3* 4v 5v 6- 7- 8- 9-`.
+- **rail / gate** — `gate: --`, the wall clock (`12:47`), and the switch-tax
+  count (`4 switches today`).
+- **feature in flight** — the current roadmap row id + short description,
+  e.g. `r3 "rate-limit / quota per key" (of r1..r5)`; added for Layer C so the
+  per-feature HUD stays anchored to the deliverable.
 
-```
-+--------------------------------------------------------------------------+
-| GATE RAIL     (compact, inside HUD; one glyph per gate, Gates 1-9)        |
-| -------------------------------------------------------------------------|
-|   glyphs    done = v    current = *    pending = -    open-gate = +       |
-|   example   1v 2v 3* 4v 5v 6- 7- 8- 9-  (1-2 done, 3* current,           |
-|                                          6-9 pending; no + -> open)       |
-+--------------------------------------------------------------------------+
-```
+The step rail uses one single-width glyph per gate — compact and safe for a
+monospaced footer:
+
+| glyph | meaning |
+| ----- | -------- |
+| `v` | done |
+| `*` | current (the `working-indicator` spinner when the head is streaming) |
+| `-` | pending |
+| `+` | open gate |
+
+Example `1v 2v 3* 4v 5v 6- 7- 8- 9-` = gates 1–2 done, 3 current, 6–9 pending,
+nothing open.
 
 Slot 1 doubles as the `model-status` "head in lane" readout; the `*` is the
 `working-indicator` spinner when the head is streaming. The `feature in flight`
@@ -143,37 +133,25 @@ card* of Gates 1–9 of one in-flight row; the *pre-lane* Gate 0 card is Layer C
 
 ### 4.1 Closed / on-demand face
 
-```
-+--------------------------------------------------------------------------+
-| FLOW  popup        (closed / on-demand)                                    |
-| -------------------------------------------------------------------------|
-|   GATE RAIL      [1] [2] [3*] [4] [5]        [6] [7] [8] [9]              |
-|                          ^ current: PLAN / 9 of this row                  |
-|    LANE        head = qwen3-32b (CODE)     * streaming   T003 worker      |
-|   QUEUE            7 pending / next = qwen3-8b x3    (switch-tax flagged)  |
-|   wall-clock       12:47        today: 4 switches                            |
-|   gate: --            [no per-feature gate open]                           |
-+--------------------------------------------------------------------------+
-```
+The popup shows the gate rail (one glyph per gate, §3), a current-gate pointer
+(`current: PLAN / 9 of this row`), the lane (head + `* streaming` + task), the
+queue (`7 pending / next = qwen3-8b x3`, switch-tax flagged), the wall clock +
+today's switches, and `gate: --` with `[no per-feature gate open]` when nothing
+is awaiting a decision.
 
 ### 4.2 Open-gate face (a Gate 1–9 gate card)
 
-```
-+--------------------------------------------------------------------------+
-| FLOW  popup       (OPEN  --  gate card, Gate 3 of 9 = PLAN)              |
-| -------------------------------------------------------------------------|
-|   GATE RAIL     1v 2v 3* 4v 5v   6-     7-     8-     9-                |
-|                 done done current done done   pending x4                  |
-|    ARTIFACT      plan.md        (read by a subagent, not loaded whole)    |
-|   SUMMARY        4 tasks : T003, T004, T005, T006      est 12:07 wall    |
-|   CRITICAL DEPS  T006 depends on T005, T004   (reviewer path)            |
-|   SWITCHES        3 today        (qwen3-8b -> qwen3-32b for review)      |
-|    DECISION                                                                   |
-|          [ approve ]     proceed to checkpoint gate                        |
-|          [ revise ]      bounce a task / spec back with notes             |
-|          [ reject ]      drop the feature                                 |
-+--------------------------------------------------------------------------+
-```
+When a per-feature gate opens, the popup carries:
+
+- **gate rail**: `1v 2v 3* 4v 5v 6- 7- 8- 9-` (done / current / pending).
+- **artifact**: e.g. `plan.md` — *read by a subagent, not loaded whole*.
+- **summary**: `4 tasks: T003, T004, T005, T006  est 12:07 wall`.
+- **critical deps**: `T006 depends on T005, T004 (reviewer path)`.
+- **switches**: `3 today (qwen3-8b -> qwen3-32b for review)`.
+- **decision** (via `ctx.ui.select`):
+  - `[approve]` proceed to the checkpoint gate
+  - `[revise]` bounce a task / spec back with notes
+  - `[reject]` drop the feature
 
 The artifact (`plan.md`, `arch.md`, `concept.md`, `verification-report.md`) is
 **read by a subagent and summarized**, never loaded whole into the popup —
@@ -181,24 +159,17 @@ keeps the overlay small and the popup state cheap.
 
 ### 4.3 Gate-face variants (move set differs per per-feature gate)
 
-```
-+--------------------------------------------------------------------------+
-| GATE-FACE VARIANTS    (move set differs by gate type, Gates 1-9)         |
-| -------------------------------------------------------------------------|
-|   CONCEPT / SPEC / CHECKPOINT / DOCS / PR                                 |
-|          [ approve ]       [ revise ]       [ reject ]                    |
-|    REVIEW   (line-of-defense; reviewer never edits the artifact)          |
-|          [ approve ]       [ restart ]    restart feature, NO revise      |
-|    VERIFICATION (line-of-defense; harness auto-mitigates)                 |
-|          [ approve ]       [ reject ]   reject -> mitigation loop, <= 2   |
-+--------------------------------------------------------------------------+
-```
+| Gate | Move set | note |
+| ---- | -------- | ---- |
+| CONCEPT / SPEC / CHECKPOINT / DOCS / PR | `[approve] [revise] [reject]` | the standard decision set |
+| REVIEW | `[approve] [restart]` | line-of-defense; **reviewer never edits the artifact**; **restart feature, no revise** |
+| VERIFICATION | `[approve] [reject]` | line-of-defense; **harness auto-mitigates**; `reject → mitigation loop, ≤ 2` |
 
 ---
 
 ## 5. Layer C — Roadmap overlay (deliverable-level, NEW)
 
-**Description.** A zoom-out, above Layers A and B.** Where A and B show *one
+**Description.** A zoom-out, above Layers A and B. Where A and B show *one
 feature's* lane, Layer C shows the whole **roadmap** — the ordered, human-
 approved **firing program** for a deliverable (Layer C's `roadmap: RoadmapRow[]`
 in §2). It renders every feature **row** with a *one-line short description*,
@@ -212,71 +183,56 @@ printed to the ledger** — a missing overlay never hides or auto-approves Gate 
 
 ### 5.1 Roadmap overlay — in-flight face
 
-```
-+-----------------------------------------------------------------------------+
-| ROADMAP  overlay     (Layer C, deliverable-level; 12:47 · 4 switches today)  |
-| ----------------------------------------------------------------------------|
-|  DELIVERABLE   "rate-limit the public API"        Gate 0: approved r1..r5    |
-|   firing program -- each row = ONE full Gates 1-9 lane, in order            |
-|  ------------------------------------------------------------------------ --|
-|   id  STATUS     SHORT DESCRIPTION                  DEPS          LANE/GATE   |
-|   r1  merged   register / verify e-mail (auth)       -            done        |
-|   r2  merged   API-key issuance + rotation           r1          done        |
-|   r3  IN-FLT  * "rate-limit / quota per key"        r2     * Spec/9  HERE    |
-|   r4  pending   billing metering + usage report      r3            waits r3    |
-|   r5  pending   usage dashboard (client)             r4            waits r4    |
-|  -------------- unattended tail: STOP at r3 PR (inter-feature -> Gate 0) ----- |
-|   [ r..roadmap key ]  open Layer C   ·  per-row veto still halts; per-row     |
-|                        gate report; Gate 0 re-validated at each boundary      |
-+-----------------------------------------------------------------------------+
-```
+The overlay lists every roadmap row with `id / status / short / deps / lane-gate`
+and highlights the in-flight row. Example deliverable **"rate-limit the public
+API"**, Gate 0 approved for `r1..r5` at `12:47`, 4 switches today:
+
+| id | status | short | deps | lane / gate |
+| -- | ------ | ----- | ---- | ----------- |
+| r1 | merged | register / verify e-mail (auth) | — | done |
+| r2 | merged | API-key issuance + rotation | r1 | done |
+| **r3** | **in-flight** | *"rate-limit / quota per key"* | r2 | **Spec / 9 — HERE** |
+| r4 | pending | billing metering + usage report | r3 | waits r3 |
+| r5 | pending | usage dashboard (client) | r4 | waits r4 |
+
+The **unattended tail** stops at r3's PR (inter-feature → back to Gate 0).
+Per-row controls remain: **per-row veto still halts**, a **per-row gate report**
+is emitted, and **Gate 0 is re-validated at each boundary**.
 
 ### 5.2 Roadmap overlay — Gate 0 face (pre-lane, human-only)
 
-```
-+-----------------------------------------------------------------------------+
-| ROADMAP  overlay      (OPEN -- GATE 0 -- Roadmap, PRE-LANE: before r1..r5)   |
-| ----------------------------------------------------------------------------|
-|  PROPOSED firing program   (drafted WITH the human by the director; not yet  |
-|                               approved; no lane has run yet)                |
-|  id  short description                          depends on   size (est)      |
-|  r1  register / verify e-mail (auth)            -             M              |
-|  r2  API-key issuance + rotation               r1            M              |
-|  r3  rate-limit / quota per key                r2            L              |
-|  r4  billing metering + usage report           r3            L              |
-|  r5  usage dashboard (client)                  r4            S              |
-|  -------------------------------------------------------------------- --    |
-|  director proposes; the HUMAN decides (author/judge separation):            |
-|          [ approve roadmap ] lock order + rows; start r1's lane            |
-|          [ revise w/ director ]  reorder / split / coarsen with the director |
-|          [ reject ]                 restart the breakdown                  |
-|   Gate 0 is a human gate even headless (a durable WAIT) -- nothing auto-    |
-|   approves the roadmap. Each approved row then runs its own Gates 1-9;      |
-|   Gate 0 re-enters at every inter-feature boundary.                         |
-+-----------------------------------------------------------------------------+
-```
+Before `r1..r5` run, Gate 0 shows the **proposed firing program**, *drafted with
+the human by the director but not yet approved* (no lane has run yet):
+
+| id | short | depends on | size (est) |
+| -- | ----- | ---------- | ---------- |
+| r1 | register / verify e-mail | — | M |
+| r2 | API-key issuance + rotation | r1 | M |
+| r3 | rate-limit / quota per key | r2 | L |
+| r4 | billing metering + usage report | r3 | L |
+| r5 | usage dashboard | r4 | S |
+
+The **director proposes; the human decides** (author / judge separation — the
+roadmap is a human-owned, machine-editable *proposal*; the human authors it *with*
+the director and approves it; the agent never auto-fills or auto-approves). The
+move set is:
+
+- `[approve roadmap]` lock the order + rows; start r1's lane
+- `[revise w/ director]` reorder / split / coarsen with the director
+- `[reject]` restart the breakdown
+
+**Gate 0 is a human gate even headless (a durable WAIT)** — nothing auto-
+approves the roadmap. Each approved row then runs its own Gates 1–9; **Gate 0
+re-enters at every inter-feature boundary**.
 
 ### 5.3 Layer C headless fallback (the roadmap table form)
 
 When `!ctx.hasUI`, Layer C cannot rise, so the **roadmap degrades to a table
 printed to the factory-log / ledger** — the firing program and its Gate-0
-decision recorded, never auto-approved.
-
-```
-+--------------------------------------------------------------------------+
-| LAYER C HEADLESS  (CI / cron / no UI) -- roadmap table form             |
-| -------------------------------------------------------------------------|
-|   id   status    short                 deps   lane/gate                  |
-|   r1   merged    register/verify email -      done                        |
-|   r2   merged    api-key issuance       r1    done                        |
-|   r3   wait      rate-limit / quota     r2    gate_plan.token deadline...  |
-|   r4   pending   billing metering       r3    -                           |
-|   r5   pending   usage dashboard        r4    -                           |
-|   gate0  approved@12:03  rows=r1..r5  decided_by=human@token (NOT auto-  |
-|           -- the roadmap table is printed, Gate 0 stays a human WAIT   |
-|           -- a missing Layer C never hides or auto-approves Gate 0        |
-+--------------------------------------------------------------------------+
-```
+decision recorded, never auto-approved (e.g. a printed row
+`gate0 = approved@12:03 rows=r1..r5 decided_by=human@token`). The roadmap table
+is printed and **Gate 0 stays a human WAIT** — a missing Layer C never hides or
+auto-approves Gate 0.
 
 ---
 
@@ -286,26 +242,20 @@ decision recorded, never auto-approved.
 away, here's a gate" role. **Layer B** auto-rises when a per-feature gate
 (1–9) opens; **Layer C** auto-rises when **Gate 0** opens (pre-lane, or at an
 inter-feature boundary). The lane WAITS for the human decision while a card is
-up; the human's only keyboard job is to *decide, not poll*.
+up; the human's only job is to *decide, not poll*.
 
-```
-+--------------------------------------------------------------------------+
-| AUTO-POP AT GATE      (event-driven, no polling)                          |
-| -------------------------------------------------------------------------|
-|   DU done  ---->  Gate k opens   ---->  Layer B card rises  (lane WAITS)  |
-|   row done ---->  Gate 0 re-opens -----> Layer C card rises (lane WAITS)  |
-|   key      action                                                         |
-|   g        open Layer B  Flow Popup (per-gate)      (human-initiated)     |
-|   M        open Layer C  Roadmap overlay (deliverable) [proposed keymap]  |
-|     ?        toggle open / close                                           |
-|   q        quit                                                          |
-|   Esc      close      (only when NOT sitting on a gate)                   |
-|   Enter    APPROVE / SELECT the default move                              |
-|   R        RESTART / REJECT          (gate-context-dependent)             |
-|    [   ]     previous / next gate   (navigate history)                    |
-|   (keybinding precedent: timed-confirm / confirm-destructive / question.ts)|
-+--------------------------------------------------------------------------+
-```
+| key | action |
+| --- | ------ |
+| `g` | open Layer B Flow Popup (per-gate, human-initiated) |
+| `M` | open Layer C Roadmap overlay (deliverable; **proposed keymap**) |
+| `?` | toggle open / close |
+| `q` | quit |
+| `Esc` | close (only when **not** sitting on a gate) |
+| `Enter` | approve / select the default move |
+| `R` | restart / reject (**gate-context-dependent**) |
+| `[ ]` | previous / next gate (navigate history) |
+
+Keybinding precedent: `timed-confirm` / `confirm-destructive` / `question.ts`.
 
 ---
 
@@ -314,47 +264,32 @@ up; the human's only keyboard job is to *decide, not poll*.
 **Description.** When `!ctx.hasUI`, *no surface can rise*, so every gate — *both
 the per-feature Gates 1–9 and the pre-lane Gate 0* — degrades to a ledger row
 carrying a **resume token + deadline** (the `timed-confirm` precedent), and
-**Layer C degrades to the roadmap table (§5.3)**. The single-lane invariant
+**Layer C degrades to the roadmap table (§5.3)**. The single-lane invariant stays
 intact: the lane still waits, it just *records* the wait instead of *drawing*
-it. **A missing overlay may hide a gate or a roadmap row; it may never
-silently approve one — including Gate 0.**
+it (e.g. a `gate_plan.token deadline=+00:30` WAIT row, while a completed row
+reads `T003 done -- r2.log`). **A missing overlay may hide a gate or a roadmap
+row; it may never silently approve one — including Gate 0.**
 
-```
-+--------------------------------------------------------------------------+
-| HEADLESS         (CI / cron / no UI -- all layers degrade to the ledger)  |
-| -------------------------------------------------------------------------|
-|   Layer B gate auto-pops  ->  the gate becomes a 'WAIT' row (token+dl  )  |
-|   Layer C Gate 0 rise    ->  the roadmap -> a printed 'roadmap table'    |
-|   ledger    state   gate       artifact                                   |
-|   gate0     approved rows r1..r5  roadmap@12:03 decided_by=human@token  |
-|   T003      done      --          r2.log                                    |
-|   T004      wait     plan        gate_plan.token  deadline=+00:30          |
-|    ...       (lane blocks, recorded, not drawn;  nothing auto-approves)    |
-|    policy: 'gate-block' (block by default; --headless required to proceed) |
-+--------------------------------------------------------------------------+
-```
+Policy: **`gate-block` — block by default; `--headless` is required to proceed.**
 
 ---
 
 ## 8. Data flow (events -> state -> surfaces)
 
-```
-pi event stream
-    |
-   v
-event handler (pi.on)   --->  recompute FactoryState  (roadmap/current too)
-                                    |
-                +--------------+-----------------+----------------+
-               v                v               v                 v
-  ctx.ui.setStatus    ctx.ui.custom        ctx.ui.custom       roadmap table
-   (Layer A HUD)       (Layer B popup)      (Layer C overlay)   (if headless)
-  slot1..3 footer     overlay + B card     roadmap rows/        printed only
-                                   |
-                       ctx.ui.select([...]) -> Promise<move>  (Gate 0 or Gate 1-9)
-                                   |
-                          move applied -> gate/rail state -> next DU / next gate /
-                          (at inter-feature boundary) -> Gate 0 re-enters for next row
-```
+The `pi` event stream (`turn_start`, `turn_end`, `agent_end`, `tool_call`,
+`session_start`, plus Layer-C `gate0_open` / `roadmap_row_done`) flows into
+`pi.on` handlers. Each handler recomputes `FactoryState` — including
+`roadmap` / `current` — and pushes a redraw:
+
+- `ctx.ui.setStatus` → the **Layer A** footer slots.
+- `ctx.ui.custom` → the **Layer B** gate popup.
+- `ctx.ui.custom` → the **Layer C** roadmap overlay; **if headless, the roadmap
+  is printed as a table instead** (no overlay rises).
+
+A gate decision — **Gate 0 or Gates 1–9** — is one `ctx.ui.select([...])` that
+resolves to a `Promise<move>`. The move is applied to gate/rail state, then
+yields the **next DU / next gate**; at every **inter-feature boundary**
+**Gate 0 re-enters** for the next row.
 
 ---
 
@@ -408,31 +343,17 @@ event handler (pi.on)   --->  recompute FactoryState  (roadmap/current too)
 
 ---
 
-## 11. Implementation milestones (UI track)
-
-| phase | deliverable |
-| ----- | ----------- |
-| U1 | `hud.ts`: slot1..3 footer on `turn_*` events (Layer A) |
-| U2 | `overlay.ts`: closed face + gate card (Layer B) on doom overlay skeleton |
-| U3 | auto-pop on gate-open event + keybinding map (§6) |
-| U4 | gate-face variant table by gate type (§4.3) |
-| U5 | headless WAIT-row degradation (§7) + ledger integration |
-| U6 | polish: glyph legend, switch-tax surfacing, navigate-history |
-| **U7** | **`roadmap.ts`: Layer C overlay — roadmap rows/short/status, in-flight highlight, Gate 0 face (§5), auto-rise on `gate0_open`/`roadmap_row_done`, headless roadmap-table fallback (§5.3/§7)** |
-
----
-
-## 12. Open questions (UI)
+## 11. Open questions (UI)
 
 1. Does `ctx.ui.custom` overlay survive a `turn_end` / compaction, or must it be
-   re-registered each event? (affects U1/U2 redraw strategy.)
+   re-registered each event? (affects the redraw strategy.)
 2. Can the overlay host `ctx.ui.select` directly, or must moves be wired through
-   the overlay's own key handler? (affects U3.)
+   the overlay's own key handler?
 3. Exact overlay `anchor`/`width`/`maxHeight` options for a full-width modal.
 4. `ctx.ui.confirm` vs `ctx.ui.select` for the simple two-move gates (§4.3 verify).
-5. **Layer C sizing:** one wide overlay listing all rows (the §5.1 box) vs a
-   compact strip (like Layer A) — and the keymap conflict between a Layer-C key
-   (`M`) and the per-gate `g`/`?`. (affects U7.)
+5. **Layer C sizing:** one wide overlay listing all rows (§5.1) vs a compact
+   strip (like Layer A) — and the keymap conflict between a Layer-C key (`M`) and
+   the per-gate `g`/`?`.
 6. **Gate-0 face:** does Gate 0 reuse the Layer-B gate-card chrome (§4.2) with a
    `roadmap` payload, or is it a distinct Layer-C face (§5.2)?
 7. **Roadmap-as-artifact:** is `ROADMAP.md` a first-class on-disk artifact

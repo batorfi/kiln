@@ -1,6 +1,6 @@
 > Status: ground-up concept
 > Type: skill — Code Reviewer (line-of-defense, the whole-feature review)
-> Companion docs: `20260911-concept.md` (vision), `20260911-gates-why-how-what.md`
+> Companion docs: `../concept.md` (vision), `../gates-why-how-what.md`
 >
 > Grounding: the "skill" framing and the two-pass / architecture-critic split follow
 > `pipeline-template`'s `code-reviewer/SKILL.md`; the KILN-specific deltas (strongest-resident

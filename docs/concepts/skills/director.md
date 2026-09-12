@@ -1,6 +1,6 @@
 > Status: ground-up concept
 > Type: skill — Director (orchestrator + scheduler)
-> Companion docs: `20260911-concept.md` (vision), `20260911-process-flow.md`
+> Companion docs: `../concept.md` (vision), `../process-flow.md`
 >
 > Grounding: the "skill" framing and role definitions follow `pipeline-template`'s director role; the
 > KILN-specific deltas (single-lane scheduler, lane hold-yield, model-affinity queue, lane/switch
@@ -64,6 +64,13 @@ the single biggest cost lever — it keeps the lane resident and the swap count 
 one-lane world this is **the director's job, not a separate scheduler's** (the 14th abstraction
 from `pipeline-template` is collapsed in here).
 
+Routing is **two-track**. The director routes **work roles** (researcher → concept-writer →
+designer → worker → techwriter / pr-writer) to the **cheapest model the gate behind can bound**,
+but it routes the four **line-of-defense** roles — architecture-critic, verifier / diagnosis,
+code-reviewer, and docs-synthesizer — to the **strongest resident model always, even on a local
+setup**: those roles *are* the gates' backgates, so a cheap judge would defeat the safety net.
+Triage itself is cheap because it is bounded **immediately** by a human gate.
+
 ## 6. Cost accounting = the lane
 
 `wall-clock = (work) + (switching)`, with the second term local-dominant. Keeping the lane
@@ -76,7 +83,7 @@ arithmetic — no token metering, no queue depth — because the lane is the res
 The nine gates are **gated moves drawn from a three-move vocabulary**: **Approve / Revise /
 Reject** (small-triage features skip Concept & Architecture). Each gate is a **human** decision;
 the director **waits**, never decides. Gate detail — rationale, move table, headless contract —
-lives in `20260911-gates-why-how-what.md`.
+lives in `../gates-why-how-what.md`.
 
 ## 8. Grounding
 

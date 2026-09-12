@@ -1,6 +1,6 @@
 > Status: ground-up concept
 > Type: skill — Feature-size Triage (a gate, not a worker)
-> Companion docs: `20260911-concept.md` (vision), `20260911-gates-why-how-what.md`
+> Companion docs: `../concept.md` (vision), `../gates-why-how-what.md`
 >
 > Grounding: the "skill" framing and triag's *two outputs / skip-rule* follow `pipeline-template`'s
 > triage concept (a gate in KILN, not a worker role in `pipeline-template`). KILN-specific deltas

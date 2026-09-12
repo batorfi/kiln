@@ -1,6 +1,5 @@
 > Status: ground-up concept (v2, 2026-09-11)
 > Type: concept
-> Supersedes (in spirit, not by reference): the dashboard-centric "AI factory" framing of `pipeline-template`
 >
 > Scope note: this is a human-readable overview of the idea — why KILN exists, what changes, and
 > how the major pieces fit. Implementation detail (UI primitives, gate mechanics, the event
@@ -19,32 +18,30 @@ KILN is a **ground-up concept for a spec-driven, multi-agent development *factor
 entirely on local models through the [pi.dev coding-agent harness](https://github.com/earendil-works/pi),
 with no cloud round-trip**.
 
-It inherits the strong idea of `pipeline-template` — a director that decomposes a feature
-into gates, never writes code, and never decides its own gates, with a human at each gate — and
-replaces the parallel, dashboard-driven, cloud-model machinery with three deliberate choices:
-a **single execution lane** with a cooperative scheduler, **Pi-native UI** instead of a website,
-and a **two-layer gate rail** with an explicit headless contract.
+The load-bearing idea is a **director** that decomposes a feature into gates, never writes
+code, and never decides its own gates, with a human at each gate. KILN sharpens that general
+shape for a local substrate into three deliberate choices: a **single execution lane** with a
+cooperative scheduler, **Pi-native UI** instead of a website, and a **two-layer gate rail**
+with an explicit headless contract.
 
 The name is deliberate: a *kiln* burns one batch at a time, heats a single chamber, and holds
 heat between batches. That is the whole thesis.
 
-## 2. The transform, at a glance
+## 2. KILN's defining properties, at a glance
 
-What KILN changes relative to `pipeline-template`:
+| Aspect | KILN |
+|---|---|
+| Parallelism | **One lane**, strictly sequential |
+| Orchestration head | **Director *is* the scheduler** |
+| Models | **Local, Ollama-served** |
+| Cost unit | **Held compute / wall-clock** |
+| UI | **Two TUI layers + headless fallback** |
+| Human control | **Gates in the same TUI as the work** |
+| Model switching | **Capped, batched, priced** |
+| Logging | **Factory-log JSONL (rich), plus lane/switch/wall-clock** |
+| Workspace | **Pi subagent isolation / workspace** |
 
-| Aspect | `pipeline-template` | KILN |
-|---|---|---|
-| Parallelism | One pane per worker, many at once | **One lane**, strictly sequential |
-| Orchestration head | Director + a scheduler abstraction | **Director *is* the scheduler** |
-| Models | Anthropic frontier (cloud) | **Local, Ollama-served** |
-| Cost unit | Tokens of cloud API | **Held compute / wall-clock** |
-| UI | Dashboard website + panes | **Two TUI layers + headless fallback** |
-| Human control | Gates inside the dashboard | **Gates in the same TUI as the work** |
-| Model switching | Free (cloud) | **Capped, batched, priced** |
-| Logging | Factory-log JSONL (rich) | **Same, plus lane/switch/wall-clock** |
-| Workspace | cmux panes/workspaces | **Pi subagent isolation / workspace** |
-
-## 3. Why this is a coherent concept, not a port
+## 3. Why this is a coherent concept
 
 A parallel factory exists because cloud models are cheap and switching is free so the
 load/un/unload penalty is tiny and throughput is the goal. Locally, both assumptions collapse:
@@ -252,7 +249,7 @@ it may never **silently approve** one.
 - `dashboard/` — gone; replaced by the HUD + popup.
 - cmux pane/workspace orchestration — replaced by Pi subagent isolation.
 - Concurrency caps **and parallelism** — gone; not a cap on parallelism but its removal; one lane.
-- The 14th "scheduler" abstraction — **collapsed into the director itself.**
+- A separate "scheduler" abstraction — **collapsed into the director itself.**
 
 New: a **lane module**, a cost/switch-accounting layer, an **event-driven UI layer *plus the roadmap
 overlay* (the deliverable-level Layer C)**, and the **roadmap artifact** (`ROADMAP.md`, the "firing
@@ -276,11 +273,13 @@ kiln/
 
 ## 10. Why this is worth building
 
-`pipeline-template` proves the **gate-driven, human-in-the-loop multi-agent pipeline** idea is
-sound. KILN asks: *what is the same factory when the substrate is local, one-room, and watched
-live by the human at a terminal?* The answer is a **single-lane, gate-railed, Pi-native,
-cost-accounted factory** where the human's only job is to **plan the roadmap with the director,
-decide at the gates (including the pre-lane Gate 0), and watch the kiln**.
+The **gate-driven, human-in-the-loop multi-agent** idea is sound: a feature is decomposed into
+gates, nothing substantial runs unattended beyond the work between two gates, and every "did we
+get this right?" is a human decision. KILN asks: *what is that same factory when the substrate is
+local, one-room, and watched live by the human at a terminal?* The answer is a
+**single-lane, gate-railed, Pi-native, cost-accounted factory** where the human's only job is to
+**plan the roadmap with the director, decide at the gates (including the pre-lane Gate 0), and
+watch the kiln**.
 
 ---
 

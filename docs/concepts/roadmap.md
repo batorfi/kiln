@@ -1,81 +1,65 @@
-# KILN — the Roadmap (a deliverable's firing program)
+# KILN — the Roadmap: one chamber, its whole firing program
 
-> Status: Concept — pre-implementation. This doc owns the *deliverable-level* concept
-> that sits **above** the per-feature lane: a **Roadmap** — one ordered firing program
-> of feature rows the single lane fires **one row at a time**, with the human
-> **re-admitting between rows** at **Gate 0**. It complements `concept.md` (the system),
-> `process-flow.md` (one row's lane, end to end), `gates-why-how-what.md` (the nine
-> gates, now **Gate 0 + Gates 1–9**), `ui-layers-deep.md` (the three UI surfaces —
-> Layer C *is* this roadmap, drawn), and `kiln-analogy.md` (the firing image — one
-> chamber firing **row by row**, the human between firings).
->
-> The whole idea in one line: **the lane does not fire one feature and stop — it fires
-> the roadmap, row by row; and the human re-checks the *program* at Gate 0, before the
-> first row and at every row boundary, never letting the chain unattend a row the human
-> never admitted.**
+> Status: pre-implementation concept. Companion docs: `concept.md` (the system),
+> `process-flow.md` (one feature's lane, end to end), `gates-why-how-what.md`
+> (the nine gates, plus this **Gate 0**), `ui-layers-deep.md` (the three screens
+> that *draw* the roadmap), `kiln-analogy.md` (the firing image).
 
-```
-The KILN roadmap — the deliverable, as a firing program
-═══════════════════════════════════════════════════════════════════════════════════════
+KILN already finishes **one** feature. A feature is *one lane* — the sequence of
+human decisions that carries it from a raw idea to a merged pull request:
+*concept, architecture, spec, plan, checkpoint, review, verification, docs,
+PR* — the walk in `process-flow.md` and the gate-by-gate reasoning behind it in
+`gates-why-how-what.md`. A feature walks the lane once, and leaves it at its
+own PR.
 
-  The lane fires ONE ROW at a time, GATE 0 at each seam. One chamber, many firings.
+What this doc adds is the thing a *delivery* actually is — not one feature, but
+several, in the right order. Take a "shipping-ready dev harness" as the
+*deliverable*: you have to break it into features and build them in a sequence
+that respects what one depends on. Write that breakdown down, get its order
+right, and review it — and you have the **Roadmap**. A Roadmap is a list of
+feature **rows**, each row a *complete, ordinary* feature lane, and each row
+names the rows it depends on.
 
- ┌─────────────────────────────────────────────────────────────────────────────┐
- │ DELIVERABLE: "Shipping-ready local dev harness (v1)"                          │
- │ ── ROADMARD: the ordered firing program ──                                    │
- │  ┌────────────┐  ┌───────────────────────────────────────────────┐           │
- │  │ GATE 0      │  ROADMAP                                          │ ◀ human,
- │  │ (pre-lane)  │  r1  core lane model     ● done  @PR#11            │  pre-lane
- │  │ approve the │  r2  Gate 0 / roadmap     ◆ current                  │  +
- │  │ whole program│  r3  cost model (switch)  ○ next   (deps r2)        │  inter-row
- │  │ ────────────│  r4  constitution gate    ○        (deps r3)        │  ONLY
- │  │  Approve  ──┼──┘  r5  factory-log schema ○        (deps r3)        │
- │  │  Revise (rows)                                                          │
- │  │  Reject (abandon)  r1 ─▷ r2 ─▷ r3 ─▷ r4 ─▷ r5  :: ordering         │
- │  └─────────────┴─ chain: APPROVE@row-boundary → next lane     ◁ NOT auto ◁│
- │     ▲  human re-admits here; NOT in the unattended tail            │
- │     └───────────────────────────────────────────────────────────────┘
- │                                                                       │
- │  each row rN === ONE full Gates 1–9 lane (a complete firing of the    │
- │  same chamber) on rN's own concept · arch · spec · plan · impl ·      │
- │  review · verify · docs · PR.  The lane re-shoots itself, row by row.  │
- └─────────────────────────────────────────────────────────────────────────────┘
-              │
-              ▼
-  WHAT A ROW IS            ┌─ r1 ─▶ [G1·G2·G3·G4]─▶ [G5]─▶ [G6·G7]─▶ [G8·G9/PR] ─▶ done ─┐
-                          │  (one full per-feature lane — process-flow.md)                  │
-                          ▼                                                                  ▼
-  ONE ROW = THE FULL LANE   concept → arch → spec → plan → impl → review → verify → docs → PR
-                          each gate a HUMAN hold (or a logged, deliberate exception)
-```
+A single lane does not fire one feature and stop. It fires the **whole Roadmap,
+one row at a time**, and between one row's PR and the next it hands the program
+back to the person running the kiln. That handoff is the new piece, **Gate 0 —
+Roadmap**: a *human* gate that sits *above* the nine per-feature gates, opening
+before the first row and again at every row's seam. Its job is to admit the
+*program* — the rows, their order, their dependencies. You can approve it,
+revise it with the director, or reject it; the director drafts, you decide. The
+nine gates are not replaced — every row still runs all of them, in full. Gate 0
+is the layer *on top*, at the seam between firings, not a gate any of them.
 
-This is **the** new idea. In `concept.md` the lane already fires *one* feature and
-ends at its PR. KILN scales that upward: a **deliverable** is a Roadmap of feature
-**rows**, the lane re-shoots itself row by row, and a new pre-lane **Gate 0 —
-Roadmap** is where the human admits (or re-admits) the program. The nine gates are
-not displaced — each row runs *them in full*; Gate 0 is the layer *above* them, at
-the seam between firings.
+One rule holds the whole thing together — the rule KILN makes at every gate:
+**Gate 0 is yours alone, and it never approves itself.** Not when a feature is
+cruising the unattended tail, not when a cheap model is in the chamber, and not
+even when there is no screen to carry the decision at all; with no UI it simply
+*prints* the program and *waits* for you. So a row never starts on a Roadmap you
+did not admit, and the program never advances past a row you never signed off
+on. That is the entire idea: *the lane does not fire one feature and stop — it
+fires the Roadmap, row by row, and the human re-checks the program at Gate 0,
+before the first row and at every boundary between rows.*
+
+What follows is the machinery behind it — where each piece lives: §1 is *what a
+Roadmap is*; §2 is the file it is written to, `ROADMAP.md`; §3 is how it sits in
+memory; §4 is Gate 0 in detail; §5 is firing the program row by row; §6 is what
+happens with no screen (*headless*); §7–§8 are the screens that draw it and the
+rules it must never break.
 
 ---
 
 ## 1. What a Roadmap is
 
 A **Roadmap** is the deliverable's **ordered firing program**: a list of feature
-**rows**, each row being **one complete per-feature lane** (the full Gates 1–9 walk
-in `process-flow.md`), with a **topological order** and **dependency edges** between
-rows. The lane fires **exactly one row at a time**; when a row reaches its PR it
-**completes**, and the director proposes to start the next row — but **the next row
-does not auto-start**: the human **re-admits at Gate 0**.
-
-```
-  DELIVERABLE
-   └── ROADMAP ── ordered firing program ──┐
-        ├── row r1  ── full Gates 1–9 lane ──▶ @ PR#11   ◀── a complete FIRING
-        ├── row r2  ── full Gates 1–9 lane ──▶ @ PR#12
-        ├── row r3  ── full Gates 1–9 lane ──▶ @ PR#13
-        └── ...
-   (one chamber; the human re-admits at Gate 0, between firings)
-```
+**rows**, each row being **one complete per-feature lane** (the full Gates 1–9
+walk in `process-flow.md`), with a **topological order** and **dependency edges**
+between rows. A row becomes *eligible to fire* only when the rows it depends on
+are *done*. The lane fires **exactly one row at a time**; when a row reaches its
+PR it **completes**, and the director proposes to start the next row — but **the
+next row does not auto-start**: the human **re-admits at Gate 0**. So the
+deliverable looks like a single program of several firings on one chamber — one
+roadmap, several rows, each row a full firing, and a human standing at the door
+between firings, deciding which firing comes next.
 
 Two things hold, and they are the point:
 
@@ -85,7 +69,7 @@ Two things hold, and they are the point:
 - **The inter-row chain is not unattended by default.** Each row is gated by its own
   PR; after a PR, the row *completes* and Gate 0 opens **again**, at the seam. The
   unattended tail (`§` `gates-why-how-what.md §3`) only ever runs *within* a row
-  (trailing gates Plan→PR). **Cross-row** chaining is a *separate, explicit, logged*
+   (trailing gates Plan→PR). **Cross-row** chaining is a *separate, explicit, logged*
   human decision — and Gate 0 can **lift it** at any time, exactly the way any veto
   lifts the unattended tail.
 
@@ -103,57 +87,46 @@ deliverable → one `ROADMAP.md`; one row → one feature lane → that lane's
 `concept.md` / `spec.md` / `pr.md`, cross-referenced from the row.
 
 ```
-ROADMAP.md   (one per deliverable; human-authored/approved at Gate 0)
-─────────────────────────────────────────────────────────────────────────
+ROADMAP.md    (one per deliverable; human-authored/approved at Gate 0)
+────────────────────────────────
 deliverable: shipping-ready local dev harness (v1)
-owner:    human@token        updated: <ts>
+owner:      human@token
+updated:    <ts>
 
-rows:                         # the firing program, in order — one row === one full Gates 1–9 lane
-  - id:  r1
-    short: core lane model                 # one-line feature statement (== the HUD row's label)
-    scope: the single-lane scheduler, hold/yield, model-affinity queue
-    deps: []                              # nothing — fires first
-    status: done                           # ○ queued · ◆ active · ✎ revising · ✓ done · ⊘ aborted
-    outcome: @PR#11 (gates 1–9 closed)      # a done row carries its closing PR
-    spec: features/r1-core-lane-model/spec.md
+rows:                          # the firing program, in order — one row === one full Gates 1–9 lane
+  - id:     r1
+    short:  core lane model     # one-line feature statement (== the HUD row's label)
+    scope:  the single-lane scheduler, hold/yield, model-affinity queue
+    deps:   []                  # nothing — fires first
+    status: done                # queued · active · revising · done · aborted
+    outcome: @PR#11 (gates 1–9 closed)   # a done row carries its closing PR
+    spec:   features/r1-core-lane-model/spec.md
 
-  - id:  r2
-    short: Gate 0 + the roadmap overlay
-    scope: pre-lane human gate, roadmap.md schema, Layer C
-    deps: [r1]
+  - id:     r2
+    short:  Gate 0 + the roadmap overlay
+    scope:  pre-lane human gate, roadmap.md schema, Layer C
+    deps:   [r1]
     status: active
     outcome: (in flight)
 
-ordering:       [r1, r2, r3, r4, r5]      # the firing sequence
-chain_unattended: false                   # human re-admits per row (Gate 0); see §3
-gate0:                             # the approval record (== FactoryState.gate0)
-  status: approved
-  rows: r1..r5
+ordering:       [r1, r2, r3, r4, r5]     # the firing sequence
+chain_unattended: false                  # human re-admits per row (Gate 0); see §3
+gate0:                               # the approval record (== FactoryState.gate0)
+  status:     approved
+  rows:       r1..r5
   decided_by: human@token
-  at: <ts>
-  note: "approved rows r1–r5 in order; r2–r5 gated by human, not the tail"
+  at:         <ts>
+  note:       "approved rows r1–r5 in order; r2–r5 gated by human, not the tail"
 ```
 
-```
-  the same ROADMAP.md, rendered (this is roughly what Layer C draws)
-  ═══════════════════════════════════════════════════════════════════════════════
-  ROADMAP — DELIVERABLE "shipping-ready local dev harness (v1)"
-  ──
-   r1  core lane model        ● done   PR#11
-   r2  Gate 0 + roadmap layer  ◆ active   (deps r1, satisfied)   ◀ you are here
-   r3  cost model (switch)     ○ next     (deps r2, pending)
-   r4  constitution gate       ○          (deps r3)
-   r5  factory-log schema      ○          (deps r3)
-   ──
-   ordering  r1 → r2 → r3 → r4 → r5     chain: APPROVE@row-boundary (NOT auto)
-   gate0  approved@12:03  rows=r1..r5  by human@token   (NOT auto — see §4)
-  ═══════════════════════════════════════════════════════════════════════════════
-```
-
-The rendered table is what **Layer C (the roadmap overlay)** draws live and what the
-**headless path prints** (§6). It is *not* the source of truth — the structured head
-is; the table is a projection. This matches KILN everywhere: a **human reads a
-summary, and the structured record is behind it.**
+The structured head above is the source of truth; it also *renders* as a compact
+table — what **Layer C** (the roadmap overlay) draws live and what the **headless
+path** prints (§6): each row's short label, a status (*done*, *active*, *pending*,
+*revising*, *aborted*), its unmet dependencies, and the in-flight row flagged
+*yours, right now* at its current gate, with an `order` / `gate0` footer recording
+who admitted the program and when. The table is a *projection* of the structured
+head, not a second record — a **human reads the summary, and the structured head
+sits behind it.** This matches KILN everywhere.
 
 ---
 
@@ -166,67 +139,45 @@ feature lane already uses, not a second store (the shared-state invariant in
 
 ```
 type RoadmapRow = {
-  id:        string      // "r2", "r3"
-  short:     string      // one-liner → the row label
+  id:        string       // "r2", "r3"
+  short:     string       // one-liner → the row label
   status:    "queued" | "active" | "done" | "revising" | "aborted"
-  deps:      string[]    // ["r1"] — satisfied when each dep's status == "done"
-  outcome?:  string      // when done: the closure @PR#NN
-  gate?:     LaneGate    // when this row is active: a live Gates 1–9 gate
-  // (the same LaneGate type used by Layers A/B; no new gate concept)
+  deps:      string[]     // ["r1"] — satisfied when each dep's status == "done"
+  outcome?:  string       // when done: the closure @PR#NN
+  gate?:     LaneGate     // when this row is active: a live Gates 1–9 gate
+   // (the same LaneGate type used by Layers A/B; no new gate concept)
 }
 
 // the roadmap-level additions to FactoryState (the lane/gate fields are unchanged):
-roadmap:     RoadmapRow[]          // the deliverable's firing program
-current:      string               // id of the active row (which lane is the "hot kiln")
-gate0:        Gate                 // the pre-lane + inter-row roadmap gate (see §4)
+roadmap:     RoadmapRow[]           // the deliverable's firing program
+current:     string                // id of the active row (which lane is the "hot kiln")
+gate0:       Gate                  // the pre-lane + inter-row roadmap gate (see §4)
 
 // the inter-row event (row done → row done):
-"roadmap_row_done"   { id, outcome }   // fires when a row's PR closes
+"roadmap_row_done"    { id, outcome }    // fires when a row's PR closes
 ```
 
-`gate` and `gate0` are **two different gates** — don't conflate them: `gate` is *one
-row's* live Gates 1–9 gate (Layers A/B draw it); `gate0` is the *program-level*
+`gate` and `gate0` are **two different gates** — don't conflate them: `gate` is
+*one row's* live Gates 1–9 gate (Layers A/B draw it); `gate0` is the *program-level*
 human gate (Layer C draws it; it sits **between** rows, not inside one).
 
 ---
 
 ## 4. Gate 0 — Roadmap (the pre-lane gate)
 
-A road-map is only as good as the human's agreement on *what to build and in what
+A roadmap is only as good as the human's agreement on *what to build and in what
 order* — so **Gate 0** is the **pre-lane, human-only** gate that approves the
 program. It is the first gate at kickoff and re-opens at **every inter-row seam**.
 It is **always human and never auto-approves**, including in headless: this is the
 one gate no exception (unattended tail, cheap head, missing UI) is ever allowed to
 silence.
 
-```
-+--------------------------------------------------------------------------+
-|  GATE 0 — ROADMAP  (deliverable-level, pre-lane — human-only)             |
-|  ─ not a per-feature gate; it sits ABOVE the row's Gates 1–9 ─          |
-|                                                                            |
-|  DELIVERABLE       shipping-ready local dev harness (v1)                  |
-|  ── FIring PROGRAM (the rows the lane will fire, in order) ──            |
-|   r1  core lane model       deps: —            ○ queued                   |
-|   r2  Gate 0 + roadmap      deps: [r1]        ○ queued                   |
-|   r3  cost model (switch)   deps: [r2]        ○ queued                   |
-|   r4  constitution gate     deps: [r3]        ○ queued                   |
-|   r5  factory-log schema    deps: [r3]        ○ queued                   |
-|                                                                            |
-|  ORDERING   r1 → r2 → r3 → r4 → r5   (a row fires when its deps are done) |
-|  CHAIN      APPROVE@row-boundary      (NOT auto — the human re-admits)     |
-|  (each row fires a full Gates 1–9 lane; see process-flow.md)             |
-|                                                                            |
-|   Moves:  APPROVE / REVISE / REJECT                                         |
-|   [Approve]  [Revise] [Reject]  [Edit rows]  [Add row]  [Drop row]        |
-|                                                                            |
-|   APPROVE  admit r1..r5 in order; fire r1 now; human re-checks at each seam │
-|   REVISE   edit the rows / order / deps, then re-admit   (a program edit)  |
-|   REJECT   abandon / re-plan the whole deliverable                        |
-|                                                                            |
-|   HUMAN-ONLY · GATE 0 never auto-approves — not under the tail,            |
-|   and not when there is no UI (it prints + WAITs instead; see §6).        |
-+--------------------------------------------------------------------------+
-```
+At Gate 0 the decision surface shows the whole program at once: the deliverable's
+name, the **rows in order** with each row's dependencies and status, the firing
+**ordering** (*a row fires when its deps are done*), and the row-to-row **chain
+rule** (`APPROVE` at the row boundary — *never* automatic). It offers **approve /
+revise / reject** plus the program-edit moves **edit / add / drop a row** — you are
+reshaping the *program itself*, not just the artifact one row produces.
 
 **WHAT.** Artifact `ROADMAP.md` (a roadmap, not a feature document). Moves:
 **approve / revise / reject**, plus the program-edit moves `Edit rows / Add row /
@@ -246,7 +197,8 @@ feature next with no human in the loop.
 lane is **held** until a human move arrives as an event (a `gate0_open`, like the
 lane-open). On **approve**, `gate0` records `approved@ts / rows=r1..rN /
 decided_by=human@token` (a `gate0` *report* in the factory-log — durable, greppable,
-**never auto-written by the model**) and the first row's lane begins. Because Gate 0
+**never auto-written by the model**) and the first row's lane begins. On **reject**,
+the program is abandoned or re-planned. Because Gate 0
 is pre-lane it sits **above** the in-lane Gates 1–9: it opens *before row 1's* lane
 and *between row N and N+1's* — never inside a row's lane. Headless: §6.
 
@@ -257,39 +209,27 @@ and *between row N and N+1's* — never inside a row's lane. Headless: §6.
 Once Gate 0 approves, the director executes the program **one row at a time**,
 **respecting deps** (a row is *eligible* only when its `deps`'s status is `done`),
 with **Gate 0 re-opening at every seam** to re-admit the next (or to revise the
-remaining program as early feedback arrives).
+remaining program as early feedback arrives). Read it top to bottom: you start at
+Gate 0 with the whole program; you approve it; **row r1** then runs its full
+Gates 1–9 lane and closes at a PR; the moment r1's PR closes a `roadmap_row_done`
+event *re-opens* Gate 0 at the seam — a human, always — and from there r2 runs,
+then r3, until the program is done.
 
-```
-  GATE 0 (pre-lane)
-     │  APPROVE rows r1..r5
-     ▼
-  ┌─────────────┐
-  │ ROW r1 ──▶  full Gates 1–9 lane ──▶ G9/PR  ──▶  r1 done  (@PR#11)│
-  └─────────────┘
-     │  "roadmap_row_done r1"  ─────────────► Gate 0 re-opens (inter-row) ◀ HUMAN, always
-     ▼
-  ┌─────────────┐
-  │ ROW r2 ──▶  full Gates 1–9 lane ──▶ G9/PR  ──▶  r2 done  (@PR#12)│
-  └─────────────┘
-     │  "roadmap_row_done r2" ──► Gate 0 re-opens  ── …  (until the program is done)
-  …
-```
-
-- **Deps gate eligibility.** r3 (deps r2) does not become *current* until r2 is
-  done. The director picks the next **eligible** row; if several are eligible they
+- **Deps gate eligibility.** A row like r3 (which depends on r2) does not become
+   *current* until r2 is done. The director picks the next **eligible** row; if several are eligible they
   fire in `ordering`, still one at a time (one lane, one "hot kiln").
 - **Each row is a complete firing.** A row runs the *entire* per-feature lane
-  (`process-flow.md`) — concept, arch, spec, plan, checkpoint, review, verify, docs,
+   (`process-flow.md`) — concept, arch, spec, plan, checkpoint, review, verify, docs,
   PR — with its own Gates 1–9 and its own (optional) unattended tail *within* it.
 - **The seam is human.** At each `roadmap_row_done`, Gate 0 **re-opens** and the
-  human **re-admits** the remaining program before the next row fires — or **revise
+  human **re-admits** the remaining program before the next row fires — or **revises
   the remaining rows** based on what the finished row taught the deliverable — or
-  **stop.** The inter-row chain is **never unattended by default.**
+   **stops.** The inter-row chain is **never unattended by default.**
 - **Opt-in chaining.** *If the human explicitly elects* to chain (an unattended
   inter-row mode, logged like the unattended tail), rows fire back-to-back — **but
   Gate 0 remains the lifter**: any line-of-defense veto *inside* a row (arch-critic
   objection, reviewer `restart`, verifier `reject`, a checkpoint that overflows)
-  **halts the chain and returns to the human**, exactly as a veto lifts the
+   **halts the chain and returns to the human**, exactly as a veto lifts the
   in-row tail. The human may re-elect the chain, row by row, but may **always
   lift it.**
 
@@ -305,29 +245,24 @@ gates. Gate 0 is the seam that keeps it honest.
 A missing UI may **hide** Gate 0's overlay, but it must **never auto-approve** it.
 In headless (`!ctx.hasUI`) Gate 0 degrades to a **printed roadmap table** plus a
 **WAIT row** in the factory-log — the same no-silent-approval contract as the nine
-per-feature gates in `gates-why-how-what.md §3`, extended to the program gate.
+per-feature gates in `gates-why-how-what.md §3`, extended to the program gate. So
+in a headless run the program the human is being asked to admit is *printed* to the
+log or terminal, and beside it the log gains a durable, greppable line such as
 
 ```
-+-------------------------------------------------------+
-|  GATE 0 (headless, no UI) — never silent:            |
-|    the roadmap table is PRINTED, Gate 0 stays a human |
-|    WAIT, and a WAIT row is appended to factory-log:   |
-|                                                       |
-|  WAIT  gate0  approve-deliverable "local-dev-harness" |
-|        rows=r1..r5 · pending human · token g0_<id>     |
-|        deadline <ts+30m> · headless · roadmap printed  |
-|        (NOT auto-approved — no UI never silences Gate 0) |
-+-------------------------------------------------------+
+WAIT  gate0  approve-deliverable "local-dev-harness"
+      rows=r1..r5 · pending human · token g0_<id> · deadline <ts+30m> · headless · roadmap printed
 ```
 
-- **Print, don't pop.** The roadmap table (§2's rendered form) is written to the log
-  / terminal so the human can *see* the program being requested without a TUI, and a
-  `WAIT gate0 …` row is appended so the request is *durable and greppable*.
+— the request recorded, *not* resolved. The rules this enforces:
+
+- **Print, don't pop.** The rendered roadmap (§2's form) is written to the log /
+   terminal so the human can *see* the program being requested without a TUI; the
+   `WAIT gate0 …` row is what makes that request *durable and greppable*.
 - **Block, don't advance.** Gate 0 is **pre-lane**; with no human move the program
   **does not fire** — `current` stays unset, no row starts. There is no "auto-first
   row."
-- **The exception is still a human's.** The unattended tail and a cheap head may
-  carry a row's *in-row* trailing gates, and an *explicitly elected* inter-row
+- **The exception is still a human's.** The unattended tail and a cheap head may carry a row's *in-row* trailing gates, and an *explicitly elected* inter-row
   chaining may carry a *row boundary the human already approved* — but the
   **first-time** program approval at kickoff is always a human Gate 0 move even in
   headless. (This is the one gate the constitution never auto-authorizes.)
@@ -345,7 +280,7 @@ Popup)** (full design in `ui-layers-deep.md §5`):
 
 | layer | level | shows the roadmap | behavior |
 |---|---|---|---|
-| **A — Flow HUD**  | per-feature lane | the **active row's position** + program shape (a strip) | always-on, non-modal, in the footer |
+| **A — Flow HUD**   | per-feature lane | the **active row's position** + program shape (a strip) | always-on, non-modal, in the footer |
 | **B — Flow Popup**| per-feature lane | the row's live **Gates 1–9** gate card | auto-pops at a gate (modal) |
 | **C — Roadmap overlay** | **deliverable** | the **whole program**: every row, status, deps, ordering | **on-demand** (proposed key `M`), additive — *composes* over A/B, doesn't replace them |
 
@@ -358,7 +293,7 @@ contract. A missing overlay **never** hides or auto-approves Gate 0.
 ## 8. Invariants (the things a roadmap must never break)
 
 - **Gate 0 is human-only, always.** Not under the tail; not under a cheap head; and
-  *especially* not when there is no UI — then it prints a roadmap table and **WAITs**,
+   *especially* not when there is no UI — then it prints a roadmap table and **WAITs**,
   it does **not** auto-approve. Gate 0 is the one gate the constitution never
   auto-authorizes; the human admits the program.
 - **One row, one line.** The lane fires **exactly one row at a time** (one chamber,
@@ -369,15 +304,15 @@ contract. A missing overlay **never** hides or auto-approves Gate 0.
   never the missing-UI fallback.
 - **Dep order is enforced.** A row fires **only** when its `deps` are `done`; the
   director never advances a row past an unsatisfied dependency.
-- **A row is a whole firing.** Each row runs the **full Gates 1–9** lane with its own
-  (optional) in-row unattended tail — Gate 0 does not *short-circuit* a row's gates,
-  it sits *between* them.
+- **A row is a whole firing.** Each row runs the **full Gates 1–9** lane with its
+   own (optional) in-row unattended tail — Gate 0 does not *short-circuit* a row's
+  gates, it sits *between* them.
 - **The gate that sits above the gates is `gate0`, not `gate`.** `gate` is one row's
   live Gates 1–9 gate; `gate0` is the program gate *between* rows. The two are
   never conflated in state or in the move vocabulary.
 - **The roadmap is a reviewed artifact, not ephemeral UI.** `ROADMAP.md` is
   committed; Gate 0 and every `roadmap_row_done` are **factory-log records**
-  (durable, greppable, *never model-written-as-*approve* — a human move, or a
+   (durable, greppable, *never model-written-as-*approve* — a human move, or a
   `WAIT`/`gate-block` record).
 - **One `RoadmapRow` ↔ one HUD row ↔ one gate-1..9 lane ↔ one closure PR.** The HUD
   strip, the overlay table, and the log all refer to the *same* program by `id`.
@@ -394,18 +329,18 @@ contract. A missing overlay **never** hides or auto-approves Gate 0.
    rows would need a cheaper "mini-lane" and are out of scope for now.)
 2. **Gate 0 face on rev** — does revising the *remaining* program (post row r1,
    before r2) re-use the same Gate 0 card with the done rows collapsed, or a second
-   "amend" face? (Lean: **reuse the same card**, done rows pinned as `done`/collapsed;
+    "amend" face? (Lean: **reuse the same card**, done rows pinned as `done`/collapsed;
    one card, two *phases* — pre-lane and inter-row.)
 3. **Deps as a DAG** — can rows branch in parallel conceptually and be *fired* in one
    lane still (topological), or must the roadmap stay strictly linear? (Doc assumes
-   **linear-with-deps**, fired topologically, always one at a time — matches "one
+    **linear-with-deps**, fired topologically, always one at a time — matches "one
    chamber.")
 4. **`ROADMAP.md` as artifact vs. projection** — is the roadmap a *committed
    artifact* under review, or a *projection* the director maintains? (Doc:
-   **both** — human-authored at Gate 0, then updated as rows complete; the *status*
+    **both** — human-authored at Gate 0, then updated as rows complete; the *status*
    column is a projection, the *program* is the reviewed record.)
 5. **Inter-row chaining default** — opt-out (on by default, human stops) or opt-in
-   (off by default, human chains)? (Doc assumes **opt-in, off by default** — the
+    (off by default, human chains)? (Doc assumes **opt-in, off by default** — the
    human re-admits each row at Gate 0 unless they explicitly elect chaining — the
    conservative read.)
 6. **Chaining veto-lift** — does a veto inside a chained row abort only that row, or
@@ -426,13 +361,13 @@ contract. A missing overlay **never** hides or auto-approves Gate 0.
   gate added *before* the nine; the cross-cutting tail §3 gains a "inter-row
   chaining, veto-lifted by Gate 0" clause.
 - **`ui-layers-deep.md §5`** — **Layer C (roadmap overlay)** draws the live roadmap;
-  §2's `FactoryState` carries `roadmap / current / gate0`; §7's headless contract
+   §2's `FactoryState` carries `roadmap / current / gate0`; §7's headless contract
   extends to Gate 0 (print roadmap + WAIT).
 - **`kiln-analogy.md`** — the roadmap is a *batch of firings on one chamber, fired
   row by row, the human between firings*; Gate 0 is the human *between firings*,
   not inside a firing.
 - **`skills/director.md`** — the director owns a new **pre-lane duty**: author
-  `ROADMAP.md`, open **Gate 0**, fire the program row by row, hold for Gate 0 at
+   `ROADMAP.md`, open **Gate 0**, fire the program row by row, hold for Gate 0 at
   each seam (unless the human chained it).
 
 *The roadmap is the deliverable, and the lane is the kiln; a Roadmap is one

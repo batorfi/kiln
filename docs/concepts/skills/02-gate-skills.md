@@ -1,6 +1,6 @@
 > Grounded cross-ref index of KILN's gate-level concepts.
-> Source-of-truth: `../20260911-kiln-gates-why-how-what.md` (the full gates rationale, move table,
-> and headless contract). This file is a *short pointer* to that doc; the gates doc is the
+> Source-of-truth: `../gates-why-how-what.md` (the full gates rationale, move table,
+> and headless contract). This file is a *short pointer* to that doc; that doc is the
 > canonical, persistent home.
 >
 > KILN deltas vs `pipeline-template`'s gate concept: the gates are unchanged in *sequence and
@@ -15,6 +15,9 @@ the **Checkpoint** gate also has **Split+Revise**):
 `Concept → Architecture → Spec → Plan → Checkpoint → Review → Verification → Docs → PR`
 
 `small-triage` features **skip Concept + Architecture**.
+
+Pre-lane, **Gate 0 — Roadmap** (the unattended pre-lane gate; see `../roadmap.md`, `../gates-why-how-what.md`) decides
+*which* features run before any lane is opened. The nine numbered gates above are the in-lane gates.
 
 ## What each gate guarantees
 
@@ -43,5 +46,5 @@ The *sequence* and the *move-vocabulary* are unchanged; what's new is **where th
 (*in the same TUI as the work*, not in a dashboard) and the **headless contract** above (a durable
 WAIT row the human resumes, never a silent advance).
 
-*See:* `../20260911-kiln-gates-why-how-what.md` for the full rationale, the per-gate move table,
+*See:* `../gates-why-how-what.md` for the full rationale, the per-gate move table,
 and the deep discussion of the headless contract.

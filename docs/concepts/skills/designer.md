@@ -1,6 +1,6 @@
 > Status: ground-up concept
 > Type: skill — Architecture Designer (proposes the architecture, before the critic)
-> Companion docs: `20260911-concept.md` (vision), `20260911-process-flow.md`
+> Companion docs: `../concept.md` (vision), `../process-flow.md`
 >
 > Grounding: the "skill" framing follows `pipeline-template`'s `architecture-designer/SKILL.md`; the
 > KILN-specific tiering (standard head + separate strongest critic) and the lane placement are
