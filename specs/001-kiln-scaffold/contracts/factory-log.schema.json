@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "kiln://contracts/factory-log.schema.json",
+  "title": "KILN factory-log record",
+  "trace": "P-V (no-silent-approval), P-VII (everything logged), P-VIII (local-first), P-II/G2 (role tiers)",
+  "description": "One JSON object per JSONL line of the factory-log. Union over record types; every record carries ts + seq. Rules R1–R6 (see data-model.md / README.md).",
+  "$defs": {
+    "ts": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp; non-decreasing within a stream (R2)."
+    },
+    "humanId": {
+      "type": "string",
+      "pattern": "^human@",
+      "description": "A human decider id, e.g. human@token. NEVER empty at a decision record (R3)."
+    },
+    "modelTier": {
+      "type": "string",
+      "enum": ["strongest", "standard", "cheap", "per-task"],
+      "description": "Model tier the role ran on (P-II: line-of-defense roles are 'strongest', always)."
+    },
+    "cost": {
+      "type": "object",
+      "required": ["switches", "wallClock"],
+      "additionalProperties": false,
+      "properties": {
+        "switches": { "type": "integer", "minimum": 0 },
+        "wallClock": { "type": "string", "pattern": "^([0-9]{2}:){1,2}[0-9]{2}$" }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": {
+        "kind": { "enum": ["load", "hold", "yield", "swap"] },
+        "from": { "type": "string" },
+        "to": { "type": "string" },
+        "reason": { "type": "string" }
+      }
+    },
+    "gateCompletion": {
+      "type": "object",
+      "required": ["gate", "decidedBy", "move-in-gate", "cost"],
+      "properties": {
+        "gate": {
+          "description": "Program gate, or one row's live Gates 1..9 (G1: gate vs gate0 distinct).",
+          "oneOf": [ { "const": "gate0" }, { "type": "integer", "minimum": 1, "maximum": 9 } ]
+        },
+        "move": {
+          "type": "string",
+          "description": "Must be a member of MoveVocabulary(gateId) — see gate-rail.md contract (G3)."
+        },
+        "decidedBy": { "$ref": "#/$defs/humanId" },
+        "preDelegation": {
+          "type": "object",
+          "description": "Present on the auto-approved path; must be a DISTINCT record from a human-decision (R4).",
+          "required": ["of", "by", "at"],
+          "properties": {
+            "of": { "type": "string" },
+            "by": { "type": "string", "description": "spec #N approved at T" },
+            "at": { "$ref": "#/$defs/ts" },
+            "reviewer": { "type": "string" },
+            "note": { "const": "no objections" }
+          }
+        }
+      }
+    }
+  },
+  "type": "object",
+  "required": ["recordType", "ts", "seq"],
+  "properties": {
+    "recordType": {
+      "type": "string",
+      "enum": ["transition", "gate-completion", "human-decision", "cost", "wait", "pre-delegation"]
+    },
+    "ts": { "$ref": "#/$defs/ts" },
+    "seq": { "type": "integer", "minimum": 0 },
+    "transition": { "$ref": "#/$defs/transition" },
+    "gate-completion": { "$ref": "#/$defs/gateCompletion" },
+    "human-decision": {
+      "type": "object",
+      "required": ["decidedBy", "move"],
+      "properties": {
+        "gate": { "type": "string" },
+        "decidedBy": { "$ref": "#/$defs/humanId" },
+        "move": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "cost": { "$ref": "#/$defs/cost" },
+    "wait": {
+      "type": "object",
+      "description": "The ONLY shape an unresolved gate may take (R3). Carries a resume token + deadline; MUST NOT carry 'approved'.",
+      "required": ["gate", "token", "deadline"],
+      "additionalProperties": false,
+      "properties": {
+        "gate": { "type": "string" },
+        "token": { "type": "string", "pattern": "^g[0-9a-f]+$" },
+        "deadline": { "$ref": "#/$defs/ts" }
+      },
+      "not": { "properties": { "status": { "const": "approved" } } }
+    }
+  },
+  "oneOf": [
+    { "properties": { "recordType": { "const": "transition" }, "transition": { "$ref": "#/$defs/transition" } }, "required": ["transition"] },
+    { "properties": { "recordType": { "const": "gate-completion" }, "gate-completion": { "$ref": "#/$defs/gateCompletion" } }, "required": ["gate-completion"] },
+    { "properties": { "recordType": { "const": "human-decision" } }, "required": ["human-decision"] },
+    { "properties": { "recordType": { "const": "cost" }, "cost": { "$ref": "#/$defs/cost" } }, "required": ["cost"] },
+    { "properties": { "recordType": { "const": "wait" }, "wait": { "type": "object" } }, "required": ["wait"] },
+    { "properties": { "recordType": { "const": "pre-delegation" } } }
+  ]
+}
