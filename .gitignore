@@ -1,0 +1,25 @@
+# Root .gitignore — Node/TypeScript stack for the kiln/ extension (T002 / plan "Setup").
+# Universal + Node/TS patterns. The kiln/ runtime pulls NO network and NO deps, so
+# there is no node_modules to ignore today; these guard a later row that adds one.
+
+# --- Node / TypeScript ---
+node_modules/
+dist/
+build/
+coverage/
+*.log
+*.tsbuildinfo
+.env*
+
+# --- Editor / OS / VCS tooling ---
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+.vscode/
+.idea/
+
+# --- kiln/ runtime artifacts (factory-log runs write these locally) ---
+kiln/factory-log/*.jsonl
+kiln/factory-log/*.log
+!kiln/factory-log/.gitkeep

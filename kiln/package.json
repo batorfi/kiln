@@ -1,0 +1,16 @@
+{
+  "name": "kiln",
+  "version": "0.1.0",
+  "description": "KILN — pre-lane planning contracts: factory-log + roadmap schemas, gate-rail, FiringReady check. Zero runtime deps (P-VIII); no lane wired (Q1=C).",
+  "type": "module",
+  "engines": {
+    "node": ">=22.6"
+   },
+  "scripts": {
+    "test": "node --test \"kiln/tests/**/*.test.ts\"",
+    "validate:log": "node kiln/validate/log.ts",
+    "validate:roadmap": "node kiln/validate/roadmap.ts",
+    "firing-ready": "node kiln/validate/firing-ready.ts"
+   },
+  "dependencies": {}
+}

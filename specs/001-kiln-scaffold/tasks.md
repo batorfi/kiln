@@ -36,14 +36,14 @@ US2 = P1, US3 = P2, US4 = P3).
 
 **Purpose**: Stand up the `kiln/` repo shape and promote the design contracts.
 
-- [ ] T001 Create the `kiln/` structure per `plan.md` (dirs `kiln/schemas`, `kiln/contracts`,
+- [X] T001 Create the `kiln/` structure per `plan.md` (dirs `kiln/schemas`, `kiln/contracts`,
       `kiln/src`, `kiln/validate`, `kiln/tests` with subdirs `contract/`, `streaming/`,
       `negative/`, `firing-ready/`; **placeholder** `kiln/index.ts` explicitly **NOT wired**;
       **placeholder** `kiln/ROADMAP.md`) in `kiln/`
-- [ ] T002 [P] Initialize the Node/TypeScript config — `kiln/package.json` (**zero runtime
+- [X] T002 [P] Initialize the Node/TypeScript config — `kiln/package.json` (**zero runtime
       dependencies**; `scripts.test` = `node --test`) and `kiln/tsconfig.json`; assert the module
       graph pulls no network at build or run (P-VIII / research §G) in `kiln/package.json`
-- [ ] T003 [P] Promote the two JSON Schemas (Draft 2020-12) byte-identically from
+- [X] T003 [P] Promote the two JSON Schemas (Draft 2020-12) byte-identically from
       `specs/001-kiln-scaffold/contracts/factor…ason` to
       `kiln/schemas/factor…ason` and re-validate them as JSON in `kiln/schemas/`
 
@@ -55,19 +55,19 @@ US2 = P1, US3 = P2, US4 = P3).
 
 **⚠️ CRITICAL**: No user-story work begins until this phase is complete.
 
-- [ ] T004 [P] Implement the hand-rolled **JSONL parser + minimal JSON-Schema (Draft 2020-12)
+- [X] T004 [P] Implement the hand-rolled **JSONL parser + minimal JSON-Schema (Draft 2020-12)
       validator core** in `kiln/validate/_core.ts` (**zero third-party deps**, P-VIII; a pinned
       library is *deferred* per research §B)
-- [ ] T005 [P] Promote the gate-rail contract — copy
+- [X] T005 [P] Promote the gate-rail contract — copy
       `specs/001-kiln-scaffold/contracts/gate-rail.md` → `kiln/contracts/gate-rail.md` **and** add
       the machine-readable `MoveVocabulary(gateId)` map in `kiln/contracts/move-vocabulary.ts`
       (gates `gate0` + `1..9`; per G1–G5: **checkpoint** = `split+revise` + `approve`, **no
       `reject`**; **review** = `approve`/`restart`, **no `revise`**; **verify** = `approve`/
       `reject` with **mitigation cap = 2**; **standard** = `approve`/`revise`/`reject`)
-- [ ] T006 [P] Implement the **named error-report** helper in `kiln/validate/_report.ts` that
+- [X] T006 [P] Implement the **named error-report** helper in `kiln/validate/_report.ts` that
       names the offending `seq` / record / `move` — powers SC-008 named failures (`missing seq N`,
       `record S: move X not in MoveVocabulary(<gate>)`, malformed-line)
-- [ ] T007 [P] Create the **TS type mirror** `kiln/src/types.ts` from the two promoted JSON Schemas
+- [X] T007 [P] Create the **TS type mirror** `kiln/src/types.ts` from the two promoted JSON Schemas
       (Entity-1 log records + Entity-4 `FactoryState` fields per F1 + role roles) — a convenience
       mirror; the JSON Schemas remain canonical
 
@@ -87,26 +87,26 @@ reason (R2). No lane runs.
 
 ### Tests for User Story 1 (write FIRST; ensure they FAIL)
 
-- [ ] T008 [P] [US1] **Contract test** — the JSONL record union
+- [X] T008 [P] [US1] **Contract test** — the JSONL record union
    (`transition` / `gate-completion` / `human-decision` / `cost` / `wait` / `pre-delegation`)
    validates each record type against `kiln/schemas/factor…ason`, blank lines ignored (R1) — in
    `kiln/tests/contract/log.test.ts`
-- [ ] T009 [P] [US1] **Negative test (R3)** — a `gate-completion` with `move=approve` and **no**
+- [X] T009 [P] [US1] **Negative test (R3)** — a `gate-completion` with `move=approve` and **no**
    `decidedBy` and **no** distinct `pre-delegation` FAILs; a `wait` (`gate`,`token`,`deadline`)
    remains the **only** valid unresolved shape — in `kiln/tests/negative/no-silent-approval.test.ts`
-- [ ] T010 [P] [US1] **Streaming test (R2)** — missing / duplicate / non-increasing `seq` and a
+- [X] T010 [P] [US1] **Streaming test (R2)** — missing / duplicate / non-increasing `seq` and a
    malformed JSON line each FAIL with a **named** reason — in `kiln/tests/streaming/seq.test.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T011 [US1] Implement the **per-line log validator** `kiln/validate/log.ts` enforcing **R1**
+- [X] T011 [US1] Implement the **per-line log validator** `kiln/validate/log.ts` enforcing **R1**
    (JSON parse + schema conformance), **R2** (`seq` strictly increasing, gap-free; `ts`
    non-decreasing), **R3** (an `approve`/`restart`/merge completion requires a `decidedBy:human@…`
    **or** a distinct `pre-delegation` record), **R4** (a `pre-delegation` entry is *distinct* from a
    `human-decision`), **R5** (no record carries a cloud/remote field; an `unavailable-resource`
    flag is a valid, non-blocking shape), **R6** (a `trace` note names the constitution
    principle(s)) — **depends on T004, T006**
-- [ ] T012 [US1] Wire the **CLI entry** `kiln/validate/log` (reads a `.jsonl`, prints `PASS` or a
+- [X] T012 [US1] Wire the **CLI entry** `kiln/validate/log` (reads a `.jsonl`, prints `PASS` or a
    named `FAIL` reason) used by `quickstart` Scenarios 1–3 — **depends on T011**
 
 **Checkpoint**: User Story 1 fully functional and testable independently (quickstart S1–S3 green).
@@ -127,28 +127,28 @@ re-render(head)). No lane runs.
 
 ### Tests for User Story 2 (write FIRST; ensure they FAIL)
 
-- [ ] T013 [P] [US2] **Contract test** — the shipped empty roadmap
+- [X] T013 [P] [US2] **Contract test** — the shipped empty roadmap
    (`gate0.status=pending`, `rows=[]`, `ordering` un-committed) validates against
    `kiln/schemas/roadmap.schema.json` — in `kiln/tests/contract/roadmap.test.ts`
-- [ ] T014 [P] [US2] **Negative test (M3)** — `gate0.status=approved` **without** `rows`/
+- [X] T014 [P] [US2] **Negative test (M3)** — `gate0.status=approved` **without** `rows`/
    `decided_by`/`at` FAILs; an `ordering`/`deps` with an unresolved id or cycle FAILs; `gate` set
    with `status != "active"` FAILs; `status="done"` with no `outcome` matching `^@PR#[0-9]+$` FAILs —
    in `kiln/tests/negative/roadmap-m3.test.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T015 [US2] Promote the **empty artifact** — copy
+- [X] T015 [US2] Promote the **empty artifact** — copy
    `specs/001-kiln-scaffold/contracts/roadmap-empty.example.md` → `kiln/ROADMAP.md`, ensuring the
    structured head is schema-valid and `gate0.status=pending` (Q2=A: **no** approved rows, **no**
    committed ordering) — **depends on T013**
-- [ ] T016 [US2] Implement the **ROADMAP validator** `kiln/validate/roadmap.ts` enforcing **M1**
+- [X] T016 [US2] Implement the **ROADMAP validator** `kiln/validate/roadmap.ts` enforcing **M1**
    (`deps`/`ordering` ids resolve to existing row ids; **cycle-free**), **M2** (eligibility is
    *expressible* — a row is eligible to fire iff its `deps` are `done` — without *committing* one),
    **M3** (a `gate0.status=approved` requires a full human-decided `gate0` record:
    `rows`/`decided_by:human@…`/`at`; a committed `ordering` requires matching `rows`; otherwise
    reject), **M4** (a rendered table, if present, must equal a re-render of the head — projection
    invariant) — **depends on T004, T006**
-- [ ] T017 [US2] Wire the **CLI entry** `kiln/validate/roadmap` (reads `kiln/ROADMAP.md`, prints
+- [X] T017 [US2] Wire the **CLI entry** `kiln/validate/roadmap` (reads `kiln/ROADMAP.md`, prints
    `PASS` or a named `FAIL` reason) used by `quickstart` Scenario 4 — **depends on T016**
 
 **Checkpoint**: User Stories 1 and 2 both work independently (quickstart S1–S4 green).
@@ -168,21 +168,21 @@ configuration error**.
 
 ### Tests for User Story 3 (write FIRST; ensure they FAIL)
 
-- [ ] T018 [P] [US3] **Contract test (G1–G5)** — every `gate`/`gate0` move ∈ `MoveVocabulary(gateId)`;
+- [X] T018 [P] [US3] **Contract test (G1–G5)** — every `gate`/`gate0` move ∈ `MoveVocabulary(gateId)`;
    **G1** `gate` vs `gate0` distinct; **checkpoint** `split+revise`+`approve`/no-`reject`;
    **review** `approve`/`restart` (no `revise`); **verify** mitigation **cap = 2** — in
    `kiln/tests/contract/gate-rail.test.ts`
-- [ ] T019 [P] [US3] **Negative test (G2/L1)** — binding any line-of-defense role to a tier below
+- [X] T019 [P] [US3] **Negative test (G2/L1)** — binding any line-of-defense role to a tier below
    `strongest` is a **configuration error** that is rejected; a *work* role accepts a cheaper tier
    only upstream of its far-side gate — in `kiln/tests/negative/strongest-model.test.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T020 [US3] Implement the **role-classification source** `kiln/src/roles.ts` — line-of-defense
+- [X] T020 [US3] Implement the **role-classification source** `kiln/src/roles.ts` — line-of-defense
    roles = `strongest, always, every substrate` (incl. local); work roles = a cheaper tier **only
    upstream** of the far-side gate (**L1**); a weaker line-of-defense binding **throws** (**G2**) —
    **depends on T018, T005**
-- [ ] T021 [US3] Finalize/review `kiln/contracts/gate-rail.md` against **G1–G5**, keeping the
+- [X] T021 [US3] Finalize/review `kiln/contracts/gate-rail.md` against **G1–G5**, keeping the
    **Gate-5 reconciliation** from `research.md §D` (constitution governs over the
    `gates-why-how-what.md` doc; the discrepancy stays logged) — **depends on T005**
 
@@ -202,7 +202,7 @@ gate-rail contract, or a `trace` note) makes it **FAIL and name** the missing el
 
 ### Tests for User Story 4 (write FIRST; ensure they FAIL)
 
-- [ ] T022 [P] [US4] **FiringReady negative test** — removing
+- [X] T022 [P] [US4] **FiringReady negative test** — removing
    `kiln/schemas/factory-log.schema.json` **or** `kiln/schemas/roadmap.schema.json` **or**
    `kiln/contracts/gate-rail.md` **or** a `trace` note (R6/M3) makes the check **fail and name the
    omitted element**; a fully-present set passes — in
@@ -210,13 +210,13 @@ gate-rail contract, or a `trace` note) makes it **FAIL and name** the missing el
 
 ### Implementation for User Story 4
 
-- [ ] T023 [US4] Implement `kiln/validate/firing-ready.ts` — assert **presence** of both schemas +
+- [X] T023 [US4] Implement `kiln/validate/firing-ready.ts` — assert **presence** of both schemas +
    the gate-rail contract + the empty `kiln/ROADMAP.md`; **mutual consistency**; and **trace notes**
    on each contract (R6 / M3); on any gap, **exit non-zero naming the missing element**; **must run
    no lane and advance no gate (SC-006)** — **depends on T011, T016, T020**
-- [ ] T024 [US4] Wire the **CLI entry** `kiln/validate/firing-ready` (a `node --test` run) used by
+- [X] T024 [US4] Wire the **CLI entry** `kiln/validate/firing-ready` (a `node --test` run) used by
    `quickstart` Scenario 6 — **depends on T023**
-- [ ] T025 [US4] Replace the `kiln/index.ts` placeholder with a **wiring STUB** that *references* the
+- [X] T025 [US4] Replace the `kiln/index.ts` placeholder with a **wiring STUB** that *references* the
    three contracts (log + roadmap + gate-rail) but is **explicitly documented as NOT wired / NOT
    advancing anything** (Q1=C — the lane runtime is a later row) — **depends on T023**
 
@@ -228,15 +228,15 @@ gate-rail contract, or a `trace` note) makes it **FAIL and name** the missing el
 
 **Purpose**: Improvements that span the user stories.
 
-- [ ] T026 [P] Promote the index — copy
+- [X] T026 [P] Promote the index — copy
    `specs/001-kiln-scaffold/contracts/README.md` → `kiln/contracts/README.md` (canonical index +
    composition diagram + `kiln/` placement from research §H)
-- [ ] T027 [P] Add a **traceability cross-ref table** (each contract ↔ constitution principle:
+- [X] T027 [P] Add a **traceability cross-ref table** (each contract ↔ constitution principle:
    P-I..IX, FR-009/`trace`) to `kiln/contracts/README.md`
-- [ ] T028 Run **all six `quickstart` scenarios end-to-end** (S1–S6) and record results in
+- [X] T028 Run **all six `quickstart` scenarios end-to-end** (S1–S6) and record results in
    `specs/001-kiln-scaffold/quickstart-run.md`; assert **zero lane advances** (SC-006) and **zero
    cloud/network calls** (P-VIII / SC-005)
-- [ ] T029 Re-check **constitution** compliance (P-I..IX + governance / FR-009) against the delivered
+- [X] T029 Re-check **constitution** compliance (P-I..IX + governance / FR-009) against the delivered
    `kiln/` and write a short **compliance note** in
    `specs/001-kiln-scaffold/compliance-note.md` (this slice advanced no gate, added no cloud /
    parallelism / server — P-V/VI/III/VIII/IX; principle-II strongest-model binding verified in
