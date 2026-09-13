@@ -10,7 +10,9 @@
     "test": "node --test \"kiln/tests/**/*.test.ts\"",
     "validate:log": "node kiln/validate/log.ts",
     "validate:roadmap": "node kiln/validate/roadmap.ts",
-    "firing-ready": "node kiln/validate/firing-ready.ts"
+    "firing-ready": "node kiln/validate/firing-ready.ts",
+    "runtime-ready": "node kiln/validate/runtime-ready.ts",
+    "dogfood": "node kiln/tests/dogfood/run.ts"
    },
   "dependencies": {}
 }

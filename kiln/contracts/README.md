@@ -74,4 +74,31 @@ field and the gates-rail prose), so a downstream gate can verify compliance:
 | Affinity swap-only-on-tier-change | P-IV | `Cost` record (`validate/log.ts`), `gate-rail.md` |
 | Gate 0 = sole human admission; roadmap = reviewed artifact | P-VI | `roadmap.schema.json` (M3), `validate/roadmap.ts` |
 | Per-gate move vocabulary; checkpoint grow; review restart; verify cap | P-I, gates rail | `contracts/move-vocabulary.ts` (G3, G5, G4) |
-| FiringReady = static, falsifiable, runs no lane | SC-006, Q1=C | `validate/firing-ready.ts` |
+## Runtime cross-ref — r1 (002-kiln-lane, E1–E7 / FR-009-analogue)
+
+> r1 **realizes** the shapes above and is **judged by** `kiln/validate/log.ts` (the dogfood, D5).
+> The runtime lives under `kiln/` and is **wired** by `kiln/index.ts`; r1 **emits no `gate0`
+> decision and admits no program** (P-VI / FR-012). Each entity carries its principle trace:
+
+| Entity (E#) | Module | Realizes | Principle(s) | Proof (SC / quickstart) | Invariant |
+|-------------|--------|----------|--------------|-------------------------|-----------|
+| E1 lane + director-scheduler | `kiln/src/lane.ts` | one resident + one running at any instant | P-III | S1 / SC-001 | `F-SINGLE`, asserted over snapshots |
+| E2 gate primitive | `kiln/src/gate.ts` | block; headless `wait`; token-resume; G3 move sets | P-V, P-I, G3 | S2 / SC-002 | headless ⇒ recorded, never resolved |
+| E3 factory-log writer | `kiln/src/log-writer.ts` | R1–R6 emit + **write-time** no-silent-approval | P-V, P-VII | S3 / SC-002·SC-003 | `F-RECON`, the choke point |
+| E4 affinity scheduler | `kiln/src/scheduler.ts` | hold resident; swap only on a tier change; LoD=strongest | P-IV, P-II | S4 / SC-004 | `F-AFFINITY`; a weaker LoD binding is rejected |
+| E5 Flow HUD / Popup + twin | `kiln/ui/{factory-state,hud,popup,twin}.ts` | one shared `FactoryState`, event-only redraw, headless print | P-IX, P-V | S5 / SC-005 | `F-EVENTONLY`; no timer/socket/server |
+| E6 stub resident | `kiln/src/stub-resident.ts` | a deterministic test double (no Ollama, no cloud) | P-VIII, NC2 | S3/S6 | a live walk is r3 |
+| E7 RuntimeReady probe | `kiln/validate/runtime-ready.ts` | wired + valid-emit + zero-network | P-VI, P-VIII | S6 / SC-006 | falsifiable; runs no gate/feature |
+
+### The dogfood boundary (the heart of r1)
+
+```
+001 (declared) ──imports──▶ r1 (runtime) ──emits JSONL──▶ kiln/validate/log.ts ──▶ PASS/FAIL
+  shapes ──▶ E1 FactoryState / E2 gate / E3 writer / E4 scheduler / E5 watch / E6 stub
+  RuntimeReady (E7) re-asserts wiring + dogfood + zero-network, running NO real feature
+```
+
+A broken no-silent-approval path makes the emitted log **FAIL 001's validator with a named
+reason** (SC-002 → SC-003); a closed terminal leaves a **reconstructable prefix** (F-RECON, P-VII).
+See `specs/002-kiln-lane/contracts/{runtime-api,runtime-ready}.md` for the module surface this row
+exposes.

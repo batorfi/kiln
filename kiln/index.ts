@@ -1,29 +1,20 @@
-// kiln/index.ts — WIRING STUB (T025 / Q1=C)
+// kiln/index.ts — WIRING (T031) — r1 wires the lane spine in place of 001's not-wired stub.
 //
-// This is a DELIBERATE, DOCUMENTED stub. Per the 001-kiln-scaffold plan (Q1=C —
-// "planning artifacts only") and success criterion SC-006 ("no task fires a lane or
-// advances a gate"), the lane *runtime* (the one resident model, the gate rail that
-// blocks, the event-driven HUD) is a LATER roadmap row. This file only REIFIES the
-// three pre-lane contracts; it wires nothing that advances a gate.
-//
-// What it references (the contracts this slice delivers):
-//   - kiln/schemas/factory-log.schema.json  (JSONL record contract, rules R1–R6)
-//   - kiln/schemas/roadmap.schema.json      (ROADMAP head contract, rules M1–M4)
-//   - kiln/contracts/gate-rail.md           (Gate 0 + Gate 1–9, roles, G1–G5)
-// A later row replaces this stub with the real event→state→HUD wiring.
-//
-// It MUST NOT: open a lane, load a resident model, advance a gate, or call a cloud.
+// 001's `kiln/index.ts` was a DELIBERATE not-wired STUB (Q1=C: planning artifacts only). r1 is the
+// runtime row (the "kiln starts firing" row): it EXPORTS the lane spine — the single lane +
+// director-scheduler, the gate primitive, the factory-log writer, the affinity scheduler, the watch,
+// the stub resident, and the dogfood walk — so a later row can import it. Per Principle VI / FR-012,
+// WIRING the spine does NOT admit a program or advance Gate 0: the admission is the human record in
+// `specs/ROADMAP.md` (gate0.status: approved); this module emits no `gate0` decision. No cloud
+// (P-VIII), no server (P-IX) — by construction.
 
-export const WIRING_STATUS = "not-wired (pre-lane stub; lane runtime is a later row)" as const;
-
-// The three contracts the stub points at, for a future wiring row to import.
-export const CONTRACTS = {
-  factoryLog: "kiln/schemas/factory-log.schema.json",
-  roadmap: "kiln/schemas/roadmap.schema.json",
-  gateRail: "kiln/contracts/gate-rail.md",
-} as const;
-
-// No lane, no gate advance, no cloud — by construction.
-export function laneIsWired(): boolean {
-  return false;
-}
+export * from "./src/lane.ts";
+export * from "./src/gate.ts";
+export * from "./src/log-writer.ts";
+export * from "./src/scheduler.ts";
+export * from "./src/stub-resident.ts";
+export * from "./src/walk.ts";
+export { renderHud } from "./ui/hud.ts";
+export { renderPopup } from "./ui/popup.ts";
+export { printHeadless, disabledUi } from "./ui/twin.ts";
+export { laneIsWired, WIRING_STATUS } from "./src/_wiring.ts";
