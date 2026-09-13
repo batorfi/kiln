@@ -65,7 +65,7 @@ the lane until the human returns a move.
 | 2 architecture | `arch.md` | approve / revise / reject | yes (critic) | yes | WAIT row |
 | 3 spec | `spec.md` | approve / revise / reject | no | no | WAIT row |
 | 4 plan | `plan.md` | approve / revise / reject | no | no | WAIT row |
-| 5 checkpoint | git state | approve / reject | no | no | WAIT row |
+| 5 checkpoint | git state | **`split+revise` (+ `approve`); no `reject`** | no | no | WAIT row |
 | 6 review | diff + notes | approve / restart | yes (reviewer) | yes | WAIT row |
 | 7 verification | `verification-report.md` | approve / reject | yes (verifier) | yes | WAIT row |
 | 8 docs | `docs/*.md` | approve / revise / reject | no | no | WAIT row |
@@ -75,7 +75,9 @@ Gate 0 adds a second class of move — **program edits** (approve / revise / rej
 plus edit / add / drop rows): the human reshaping the firing program itself, not just
 the in-row artifact.
 
-Two special moves: **review** offers `restart` and **never** `revise` (the
+Three special cases: **checkpoint** carries `split+revise` (+ `approve`) and **no
+`reject`** — a checkpoint is not "done wrong," it may *grow* into two, so it is the
+one feature-expanding move. **review** offers `restart` and **never** `revise` (the
 reviewer judges, it does not author). **verification** `reject` does not bounce —
 it **auto-runs a bounded mitigation loop** instead.
 
@@ -191,7 +193,7 @@ directly shapes the scheduler's ordering policy downstream.
 ### Gate 5 — CHECKPOINT
 
 **WHAT.** Artifact is **git state**, not a document (the `git-checkpoint`
-precedent). Moves: approve / reject.
+precedent). Moves: **`split+revise` (+ `approve`); no `reject`**.
 
 **WHY.** A safe commit point created **before** risky implementation begins — the
 rollback handle for gates 6/7. It is a control gate, not a content gate: it
@@ -199,8 +201,13 @@ answers "do we have a clean, restorable commit to stand on before we do the risk
 work." Failure mode if skipped: a failed review/verification has nowhere to reset to.
 
 **HOW.** The director creates a checkpoint commit and asks the human to confirm the
-base before implementation proceeds. Headless: WAIT row. Reject means "do not
-proceed from this base."
+base before implementation proceeds. Headless: WAIT row. Because a checkpoint is "not
+done wrong," it carries **no `reject`**: the feature is either good enough to stand
+on (**`approve`** the base and proceed) or too large to be one feature (**`split+revise`
+grows it into two**), and that grow move is the reason checkpoint is the one
+feature-expanding gate. *(Constitution governs over this doc §1/§4: the delivered
+contract is `kiln/contracts/gate-rail.md` G5 + `move-vocabulary.ts`, where checkpoint
+= `split+revise` + `approve`, no `reject`.)*
 
 ---
 
@@ -310,11 +317,13 @@ it *records* the program the human never admitted and *blocks*, so a missing doo
 never silently opens. Gate 0 is the only gate whose headless form is "print-and-WAIT,",
 never an auto-approve.
 
-**The move vocabulary.** Most gates share `approve / revise / reject`. The two
-line-of-defense *judgment* gates diverge: **review** is `approve / restart`
-(judge never authors, so no revise), **verification** is `approve / reject` with
-auto-mitigation `<= 2` rounds. Checkpoint and PR omit `revise` (a base commit or
-a merge is a yes/no, not an edit).
+**The move vocabulary.** Most gates share `approve / revise / reject`. Three gates
+diverge: **review** is `approve / restart` (judges but does not author, so no
+revise), **verification** is `approve / reject` with auto-mitigation `<= 2` rounds,
+and **checkpoint** is `split+revise (+ approve)` — **the one "grow" move, with no
+`reject`** (a checkpoint is not "done wrong," it may become *two*; the corrective
+move grows the feature rather than discarding it). PR omits `revise` (a merge is a
+yes/no, not an edit).
 
 **Triage routing.** For *small* features, `triage` runs before gate 1 and routes
 the feature past **gates 1 + 2** (concept, architecture): the scope is obvious
@@ -360,7 +369,7 @@ staying the still-honest WAIT row.
 | 2 architecture | catch structural risk pre-code | `arch.md`, A/R/x | critic holds lane, frontier head |
 | 3 spec | pin the contract everything checks vs | `spec.md`, A/R/x | validator-backed, canonical |
 | 4 plan | fix dispatch order + affinity | `plan.md`, A/R/x | becomes the DU queue + batching |
-| 5 checkpoint | restorable base before risk | git state, approve/reject | git-checkpoint precedent |
+| 5 checkpoint | restorable base before risk; grow, not reject | git state, `split+revise`/`approve` | git-checkpoint precedent |
 | 6 review | independent critique of code | diff+notes, approve/restart | judge never authors -> restart |
 | 7 verification | prove, don't assume done | `verification-report.md`, approve/reject | reject auto-mitigates <=2 |
 | 8 docs | keep docs = as-built | `docs/*.md`, A/R/x | usually an approve |

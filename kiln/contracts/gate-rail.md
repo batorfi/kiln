@@ -98,5 +98,6 @@ Finalized 2026-09-12 against the ratified constitution v1.0.0 and `research.md Â
 human-readable contract above is the source of truth; the machine-readable mirror is
 `kiln/contracts/move-vocabulary.ts` (G3) and `kiln/src/roles.ts` (G2/L1). **Gate 5
 reconciliation:** per the constitution (which governs over `gates-why-how-what.md`),
-Checkpoint = `split+revise` + `approve`, **no `reject`**; the doc discrepancy is logged in
-`specs/001-kiln-scaffold/compliance-note.md` for the docs track.
+Checkpoint = `split+revise` + `approve`, **no `reject`**; that discrepancy in the runtime
+concept doc was RESOLVED 2026-09-12 on the docs track (the doc now agrees with this
+contract of record).

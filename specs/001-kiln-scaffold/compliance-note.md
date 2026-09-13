@@ -23,12 +23,13 @@ has fired yet.
 
 ## Open items carried forward (logged, not blocked)
 
-1. **Gate 5 move-set discrepancy** (`research.md §D`, T021): `gates-why-how-what.md §1`
-   marks **Checkpoint = approve/reject**, but the **constitution** says **Checkpoint =
-   `split+revise` + approve, no `reject`** (the one "grow" move, a restorable base, not
-   "done wrong"). Per the governance clause the *constitution governs*, so the delivered
-   contract is `split+revise`/`no-reject`. **Action:** the docs track should reconcile
-    `gates-why-how-what.md` §1/§4 to the constitution before the first runtime row.
+1. **Gate 5 move-set discrepancy** (`research.md §D`, T021): **RESOLVED 2026-09-12 on the
+docs track.** `gates-why-how-what.md` §1/§4 marked **Checkpoint = approve/reject**; the
+   **constitution** says **Checkpoint = `split+revise` + `approve`, no `reject`** (the one
+   "grow" move, a restorable base, not "done wrong"). The doc is now reconciled to the
+   constitution; the delivered contract `kiln/contracts/gate-rail.md` G5 +
+   `kiln/contracts/move-vocabulary.ts` (`5-checkpoint: approve, split+revise`) is the
+   contract of record. No code change was required.
 2. **UI / lane realization** is intentionally **out of scope** for this slice (Q1=C).
    `kiln/index.ts` is a documented **not-wired stub**; the HUD/overlay and the
    lane/scheduler/gate primitives (concept §9) are subsequent roadmap rows.
