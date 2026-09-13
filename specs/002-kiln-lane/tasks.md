@@ -42,12 +42,12 @@ discretion.
 **Purpose**: Stand up the runtime module tree under the shared `kiln/` root and expose the
 `runtime-ready` CLI. No story code yet beyond the shared test glob.
 
-- [ ] T001 Create the runtime module tree per `plan.md` **Project Structure**: `kiln/ui/`
+- [X] T001 Create the runtime module tree per `plan.md` **Project Structure**: `kiln/ui/`
       (new — `factory-state.ts`, `hud.ts`, `popup.ts`, `twin.ts`); test subdirs
       `kiln/tests/{lane,gate,writer,scheduler,ui,runtime-ready,dogfood}/` with one
       `*.test.ts` each; leave `kiln/src/{roles.ts,types.ts}` and `kiln/validate/*`
       (001, unchanged) as-is in `kiln/`
-- [ ] T002 [P] Add the `runtime-ready` + `dogfood` entry points to `kiln/package.json`
+- [X] T002 [P] Add the `runtime-ready` + `dogfood` entry points to `kiln/package.json`
       (`"runtime-ready": "node kiln/validate/runtime-ready.ts"`, `"dogfood": "node
       kiln/tests/dogfood/run.ts"`); keep **zero runtime dependencies** (P-VIII — the new test dirs
       are auto-globbed by the existing `"node --test \"kiln/tests/**/*.test.ts\""` glob; assert
@@ -65,7 +65,7 @@ exposes the two new CLIs without a dep.
 
 **⚠️ CRITICAL**: No user-story work begins until this phase is complete.
 
-- [ ] T003 [P] Implement the **stub-resident interface + deterministic factory**
+- [X] T003 [P] Implement the **stub-resident interface + deterministic factory**
       `kiln/src/stub-resident.ts` (E6 / research D4): `export interface Resident { run(u:
       WorkUnit): unknown; model(): string; tier(): Tier }` and `makeStubResident(opts?: {
       model?: string; tier?: Tier }): Resident` — **fully deterministic** (fixed output per input
@@ -73,7 +73,7 @@ exposes the two new CLIs without a dep.
       of a gate** (P-I/VI); a **live-model walk is r3, not here**. A `WorkUnit` shape
       (`{ id, role: Role, tier: Tier, work?, out? }`) is exported for the lane/scheduler to share.
       **depends on nothing new** (`Role`/`Tier` from `kiln/src/roles.ts`)
-- [ ] T004 [P] Implement a **deterministic monotonic clock** `kiln/src/clock.ts`: `makeClock(now:
+- [X] T004 [P] Implement a **deterministic monotonic clock** `kiln/src/clock.ts`: `makeClock(now:
       () => string = <ISO-stub>) → { now(): string /* non-decreasing, R2 */; wallClock(): string
       /* "HH:MM" matching /^([0-9]{2}:){1,2}[0-9]{2}$/ */ }` — the ts source for the writer and
       the `wallClock` field for `cost` records (the "closed terminal" prefix needs reproducible,
@@ -98,18 +98,18 @@ lane**; `switches = 0` for the same-tier 2-unit walk.
 
 ### Tests for User Story 1 (write FIRST; ensure they FAIL)
 
-- [ ] T005 [P] [US1] **Contract test (F-SINGLE / SC-001)** — a `run(lane, [u1,u2],
+- [X] T005 [P] [US1] **Contract test (F-SINGLE / SC-001)** — a `run(lane, [u1,u2],
       makeStubResident())` over a **2-unit same-tier** lane: capture `hold`/`yield`/`resume`
       snapshots; assert `assertSingleLane(snapshots)` holds (never two live residents / two
       running units); assert a `yield` is always matched by a `resume` before the next `yield`;
       assert `state.switches === 0` — in `kiln/tests/lane/lane.test.ts`
-- [ ] T006 [P] [US1] **Negative test (F-SINGLE)** — `assertSingleLane` **throws** on a fabricated
+- [X] T006 [P] [US1] **Negative test (F-SINGLE)** — `assertSingleLane` **throws** on a fabricated
       snapshot pair with two concurrent `running`/`resident` entries (a "foundry"), proving the
       check is real (US1 AC-3) — in `kiln/tests/lane/lane.test.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Implement `kiln/src/lane.ts` per `contracts/runtime-api.md` — `makeLane(state?:
+- [X] T007 [US1] Implement `kiln/src/lane.ts` per `contracts/runtime-api.md` — `makeLane(state?:
       Partial<FactoryState>): Lane` (fresh: `resident: null`, `queue: []`, `switches: 0`);
       `run(lane, units: WorkUnit[], resident: Resident): WalkResult` driving
       `load → hold → yield(unit) → resident.run → reclaim → resume → next`; `hold`/`yield_`/
@@ -118,7 +118,7 @@ lane**; `switches = 0` for the same-tier 2-unit walk.
       {load,hold,yield,swap}`) via a passed-in **sink** callback `(rec: FactoryRecord) => void`
       (decouples lane from the writer — no cross-story coupling — D1). A `yield` is always
       reclaimed/matched before the next unit begins. **depends on T003**
-- [ ] T008 [US1] Emit a `cost` record **only on a genuine tier change** (P-IV preview): a
+- [X] T008 [US1] Emit a `cost` record **only on a genuine tier change** (P-IV preview): a
       same-tier walk emits **0** `cost`/`swap`; the scheduler (US4) owns the full counter — keep
       lane's `switches` field authoritative for `run`'s result here so US1 is independently
       testable — **depends on T007**
@@ -146,12 +146,12 @@ halts on a veto.
 
 ### Tests for User Story 2 (write FIRST; ensure they FAIL)
 
-- [ ] T009 [P] [US2] **Contract test (G3 + F-single channel)** — `headlessWait(gate3)` ⇒ one
+- [X] T009 [P] [US2] **Contract test (G3 + F-single channel)** — `headlessWait(gate3)` ⇒ one
       `wait` (`token` matches `/^g[0-9a-f]+$/`, no `gate-completion`); `applyMove(gate6,
       "revise", "human@x")` **throws / stays open** (illegal at review); `resumeByToken(gate,
       token, "human@x")` on a legal move yields a `gate-completion` with `decidedBy` non-empty —
       in `kiln/tests/gate/gate.test.ts`
-- [ ] T010 [P] [US2] **Negative test (P-V headless never auto-approves)** — a headless gate with
+- [X] T010 [P] [US2] **Negative test (P-V headless never auto-approves)** — a headless gate with
       no human move and **no** `pre-delegation` **never** produces a `gate-completion` / `approved`
       (US2 SC-1; the headless contract, extended to a gate the human never saw); a **verifier
       `reject` / reviewer `restart` / checkpoint overflow in the unattended tail halts the cruise**
@@ -160,7 +160,7 @@ halts on a veto.
 
 ### Implementation for User Story 2
 
-- [ ] T011 [US2] Implement `kiln/src/gate.ts` per `contracts/runtime-api.md` —
+- [X] T011 [US2] Implement `kiln/src/gate.ts` per `contracts/runtime-api.md` —
       `import { moveAllowed, type GateId } from "../contracts/move-vocabulary.ts"` (**do NOT
       re-declare the move sets**, G3); `openGate(gate): "held" | wait-request`; `applyMove(gate,
       move, decidedBy)` throwing on `move ∉ MoveVocabulary(gate)` (the illegal move keeps the gate
@@ -168,7 +168,7 @@ halts on a veto.
       **never** a `gate-completion`; `resumeByToken(gate, token, decidedBy)` resolving by the
       **single channel** and emitting a `gate-completion` (`move` ∈ the set, `decidedBy`
       non-empty) with a `cost` per 001's schema — **depends on T004**
-- [ ] T012 [US2] Implement the **unattended tail + veto** in `kiln/src/gate.ts` — `preDelegation({
+- [X] T012 [US2] Implement the **unattended tail + veto** in `kiln/src/gate.ts` — `preDelegation({
       of, by, at, reviewer?, note: "no objections" })` builds a **distinct `pre-delegation`
       record** (R4, a separate ledger entry from a `human-decision`) for each auto-crossed
       *approve*; a **veto** (`verifier reject` / `reviewer restart` / `checkpoint overload`)
@@ -198,16 +198,16 @@ increment (greppable from the log alone).
 
 ### Tests for User Story 3 (write FIRST; ensure they FAIL)
 
-- [ ] T013 [P] [US3] **Contract test (R1/R2)** — a full stub walk drained through `LogWriter`
+- [X] T013 [P] [US3] **Contract test (R1/R2)** — a full stub walk drained through `LogWriter`
       yields JSONL where every non-blank line conforms to `kiln/schemas/factory-log.schema.json`,
       `seq` is 0,1,2,… gap-free, `ts` non-decreasing (`kiln/tests/writer/writer.test.ts`)
-- [ ] T014 [P] [US3] **Write-time no-silent-approval (R3/R4, the choke — SC-002)** —
+- [X] T014 [P] [US3] **Write-time no-silent-approval (R3/R4, the choke — SC-002)** —
       `writer.write(<approve gate-completion with NO decidedBy and NO distinct pre-delegation>)`
       **throws** and emits nothing; the **same** record with a `decidedBy: "human@…"` **or** a
       distinct `pre-delegation` record is emitted; `isSilentApproval(rec, preDelegated)` returns
       `true` exactly for approve/restart/merge lacking both — in
       `kiln/tests/writer/writer.test.ts`
-- [ ] T015 [P] [US3] **Dogfood test (R1–R6 replay — SC-003)** — build a stub walk, `drain()` its
+- [X] T015 [P] [US3] **Dogfood test (R1–R6 replay — SC-003)** — build a stub walk, `drain()` its
       JSONL, and: (a) `validateLog`/`validateLogFile` on the **complete** stream ⇒ **PASS**; (b)
       **truncate** at an arbitrary `seq` ⇒ the **prefix still PASSES**; (c) **force** the next
       transition out of order (a `seq` gap / `ts` rewind) ⇒ the validator **names** the R2
@@ -217,14 +217,14 @@ increment (greppable from the log alone).
 
 ### Implementation for User Story 3
 
-- [ ] T016 [US3] Implement `kiln/src/log-writer.ts` per `contracts/runtime-api.md` —
+- [X] T016 [US3] Implement `kiln/src/log-writer.ts` per `contracts/runtime-api.md` —
       `class LogWriter` with a monotonic `seq` (from T004's clock) + `write(rec)` that **fills
       `seq`/`ts`**, calls `enforceNoSilentApprovalOn` **before** emitting (D3 choke point), and
       `drain(): string[]` / `snapshot(): {seq, ts}`; `isSilentApproval(rec)` the internal
       R3/R4 predicate (true ⟺ approve/restart/merge with **no** `decidedBy` and **no** distinct
       `pre-delegation`). Emits a `cost` record that **brackets** every
       `transition.kind=swap` (P-IV preview; US4 owns the full counter). **depends on T004**
-- [ ] T017 [US3] Add the **CLI-free dogfood runner** `kiln/tests/dogfood/run.ts` (T002's
+- [X] T017 [US3] Add the **CLI-free dogfood runner** `kiln/tests/dogfood/run.ts` (T002's
       `"dogfood"` script) — builds a stub walk, writes `kiln/factory-log/<name>.jsonl`, invokes
       `kiln/validate/log.ts` over it, prints PASS/FAIL with the named reason — **depends on
       T016**
@@ -248,18 +248,18 @@ four LoD units bind `strongest` and a **weaker binding is rejected at schedule t
 
 ### Tests for User Story 4 (write FIRST; ensure they FAIL)
 
-- [ ] T018 [P] [US4] **Contract test (F-AFFINITY / SC-004)** — `switchCount(units)` returns **0**
+- [X] T018 [P] [US4] **Contract test (F-AFFINITY / SC-004)** — `switchCount(units)` returns **0**
       for an all-same-tier sequence and **1** for a sequence with a single tier change; the
       "affinity-compatible interior boundary" probe returns **0** for two adjacent same-tier
       units — in `kiln/tests/scheduler/scheduler.test.ts`
-- [ ] T019 [P] [US4] **Negative test (P-II / G2)** — `schedule` binding any of the four
+- [X] T019 [P] [US4] **Negative test (P-II / G2)** — `schedule` binding any of the four
       line-of-defense units to a tier **below `strongest`** **throws a config error at schedule
       time** (reusing 001's `kiln/src/roles.ts`, a weaker binding is rejected, not accepted) — in
       `kiln/tests/scheduler/scheduler.test.ts`
 
 ### Implementation for User Story 4
 
-- [ ] T020 [US4] Implement `kiln/src/scheduler.ts` per `contracts/runtime-api.md` —
+- [X] T020 [US4] Implement `kiln/src/scheduler.ts` per `contracts/runtime-api.md` —
       `import { bindRole, isLineOfDefense } from "../src/roles.ts"` (**reuse, do NOT re-declare,
       G2/L1**); `switchCount(units): number` = the count of **genuine tier boundaries** (== the
       emitted `switches`); `schedule(units, resident): WalkResult` that holds the resident and
@@ -267,7 +267,7 @@ four LoD units bind `strongest` and a **weaker binding is rejected at schedule t
       and **emits a `cost` bracketing every `transition.kind=swap`**; a swap lands **on** the
       boundary, never early/late. The cost realized is `{ switches, wallClock }` — the switch
       count, **not** the gate count (P-IV) — **depends on T003**
-- [ ] T021 [US4] Wire the switch-tax bracketing into `kiln/src/lane.ts`'s `run` (T008's
+- [X] T021 [US4] Wire the switch-tax bracketing into `kiln/src/lane.ts`'s `run` (T008's
       authoritative `switches` counter is now the **realized** `switchCount` from the scheduler,
       emitting a `transition.kind=swap` + a bracketing `cost` per genuine boundary) so US4's
       counter and US1's state agree — **depends on T020**
@@ -294,27 +294,27 @@ yields an **identical render**; an **inspection** over `kiln/ui/*.ts` finds **no
 
 ### Tests for User Story 5 (write FIRST; ensure they FAIL)
 
-- [ ] T022 [P] [US5] **Contract test (F-EVENTONLY / SC-005)** — `onEvent(state, ev)` returns a
+- [X] T022 [P] [US5] **Contract test (F-EVENTONLY / SC-005)** — `onEvent(state, ev)` returns a
       new state and `renderHud`/`renderPopup` over an **identical** `state` produce an
       **identical** string (one source of truth, deterministic read); `printHeadless(state)`
       returns the same string the surfaces would render — in `kiln/tests/ui/ui.test.ts`
-- [ ] T023 [P] [US5] **No-poll / no-server inspection (P-IX)** — a test that **greps
+- [X] T023 [P] [US5] **No-poll / no-server inspection (P-IX)** — a test that **greps
       `kiln/ui/*.ts`** and asserts **no** `setInterval` / `setTimeout` / `new Server` /
       `require("net")` / `require("http")` / `fetch(` appears (F-EVENTONLY's testable half,
       SC-005), in `kiln/tests/ui/ui.test.ts`
 
 ### Implementation for User Story 5
 
-- [ ] T024 [US5] Implement `kiln/ui/factory-state.ts` — `export type FactoryEvent =
+- [X] T024 [US5] Implement `kiln/ui/factory-state.ts` — `export type FactoryEvent =
       { kind: "transition" | "gate-open" | "gate-resolve" | "cost" | "wait" | "snapshot"; ... }`
       and `onEvent(state: FactoryState, ev: FactoryEvent): FactoryState` (event ⇒ new state,
       **pure over the store**; F1 — the store mutates **only** on events); a `disabled(state,
       ev)` twin path that **prints** instead of blocking — **depends on nothing new** (`types.ts`)
-- [ ] T025 [P] [US5] Implement `kiln/ui/hud.ts` (`renderHud(state): string` — Layer A strip
+- [X] T025 [P] [US5] Implement `kiln/ui/hud.ts` (`renderHud(state): string` — Layer A strip
       `rail / lane / switches / clock`) and `kiln/ui/popup.ts` (`renderPopup(state): string` —
       Layer B gate card), both **pure reads** of `FactoryState` — in `kiln/ui/hud.ts` +
       `kiln/ui/popup.ts`
-- [ ] T026 [US5] Implement `kiln/ui/twin.ts` — `printHeadless(state): string` (prints the **same**
+- [X] T026 [US5] Implement `kiln/ui/twin.ts` — `printHeadless(state): string` (prints the **same**
       render when a surface is absent; a missing Layer A/B **never auto-advances** a gate) —
       **depends on T024, T025**
 
@@ -338,7 +338,7 @@ hold; **removing/breaking exactly one** (the writer, a no-silent-approval hole, 
 
 ### Tests for User Story 6 (write FIRST; ensure they FAIL)
 
-- [ ] T027 [P] [US6] **Falsifiability test (SC-006)** — `checkRuntimeReady()` **PASSES** with the
+- [X] T027 [P] [US6] **Falsifiability test (SC-006)** — `checkRuntimeReady()` **PASSES** with the
       full runtime + a green dogfood; **omitting/breaking one element** (point a dep path at a
       missing module, break a no-silent-approval path, or stub `index.ts` `not-wired` again) makes
       it **FAIL and name the broken element** — in
@@ -346,18 +346,18 @@ hold; **removing/breaking exactly one** (the writer, a no-silent-approval hole, 
 
 ### Implementation for User Story 6
 
-- [ ] T028 [US6] Implement `kiln/src/walk.ts` — a `buildStubWalk()` **driver** (E6 in action) that
+- [X] T028 [US6] Implement `kiln/src/walk.ts` — a `buildStubWalk()` **driver** (E6 in action) that
       combines `makeLane` + the **stub resident** + a gate + the `LogWriter` to emit a complete,
       valid, cloud-free JSONL — the shared walk the dogfood (T015/T017) and the probe (T030) run —
       **depends on T007, T011, T016**
-- [ ] T029 [US6] Implement `kiln/validate/runtime-ready.ts` — assert (a) **presence + wiring** of
+- [X] T029 [US6] Implement `kiln/validate/runtime-ready.ts` — assert (a) **presence + wiring** of
       `kiln/src/lane,gate,log-writer,scheduler,stub-resident.ts` + `kiln/ui/*` and `kiln/index.ts`
       `laneIsWired() === true`; (b) **run `buildStubWalk()` and replay its JSONL through
       `kiln/validate/log.ts` ⇒ PASS** (D5); (c) a **zero-network grep** over `kiln/` finds **no**
       cloud/remote import (P-VIII) — a falsifiable **extension of `firing-ready.ts`**; emit a
       **traceability note** mapping each runtime piece to its principle(s) (runtime analogue of
       FR-009); on any gap **exit non-zero naming the broken element** — **depends on T028**
-- [ ] T030 [US6] Wire the **CLI entry** `kiln/validate/runtime-ready` (a `node --test` run; prints
+- [X] T030 [US6] Wire the **CLI entry** `kiln/validate/runtime-ready` (a `node --test` run; prints
       `READY` or a named gap; runs **no gate, no real feature**) — used by `quickstart` Scenario
       6 — **depends on T029**
 
@@ -370,19 +370,19 @@ hold; **removing/breaking exactly one** (the writer, a no-silent-approval hole, 
 
 **Purpose**: Wire the spine into the public index and record r1's compliance evidence.
 
-- [ ] T031 Replace 001's **`not-wired` `kiln/index.ts` stub** with the **wired** spine — export
+- [X] T031 Replace 001's **`not-wired` `kiln/index.ts` stub** with the **wired** spine — export
       `lane / gate / log-writer / scheduler / stub-resident / ui / walk` and set
       `WIRING_STATUS` to a *wired* value with `laneIsWired() === true`; it still emits **no
       `gate0` decision** and **admits no program** (P-VI / FR-012 / SC-007 — the admission is the
       human record in `specs/ROADMAP.md`) — **depends on T007–T030**
-- [ ] T032 [P] Add a **runtime traceability cross-ref table** (E1–E7 ↔ constitution principle
+- [X] T032 [P] Add a **runtime traceability cross-ref table** (E1–E7 ↔ constitution principle
       P-I…P-IX + SC-001..007) to `kiln/contracts/README.md` (the runtime analogue of FR-009 /
       T027 of 001) in `kiln/contracts/README.md` (001's index, extended for r1)
-- [ ] T033 Run **all seven `quickstart` scenarios end-to-end** (S1–S7) and record results in
+- [X] T033 Run **all seven `quickstart` scenarios end-to-end** (S1–S7) and record results in
       `specs/002-kiln-lane/quickstart-run.md`; assert the **dogfood PASSES** (SC-003),
       **zero lane gate-advances / zero cloud calls** (P-VIII / SC-007), and that
       `runtime-ready` is green — in `specs/002-kiln-lane/quickstart-run.md`
-- [ ] T034 Re-check **constitution** compliance (P-I…P-IX + governance / FR-009-analogue) against
+- [X] T034 Re-check **constitution** compliance (P-I…P-IX + governance / FR-009-analogue) against
       the delivered `kiln/` runtime and write a short **compliance note** in
       `specs/002-kiln-lane/compliance-note.md` — this slice **ran a lane on a stub** (not a real
       feature, NC2), added **no cloud / no parallelism / no server**, and the emitted **log is the
