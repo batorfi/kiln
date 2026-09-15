@@ -372,10 +372,14 @@ zero-network grep over the UI confirms P-VIII.
     resolved** (P-V/P-VI,
     US3).
 - **FR-008**: The **no-silent-approval invariant MUST hold at Gate 0**: no path MAY emit a
-   `gate0: approved` **without** a `decidedBy: human@…` move **or** a **logged, distinct
-   pre-delegation** — and a broken path that *would* do so MUST make the emitted log **FAIL
-   `kiln/validate/log`** with a named reason (the producer-side guard, lifted to the program
-    gate).
+   `gate0: approved` **without a `decidedBy: human@…` move** — and, **uniquely for Gate 0 (P-VI)**,
+   **no *recorded exception / distinct `pre-delegation`** may admit it either: a `gate0` approval
+   rides a **human decider only**, unlike a per-gate Gates 1–9 approval which P-V/P-VII *do* permit
+   via a logged `pre-delegation`. (The generic R3 "decidedBy **or** pre-delegation" escape applies to
+   gates 1–9, **not** to `gate0` — P-VI makes Gate 0 "*the one gate no exception may silence*." ) A
+   broken path that *would* auto-admit a missing Gate 0 — **including one via a `pre-delegation` with
+   no human decider** — MUST make the emitted log **FAIL `kiln/validate/log`** with a named reason
+   (the producer-side guard, lifted to the program gate).
 - **FR-009**: On a **`roadmap_row_done`** fire the system MUST **re-open Gate 0 at the inter-row
    seam** and **must not begin the next row** until a human **re-admits** it; **`merged`/`done`
    rows are never re-entered** ("a roadmap can't auto-restart a `merged` row; inter-feature
