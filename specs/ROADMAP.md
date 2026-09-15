@@ -12,7 +12,7 @@
 > — the rows, their order, their dependencies — and to be the door that re-opens at every
 > inter-row seam.
 >
-> **Status: APPROVED, Gate 0** · inter-row **re-admission in progress (2026-09-15T18:09:51Z)**. Decider for the program: **human@batorfi** · at 2026-09-13T06:54:20Z. **As of the 2026-09-15 seam, r1 \u0026 r2 have closed and merged to `main`; r3 is next and Gate 0 is re-opened** for the human's re-admission of r3→r6 (r3 stays `queued` until re-admitted — `chain_unattended=false`, and its lane has no live Gate 1–9 yet).
+> **Status: APPROVED, Gate 0** · **tail re-admitted** (r3→r6, 2026-09-15T18:59:08Z). Decider for the program: **human@batorfi**. Admission at 2026-09-13T06:54:20Z; **inter-row re-admission complete** — r1 & r2 closed and merged to `main` (nominal @PR#1/@PR#2), and **Gate 0 has re-admitted the tail r3→r6 unchanged** (no revise/revoke). **r3 is the admitted next row** (first live-model smoke walk); it stays `queued`/`eligible` until its own Gates 1–9 lane starts (`chain_unattended=false`; M4 requires a live gate for `active`). Gate 0 stays the door that re-opens at every road-seam.
 > Moves still available at Gate 0 (e.g. between rows): **approve / revise / reject / edit-rows /
 > add-row / drop-row**.
 >
@@ -25,7 +25,7 @@
 {
  "deliverable": "kiln-v1",
  "owner": "human@batorfi",
- "updated": "2026-09-15T18:16:08Z",
+ "updated": "2026-09-15T18:59:08Z",
  "rows": [
   {
    "id": "r1",
@@ -89,14 +89,15 @@
  "chain_unattended": false,
  "gate0": {
   "status": "approved",
-  "rows": "r1..r6",
+  "rows": "r3..r6",
   "decided_by": "human@batorfi",
   "at": "2026-09-13T06:54:20Z",
-  "note": "Gate 0 admitted the 6-row program r1->r6 at 2026-09-13T06:54:20Z (the STANDING program approval; inter-row moves are re-admissions, not re-votes). INTER-ROW SEAM as of 2026-09-15T18:16:08Z: r1 (002-kiln-lane) and r2 (003-kiln-roadmap-overlay) have closed and merged to main (r1 via the 002 lane; r2 @ c89f9b4 this session). r3 is ELIGIBLE (r1 done) and is the next row; gate0 RE-OPENS for the human's re-admission of r3->r6, so with chain_unattended=false r3 STAYS queued until re-admitted (its lane has no live Gate 1-9 yet). NOMINAL OUTCOMES: pre-r4 rows close by DIRECT COMMIT to main in this dev tree, so '@PR#1'/'@PR#2' are per-row close-LABELS (nominal), NOT GitHub PRs; the real PR/issue flow arrives at r4 (publish) / r5 (installer). This is the human move the runtime (r1) did not make for itself (P-VI); a missing UI flips nothing."
+  "note": "GATE-0 LOG (chronological, P-VII recorded):\n 1) 2026-09-13T06:54:20Z  human@batorfi  APPROVE  program r1->r6 (standing admission; the runtime did not make it for itself).\n 2) 2026-09-15T18:16:08Z  human@batorfi  road-seam   r1 (002) & r2 (003) closed -> main (nominal @PR#1/@PR#2); gate0 RE-OPENS at the seam.\n 3) 2026-09-15T18:59:08Z  human@batorfi  APPROVE(re-admit) TAIL r3->r6 UNCHANGED. In light of r1/r2 closing the tail is re-admitted without revise/revoke; r3 is the ADMITTED NEXT ROW TO FIRE (first live-model smoke walk). No row retracted. chain_unattended=false: r3 stays QUEUED until its own Gates 1-9 lane actually starts (its lane has no live gate yet, so r3 stays queued, not 'active' — M4 active requires a live gate). NOMINAL OUTCOMES: pre-r4 @PR#N are per-row close-LABELS (direct-commit dev tree), not GitHub PRs; the real PR/issue flow arrives at r4 (publish) / r5 (installer)."
  },
  "trace": "P-VI (Gate 0 = sole, human-only admission; this is the human record, updated to the r1/r2 seam); P-VII (recorded, never silent/false; the pre-r4 @PR#N are NOMINAL row-close labels, documented in gate0.note); P-IX (roadmap fields)."
 }
 ```
+
 
 
 ## Rendered table (projection of the head — a human view only)
@@ -139,7 +140,7 @@ re-admits at each `roadmap_row_done` seam unless they explicitly elect it (logge
 
 ## What Gate 0 is being asked to do next
 
-The program is **approved** and **two rows are closed** (r1, r2); the next Gate 0 move is an *inter-row re-admission* of the remaining tail (r3→r6), **not a re-vote**:
+The program is **approved** and **two rows are closed** (r1, r2); **Gate 0 has re-admitted the tail r3→r6** at the seam (**not a re-vote**). The next step is to **fire r3**:
 
 1. ~~**Fire r1**~~ — **DONE**: 002-kiln-lane delivered (spec/plan/tasks/implement all written; the lane
     spine + HUD/Popup + the `RuntimeReady` dogfood shipped). Closed at the seam, nominal **@PR#1**.
@@ -147,10 +148,7 @@ The program is **approved** and **two rows are closed** (r1, r2); the next Gate 
     face + the headless print-and-`WAIT` twin + the `OverlayCReady` probe; 98/98 tests; an overlay accuracy fix (a queue row "waits" only not-yet-closed deps; all-deps-closed reads "eligible") lands this seam; a closed-row program walk
     PASSES 001's `log.ts` while a broken auto-approve FAILs it with a named R3). Closed at the seam, nominal
     **@PR#2** (`c89f9b4` pushed to `main`).
-3. **→ Fire r3 (next, awaiting re-admission).** At `roadmap_row_done` for r2, **Gate 0 has re-opened**: the human
-    **re-admits r3→r6** (or revises the tail) in light of what r1/r2 taught. r3 is *eligible* (deps r1 done) but
-    **not begun** (`chain_unattended=false`). r3 = the first *live*-model smoke walk — one feature end-to-end on a
-    local model (Gates 1–9) — and it also supplies the **live TUI smoke walk** that r2 deferred under NC1.
+3. **→ Fire r3 (ADMITTED, next to fire).** Gate 0 has **re-admitted the tail r3→r6 unchanged** at the seam (2026-09-15T18:59:08Z, human@batorfi; no revise/revoke). r3 is *admitted & eligible* (deps r1 done) but **not yet begun** (`chain_unattended=false`; its lane has no live gate, so it stays `queued`, not `active`, per M4). r3 = the first *live*-model smoke walk — one feature end-to-end on a local model (Gates 1–9) — and it also supplies the **live TUI smoke walk** r2 deferred under NC1. **Next action: scaffold spec 004 for r3.**
 4. **Chaining is off** (`chain_unattended: false`); any line-of-defense veto *inside* a row halts its lane;
    cross-row chaining, if ever elected, is per-row, logged, and veto-liftable — and stays that way across r3→r6.
 
@@ -164,3 +162,13 @@ The program is **approved** and **two rows are closed** (r1, r2); the next Gate 
    and greppable in the factory-log lineage (Principle VII); a missing UI can now flip nothing,
    because the decision is a recorded human move, never a model-written approval.
 - **No auto-chaining.** `chain_unattended: false`; nothing in-flight; each row closes at its PR.
+
+## Gate 0 re-admission log (inter-row seams — P-VII, recorded)
+
+| time (UTC) | decider | move | effect |
+|---|---|---|---|
+| 2026-09-13T06:54:20Z | human@batorfi | `approve` | admission: program r1→r6 (standing approval) |
+| 2026-09-15T18:16:08Z | human@batorfi | road-seam | r1 & r2 closed → main (@PR#1/@PR#2); Gate 0 re-opens |
+| 2026-09-15T18:59:08Z | human@batorfi | `approve` (re-admit) | tail r3→r6 **re-admitted unchanged**; r3 = admitted next row |
+
+> The re-admission is the **human's** program-level move the runtime never makes for itself (P-VI). It is logged here and in the head's `gate0.note` so a missing UI flips nothing and a silent approval is impossible (P-VII). `gate0.status` stays `approved` (a re-admission, not a re-vote); `r3` stays `queued` until its own lane fires.
