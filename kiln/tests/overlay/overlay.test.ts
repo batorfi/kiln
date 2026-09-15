@@ -71,3 +71,29 @@ test("US1 SC-005/P-IX: no ui module contains a timer/socket/server", () => {
    // The Layer-C redraw triggers are the ONLY events — a poll cannot exist.
    assert.deepEqual(LAYERC_REDRAW_TRIGGERS, ["gate0_open", "roadmap_row_done"]);
 });
+
+// T007 (cont.) — "waits" reflects only NOT-yet-closed deps: a queued row whose deps are all done reads
+// "eligible" (an accurate zoom-out — a closed dependency does not "block"), while a queue row with an
+// open dep reads "waits <open-dep>".
+test("US1 (cont.): a queue row with all deps done reads 'eligible'; a queue row with an open dep reads 'waits <open>'", () => {
+   const s: FactoryState = {
+     resident: { model: "stub", tier: "strongest" },
+     running: null,
+     queue: [],
+     switches: 0,
+     wallClock: "15:00",
+     roadmap: [
+         { id: "r1", short: "core", deps: [], status: "done", outcome: "@PR#1" },
+         { id: "r2", short: "overlay", deps: ["r1"], status: "done", outcome: "@PR#2" },
+           { id: "r3", short: "smoke walk", deps: ["r1"], status: "queued" }, // deps all done -> eligible
+           { id: "r4", short: "publish", deps: ["r3"], status: "queued" }, // r3 open -> waits r3
+                     ],
+     current: "r3",
+     gate0: { status: "approved", rows: "r1..r4", decided_by: "human@batorfi", at: "2026-09-15T15:00:00Z" } as FactoryState["gate0"],
+     gate: null,
+        };
+  const out = renderOverlay(s);
+   assert.match(out, /r3\s+\(queued\).*eligible/, "r3 (all deps done) reads 'eligible'");
+   assert.match(out, /r4\s+\(queued\).*waits r3/, "r4 (dep r3 open) reads 'waits r3'");
+   assert.ok(!/waits r1/.test(out), "a closed dependency r1 is NOT shown as 'waiting'");
+});

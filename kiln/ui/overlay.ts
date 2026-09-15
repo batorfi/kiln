@@ -16,7 +16,7 @@ import type { FactoryState } from "../src/types.ts";
 import type { LayerCState } from "./factory-state.ts";
 
 /** The §5.1 per-row line: `id (status) short [deps: …] → tail` where the tail is outcome/HERE/waits. */
-function rowLine(row: FactoryState["roadmap"][number], current: string): string {
+function rowLine(row: FactoryState["roadmap"][number], current: string, done: Set<string>): string {
   const deps = row.deps.length ? row.deps.join(",") : "—";
   let tail: string;
   if (row.id === current && row.status === "active") {
@@ -26,7 +26,9 @@ function rowLine(row: FactoryState["roadmap"][number], current: string): string 
    } else if (row.status === "aborted") {
    tail = "→ aborted";
     } else {
-   tail = row.deps.length ? `waits ${deps}` : "eligible"; // a blocked row shows what it waits on
+   const openDeps = row.deps.filter((d) => !done.has(d)); // only NOT-yet-closed deps actually block
+
+   tail = openDeps.length ? `waits ${openDeps.join(",")}` : "eligible"; // closed deps do not "wait"
      }
   return `   ${String(row.id).padEnd(4)} (${row.status}) ${row.short}      [deps: ${deps}]   ${tail}`;
 }
@@ -52,11 +54,14 @@ export function renderOverlay(state: FactoryState): string {
     }
 
   const rows = state.roadmap ?? [];
-  if (rows.length === 0) {
+ // SC-004: the already-closed rows (done/aborted are terminal); a queue row "waits" only its
+ // deps that are NOT yet closed, so an all-deps-closed queue row reads "eligible" (accurate zoom-out).
+const done = new Set(rows.filter((r) => r.status === "done" || r.status === "aborted").map((r) => String(r.id)));
+if (rows.length === 0) {
     lines.push("   (no program rows admitted — Gate 0 is the human gate that admits them, P-VI)");
     } else {
     lines.push("   order: " + rows.map((r) => String(r.id)).join(" → "));
-    for (const row of rows) lines.push(rowLine(row, state.current));
+    for (const row of rows) lines.push(rowLine(row, state.current, done));
     }
 
    // ── the program-level footer: a distilled read of r1's cost (NOT re-computed), composes with A/B ──
