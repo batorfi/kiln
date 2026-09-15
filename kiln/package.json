@@ -12,7 +12,9 @@
     "validate:roadmap": "node kiln/validate/roadmap.ts",
     "firing-ready": "node kiln/validate/firing-ready.ts",
     "runtime-ready": "node kiln/validate/runtime-ready.ts",
-    "dogfood": "node kiln/tests/dogfood/run.ts"
+   "dogfood": "node kiln/tests/dogfood/run.ts",
+    "program-walk": "node kiln/tests/dogfood/run-program.ts",
+    "overlay-ready": "node kiln/validate/overlay-ready.ts"
    },
   "dependencies": {}
 }

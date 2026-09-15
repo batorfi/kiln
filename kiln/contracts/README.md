@@ -102,3 +102,35 @@ A broken no-silent-approval path makes the emitted log **FAIL 001's validator wi
 reason** (SC-002 → SC-003); a closed terminal leaves a **reconstructable prefix** (F-RECON, P-VII).
 See `specs/002-kiln-lane/contracts/{runtime-api,runtime-ready}.md` for the module surface this row
 exposes.
+
+## Runtime cross-ref — r2 (003-kiln-roadmap-overlay, E1–E6 / FR-013-analogue)
+
+> r2 **draws Layer C** on top of r1's spine and is **judged by** the same `kiln/validate/log.ts` +
+> `kiln/validate/roadmap.ts` (the dogfood, D5) **plus** its falsifiable extension
+> `kiln/validate/overlay-ready.ts`. r2 **admits no program** (P-VI / FR-014 / SC-007): the human
+> record in `specs/ROADMAP.md` *admits*; r2 only *renders*. Each Layer-C entity carries its principle
+> trace below; the E-numbers here are **canonical** (a keymap is a §D6 spike, **not** an entity):
+
+| Entity (E#) | Module | Realizes | Principle(s) | Proof (SC / quickstart) | Invariant |
+|-------------|--------|----------|--------------|-------------------------|-----------|
+| E1 overlay | `kiln/ui/overlay.ts` | the whole program as `id/status/short/deps/lane-gate`; one row reads `— HERE`; the gate0 head on top | P-IX, P-VII | S1/S5 / SC-001·SC-005 | `F-OVERLAY`; one source of truth (SC-005) |
+| E2 Gate-0 face | `kiln/ui/gate0-face.ts` | a **distinct** face showing **only** `moveVocabulary("gate0")`; a decider-less / per-gate admit is refused | P-V, P-VI (F1) | S2 / SC-002 | `F1-GATE0-HUMAN`; gate0 ≠ gate (SC-002) |
+| E3 two Layer-C events | `kiln/ui/factory-state.ts` | `gate0_open` + `roadmap_row_done` (the P-IX redraw triggers); a road-seam re-enters Gate 0 | P-IX, P-VI | S4 / SC-004 | `F-NO-POLL`; a merged/done row is never re-entered (SC-004) |
+| E4 headless twin | `kiln/ui/twin.ts` (extended) | with the UI **off**, the roadmap table is **printed** and Gate 0 **blocks** | P-V, P-VI | S3/S5 / SC-003·SC-005 | `F-GATE0-BLOCK`; absent overlay ⇒ print + WAIT, never auto-advance |
+| E5 program head | `RoadmapHead` / `Gate0` (001 shape, imported) | the `gate0.status` + `rows` + `decided_by` + `at` head r2 renders (M3/M4) | P-VI, P-VII | S1/S7 / SC-007 | `F-NO-REDECLARE`; the head is 001's, not re-declared |
+| E6 OverlayCReady | `kiln/validate/overlay-ready.ts` | the falsifiable probe: present/wired + deterministic + blocking-gate0 + zero-net | P-VIII, P-VI | S6 / SC-006 | `F-OVERLAYREADY`; falsifiable, runs no gate/feature |
+
+### The dogfood boundary (r2 draws, it does not admit)
+
+```
+r1 (spine) ──composes──▶ r2 (Layer C) ──emits JSONL──▶ kiln/validate/log.ts ──▶ PASS/FAIL
+  E1 overlay / E2 face / E4 twin ──render──▶ ONE FactoryState ──▶ deterministic overlay (SC-005)
+  E2 recordGate0Decision ──emits──▶ gate-completion@"gate0" (additive, no new recordType, D3)
+  a broken auto-approve of a missing Gate 0 ──FAILs log.ts──▶ named R3 (SC-002 → SC-003)
+  OverlayCReady (E6) re-asserts render/face/twin + dogfood + zero-network, running NO gate/feature
+```
+
+r2 **admits no program / advances no Gate 0** (P-VI / FR-014 / SC-007): a headless r2 *prints the
+program and `WAIT`s on Gate 0*; the admission is the human record in `specs/ROADMAP.md`. See
+`specs/003-kiln-roadmap-overlay/contracts/{overlay-api,gate0-face,overlay-ready}.md` for the module
+surface, and its `compliance-note.md` for the evidence.

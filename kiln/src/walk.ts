@@ -105,3 +105,87 @@ export function buildStubWalk(opts: BuildStubWalkOptions = {}): StubWalk {
 
   return { writer, jsonl: writer.drain().join("\n"), lines: writer.drain().slice(), switches, gates };
 }
+
+// ───────────────────────────────────────────────────────────────────────────────────────────────
+// r2 (US4 / E3, T017): a CLOSED-ROW PROGRAM WALK — a closed Row → a re-entered Gate 0 at the seam.
+// Emits, through the R3-guarded LogWriter: a row's closing gate-9 `gate-completion` (the @PR#N close),
+// a HUMAN gate-0 admission (`gate-completion` at gate:"gate0" with a `human@…` decidedBy — F1), and a
+// `wait` at gate0 (Gate 0 RE-ENTERED at the inter-row seam). `brokenAutoApprove` simulates the broken
+// path that *would* auto-approve a missing Gate 0 by stripping the human decider → the emitted log
+// FAILs 001's log.ts R3 with a named reason (the SC-002→SC-003 negative). No cloud (P-VIII);
+// NOTHING here admits its own program — the admission is a RECORDED human move (P-VI / FR-014 / SC-007).
+// ───────────────────────────────────────────────────────────────────────────────────────────────
+
+export interface BuildProgramWalkOptions {
+  clock?: Clock;
+  gate0By?: string; // the human decider, e.g. "human@batorfi" (F1: human-only)
+  brokenAutoApprove?: boolean; // if true: strip the gate-0 decider → log FAILs R3 (the SC-003 negative)
+}
+
+export interface ProgramWalk {
+  lines: string[]; // emitted JSONL lines (for truncation / replay)
+  jsonl: string; // the full emitted stream
+  broken: boolean; // whether the no-silent-approval hole was opened
+}
+
+/**
+ * Build a closed-row program walk. The emitted stream (all R1–R6 conformant when `broken` is false):
+ *   transition(load) → gate-completion(gate 9, @PR#1, human-decided — a row CLOSED) →
+ *    human-decision(gate0) → gate-completion(gate :"gate0", approve, human decider — the ADMISSION,
+ *    F1) → wait(gate0) (Gate 0 RE-ENTERED at the seam). The complete stream PASSES 001's log.ts;
+ *   with `brokenAutoApprove` the gate-0 decider is stripped and the SAME stream FAILs R3, named.
+ */
+export function buildProgramWalk(opts: BuildProgramWalkOptions = {}): ProgramWalk {
+  const clock = opts.clock ?? makeClock();
+  const human = opts.gate0By ?? "human@batorfi";
+  const writer = new LogWriter(clock);
+  const gates: Gate[] = [];
+  const wallClock = clock.wallClock();
+  const emit = (rec: EmitInput) => writer.write(rec);
+
+   // ---- context: a cold lane loads a resident (a closed row's tail) ----
+  emit({ recordType: "transition", transition: { kind: "load", from: "cold", to: "stub" } });
+
+   // ---- a row CLOSES: gate 9 (the row's PR/approve) → @PR# (R3 via a human decider) ----
+  const g9: Gate = { id: 9, open: true };
+  gates.push(g9);
+  emit({ recordType: "human-decision", "human-decision": { gate: "9-pr", decidedBy: human, move: "approve" } });
+  g9.move = "approve";
+  g9.decidedBy = human;
+  g9.open = false;
+  emit({ recordType: "gate-completion", "gate-completion": { gate: 9, move: "approve", cost: { switches: 0, wallClock }, decidedBy: human } });
+
+   // ---- the inter-row seam RE-OPENS Gate 0 for a HUMAN admission (F1: human-only, no exception) ----
+  const g0: Gate = { id: "gate0", open: true };
+  gates.push(g0);
+  emit({ recordType: "human-decision", "human-decision": { gate: "gate0", decidedBy: human, move: "approve" } });
+  g0.move = "approve";
+  g0.decidedBy = human;
+  g0.open = false;
+  emit({ recordType: "gate-completion", "gate-completion": { gate: "gate0", move: "approve", cost: { switches: 0, wallClock }, decidedBy: human } });
+
+   // ---- Gate 0 is RE-ENTERED at the seam: recorded as a WAIT (a program gate a missing UI only records) ----
+  const g0wait = { gate: String("gate0"), token: tokenFor({ id: "gate0" }), deadline: clock.now() };
+  emit({ recordType: "wait", wait: g0wait });
+
+  let lines = writer.drain().slice();
+  let broken = false;
+  if (opts.brokenAutoApprove) {
+     // The BROKEN path that *would* auto-approve a missing Gate 0: strip the human decider from the
+     // gate-0 `gate-completion` (and its `human-decision`) → R3 must catch it by NAME when replayed.
+    broken = true;
+    lines = lines.map((l) => {
+      let r: Record<string, unknown> & Record<string, any>;
+      try {
+        r = JSON.parse(l) as any;
+        } catch {
+      return l; // leave a non-JSON (never happens) line untouched
+          }
+      if (r.recordType === "gate-completion" && String(r["gate-completion"]?.gate) === "gate0") {
+        delete r["gate-completion"].decidedBy; // the no-silent-approval hole (R3 names this)
+         }
+      return JSON.stringify(r);
+       });
+     }
+  return { lines, jsonl: lines.join("\n"), broken };
+}
