@@ -134,3 +134,43 @@ r2 **admits no program / advances no Gate 0** (P-VI / FR-014 / SC-007): a headle
 program and `WAIT`s on Gate 0*; the admission is the human record in `specs/ROADMAP.md`. See
 `specs/003-kiln-roadmap-overlay/contracts/{overlay-api,gate0-face,overlay-ready}.md` for the module
 surface, and its `compliance-note.md` for the evidence.
+
+---
+
+## Runtime cross-ref — r3 (004-kiln-live-walk, E1–E5 / FR-013-analogue)
+
+> r3 **fires the kiln live** on top of r1's spine + r2's overlay and is **judged by** 001's
+> `kiln/validate/log.ts` + `kiln/validate/roadmap.ts` **plus** its falsifiable extension
+> `kiln/validate/live-ready.ts` (which composes on r1's `runtime-ready` + r2's `overlay-ready` — r3 adds
+> the *live* half, D7/D8). r3 **admits no program** (P-VI / FR-010 / SC-007): the human record in
+> `specs/ROADMAP.md` *admits*; r3 only *fires* + *re-opens* Gate 0 at its own close. Each r3 entity
+> carries its principle trace below; the E-numbers here are **canonical** (E1/E3 live resident + the
+> *recorded* `--live`/`--stub` selection, no new `recordType`; E2 the live-walk sibling; E4 the live
+> `ctx.ui` smoke; E5 the `LiveModelReady` probe):
+
+| Entity (E#) | Module | Realizes | Principle(s) | Proof (SC / quickstart) | Invariant |
+|-------------|--------|----------|--------------|-------------------------|-----------|
+| E1 live resident | `kiln/src/live-resident.ts` | a LIVE `Resident` (r1's iface, imported): `run` a genuine input-dependent compute, `model()` a real **local** head (never `"stub-resident"`), `tier()` the live tier | P-I, P-VIII, P-II | S1 / SC-001 | `F-LIVE-RESIDENT`; the kiln fires **live**; LoD binds `strongest` |
+| E3 recorded `--live`/`--stub` | `kiln/src/live-resident.ts` | a `--live`(default)/`--stub` selector that **RECORdS** its choice as a 001 `transition.reason` (no new recordType); an *unlogged* stand-in is the violation caught by E5 | P-V, P-VII | S6 / SC-006 | `F-NOT-SILENT`; a selection is *in the log*, never a silent stand-in |
+| E2 live-walk sibling | `kiln/src/live-walk.ts` | `buildLiveWalk()`: the §D7 full nine-gate rail over the throwaway — an unattended `pre-delegation` tail + a *halted* LoD veto, emitting 001's union (no new recordType) + the recorded E3 selection | P-III, P-IV, P-IV/P-I | S1–S4,S8 / SC-001·003·004 | `F-LIVE-WALK`; PASSES 001's log.ts; broken no-`decidedBy` FAILs named R3 |
+| E4 live `ctx.ui` smoke | `kiln/ui/live-tui.ts` | Layers A/B/C (r1 A/B + r2 C, composed) redrawn on the walk's **fired events only** (P-IX), over one `FactoryState`, **degrading** to r2's print twin when the UI is absent — which still **blocks** Gate 0 | P-V, P-VI, P-IX | S5 / SC-005·006 | `F-LIVE-TUI` + `F-GATE0-BLOCK`; event-only, no poll/socket/server |
+| E5 LiveModelReady | `kiln/validate/live-ready.ts` | the *falsifiable* r3→r4 handoff probe: composes on r1+r2's checks and ADDS live-wired + PASSES-emit-live + F-NOT-SILENT + zero-net on both toggle positions; runs NO gate/feature | P-V, P-VI, P-VIII | S6/S7 / SC-006·007 | `F-LIVEREADY`; READY or named gap; falsifiable, admits nothing |
+
+### The dogfood boundary (r3 fires live, it does not admit)
+
+```
+r1 (spine) ──composes──▶ r2 (Layer C) ──composes──▶ r3 (live) ──emits JSONL──▶ kiln/validate/log.ts ──▶ PASS/FAIL
+  E1 live resident / E3 recorded --live/--stub ──drive──▶ the §D7 full nine-gate rail (E2)
+  E2 buildLiveWalk ──emits──▶ 001's union: transition / gate-completion / human-decision / cost / wait / pre-delegation (+ the E3 transition)
+     (NO new recordType — E3 rides the transition; D2/D8)
+  E4 live ctx.ui ──redraws on fired events──▶ ONE FactoryState ──▶ byte-identical overlay (SC-005)
+  a broken no-decidedBy live emit ──FAILs log.ts──▶ named R3 (SC-002 → SC-003, P-V)
+  E5 LiveModelReady re-asserts r1+r2 + the live half, running NO gate/feature, admitting NO program
+```
+
+r3 **fires the kiln live** (the first genuinely live lane) but **admits no program / advances no Gate 0**
+(P-VI / FR-010 / SC-007): the emitted *live* log's only `gate0` entry is a `wait` (a re-open at the own
+seam); the admission is the human record in `specs/ROADMAP.md`. r3 *re-opens* Gate 0 at its close, it does
+*not* admit the next row. See
+`specs/004-kiln-live-walk/contracts/{live-resident-api,live-walk,live-ready}.md` for the module surface
+and its `compliance-note.md` for the evidence.

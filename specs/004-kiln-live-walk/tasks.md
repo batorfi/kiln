@@ -61,7 +61,7 @@ r1/r2 NC1 debt r3 was named to clear; US3 = P2, the `LiveModelReady` handoff pro
 No story code yet beyond the shared test globs and the (still-empty) new modules — the ancestors stay
 **canonical import targets** (D8/NC3).
 
-- [ ] T001 Create the r3 live module tree per `plan.md` **Project Structure**: **new**
+- [x] T001 Create the r3 live module tree per `plan.md` **Project Structure**: **new**
         `kiln/src/live-resident.ts` (E1 + the `--live`/`--stub` selector, E3),
        `kiln/src/live-walk.ts` (E2), `kiln/ui/live-tui.ts` (E4), `kiln/validate/live-ready.ts`
        (E5); **extend additively** `kiln/src/walk.ts` (the `buildLiveWalk` sibling / `--live`/
@@ -75,7 +75,7 @@ No story code yet beyond the shared test globs and the (still-empty) new modules
        `kiln/ui/{factory-state,hud,popup,twin,keymap}.ts` + `kiln/validate/runtime-ready.ts`, and
        **r2's** `kiln/ui/{overlay,gate0-face}.ts` + `kiln/validate/overlay-ready.ts` (D8/NC3 —
        **import, never re-declare**)
-- [ ] T002 [P] Add the two live entry points to `kiln/package.json`
+- [x] T002 [P] Add the two live entry points to `kiln/package.json`
         (`"live-walk": "node kiln/tests/dogfood/run-live.ts"`,
        `"live-ready": "node kiln/validate/live-ready.ts"`); keep **zero runtime dependencies**
        (`dependencies: {}` — P-VIII: a new live adapter reaches a **local** model in-process, not a
@@ -98,7 +98,7 @@ union — no new `recordType`** (D2/D8).
 
 **⚠️ CRITICAL**: No user-story work begins until this phase is complete.
 
-- [ ] T003 [P] Implement **`kiln/src/live-resident.ts` — E1** per `contracts/live-resident-api.md`:
+- [x] T003 [P] Implement **`kiln/src/live-resident.ts` — E1** per `contracts/live-resident-api.md`:
         a **live implementation of r1's `Resident` interface** — `import { type Resident } from
        "./stub-resident.ts"` (do **not** re-declare it, D8). Members: `run(workUnit)` drives a
        **genuine inference on the live local model** (not the stub's fixed `out`) so the
@@ -111,7 +111,7 @@ union — no new `recordType`** (D2/D8).
        when the local head is *unreachable* the resolver **flags + falls back to the recorded
        `--stub`** (NC2 belt-and-suspenders), **never silently**. **Depends on nothing new** (the
        `Resident` type is imported from r1's `stub-resident.ts`)
-- [ ] T004 Implement **E3 — the `--live`/`--stub` selector + its *recorded* selection** in
+- [x] T004 Implement **E3 — the `--live`/`--stub` selector + its *recorded* selection** in
         `kiln/src/live-resident.ts` (extends T003's file; `F-NOT-SILENT`, D2/NC2): the selector
        picks E1 (**`--live`, the default**, NC2) or r1's stub (`--stub`, the recorded fallback).
        The **selection is *recorded*** in 001's existing union — **no new `recordType`** (D2/D8):
@@ -123,7 +123,7 @@ union — no new `recordType`** (D2/D8).
        silently approves a gate." Selecting a resident is **not** a gate move (P-V/VIII): a live
        walk's gates still resolve on a **human `decidedBy`** (or a *distinct* `pre-delegation` on
        the tail), **never** the toggle/resident — **depends on T003**
-- [ ] T005 [P] **E3 recorded-selection unit test (`F-NOT-SILENT`, positive half / P-VII·SC-006)** —
+- [x] T005 [P] **E3 recorded-selection unit test (`F-NOT-SILENT`, positive half / P-VII·SC-006)** —
         `selectResident("--stub")` emits a **recorded** `transition`/`cost` slot naming the stub
        fallback; `selectResident("--live")` (**default**) names `"live"` + the model; assert the
        **marker IS written** for both positions (the guard that makes an *unlogged* stand-in
@@ -157,7 +157,7 @@ the emitted log **PASSES 001's `kiln/validate/log.ts`** live with a real `decide
 
 ### Tests for User Story 1 (write FIRST; ensure they FAIL)
 
-- [ ] T006 [P] [US1] **Live-walk contract test (F-LIVE-WALK / SC-001↔SC-002)** —
+- [x] T006 [P] [US1] **Live-walk contract test (F-LIVE-WALK / SC-001↔SC-002)** —
         `buildLiveWalk()` (**`--live`, default**) over the **full nine gates** emits
        `transition` / `gate-completion` (**a human `decidedBy` per gate**) / `cost` / a **distinct**
        `pre-delegation` on the unattended tail + an **open-gate `wait`** + the **recorded
@@ -165,7 +165,7 @@ the emitted log **PASSES 001's `kiln/validate/log.ts`** live with a real `decide
        prefix** **PASS 001's *unmodified* `kiln/validate/log.ts`** (R1–R6); a **`--broken`**
        variant (drop a gate's `decidedBy`, r1's `run.ts` vector reused on the live emit) **FAILs
        with a *named R3* reason** — in `kiln/tests/live-walk/live-walk.test.ts`
-- [ ] T007 [P] [US1] **F-SINGLE + switches + LoD-`strongest` (SC-003/SC-004, P-III·P-IV·P-II)** —
+- [x] T007 [P] [US1] **F-SINGLE + switches + LoD-`strongest` (SC-003/SC-004, P-III·P-IV·P-II)** —
         `assertSingleLane` holds over the live walk's **per-step snapshots** (`F-SINGLE` — a forged
        two-residents-running case **throws**); realized switches **== `kiln/src/scheduler.ts`
        `switchCount`** for the live unit sequence (P-IV, one `cost` per genuine tier boundary,
@@ -176,7 +176,7 @@ the emitted log **PASSES 001's `kiln/validate/log.ts`** live with a real `decide
 
 ### Implementation for User Story 1
 
-- [ ] T008 [US1] Implement **`kiln/src/live-walk.ts` — E2** per `contracts/live-walk.md` (**§D7**)
+- [x] T008 [US1] Implement **`kiln/src/live-walk.ts` — E2** per `contracts/live-walk.md` (**§D7**)
         — `buildLiveWalk(opts?: { resident?: "live" | "stub" | Resident; preDelegate?: boolean;
        haltOnVeto?: boolean }): { lines: string[]; jsonl: string; switches: number }`: a
        **`--live`** (default, E1) / **`--stub`** (E3, *recorded*) selector that drives the
@@ -185,12 +185,12 @@ the emitted log **PASSES 001's `kiln/validate/log.ts`** live with a real `decide
        line-of-defense veto** (critic objection / reviewer `restart` / verifier `reject` /
        checkpoint **overflow** → **halt the cruise + return to a human**, FR-007) — emitting the
        **same union r1 emitted + the recorded selection slot (E3)** — **depends on T003, T004**
-- [ ] T009 [US1] **Extend `kiln/src/walk.ts` additively** (D3): expose `buildLiveWalk` as a
+- [x] T009 [US1] **Extend `kiln/src/walk.ts` additively** (D3): expose `buildLiveWalk` as a
         **selector on the shared builder** (import E1 from `live-resident.ts`); the emit sequence is
        **reused, not re-declared** — r1's `buildStubWalk` stays **unchanged** (NC2: the stub is the
        *recorded fallback*, still green), and the `--broken` splice targets the **live** emit
       (`kiln/factory-log/r3-live-broken.jsonl`) — **depends on T008**
-- [ ] T010 [US1] Add the **live dogfood runner** `kiln/tests/dogfood/run-live.ts` (T002's
+- [x] T010 [US1] Add the **live dogfood runner** `kiln/tests/dogfood/run-live.ts` (T002's
         `"live-walk"` script): build the live walk, write `kiln/factory-log/r3-live-walk.jsonl`
        (+ `r3-live-broken.jsonl` via `--broken` — reuse r1's `run.ts` splice-of-a-missing-
         `decidedBy` on the live emit), invoke **001's *unmodified* `kiln/validate/log.ts`** over
@@ -223,14 +223,14 @@ gate). **No `setInterval`/`setTimeout`/socket/server** — the `kiln/ui/*.ts` gr
 
 ### Tests for User Story 2 (write FIRST; ensure they FAIL)
 
-- [ ] T011 [P] [US2] **Event-only + byte-identical test (`F-LIVE-TUI` / SC-005 / P-IX)** — the
+- [x] T011 [P] [US2] **Event-only + byte-identical test (`F-LIVE-TUI` / SC-005 / P-IX)** — the
         live `ctx.ui` surface set (A/B/C) **redraws ONLY on a fired `FactoryEvent`**
        (`gate-open`/`gate-resolve` + r2's `gate0_open`/`roadmap_row_done`) over **one**
        `FactoryState`; a **`setInterval` / `setTimeout` / `Server` / `Socket` / `fetch` grep over
        `kiln/ui/*.ts` is GREEN** (no timer/socket/server); and a **captured identical state ⇒ a
        byte-identical `renderOverlay`** (one source of truth, **SC-005**) — in
        `kiln/tests/live-tui/live-tui.test.ts`
-- [ ] T012 [P] [US2] **Headless-degrade + blocking Gate 0 test (`F-GATE0-BLOCK` / P-V·P-VI, US2 AC-2 + F1)**
+- [x] T012 [P] [US2] **Headless-degrade + blocking Gate 0 test (`F-GATE0-BLOCK` / P-V·P-VI, US2 AC-2 + F1)**
         — with the live UI **absent**, the twin **prints the program table** (the *same* rows
        `renderOverlay` shows — one source of truth) and an **open Gate 0** →
        `disabledUi(state).blocks === true` + **never a `gate0: approved`** (a **pre-delegated**
@@ -239,7 +239,7 @@ gate). **No `setInterval`/`setTimeout`/socket/server** — the `kiln/ui/*.ts` gr
 
 ### Implementation for User Story 2
 
-- [ ] T013 [US2] Implement **`kiln/ui/live-tui.ts` — E4** per `data-model.md` E4 (**§D5**): the
+- [x] T013 [US2] Implement **`kiln/ui/live-tui.ts` — E4** per `data-model.md` E4 (**§D5**): the
         **live `ctx.ui` path composing on r1's `renderHud`/`renderPopup` + r2's
        `renderOverlay`/`renderGate0Face` + r2's `disabledUi` twin** — **Layer A** `setStatus`
        footer (`rail`/`lane`/`switches`/`clock`), **Layer B** `custom` per-gate popup (rises on
@@ -275,7 +275,7 @@ falsify hooks).
 
 ### Tests for User Story 3 (write FIRST; ensure they FAIL)
 
-- [ ] T014 [P] [US3] **Falsifiability test (`F-LIVEREADY` / SC-006)** — `checkLiveModelReady()`
+- [x] T014 [P] [US3] **Falsifiability test (`F-LIVEREADY` / SC-006)** — `checkLiveModelReady()`
         **PASSES** on the live walk + a **recorded** `--stub`; **omitting or breaking exactly one**
        element makes it **FAIL and NAME the broken element** — `--broken` → a **named R3** gap
        (the no-silent-approval hole, SC-002/SC-003); `--broken-render` (a non-deterministic
@@ -289,7 +289,7 @@ falsify hooks).
 
 ### Implementation for User Story 3
 
-- [ ] T015 [US3] Implement **`kiln/validate/live-ready.ts` — E5** per `contracts/live-ready.md`
+- [x] T015 [US3] Implement **`kiln/validate/live-ready.ts` — E5** per `contracts/live-ready.md`
         (**§D6**) — `checkLiveModelReady()` as the **extension of r1's `runtime-ready.ts` + r2's
        `overlay-ready.ts` (compose on both, do *not* duplicate — D7/D8)**: (a) **live path wired**
        — `kiln/src/live-resident.ts` (E1/E3), `kiln/src/live-walk.ts` (E2), `kiln/ui/live-tui.ts`
@@ -305,7 +305,7 @@ falsify hooks).
        (**P-I/P-VII** the human `decidedBy` + the *recorded* `--stub`; **P-V** the R3 falsify;
        **P-VI** the blocking headless Gate 0 + F1; **P-VIII/P-IX** zero-cloud + no poll); on any
        gap **exit non-zero, naming the broken element** — **depends on T008 (E2) + T013 (E4)**
-- [ ] T016 [US3] Wire the **CLI entry** `kiln/validate/live-ready.ts` (T002's `"live-ready"`
+- [x] T016 [US3] Wire the **CLI entry** `kiln/validate/live-ready.ts` (T002's `"live-ready"`
         script): print **`READY`** or a **named gap**; support **`--broken`** /
        `--broken-render` / `--broken-gate0` / `--stub-unlogged` (mirrors r1's `--broken` / r2's
        overlay-ready flags); **runs no gate, admits no program** (P-VI / SC-007) — used by
@@ -322,18 +322,18 @@ accepted and an unlogged stand-in is **caught, named**; **0 cloud** on both togg
 **Purpose**: Wire the live path into the public index **over** r1/r2's spine and record r3's
 compliance evidence — **without admitting a program or advancing Gate 0** (P-VI / SC-007).
 
-- [ ] T017 **Extend `kiln/index.ts` additively** — **also export** the live resident / the
+- [x] T017 **Extend `kiln/index.ts` additively** — **also export** the live resident / the
         `--live`/`--stub` selector (E1/E3), `buildLiveWalk` (E2), the live `ctx.ui` path (E4), and
        `checkLiveModelReady` / `reportLiveModelReady` (E5) **on top of r1's + r2's spine exports**
        (no regression to the 98-test baseline); it **emits no `gate0` decision** and **admits no
        program** (P-VI / FR-010 / SC-007 — r3 *fires*, the human move in `specs/ROADMAP.md`
        *admitted*) — **depends on T008, T013, T015**
-- [ ] T018 [P] Add a **live-path traceability cross-ref table** (**E1–E5** ↔ constitution
+- [x] T018 [P] Add a **live-path traceability cross-ref table** (**E1–E5** ↔ constitution
         **P-I·P-II·P-III·P-IV·P-V·P-VI·P-VII·P-VIII·P-IX** + **SC-001..007**) to
        `kiln/contracts/README.md` (r1/r2's index, **extended** for r3 — the runtime analogue of
        001's T027 / FR-009; records which ancestor each E *imports* vs. which E r3 *adds*) — in
        `kiln/contracts/README.md`
-- [ ] T019 Run **all eight `quickstart` scenarios end-to-end** (**S1–S8**) and record the
+- [x] T019 Run **all eight `quickstart` scenarios end-to-end** (**S1–S8**) and record the
         **observed** results in `specs/004-kiln-live-walk/quickstart-run.md` (the planning form is
        `quickstart.md`; this is the captured run, like r1/r2): assert the **live walk PASSES
        001's `kiln/validate/log.ts`** + the **broken FAILs with a named R3** (SC-001/SC-002), the
@@ -342,7 +342,7 @@ compliance evidence — **without admitting a program or advancing Gate 0** (P-V
        a **zero-network scan finds 0 cloud** (SC-006), and **zero program-admissions / zero
        gate-advances / r3 stays `queued`** (SC-007) — in
        `specs/004-kiln-live-walk/quickstart-run.md`
-- [ ] T020 Re-check **constitution** compliance (**P-I..P-IX** + governance / FR-013-analogue)
+- [x] T020 Re-check **constitution** compliance (**P-I..P-IX** + governance / FR-013-analogue)
         against the delivered live path and write a short **compliance note** in
        `specs/004-kiln-live-walk/compliance-note.md` — this row **fired the kiln *live*** (the first
        genuinely live lane; a live local model, **guaranteed** NC2, with a **recorded** `--stub`
@@ -352,7 +352,7 @@ compliance evidence — **without admitting a program or advancing Gate 0** (P-V
        advancing no Gate 0** (P-VI/SC-007 — r3 *re-opens* the seam; the emitted **live** log + its
        **recorded** `--stub` selection are the audit trail, P-VII) — in
        `specs/004-kiln-live-walk/compliance-note.md`
-- [ ] T021 [P] **P-VI / SC-007 governance guard** — assert **`specs/ROADMAP.md` has NO diff** (r3
+- [x] T021 [P] **P-VI / SC-007 governance guard** — assert **`specs/ROADMAP.md` has NO diff** (r3
         stays **`queued`**, M4 — authoring did **not** flip it to `active`; no live gate advanced),
        **zero model was fired as authoring** (the live walk is a *probe/dogfood*, not program
        admission), and `grep '"gate":"gate0"' kiln/factory-log/r3-live-walk.jsonl` shows **a

@@ -14,7 +14,9 @@
     "runtime-ready": "node kiln/validate/runtime-ready.ts",
    "dogfood": "node kiln/tests/dogfood/run.ts",
     "program-walk": "node kiln/tests/dogfood/run-program.ts",
-    "overlay-ready": "node kiln/validate/overlay-ready.ts"
+    "overlay-ready": "node kiln/validate/overlay-ready.ts",
+    "live-walk": "node kiln/tests/dogfood/run-live.ts",
+    "live-ready": "node kiln/validate/live-ready.ts"
    },
   "dependencies": {}
 }
