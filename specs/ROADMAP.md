@@ -119,7 +119,7 @@
 | r1 | **done** | core single-lane runtime (lane + gate + log-writer + affinity scheduler + HUD/Popup) | — | CLOSED at the seam: **002-kiln-lane** delivered; nominal close-label **@PR#1** (pre-r4 = direct commit to `main`) |
 | r2 | **done** | Flow UI — Layer C (roadmap overlay) | r1 | CLOSED this session: **003-kiln-roadmap-overlay**, `c89f9b4` (pushed to `main`); nominal close-label **@PR#2** |
 | r3 | **done** | first full-rail smoke walk (one feature end-to-end, Gates 1–9) | r1 | CLOSED at the seam: **004-kiln-live-walk** delivered (the walk PASSes 001's `log.ts` and a broken no-decider FAILs by named R3; `--stub` RECORDED via F-NOT-SILENT; LiveModelReady READY; zero-cloud); nominal close-label **@PR#3** (124/124). **Caveat recorded 2026-09-19:** its resident is a *deterministic adapter*, not inference — **r7 completes this** |
-| r7 | **next (queued)** | **true live local inference** — a real Ollama-backed resident + an `OllamaReady` preflight probe that actually dials the endpoint | r3 | ADDED at the r3 seam (2026-09-19T20:24:57Z `add-row`); ELIGIBLE (r3 done) but **not begun**. Pays the live-inference debt r3 carried forward (`kiln/src/stub-resident.ts:8`): r3's resident is a *deterministic adapter*, not inference. Spec: **006-kiln-live-inference** (gate-1; **NC1 the sync/async fork open**) |
+| r7 | **next (queued)** | **true live local inference** — a real Ollama-backed resident + an `OllamaReady` preflight probe that actually dials the endpoint | r3 | ADDED at the r3 seam (2026-09-19T20:24:57Z `add-row`); ELIGIBLE (r3 done) but **not begun**. Pays the live-inference debt r3 carried forward (`kiln/src/stub-resident.ts:8`): r3's resident is a *deterministic adapter*, not inference. Spec: **006-kiln-live-inference** — **clarified 2026-09-19, NC1–NC3 resolved** (NC1 = async HTTP + an async spine), ready for `/speckit.plan` |
 | r4 | queued | **publish the kiln toolchain to a public GitHub repo** — the URL-runnable distribution point | r2, r3, **r7** | **GATED on r7** (deps extended at the r3 seam): eligible only once the live claim it rests on is true. *needs the full capability* (runtime + UI + **real** live proof) and is the first network-permitting row; the point a URL-runnable installer and GitHub Pages both build on |
 | r5 | queued | **URL-runnable installer / scaffolding script** — set up the kiln toolchain into an *existing* repo from a public GitHub URL | r4 | the operator's requested capability; runs **from** the published toolchain, never off an unpublished dev tree |
 | r6 | queued | **comprehensive newcomer docs** (getting-started · how-to's · technical overviews for newcomer agentic developers) on **GitHub Pages** | r5 | the operator's requested capability; sequenced *after* the installer so the "install → run" path a newcomer follows is real |
@@ -146,8 +146,15 @@ re-admits at each `roadmap_row_done` seam unless they explicitly elect it (logge
    rests on was not yet true. r7 also **hardens the guard it uses**: the P-VIII zero-network scan is
    import-/primitive-based today and does **not** detect a `fetch` call, so r7 makes it call-based
    and allowlists the one loopback module by name. Depends on `r3` (it completes r3's work rather
-   than redoing it); `r3` stays `done` @PR#3 and its delivered scope stands. **NC1 (the sync/async
-   fork) is open** and is now a gate-1/gate-2 question inside r7's own lane.
+   than redoing it); `r3` stays `done` @PR#3 and its delivered scope stands.
+   **Clarified 2026-09-19 — NC1–NC3 resolved** (`human@batorfi`): **NC1 = async HTTP + an async
+   spine** (`Resident.run` becomes async, threaded through `lane.run` → `walk` → `live-walk` →
+   `scheduler.schedule`), **NC2 = loopback is local + harden the guard** (no constitution amendment),
+   **NC3 = env-gated live tier** (`KILN_LIVE=1`, skip-with-record, fixture-based replay). **NC1's
+   resolution confirms the r7-before-r4 sequencing**: the breaking change to r4's payload is real, and
+   it now lands before r4 packages that surface. Decided on measured evidence — the `ollama` CLI
+   exposes no `--seed`/`--temperature` (3 runs → 3 digests), while the HTTP path reproduced
+   identically at temp 0 + seed 42.
 
 ### The distribution tail (r4–r6) — approved as proposed
 
@@ -192,8 +199,10 @@ The program is **approved** and **three rows are closed** (r1, r2, r3). At the r
     eligible* (dep r3 done) but **not yet begun** (`chain_unattended=false`; it stays `queued`, not
     `active`, per M4). r7 = **true live local inference** — a real Ollama-backed resident + the
     `OllamaReady` preflight probe, plus the call-based hardening of the P-VIII scan it relies on.
-    Spec **006-kiln-live-inference** is drafted and sits at **gate 1** with three clarifications
-    open. **Next action: resolve NC1 (the sync/async fork), then `/speckit.plan` for 006.**
+    Spec **006-kiln-live-inference** is drafted and **clarified** — NC1–NC3 were resolved by the
+    human on 2026-09-19 (NC1 = async HTTP + an async spine; NC2 = loopback is local + harden the
+    guard; NC3 = env-gated `KILN_LIVE=1` with skip-with-record). **Next action: `/speckit.plan` for
+    006.**
 5. **Then fire r4** (publish the kiln toolchain) — now `deps: [r2, r3, r7]`, so it becomes eligible
     when r7 closes. Its spec **005-kiln-publish** is already drafted and sits at gate 1 with NC1–NC3
     open; it stays valid as written. *Open correction for 005: the repo `batorfi/kiln` is **already

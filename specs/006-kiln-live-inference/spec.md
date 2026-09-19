@@ -6,15 +6,20 @@ row fires **before** `005-kiln-publish`, per the proposed `ordering`.)*
 
 **Created**: 2026-09-19
 
-**Status**: **Draft — pre-admission.** This spec describes **proposed** roadmap row **`r7`**, which is
-**NOT YET A ROW**: it exists only as the director's Gate-0 draft at
-[gate0-add-row-proposal.md](./gate0-add-row-proposal.md). Per **P-VI**, `r7` becomes real only when the
-human's `add-row` + `edit-rows` move lands in [specs/ROADMAP.md](../ROADMAP.md). **This spec is void
-unless that move is made.** Three decisions genuinely branch the work (**NC1 the sync/async fork ·
-NC2 the P-VIII loopback reconciliation · NC3 the test tiering**) and are held, unresolved, for the
-human's gate-1 sign-off. **NC1 is load-bearing: it decides whether this row is a single new file or a
-refactor of the lane spine, and it should be settled before the Gate-0 vote.** Nothing here admits a
-program, advances a gate, or runs a model.
+**Status**: **Draft — ADMITTED and CLARIFIED (2026-09-19); ready for `/speckit.plan`.** Roadmap row
+**`r7`** was admitted by the human's Gate-0 `add-row` + `edit-rows` move at **2026-09-19T20:24:57Z**
+(`human@batorfi`; see [specs/ROADMAP.md](../ROADMAP.md) and the director's draft at
+[gate0-add-row-proposal.md](./gate0-add-row-proposal.md)). **NC1 / NC2 / NC3 were resolved by the
+human on 2026-09-19** — see the Clarifications section below; each landed on the recommended option.
+
+**The load-bearing resolution: NC1 = async HTTP + an async spine.** `Resident.run` becomes
+asynchronous and `async` is threaded through `lane.run` → `walk` → `live-walk` →
+`scheduler.schedule` → both dogfood runners. **This confirms the sequencing Gate 0 voted in**: the
+breaking change to the surface r4 publishes is real, and it now lands *before* r4 packages that
+surface, rather than one row after.
+
+r7 remains **`queued`**, never `active`, until its own Gates 1–9 lane opens a live gate
+(`chain_unattended=false`; M4). Nothing here admits a program, advances a gate, or runs a model.
 
 **Input**: the proposed row **`r7`** — short *"true live local inference — a real Ollama-backed
 resident + an OllamaReady preflight probe that actually dials the endpoint"*, `deps: ["r3"]`,
@@ -236,6 +241,8 @@ still fails R5.
   independently falsifiable and **self-naming**.
 - **FR-006** When any precondition fails, the live tier SHALL **skip with a recorded reason** and
   SHALL NOT report success. The **offline suite SHALL remain green** with no Ollama installed.
+  *(NC3 = A: the live tier is gated behind an environment flag — `KILN_LIVE=1` — and the default
+  `node --test` run never requires a model.)*
 - **FR-007** The **constitutional invariants SHALL be re-asserted live**: `F-SINGLE` over live
   snapshots (P-III), realized switches `== switchCount(units)` (P-IV), every line-of-defense role
   bound `strongest` (P-II).
@@ -257,10 +264,17 @@ still fails R5.
   entry 4 / `004-kiln-live-walk/quickstart-run.md` / its implementation report) to describe what r3
   actually delivered. This is a **factual correction to the compliance evidence** (P-VII), **not** a
   rewrite of history: r3's delivered scope stands and stays `done` @PR#3.
-- **FR-015** r7 SHALL be **additive**: no new log `recordType`; r1's runtime, r2's overlay/
-  `OverlayCReady`, and r3's live-walk/`LiveModelReady` are **imported and extended**, not re-declared.
-  *(NC1 may require widening `Resident.run`'s signature — a **declared, spec'd** change, distinct from
-  an incidental rewrite.)*
+- **FR-015** r7 SHALL be **additive in substance**: no new log `recordType`; r1's runtime, r2's
+  overlay/`OverlayCReady`, and r3's live-walk/`LiveModelReady` are **imported and extended**, not
+  re-declared. **One declared exception (NC1 = B):** `Resident.run` becomes **asynchronous**, and
+  `async` is threaded through `lane.run` → `walk` → `live-walk` → `scheduler.schedule` → both dogfood
+  runners. This is a **spec'd, gate-reviewed signature change**, not an incidental rewrite; it SHALL
+  preserve every existing behavioural contract (`F-SINGLE`, `switchCount`, the emitted record shapes)
+  and SHALL be the **only** upstream signature r7 widens.
+- **FR-015a** *(NC1 = B.)* The async spine SHALL NOT introduce **concurrency**: exactly one unit is
+  in flight at any instant (P-III). `await`ing a single call is sequential; no `Promise.all`, no
+  overlapping units, no parallel residents. `assertSingleLane` SHALL continue to prove this over live
+  snapshots.
 - **FR-016** r7 SHALL **admit no program** and advance no gate: it fires the admitted program and
   **re-opens** Gate 0 at its close for the human's re-admission of `r4 → r6` (P-VI).
 - **FR-017** *(Scope guard.)* r7 SHALL NOT perform r4's publish, r5's installer, or r6's docs build.
@@ -312,10 +326,10 @@ still fails R5.
 
 - **Ollama is available on the operator's machine** (verified: v0.34.2 at `127.0.0.1:11434`, six models
   pulled). It is **not** assumed available on a newcomer's machine — hence FR-006.
-- **Loopback is not "cloud."** The working reading of P-VIII is that `127.0.0.1` is *local* and the
-  principle targets **external round-trips**. This is the intuitive reading and matches P-VIII's
-  rationale, but the *letter* of the principle and the guards' regexes do not currently distinguish
-  the two — which is exactly why **NC2** is held rather than assumed.
+- **Loopback is not "cloud."** ✅ **Settled at NC2 = A (2026-09-19):** `127.0.0.1` is *local*, and
+  P-VIII targets **external round-trips**. The principle's text stands unamended; its enforcement
+  gets **stronger** (call-based scan + a named allowlist + a narrow R5 allowance), so the exception is
+  declared rather than undetected.
 - **Temperature 0 plus a fixed seed is reproducible in-process** (verified: identical `sha256` twice),
   and **not** reproducible across reloads or version changes — hence the fixture in FR-009.
 - **The model quality question is out of scope.** A 12B local model may produce weak work product; the
@@ -325,11 +339,89 @@ still fails R5.
 
 ## Clarifications
 
-### Session 2026-09-19 (OPEN — gate-1; pending `human@batorfi`)
+### Session 2026-09-19 — **RESOLVED** (decided by `human@batorfi`)
 
-Three decisions genuinely branch the work. **NC1 should be settled before the Gate-0 vote on the row
-itself**, because it determines whether r7 is a single new file or a spine refactor — and therefore
-whether the sequencing argument for firing r7 before r4 holds at all.
+All three were decided on **2026-09-19**, after the Gate-0 `add-row` move, on measured evidence
+rather than description. Each landed on the recommended option.
+
+| # | Decision | Resolution |
+|---|---|---|
+| **NC1** | how a sync lane calls an async model | **Option B — async HTTP + an async spine** |
+| **NC2** | the P-VIII reconciliation | **Option A — loopback is local; harden the guard** |
+| **NC3** | test tiering | **Option A — env-gated, skip-with-record** |
+
+#### The evidence NC1 was decided on
+
+Both paths were measured against `gemma4:12b` on the operator's machine, warm, same prompt:
+
+| | subprocess (`ollama run`) | HTTP (`/api/chat`) |
+|---|---|---|
+| latency | 0.290 s | 0.28 s |
+| output hygiene | clean, zero ANSI — **but only** with `< /dev/null` and `--think=false` | clean JSON |
+| **reproducibility** | **3 runs → 3 different digests** | **identical digest, temp 0 + seed 42** |
+| available controls | `--think`, `--hidethinking`, `--format`, `--keepalive` | seed, temperature, think, streaming |
+| traps found | blocks indefinitely unless stdin is closed; emits ANSI spinner + `Thinking…` on a TTY | requires `async` |
+
+**The decisive finding: the CLI exposes no `--seed` and no `--temperature`.** The determinism this
+codebase leans on — a replayable emitted log, byte-identical renders, a stable captured fixture — is
+not reachable on the subprocess path without building a pinned Modelfile. The HTTP path delivers it
+directly and was verified to do so.
+
+---
+
+#### ✅ NC1 — **RESOLVED: Option B, async HTTP + an async spine**
+
+**Decision**: `fetch` the Ollama API; thread `async` through `lane.run` → `walk` → `live-walk` →
+`scheduler.schedule` → both dogfood runners. `Resident.run` becomes asynchronous.
+
+**Consequences accepted**:
+- **The spine changes, deliberately.** This is a **declared, spec'd** widening of `Resident.run`'s
+  signature — see FR-015, which distinguishes it from an incidental rewrite of upstream shapes.
+- **It confirms the r7-before-r4 sequencing.** The breaking change to r4's payload is real, so
+  landing it before the toolchain is packaged is exactly right. Had this resolved to subprocess, the
+  proposal's own counter-argument (§2) would have applied and r4-first would have been defensible.
+- **Full control is gained**: seed, temperature, `think: false`, and streaming — so FR-003's
+  visible-output discipline and FR-009's reproducible fixture are both directly satisfiable.
+- **P-III is unaffected in substance**: the lane still runs exactly one unit at a time; `await`ing a
+  single in-flight call is sequential, not concurrent. No parallelism is introduced.
+
+#### ✅ NC2 — **RESOLVED: Option A, loopback is local; harden the guard**
+
+**Decision**: `127.0.0.1` is **local** — P-VIII targets *external* round-trips — and the guard that
+polices it is made **strictly stronger** in the same change.
+
+**Consequences accepted**:
+- The zero-network scan becomes **call-based**, catching a `fetch(`/`http.request` in `kiln/src/`
+  that today's import-and-primitive regexes provably miss (verified against the actual regexes).
+- Exactly **one** module is allowlisted **by name** to reach the local endpoint; any other module
+  attempting it fails. The exception is declared and greppable, not undetected.
+- R5 gains a **narrow** allowance so the log can record *where* the resident ran, while a genuine
+  remote host still fails.
+- **No constitution amendment.** P-VIII's text stands; its *intent* is satisfied and its enforcement
+  improves. (NC2's option C remains available if loopback HTTP later becomes routine across rows.)
+
+#### ✅ NC3 — **RESOLVED: Option A, env-gated with skip-with-record**
+
+**Decision**: the live tier is gated behind an environment flag (`KILN_LIVE=1`); the default
+`node --test` run stays green with no Ollama present.
+
+**Consequences accepted**:
+- `OllamaReady` **skips with a recorded reason** — never a silent pass. This is P-V's
+  never-silently-approve applied to the suite itself, and it reuses r3's `F-NOT-SILENT` pattern.
+- Log replay (FR-009) runs from a **committed fixture**, not fresh live output — necessary because
+  determinism is not guaranteed across model reloads or Ollama upgrades.
+- The **clean-install promise survives**: r5's installer and r6's docs can tell a newcomer to clone
+  and test with nothing pulled, and that stays true.
+- Accepted risk: a gated path can rot. Mitigated by keeping the **invariants** (FR-007) and the
+  **cost assertion** (FR-008) in the gated tier, so running it exercises the real spine rather than a
+  smoke check.
+
+---
+
+### Original options, retained for the record
+
+<details>
+<summary>The three questions as posed at gate-1, before resolution</summary>
 
 #### Q (NC1) — How does a synchronous lane call an asynchronous model? **(load-bearing)**
 
@@ -378,6 +470,8 @@ in anyone's loop rots immediately.
 | **B** | **Live required** — the suite is red without Ollama. | Maximum pressure to keep the live path working; breaks the newcomer install story r5/r6 depend on. |
 | **C** | **A separate command only** (`npm run live-inference`), never in `node --test`. | Zero risk to the suite; highest chance of silent rot, since nothing in the normal loop touches it. |
 | Custom | Your own tiering. | — |
+
+</details>
 
 ---
 
