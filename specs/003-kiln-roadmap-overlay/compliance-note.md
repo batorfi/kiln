@@ -1,5 +1,15 @@
 # Compliance note — 003-kiln-roadmap-overlay (r2)
 
+<!-- r7-correction -->
+> **⚠ Correction recorded by r7 (2026-09-20) — read this first. The original text below is preserved verbatim (P-VII).**
+>
+> **The "zero-network / zero-cloud (P-VIII)" check cited below was vacuous.** The probe guarded its scan with
+> `fileExists(dir)` — `statSync(p).isFile()`, `false` for a directory — and so skipped **every** directory and examined **zero
+> files** (`overlay-ready` scanned `ui`/`contracts`/`validate` but never `src`). A planted external import, `require("http")`
+> and a bare `fetch` in `kiln/src` left the probes green. The *code* was, and is, dependency-free; the *proof* could not have
+> shown otherwise. r7 replaced the three copies with one shared, never-vacuous scan (`kiln/validate/_netscan.ts`). Full account:
+> [`specs/006-kiln-live-inference/compliance-note.md`](../006-kiln-live-inference/compliance-note.md).
+
 **Verdict: COMPLIANT.** r2 (**Layer C — the Roadmap overlay**, r2 of the program) draws the
 zoom-out surface on top of r1's lane spine and is *judged by* 001's unmodified
 `kiln/validate/log.ts` + `kiln/validate/roadmap.ts` and its r1 sibling

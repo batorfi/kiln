@@ -51,7 +51,7 @@ Everything pure stays synchronous.
 | `lane.yield_` | `lane.makeLane`, `hold`, `resume`, `snap` |
 | `lane.run` | `lane.assertSingleLane`, `hasSwapTransition` |
 | `scheduler.schedule` | `scheduler.switchCount`, `lodUnitsBoundStrongest`, `roles.bindRole` |
-| `walk.buildStubWalk`, `walk.buildProgramWalk` | all of `kiln/ui/*` (pure renders) |
+| `walk.buildStubWalk` *(+ its two direct `resident.run` calls)* | all of `kiln/ui/*` (pure renders) · **`walk.buildProgramWalk`** *(awaits no resident — corrected during implement)* |
 | `live-walk.buildLiveWalk` | `log-writer` (in-memory accumulator), `clock`, `gate.*` |
 | `validate/runtime-ready.checkRuntimeReady` | `validate/log.ts`, `roadmap.ts`, `_core.ts`, `_report.ts` |
 | `validate/overlay-ready.checkOverlayReady` | — |
@@ -78,13 +78,16 @@ explicit non-zero exit on a rejected promise, and D8 adds a test that a *forgott
 
 - `bindAll(units)` — **sync**; performs the `bindRole` loop that rejects a sub-`strongest`
   line-of-defense binding (P-II / G2 / L1).
-- `schedule(units, resident)` — **async**; calls `bindAll` first, then `await run(...)`.
+- `schedule(units, resident)` — returns a **Promise** but is deliberately **not declared `async`**: it calls
+  `bindAll` synchronously *first*, then returns `run(...)`.
 
-**Rationale**: `kiln/tests/scheduler/scheduler.test.ts:35,40` assert the config error with
-`assert.throws(() => schedule(...))`. If `schedule` became a bare `async`, the throw would become a
-**rejected promise** and `assert.throws` would silently pass on the *unrejected* promise object —
-a false green in the P-II guard. Splitting keeps a **synchronous throw** available for the
-configuration error while the run half is async.
+**Rationale** *(corrected during `/speckit.implement` — see the section at the end)*:
+`kiln/tests/scheduler/scheduler.test.ts:35,40` assert the config error with `assert.throws(() => schedule(...))`.
+A throw inside an `async` function becomes a **rejected promise**, so a config error would stop being a synchronous
+throw and P-II's *"rejected at schedule time, before anything runs"* would weaken. *(The first draft said
+`assert.throws` would then "silently pass"; **measured, it fails loudly**. The real vacuity is the opposite assertion —
+`assert.doesNotThrow(() => schedule(...))` passes on a rejection.)* Keeping `schedule` a plain function returning a
+promise preserves a **synchronous throw** for the configuration error with `assert.throws` **unchanged**.
 
 **Alternatives rejected**:
 - **Convert the tests to `assert.rejects`** — works, but it moves a *configuration* error (knowable
@@ -154,11 +157,11 @@ address. A ledger is for reconstructing decisions, and `127.0.0.1:11434` is nois
 
 1. **A call-based pattern** catching `fetch(`, `http.request(`, `https.request(`, and
    `new URL(` on a non-loopback literal — in addition to today's import/primitive patterns.
-2. **A single-module allowlist by name** (`LOOPBACK_ALLOWLIST = ["ollama-resident.ts"]`). Any
+2. **A single-module allowlist by kiln-relative path** (`LOOPBACK_ALLOWLIST = ["src/ollama-resident.ts"]`). Any
    **other** module in `kiln/src`, `kiln/ui`, `kiln/validate`, `kiln/contracts` making such a call
    fails, **named**.
 3. **A loopback-literal assertion** on the allowlisted module: its target must resolve to
-   `127.0.0.1`/`localhost`/`$OLLAMA_HOST`; a public host in that module fails too.
+   loopback (`127.0.0.0/8` / `localhost` / `::1`) — **including when it arrives via `$OLLAMA_HOST`**, which is honoured only if it names loopback; a public host in that module fails too.
 4. **`kiln/src` is now in scope** for the `fetch(` check — today only `kiln/ui` is scanned for it
    (`tests/ui/ui.test.ts:56`, `tests/live-tui/live-tui.test.ts:46`).
 
@@ -243,3 +246,23 @@ resident is not.
 D1/D2/D3 → FR-015, FR-015a, NC1 · D4 → FR-001, FR-003, FR-009 · D5 → FR-012, P-VII/R5 ·
 D6 → FR-010, FR-011, SC-007, NC2 · D7 → FR-005, FR-006, SC-002, NC3 · D8 → FR-007, SC-004 ·
 D9 → FR-009, SC-006.
+
+---
+
+## Corrections recorded during `/speckit.implement` (2026-09-20)
+
+Phase 0 was right in shape and wrong in six details; each was found by *running* something. The full account, with
+evidence, is in [compliance-note.md](./compliance-note.md) § *Where implementation departed from the plan*. In short:
+
+- **D2** — `buildProgramWalk` awaits no resident and stays **synchronous**; `buildStubWalk` had two direct `resident.run`
+  calls the count missed; three probe-test files also needed `await`.
+- **D3** — corrected in place above: `assert.throws` on an async function **fails loudly** (it does not "silently pass");
+  the vacuous form is `assert.doesNotThrow(() => schedule(...))`. `schedule` is a non-`async` function.
+- **D6** — the pre-r7 scan was not merely *fetch-blind*: it was **vacuous** (`runtime-ready`/`live-ready` scanned zero files
+  because `fileExists(dir)` is `isFile()`, false for a directory; `overlay-ready` never scanned `kiln/src`). The allowlist
+  key is a kiln-relative **path**, and `OLLAMA_HOST` is honoured only if loopback.
+- **D8** — the forgotten-`await` hazard is at the **test callers**, not inside probes. Measured: exactly one assertion
+  passed vacuously; the guard is a static scan, with planted cases and a mutation test.
+- **FR-015** — beyond `Resident.run`, wiring a real resident needed *additive optional* fields on r3's selector/walk options.
+- **E5 / P-IV** — the cold/warm ratio is not a constant (~64× on a first-ever load from disk; 6.1× with the weights in the
+  OS page cache), so the test asserts a conservative floor.

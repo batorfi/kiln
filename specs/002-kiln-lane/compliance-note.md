@@ -1,5 +1,15 @@
 # Compliance Note — 002-kiln-lane (r1)
 
+<!-- r7-correction -->
+> **⚠ Correction recorded by r7 (2026-09-20) — read this first. The original text below is preserved verbatim (P-VII).**
+>
+> **The "zero-network / zero-cloud (P-VIII)" check cited below was vacuous.** The probe guarded its scan with
+> `fileExists(dir)` — `statSync(p).isFile()`, `false` for a directory — and so skipped **every** directory and examined **zero
+> files** (`overlay-ready` scanned `ui`/`contracts`/`validate` but never `src`). A planted external import, `require("http")`
+> and a bare `fetch` in `kiln/src` left the probes green. The *code* was, and is, dependency-free; the *proof* could not have
+> shown otherwise. r7 replaced the three copies with one shared, never-vacuous scan (`kiln/validate/_netscan.ts`). Full account:
+> [`specs/006-kiln-live-inference/compliance-note.md`](../006-kiln-live-inference/compliance-note.md).
+
 **Date**: 2026-09-13 · **Reviewed by**: (line-of-defense, at Gate 1–9 of r1 — a later human move) ·
 **Verdict**: **COMPLIANT** — r1 added **no** cloud, **no** parallelism, **no** timer/socket/server,
 and **advanced no gate / admitted no program**. The emitted log **is** the compliance evidence

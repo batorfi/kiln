@@ -62,7 +62,7 @@ closed row.
 ## R6 — The hardened scan (E6)
 
 ```
-LOOPBACK_ALLOWLIST = ["ollama-resident.ts"]      // EXACTLY one entry
+LOOPBACK_ALLOWLIST = ["src/ollama-resident.ts"]  // EXACTLY one entry — a kiln-relative PATH, not a bare basename
 ```
 
 | Element | Requirement |
@@ -70,7 +70,7 @@ LOOPBACK_ALLOWLIST = ["ollama-resident.ts"]      // EXACTLY one entry
 | call-based patterns | `fetch(`, `http.request(`, `https.request(`, non-loopback `new URL(` — **added to** today's import/primitive patterns, never replacing them |
 | scan scope | `kiln/src`, `kiln/ui`, `kiln/validate`, `kiln/contracts` — **`kiln/src` newly covered for `fetch(`** |
 | allowlist | exactly one module; a second entry fails check (f) |
-| loopback assertion | the allowlisted module's target must be `127.0.0.1` / `localhost` / `$OLLAMA_HOST` |
+| loopback assertion | the allowlisted module's target must be loopback (`127.0.0.0/8` / `localhost` / `::1`); `$OLLAMA_HOST` is honoured **only if it names loopback** |
 | strictly stronger | everything the old scan caught, it still catches |
 
 **Why this is mandatory, with evidence**: the present guard is import-and-primitive based and was

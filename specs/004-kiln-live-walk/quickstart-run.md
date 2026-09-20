@@ -1,5 +1,31 @@
 # Quickstart run — 004-kiln-live-walk (r3)
 
+<!-- r7-correction -->
+> **⚠ Correction recorded by r7 (2026-09-20) — read this first. The original text below is preserved verbatim (P-VII: recorded, never rewritten).**
+>
+> **1 · "the kiln fires LIVE" was not yet true.** r3's "live" resident, `makeLiveResident` (`kiln/src/live-resident.ts`), is a
+> *deterministic pure function* returning `{ran: "live", via: <model>, …}`. Before r7 there was **no Ollama client, no `fetch`
+> and no subprocess anywhere in `kiln/`**, the resident's return value was discarded at a bare `resident.run(unit)`
+> (`lane.ts`), and `DEFAULT_LOCAL_MODEL` (`ollama/llama3.2:3b`) named a model that was **never installed** on the reference
+> host — nothing could ever fail to resolve it. Read "fires LIVE" / "live model" below as *"walks the full rail through a
+> deterministic adapter"*.
+>
+> **2 · The "zero-network / zero-cloud" checks cited below were vacuous.** `runtime-ready` and `live-ready` guarded their scan
+> with `fileExists(dir)` — `statSync(p).isFile()`, which is `false` for a directory — so they skipped **every** directory and
+> examined **zero files**; `overlay-ready` scanned `ui`/`contracts`/`validate` but never `src`. A planted external import,
+> `require("http")` **and** a bare `fetch` in `kiln/src` left all three probes green. "Zero-cloud" was true of the code, but
+> the probes could not have shown otherwise.
+>
+> **What r3 delivered and STILL STANDS:** the full nine-gate walk; the log-replay net (a clean walk PASSes 001's `log.ts`, a
+> broken no-`decidedBy` walk FAILs by a named R3); the recorded `--live`/`--stub` toggle (`F-NOT-SILENT`); the live TUI
+> smoke of Layers A/B/C; and `LiveModelReady`, which proves the live path is **wired** — *necessary, not sufficient* (an
+> adapter satisfies it). r3 stays `done` @PR#3.
+>
+> **Where it was made true:** row **r7** (`specs/006-kiln-live-inference/`) — a real Ollama resident
+> (`kiln/src/ollama-resident.ts`), `OllamaReady` (which fails a *claimed* live run that *performed* no round-trip), and one
+> shared, genuinely-scanning P-VIII guard (`kiln/validate/_netscan.ts`). Full account:
+> [`specs/006-kiln-live-inference/compliance-note.md`](../006-kiln-live-inference/compliance-note.md).
+
 **Result: PASS.** Every scenario (S1–S8) reproduces its "Expect" from
 [quickstart.md](./quickstart.md). The spine of r3 holds: a **live full-nine-gate walk PASSES 001's
 `kiln/validate/log.ts`** (with a human `decidedBy` per gate or a distinct `pre-delegation`) while a

@@ -22,10 +22,11 @@ run(workUnit: WorkUnit): unknown | Promise<unknown>     // was: unknown
 ## A2 — The propagation set (closed)
 
 **Async**: `lane.yield_`, `lane.run`, `scheduler.schedule`, `walk.buildStubWalk`,
-`walk.buildProgramWalk`, `live-walk.buildLiveWalk`, `runtime-ready.checkRuntimeReady`,
+`live-walk.buildLiveWalk`, `runtime-ready.checkRuntimeReady`,
 `overlay-ready.checkOverlayReady`, `live-ready.checkLiveModelReady`, `ollama-ready.checkOllamaReady`.
 
 **Must remain synchronous**: `makeLane`, `hold`, `resume`, `assertSingleLane`, `hasSwapTransition`,
+`walk.buildProgramWalk` *(it awaits no resident — it only emits records; corrected during implement)*,
 `switchCount`, `lodUnitsBoundStrongest`, `bindRole`, `bindAll`, the whole of `kiln/ui/*`,
 `log-writer`, `clock`, every `gate.*` helper, and every `kiln/validate` module that only *reads*
 (`log.ts`, `roadmap.ts`, `_core.ts`, `_report.ts`).
@@ -36,10 +37,12 @@ Adding a function to the async set is a contract change requiring a gate.
 
 ```
 bindAll(units: WorkUnit[]): void        // sync; throws on a sub-strongest LoD binding
-schedule(units, resident): Promise<WalkResult>   // calls bindAll() FIRST, then awaits run()
+schedule(units, resident): Promise<WalkResult>   // NOT `async`: calls bindAll() synchronously FIRST, then returns run()
 ```
 
-**Rule**: a line-of-defense role bound below `strongest` throws **synchronously**, before any I/O.
+**Rule**: a line-of-defense role bound below `strongest` throws **synchronously**, before any I/O — *including via
+`schedule` itself*, because `schedule` is a plain function returning a promise, not an `async` one (a throw inside an
+`async` function would become a rejection).
 P-II's guarantee is that a weak judge is rejected *at schedule time, before anything runs*; a rejected
 promise would weaken that and would make `assert.throws` silently pass on an unrejected promise
 object (`tests/scheduler/scheduler.test.ts:35,40`).

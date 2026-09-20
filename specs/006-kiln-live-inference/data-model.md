@@ -123,7 +123,7 @@ model does not turn a true claim into a red suite. This is the first assertion o
 | `LOOPBACK_ALLOWLIST` | `readonly string[]` | **Exactly one** entry: the live resident module. A second entry fails check (f). |
 | call-based patterns | `RegExp[]` | `fetch(`, `http.request(`, `https.request(`, non-loopback `new URL(` — **in addition to** today's import/primitive patterns. |
 | scan scope | `string[]` | `kiln/src`, `kiln/ui`, `kiln/validate`, `kiln/contracts` — `kiln/src` is **newly** covered for `fetch(`. |
-| loopback assertion | predicate | The allowlisted module's target must be `127.0.0.1` / `localhost` / `$OLLAMA_HOST`. |
+| loopback assertion | predicate | The allowlisted module's target must be loopback; `$OLLAMA_HOST` is honoured **only if it names loopback**. The allowlist key is the kiln-relative path `src/ollama-resident.ts`. |
 
 **Validation rules**
 1. A planted `fetch(` in a **non**-allowlisted `kiln/src` module **fails, named** (today: undetected —
