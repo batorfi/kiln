@@ -24,7 +24,7 @@
 // them (D8). No cloud (P-VIII), no server (P-IX): it writes only 001's records to a LogWriter.
 
 import { LogWriter } from "./log-writer.ts";
-import { makeLane, run, assertSingleLane, type Lane } from "./lane.ts";
+import { makeLane, run, assertSingleLane, LaneRunError, type Lane } from "./lane.ts";
 import { makePreDelegation, tokenFor, type Gate } from "./gate.ts";
 import { makeClock, type Clock } from "./clock.ts";
 import { switchCount } from "./scheduler.ts";
@@ -55,6 +55,29 @@ const THROWAWAY_UNITS: WorkUnit[] = [
   { id: "docs", role: "docs-synthesizer", tier: "strongest" },
   { id: "pr", role: "pr-writer", tier: "standard" }, // → swap #3
 ];
+
+/** Which gate each throwaway unit feeds — where a failed unit's durable `wait` is recorded (CR-3). */
+const UNIT_GATE: Record<string, number> = { triage: 1, concept: 1, architecture: 2, spec: 3, plan: 4, review: 6, verify: 7, docs: 8, pr: 9 };
+
+/**
+ * A live walk HALTED because a unit failed (CR-3). It is deliberately still a LOUD exception — a caller that ignores it cannot mistake a
+ * halted walk for a finished one — but it carries the PARTIAL ledger, which already holds a durable `wait` naming the failed unit and
+ * the failure code. Before this, the exception discarded the in-memory writer and the failure left NO record at all (P-VII; the spec's
+ * edge case says a hanging call is "bounded and recorded"). `walk.lines` passes 001's `log.ts`: a `wait` is the one legal shape for an
+ * unresolved gate, and the halt is a distinct, recorded outcome — never a silent approval.
+ */
+export class WalkHaltedError extends Error {
+  readonly walk: LiveWalk;
+  readonly unit: string;
+  readonly code: string;
+  constructor(unit: string, code: string, cause: unknown, walk: LiveWalk) {
+    super(`live walk HALTED at unit "${unit}" (${code}): ${(cause as Error)?.message ?? String(cause)}`, { cause });
+    this.name = "WalkHaltedError";
+    this.walk = walk;
+    this.unit = unit;
+    this.code = code;
+  }
+}
 
 export interface LiveWalkOptions {
    clock?: Clock;
@@ -95,6 +118,8 @@ export interface LiveWalk {
    resident: ResidentSelection; // E3: the selection (live default; `--stub` RECORDED)
    expectedSwitches: number; // `switchCount(THROWAWAY_UNITS)` — the P-IV counter the tax must equal
    broken: boolean; // whether the no-silent-approval hole was opened
+   /** CR-3: present ONLY on the partial walk carried by a `WalkHaltedError` — the unit that failed and its failure code. */
+   failure?: { unit: string; code: string };
 }
 
 /** Build a LIVE, full-rail nine-gate walk over the throwaway (E2, D7). */
@@ -140,10 +165,31 @@ export async function buildLiveWalk(opts: LiveWalkOptions = {}): Promise<LiveWal
       { id: "r3", short: "first live-model smoke walk", deps: ["r1"], status: "active", gate: 1 },
      ],
    });
-  const res = await run(lane, THROWAWAY_UNITS, resident.resident, (ev) => { // r7: async spine (NC1=B), still ONE unit in flight
-   if ("kind" in ev) emit({ recordType: "transition", transition: ev });
-       else emit({ recordType: "cost", cost: ev });
-   });
+  let res: Awaited<ReturnType<typeof run>>;
+  try {
+    res = await run(lane, THROWAWAY_UNITS, resident.resident, (ev) => { // r7: async spine (NC1=B), still ONE unit in flight
+     if ("kind" in ev) emit({ recordType: "transition", transition: ev });
+         else emit({ recordType: "cost", cost: ev });
+     });
+  } catch (e) {
+    if (!(e instanceof LaneRunError)) throw e;
+    // CR-3: a unit FAILED. Record it durably (P-VII/P-V): a `hold` transition naming the unit and the failure CODE (never the error text,
+    // which may quote server output), then a `wait` at the gate that unit feeds — the lane halts for a human, it does not advance.
+    const code = String((e.cause as { code?: unknown } | undefined)?.code ?? "error");
+    const gateId = (UNIT_GATE[e.unitId] ?? 1) as Gate["id"];
+    const hg: Gate = { id: gateId, open: true };
+    gates.push(hg);
+    emit({ recordType: "transition", transition: { kind: "hold", to: e.unitId, reason: `unit "${e.unitId}" FAILED (${code}) — the lane HALTS for a human; it does not advance` } });
+    const waitRec = { gate: String(gateId), token: tokenFor(hg), deadline: clock.now() };
+    hg.wait = waitRec;
+    emit({ recordType: "wait", wait: waitRec });
+    const partialLines = writer.drain().slice();
+    const halted: LiveWalk = {
+      writer, lines: partialLines, jsonl: partialLines.join("\n"), snapshots: e.partial.snapshots, outputs: e.partial.outputs,
+      switches: e.partial.switches, gates, mode, resident, expectedSwitches, broken: false, failure: { unit: e.unitId, code },
+    };
+    throw new WalkHaltedError(e.unitId, code, e.cause, halted);
+  }
 
   // A human-decided gate-completion (R3 via `decidedBy`) — the LIVE gates a human closes (FR-001/SC-001).
   const decide = (gateId: Gate["id"], move: string) => {

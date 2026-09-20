@@ -266,3 +266,5 @@ evidence, is in [compliance-note.md](./compliance-note.md) § *Where implementat
 - **FR-015** — beyond `Resident.run`, wiring a real resident needed *additive optional* fields on r3's selector/walk options.
 - **E5 / P-IV** — the cold/warm ratio is not a constant (~64× on a first-ever load from disk; 6.1× with the weights in the
   OS page cache), so the test asserts a conservative floor.
+- **D6 (code review).** The first scan could still be fooled: comments were stripped with a regex, so a `//` inside a string deleted a later call, and the walk was
+  non-recursive and `.ts`-only. It now uses a small tokenizer, recurses, and flags aliasing/computed access. It is documented as a *lint, not a sandbox*.

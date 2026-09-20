@@ -12,6 +12,7 @@ import { makeOllamaResident } from "../../src/ollama-resident.ts";
 import { makeStubResident, type Resident, type WorkUnit } from "../../src/stub-resident.ts";
 import { DEFAULT_LOCAL_MODEL } from "../../src/live-resident.ts";
 import { run, makeLane } from "../../src/lane.ts";
+import { tokenize } from "../../validate/_netscan.ts";
 
 /** Wrap a resident so the maximum number of units IN FLIGHT AT ONCE is measured. */
 function measured(inner: Resident, delayMs = 0) {
@@ -31,7 +32,7 @@ test("A4 (static): no `Promise.all` / `race` / `any` / `allSettled` in kiln/src 
   const dir = fileURLToPath(new URL("../../src", import.meta.url));
   const offenders: string[] = [];
   for (const f of readdirSync(dir).filter((n) => n.endsWith(".ts"))) {
-    const code = readFileSync(`${dir}/${f}`, "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:"'`\\])\/\/.*$/gm, "$1");
+    const code = tokenize(readFileSync(`${dir}/${f}`, "utf8")).blanked; // CR-12: one tokenizer, not a second regex copy
     if (/\bPromise\s*\.\s*(?:all|race|any|allSettled)\s*\(/.test(code)) offenders.push(f);
   }
   assert.deepEqual(offenders, [], `concurrency primitives found in: ${offenders.join(", ")}`);

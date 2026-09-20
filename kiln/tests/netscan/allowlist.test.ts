@@ -5,7 +5,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { scanText, LOOPBACK_ALLOWLIST, LOOPBACK_HOST, allowlistIsSingle } from "../../validate/_netscan.ts";
+import { scanText, LOOPBACK_ALLOWLIST, allowlistIsSingle } from "../../validate/_netscan.ts";
 import { isLoopbackHost } from "../../src/ollama-resident.ts";
 
 const FETCH_LOOPBACK = "export const go = (h: string) => fetch(`http://${h}/api/chat`);";
@@ -47,9 +47,14 @@ test("the allowlist does NOT excuse the OTHER rules — the allowlisted module s
   }
 });
 
-test("drift guard: the scan's loopback definition and the resident's agree on every host", () => {
-  for (const h of ["127.0.0.1", "127.5.5.5", "localhost", "LOCALHOST", "::1", "[::1]", "0.0.0.0", "10.0.0.5", "192.168.1.9", "example.com", "127.0.0.1.evil.com", "localhost.evil.com"]) {
-    assert.equal(LOOPBACK_HOST.test(h), isLoopbackHost(h), `the two definitions must agree on "${h}"`);
+test("CR-12: ONE loopback definition — the scan's URL-literal check and the resident's host check give the same verdict on every host", () => {
+  // `_netscan.ts` now IMPORTS `isLoopbackHost` instead of keeping a copy, so they cannot drift; this pins the verdicts.
+  const verdicts: [string, boolean][] = [["127.0.0.1", true], ["127.5.5.5", true], ["127.255.255.255", true], ["localhost", true], ["LOCALHOST", true], ["::1", true], ["[::1]", true],
+    ["0.0.0.0", false], ["10.0.0.5", false], ["192.168.1.9", false], ["example.com", false], ["127.0.0.1.evil.com", false], ["localhost.evil.com", false],
+    ["127.999.999.999", false], ["127.0.0.256", false], ["127.1", false]];
+  for (const [h, want] of verdicts) {
+    assert.equal(isLoopbackHost(h), want, `isLoopbackHost("${h}")`);
+    const flagged = scanText(`export const u = "http://${h}/x";`, "/x/kiln/src/ollama-resident.ts").some((o) => /non-loopback URL literal/.test(o));
+    assert.equal(flagged, !want, `the scan's literal check must agree on "${h}"`);
   }
-  assert.equal(isLoopbackHost("127.0.0.1.evil.com"), false, "a look-alike host is not loopback");
 });

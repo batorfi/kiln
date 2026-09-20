@@ -3,7 +3,7 @@
 // the ORIGINAL regexes are reproduced verbatim below, so this file demonstrates the gap rather than asserting it.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync, mkdirSync, statSync } from "node:fs";
+import { mkdtempSync, writeFileSync, mkdirSync, statSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -52,18 +52,20 @@ test("S3: prose is not code — a comment mentioning fetch( / http.request( neve
   assert.deepEqual(scanText(src, "/x/kiln/src/prose.ts"), []);
 });
 
-test("SC-007: the scan is NEVER VACUOUS — the pre-r7 guard `fileExists(dir)` was `isFile()`, false for every directory", () => {
+test("SC-007: the scan is NEVER VACUOUS — the pre-r7 guard `fileExists(dir)` was `isFile()`, false for every directory", (t) => {
   const dir = fileURLToPath(new URL("../../src", import.meta.url));
   assert.equal(statSync(dir).isFile(), false, "a directory is not a file: the old guard `!fileExists(dir) → continue` skipped EVERY directory");
   // …so the old runtime-ready/live-ready scans examined ZERO files and passed. The shared scan refuses to:
   const empty = mkdtempSync(join(tmpdir(), "kiln-netscan-empty-"));
+  t.after(() => rmSync(empty, { recursive: true, force: true }));
   assert.equal(zeroNetworkScan([empty], "x").ok, false, "scanning zero files is a FAILURE");
   assert.match(zeroNetworkScan([empty], "x").detail, /ZERO files/);
   assert.equal(zeroNetworkScan(["/no/such/dir"], "x").ok, false, "a missing directory is a FAILURE, not a skip");
 });
 
-test("SC-007: a directory-level scan finds a planted violation the old probes provably missed", () => {
+test("SC-007: a directory-level scan finds a planted violation the old probes provably missed", (t) => {
   const dir = mkdtempSync(join(tmpdir(), "kiln-netscan-plant-"));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
   mkdirSync(join(dir, "src"));
   writeFileSync(join(dir, "src", "planted.ts"), `import leftPad from "left-pad";\nconst s = require("http");\n${REMOTE_FETCH}\n`);
   const r = zeroNetworkScan([join(dir, "src")], "ok");

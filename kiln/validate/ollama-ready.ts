@@ -29,7 +29,7 @@ import { checkLiveModelReady, type LiveModelReadyOverride, type LiveModelReadyRe
 import type { Check } from "./overlay-ready.ts";
 import { makeOllamaResident, OllamaError, type OllamaResident } from "../src/ollama-resident.ts";
 import { makeLiveResident, DEFAULT_LOCAL_MODEL, isResidentSelectionRecorded } from "../src/live-resident.ts";
-import { buildLiveWalk } from "../src/live-walk.ts";
+import { buildLiveWalk, WalkHaltedError } from "../src/live-walk.ts";
 import type { Resident } from "../src/stub-resident.ts";
 import { validateLog } from "./log.ts";
 import { zeroNetworkScan, SCAN_DIRS, LOOPBACK_ALLOWLIST, allowlistIsSingle } from "./_netscan.ts";
@@ -42,6 +42,8 @@ export interface OllamaReadyOverride extends LiveModelReadyOverride {
   emptyVisible?: boolean; // `--empty-visible`: a resident whose visible output is empty
   forgedLive?: boolean; // `--forged-live`: CLAIM `live @ loopback` while driving the walk with a deterministic adapter
   extraLoopback?: boolean; // `--extra-loopback`: a SECOND loopback allowlist entry
+  /** CR-9: an OVERALL deadline for the dialing walk (default 10 min). The resident bounds ONE call (300 s); the probe drives nine. */
+  deadlineMs?: number;
   /** Inject the resident (tests / stand-ins). Default: the real `makeOllamaResident`. */
   resident?: OllamaResident;
   model?: string;
@@ -61,6 +63,14 @@ const parse = (lines: string[]): Record<string, unknown>[] => lines.filter((l) =
 const dirOf = (rel: string) => fileURLToPath(new URL(rel, import.meta.url));
 const schemaPath = dirOf("../schemas/factory-log.schema.json");
 const indexPath = dirOf("../index.ts");
+
+/** Race `p` against an overall deadline (CR-9). The loser is left to finish on its own; its rejection is swallowed, never unhandled. */
+function withDeadline<T>(p: Promise<T>, ms: number): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const late = new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error(`DEADLINE:${ms}`)), ms); });
+  p.catch(() => undefined);
+  return Promise.race([p, late]).finally(() => clearTimeout(timer));
+}
 
 export async function checkOllamaReady(override: OllamaReadyOverride = {}): Promise<OllamaReadyResult> {
   const checks: Check[] = [];
@@ -118,7 +128,14 @@ export async function checkOllamaReady(override: OllamaReadyOverride = {}): Prom
     checks.push({ name: "(a) the endpoint answers", ok: true, detail: "GET /api/tags answered" });
     checks.push({ name: `(b) the named model "${ollama.model()}" is installed`, ok: true, detail: "present in /api/tags" });
   } catch (e) {
-    const code = e instanceof OllamaError ? e.code : "endpoint-unreachable";
+    // CR-6/CR-9: "absent" (nothing answered, or too slow) is a SKIP with a reason; "MISBEHAVING" (it answered, but with an error status, a
+    // redirect, or a body that is not JSON) is a FAILURE named by its real code — it must not be mislabelled "endpoint-unreachable",
+    // and it must not be excused as a skip.
+    const code = e instanceof OllamaError ? e.code : "unknown";
+    if (code !== "model-missing" && code !== "endpoint-unreachable" && code !== "timeout") {
+      checks.push({ name: "(a) the endpoint answers", ok: false, detail: `the endpoint answered but MISBEHAVED (${code}): ${(e as Error).message}` });
+      return { ready: false, skipped: false, checks, live };
+    }
     if (code === "model-missing") {
       checks.push({ name: "(a) the endpoint answers", ok: true, detail: "GET /api/tags answered" });
       checks.push({ name: `(b) the named model "${model}" is installed`, ok: false, detail: `model "${model}" is NOT installed: ${(e as Error).message}` });
@@ -134,16 +151,22 @@ export async function checkOllamaReady(override: OllamaReadyOverride = {}): Prom
   let walk: Awaited<ReturnType<typeof buildLiveWalk>> | undefined;
   let walkErr: unknown;
   try {
-    walk = await buildLiveWalk({ mode: "live", resident: driving, location: "loopback", model: ollama.model() });
+    walk = await withDeadline(buildLiveWalk({ mode: "live", resident: driving, location: "loopback", model: ollama.model() }), override.deadlineMs ?? 600_000);
   } catch (e) {
     walkErr = e;
   }
   if (!walk) {
-    const code = walkErr instanceof OllamaError ? walkErr.code : "error";
+    const deadline = /^DEADLINE:/.test((walkErr as Error)?.message ?? "");
+    // CR-3: a failed unit now surfaces as a WalkHaltedError carrying the failure CODE (and a partial ledger with a durable wait).
+    const code = walkErr instanceof WalkHaltedError ? walkErr.code : walkErr instanceof OllamaError ? walkErr.code : "error";
     checks.push({
       name: "(c) a round-trip returns non-empty VISIBLE content",
       ok: false,
-      detail: code === "empty-visible" ? `EMPTY VISIBLE OUTPUT: ${(walkErr as Error).message}` : `the live walk failed (${code}): ${(walkErr as Error)?.message ?? String(walkErr)}`,
+      detail: deadline
+        ? `the live walk exceeded the probe's OVERALL deadline (${override.deadlineMs ?? 600_000} ms) — a stuck server cannot hold the probe indefinitely`
+        : code === "empty-visible"
+          ? `EMPTY VISIBLE OUTPUT: ${(walkErr as Error).message}`
+          : `the live walk HALTED (${code})${walkErr instanceof WalkHaltedError ? ` at unit "${walkErr.unit}" — a durable wait was recorded` : ""}: ${(walkErr as Error)?.message ?? String(walkErr)}`,
     });
     checks.push({ name: "(e) a CLAIMED live run is a PERFORMED one", ok: false, detail: "not evaluated — the walk did not complete (see c)" });
     return { ready: false, skipped: false, checks, live };
@@ -162,9 +185,19 @@ export async function checkOllamaReady(override: OllamaReadyOverride = {}): Prom
           : `${walk.outputs.length} unit output(s), all non-empty; the emitted log (${walk.lines.length} records) PASSES 001's unmodified log.ts (R1–R6)`,
   });
 
+  // (d) again, on the walk that was ACTUALLY driven (CR-9): the check above proves the recording MECHANISM on a stand-in; this proves
+  // the INSTANCE — that the walk whose round-trips are counted below recorded its own selection.
+  const drivenRecorded = isResidentSelectionRecorded(parse(walk.lines), "live") && walk.lines.some((l) => /@ loopback/.test(l));
+  checks.push({
+    name: "(d) the DRIVING walk records its own resident selection (F-NOT-SILENT)",
+    ok: drivenRecorded,
+    detail: drivenRecorded ? "the walk that made the round-trips recorded `live … @ loopback` in its own ledger" : "the walk that was driven recorded NO live selection — a silent stand-in",
+  });
+
+  // (e): the walk always CLAIMS `live @ loopback` (the probe passes `location`), so the claim is compared with what was PERFORMED.
+  // (CR-9: the earlier `!claimed ||` escape was unreachable and suggested a claim-less run could pass; it is gone.)
   const performed = ollama.roundTrips() - before;
-  const claimed = walk.lines.some((l) => /@ loopback/.test(l));
-  const truthful = !claimed || (performed > 0 && performed >= walk.outputs.length);
+  const truthful = performed > 0 && performed >= walk.outputs.length;
   checks.push({
     name: "(e) a CLAIMED live run is a PERFORMED one (round-trips == units)",
     ok: truthful,

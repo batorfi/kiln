@@ -16,6 +16,14 @@ export function liveEnabled(): boolean {
 /** The recorded reason a gated test is skipped (surfaced in the node-test report). */
 export const LIVE_SKIP_REASON = `live tier not enabled: set ${LIVE_ENV}=1 (needs a running local Ollama + an installed model)`;
 
+/** The cost test UNLOADS the model, so it is a SEPARATE opt-in (CR-11): `KILN_LIVE_COST=1`, run serially — `npm run switch-cost`. */
+export const LIVE_COST_ENV = "KILN_LIVE_COST";
+export const LIVE_COST_SKIP_REASON = `cost test not enabled: it UNLOADS the model, so it is a separate opt-in — set ${LIVE_COST_ENV}=1 (with ${LIVE_ENV}=1) and run serially: npm run switch-cost`;
+export function skipUnlessLiveCost(): { skip: string | false } {
+  if (!liveEnabled()) return { skip: LIVE_SKIP_REASON };
+  return { skip: process.env[LIVE_COST_ENV] === "1" ? false : LIVE_COST_SKIP_REASON };
+}
+
 /** Spread into a node-test options object: `test("…", skipUnlessLive(), async () => {…})`. */
 export function skipUnlessLive(): { skip: string | false } {
   return { skip: liveEnabled() ? false : LIVE_SKIP_REASON };

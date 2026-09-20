@@ -31,7 +31,7 @@ export { checkOverlayReady, reportOverlayReady } from "./validate/overlay-ready.
 // a program or advances Gate 0 (P-VI / FR-010 / SC-007 — r3 re-OPENs Gate 0 at its own close), and
 // the `--stub` is a RECORDED, never-silent fallback (F-NOT-SILENT, P-V/P-VII).
 export { makeLiveResident, selectResident, residentSelectionMarker, isResidentSelectionRecorded, DEFAULT_LOCAL_MODEL, type ResidentMode, type ResidentSelection, type SelectResidentOptions } from "./src/live-resident.ts"; // E1+E3
-export { buildLiveWalk, liveWalkRecordsSelection, assertLiveSingleLane, type LiveWalk, type LiveWalkOptions } from "./src/live-walk.ts"; // E2
+export { buildLiveWalk, liveWalkRecordsSelection, assertLiveSingleLane, WalkHaltedError, type LiveWalk, type LiveWalkOptions } from "./src/live-walk.ts"; // E2 (+ CR-3: the halted-walk error)
 export { renderLive, renderLiveSurfaces, attachLiveTui, liveTuiOrTwin, LIVE_REDRAW_TRIGGERS, type LiveTuiSurfaces, type LiveUICtx, type LiveTuiSurface, type LiveTuiResult } from "./ui/live-tui.ts"; // E4
 export { checkLiveModelReady, reportLiveModelReady, type LiveModelReadyOverride } from "./validate/live-ready.ts"; // E5
 
@@ -41,6 +41,5 @@ export { checkLiveModelReady, reportLiveModelReady, type LiveModelReadyOverride 
 // the only admission, and r7's own close RE-OPENS Gate 0. It is judged by 001's unmodified `log.ts` plus r1/r2/r3's
 // probes; `OllamaReady` (validate/ollama-ready.ts) is the probe that actually dials.
 export { makeOllamaResident, promptFor, isLoopbackHost, resolveOllamaBase, OllamaError, OLLAMA_DEFAULT_HOST, type OllamaResident, type OllamaResidentOptions, type OllamaErrorCode } from "./src/ollama-resident.ts";
-export { bindAll } from "./src/scheduler.ts";
 export { type ResidentLocation } from "./src/live-resident.ts";
 export { checkOllamaReady, reportOllamaReady, type OllamaReadyOverride, type OllamaReadyResult } from "./validate/ollama-ready.ts"; // E3 (r7 OllamaReady — the probe that actually dials)

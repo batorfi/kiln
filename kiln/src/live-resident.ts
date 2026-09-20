@@ -141,6 +141,16 @@ export function selectResident(opts: SelectResidentOptions = {}): ResidentSelect
     mode = "stub";
    }
 
+  // CR-7: a SUPPLIED resident with a stub selection is contradictory. Before this it was silently DROPPED — the caller passed a
+  // resident and got a different one (recorded as stub, so honest, but exactly the "silent stand-in" shape F-NOT-SILENT exists to
+  // catch, on the API rather than the ledger). Refuse it, loudly.
+  if (mode === "stub" && (opts.resident !== undefined || opts.location !== undefined)) {
+    throw new Error(
+      `selectResident: contradictory options — ${opts.resident !== undefined ? "a resident was supplied" : "a location was supplied"} but the selection is "stub"` +
+        `${(opts.mode ?? "live") === "live" ? " (assumeLiveAvailable:false forced the stub fallback)" : ""}. A supplied resident is only meaningful in live mode; refusing to drop it silently (F-NOT-SILENT).`,
+    );
+  }
+
   if (mode === "live") {
     const resident = opts.resident ?? makeLiveResident({ model, tier: opts.tier });
       // The marker records the resident in the log; a silent stand-in omits it.

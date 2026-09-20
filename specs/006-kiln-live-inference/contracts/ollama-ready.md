@@ -98,3 +98,15 @@ assertion of Principle IV's *"Testable as:"* clause anywhere in the tree.
 `kiln/validate/log.ts`, `roadmap.ts`, the JSON Schemas, and `move-vocabulary.ts` are **unchanged**.
 R5's forbidden-key check needs no amendment because it scans **keys, not values** (D5). The only
 canonical signature r7 widens is `Resident.run` — see [async-spine.md](./async-spine.md).
+
+
+## Amendments after code review (2026-09-20)
+
+- **R2 (a)/(b) — absent vs. misbehaving.** *Absent* (`endpoint-unreachable`, `timeout`) and *model missing* still **skip with a reason**. A server that
+  *answered wrongly* (`bad-status`, `bad-body`, `redirect-refused`) — or an unexpected error (`unknown`) — is a **failure named by its real code**, not a skip (CR-6/9).
+- **R2 (d) is checked twice:** the recording *mechanism* on a stand-in (works with no endpoint), and the **driving walk's own** recorded selection (CR-9).
+- **R2 (e)** no longer has an unreachable "nothing claimed" escape: a run that performed no round-trips fails.
+- **R2 (c)** names a **halted walk** by unit and failure code, and the dialing walk has an **overall deadline** (default 10 min, `deadlineMs`).
+- **R6 — the scan.** Comments are stripped by a **tokenizer** (not a regex); the walk is **recursive** and covers `.ts/.mts/.cts/.js/.mjs/.cjs`; aliasing of
+  `fetch`, computed access on the global object, and computed `import()`/`require()` are flagged; the allowlist key is the path **relative to the scan root**, with
+  separators normalised. It is a **lint, not a sandbox** — the resident's runtime refusals (loopback host, no redirects) are the enforcement.

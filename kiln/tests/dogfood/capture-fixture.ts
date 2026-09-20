@@ -15,7 +15,7 @@
 
 import { writeFileSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { buildLiveWalk } from "../../src/live-walk.ts";
+import { buildLiveWalk, WalkHaltedError } from "../../src/live-walk.ts";
 import { makeOllamaResident, OllamaError } from "../../src/ollama-resident.ts";
 import { DEFAULT_LOCAL_MODEL } from "../../src/live-resident.ts";
 import { validateLog } from "../../validate/log.ts";
@@ -35,8 +35,16 @@ runCli(async () => {
     return e instanceof OllamaError ? 1 : 2;
   }
 
-  const good = await buildLiveWalk({ mode: "live", resident, location: "loopback", model });
-  const broken = await buildLiveWalk({ mode: "live", resident: makeOllamaResident({ model }), location: "loopback", model, brokenNoDecider: true });
+  let good: Awaited<ReturnType<typeof buildLiveWalk>>;
+  let broken: Awaited<ReturnType<typeof buildLiveWalk>>;
+  try {
+    good = await buildLiveWalk({ mode: "live", resident, location: "loopback", model });
+    broken = await buildLiveWalk({ mode: "live", resident: makeOllamaResident({ model }), location: "loopback", model, brokenNoDecider: true });
+  } catch (e) {
+    if (!(e instanceof WalkHaltedError)) throw e;
+    console.error(`FAIL — the live walk HALTED at unit "${e.unit}" (${e.code}); NOTHING was written. A fixture must be a complete, real run.`);
+    return 1;
+  }
 
   const goodRes = validateLog(good.lines.map((l) => JSON.parse(l)), undefined);
   const badRes = validateLog(broken.lines.map((l) => JSON.parse(l)), undefined);

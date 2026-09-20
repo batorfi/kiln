@@ -12,7 +12,7 @@
 
 import { writeFileSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { buildLiveWalk } from "../../src/live-walk.ts";
+import { buildLiveWalk, WalkHaltedError } from "../../src/live-walk.ts";
 import { validateLog } from "../../validate/log.ts";
 import { PASS } from "../../validate/_report.ts";
 
@@ -24,10 +24,21 @@ const name = (args.find((a) => !a.startsWith("--")) ?? "r3-live-walk").replace(/
 const logDir = fileURLToPath(new URL("../../factory-log/", import.meta.url));
 const outPath = `${logDir}${name}.jsonl`;
 
-const walk = await buildLiveWalk({
-  mode,
-  brokenNoDecider: broken,
- });
+let walk: Awaited<ReturnType<typeof buildLiveWalk>>;
+try {
+  walk = await buildLiveWalk({
+    mode,
+    brokenNoDecider: broken,
+  });
+} catch (e) {
+  if (!(e instanceof WalkHaltedError)) throw e;
+  // CR-3: a unit FAILED. Persist the PARTIAL ledger — it holds a durable `wait` naming the unit and code — so the failure leaves a record.
+  mkdirSync(logDir, { recursive: true });
+  writeFileSync(outPath, e.walk.jsonl + "\n");
+  const partial = validateLog(e.walk.lines.map((l) => JSON.parse(l)), undefined);
+  console.error(`HALTED — live walk [${mode}] stopped at unit "${e.unit}" (${e.code}); a durable wait was recorded (${e.walk.lines.length} records → ${outPath}; log.ts ${partial.valid ? "PASS" : "FAIL"}).`);
+  process.exit(1);
+}
 mkdirSync(logDir, { recursive: true });
 writeFileSync(outPath, walk.jsonl + "\n");
 

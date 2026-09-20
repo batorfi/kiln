@@ -32,6 +32,23 @@ export interface TransitionEvent {
 /** A cost bracketing a swap transition (P-IV; one `cost` per genuine tier boundary). */
 export type CostEvent = Cost;
 
+/**
+ * A unit failed mid-walk (CR-3). The lane has ALREADY reclaimed the slot (`lane.running === null`) — before this fix a failure left
+ * `lane.running` claimed forever by a unit that would never finish, so any surface reading the same `FactoryState` kept showing it
+ * "running" (P-III: the director reclaims the lane when the worker returns — including when it fails). `partial` is everything
+ * that had happened up to and including the failed step, so the caller can RECORD it (P-VII) instead of losing it with the exception.
+ */
+export class LaneRunError extends Error {
+  readonly unitId: string;
+  readonly partial: WalkResult;
+  constructor(unitId: string, cause: unknown, partial: WalkResult) {
+    super(`unit "${unitId}" failed: ${(cause as Error)?.message ?? String(cause)}`, { cause });
+    this.name = "LaneRunError";
+    this.unitId = unitId;
+    this.partial = partial;
+  }
+}
+
 /** A unit's captured work product (r7 · O4). Before r7 the result was discarded at a bare `resident.run(unit)`. */
 export interface WorkOutput {
   duId: string;
@@ -166,7 +183,14 @@ export async function run(
 
      // P-III: yield to exactly one unit, then reclaim it — the next unit never starts before the
     // current one is reclaimed (F-SINGLE).
-    await yield_(lane, unit, resident, transitions, outputs); // sequential: ONE unit in flight (FR-015a)
+    try {
+      await yield_(lane, unit, resident, transitions, outputs); // sequential: ONE unit in flight (FR-015a)
+    } catch (e) {
+      resume(lane, transitions); // CR-3: reclaim the slot — never leave it claimed by a unit that will not finish
+      snapshots.push(snap(lane));
+      lane.wallClock = clock.wallClock();
+      throw new LaneRunError(unit.id, e, { state: lane, snapshots, transitions, costs, outputs, switches: lane.switches, wallClock: lane.wallClock, resident: lane.resident });
+    }
     snapshots.push(snap(lane)); // the LIVE instant captured: exactly one running unit
     resume(lane, transitions); // reclaim the slot
     snapshots.push(snap(lane));

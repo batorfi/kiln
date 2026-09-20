@@ -52,6 +52,7 @@ export function findUnawaited(src: string): { line: number; name: string; text: 
     while ((m = CALL.exec(c)) !== null) {
       const before = c.slice(0, m.index);
       if (/\bawait\s*\(?\s*$/.test(before)) continue; // awaited (incl. `(await f(...))`)
+      if (/\bawait\s+withDeadline\(\s*$/.test(before)) continue; // handed to the probe's deadline helper, whose RESULT is awaited (CR-9)
       if (/\breturn\s+$/.test(before)) continue; // a promise handed on to the caller
       if (/assert\.throws\(\s*\(\)\s*=>\s*$/.test(before)) continue; // D3: the deliberate SYNC-throw assertion
       if (/assert\.(?:doesNotReject|rejects)\(\s*(?:async\s*)?\(\)\s*=>\s*$/.test(before)) continue; // an async assertion
@@ -98,6 +99,8 @@ test("A5 / D8: the scanner itself is real — planted forgotten awaits are CAUGH
   ].join("\n");
   const hits = findUnawaited(planted);
   assert.deepEqual(hits.map((h) => h.name), ["checkOverlayReady", "buildLiveWalk", "run", "schedule"], "every forgotten await is named");
+  // …and the deadline helper is not a loophole: WITHOUT the `await`, a wrapped call is still flagged
+  assert.deepEqual(findUnawaited("const p = withDeadline(buildLiveWalk({ mode: 'live' }), 1000);").map((h) => h.name), ["buildLiveWalk"], "a wrapper with no await is still a forgotten await");
   assert.equal(hits[0].line, 1, "the offending line is named");
 });
 
@@ -112,6 +115,7 @@ test("A5 / D8: the scanner accepts the legitimate forms (await, return, sync-thr
     "// checkRuntimeReady() in a comment",
     'const msg = "call checkOverlayReady() first";', // inside a string
     "resident.run(unit);", // a METHOD call is the Resident interface, not the spine `run`
+    "  const walk = await withDeadline(buildLiveWalk({ mode: 'live' }), 1000);", // CR-9: awaited THROUGH the deadline helper
     "  run(workUnit: WorkUnit): unknown | Promise<unknown>;", // an interface method DECLARATION
     "    run(workUnit: WorkUnit): unknown {", // an object-literal method DEFINITION
     "    async run(unit: WorkUnit): Promise<string> {", // an ASYNC method definition (the Ollama resident)

@@ -31,7 +31,9 @@ export type OllamaErrorCode =
   | "empty-visible" // a thinking model returned no visible content (FR-003)
   | "bad-status" // a non-2xx response
   | "timeout" // bounded failure (O3)
-  | "concurrent-run"; // a second unit while one is in flight (P-III / FR-015a)
+  | "concurrent-run" // a second unit while one is in flight (P-III / FR-015a)
+  | "redirect-refused" // the server answered with a redirect — never followed (CR-2 / P-VIII)
+  | "bad-body"; // HTTP success, but the body is not the JSON the API promises (CR-6)
 
 /** A NAMED failure: tests and the `OllamaReady` probe key off `.code`, never a message substring. */
 export class OllamaError extends Error {
@@ -45,7 +47,10 @@ export class OllamaError extends Error {
 
 /** Loopback only: 127.0.0.0/8, `localhost`, `::1`. NOT `0.0.0.0` (a bind-all address is not a target). */
 export function isLoopbackHost(hostname: string): boolean {
-  return /^(?:127(?:\.\d{1,3}){3}|localhost|\[?::1\]?)$/i.test(hostname.trim());
+  const h = hostname.trim().toLowerCase();
+  if (h === "localhost" || h === "::1" || h === "[::1]") return true;
+  const m = /^127\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(h);
+  return m !== null && m.slice(1).every((octet) => Number(octet) <= 255); // 127.999.999.999 is not an address (CR-12)
 }
 
 /**
@@ -78,6 +83,12 @@ export interface OllamaResidentOptions {
   numPredict?: number;
   /** Bounded failure (O3). Generous by default: a cold load of a large model takes minutes. */
   timeoutMs?: number;
+  /**
+   * How long the server keeps the model LOADED after a request (CR-5). Ollama's own default is 5 minutes, so a walk that
+   * waits on a human at a gate re-pays a cold load — silently defeating "hold the heat" (P-III/IV). Default `"30m"`;
+   * `-1` = never unload; a duration string (`"10m"`) or seconds are accepted.
+   */
+  keepAlive?: string | number;
 }
 
 /** A `Resident` that can also verify its own preconditions (FR-004). */
@@ -88,6 +99,11 @@ export interface OllamaResident extends Resident {
    *  `OllamaReady` tell a CLAIMED live run from a PERFORMED one — a deterministic adapter satisfies r3's
    *  `LiveModelReady`, but it cannot make this number move (check (e)). */
   roundTrips(): number;
+  /**
+   * Unload THIS model from the server now (`keep_alive: 0`) — the outgoing half of a genuine model swap (CR-5). Not a work
+   * round-trip; refused while a unit is in flight.
+   */
+  unload(): Promise<void>;
   readonly baseUrl: string;
 }
 
@@ -98,13 +114,33 @@ export function promptFor(unit: WorkUnit): string {
 }
 
 async function request(url: string, init: RequestInit, timeoutMs: number, what: string): Promise<Response> {
+  let res: Response;
   try {
-    return await fetch(url, { ...init, signal: AbortSignal.timeout(timeoutMs) });
+    // `redirect: "manual"` (CR-2): the host is validated as loopback at construction, but a default `fetch` FOLLOWS redirects, so
+    // a local service answering `307 Location: <elsewhere>` would have the request — POST body and all — re-sent to another
+    // origin. The destination is pinned by never following: a 3xx is a named refusal below.
+    res = await fetch(url, { ...init, redirect: "manual", signal: AbortSignal.timeout(timeoutMs) });
   } catch (e) {
     if ((e as Error)?.name === "TimeoutError" || (e as Error)?.name === "AbortError") {
       throw new OllamaError("timeout", `${what} did not answer within ${timeoutMs} ms`);
     }
     throw new OllamaError("endpoint-unreachable", `${what} — nothing answered (${(e as Error)?.message ?? String(e)}); is Ollama running?`);
+  }
+  if (res.status >= 300 && res.status < 400) {
+    const where = res.headers.get("location") ?? "(no Location header)";
+    await res.body?.cancel().catch(() => undefined);
+    throw new OllamaError("redirect-refused", `${what} answered HTTP ${res.status} redirecting to "${where}" — the resident never follows redirects (P-VIII pins the destination)`);
+  }
+  return res;
+}
+
+/** Read a JSON body, mapping a malformed one to a NAMED `bad-body` (CR-6) — a proxy/captive-portal HTML page is not a raw SyntaxError. */
+async function readJson<T>(res: Response, what: string): Promise<T> {
+  try {
+    return (await res.json()) as T;
+  } catch (e) {
+    if ((e as Error)?.name === "TimeoutError" || (e as Error)?.name === "AbortError") throw new OllamaError("timeout", `${what} did not finish sending its body in time`);
+    throw new OllamaError("bad-body", `${what} answered HTTP ${res.status} but the body is not valid JSON (a proxy or error page?)`);
   }
 }
 
@@ -125,7 +161,7 @@ export function makeOllamaResident(opts: OllamaResidentOptions): OllamaResident 
   async function preflight(): Promise<string[]> {
     const res = await request(`${base}/api/tags`, { method: "GET" }, Math.min(timeoutMs, 15_000), "GET /api/tags");
     if (!res.ok) throw new OllamaError("bad-status", `GET /api/tags → HTTP ${res.status}`);
-    const body = (await res.json()) as { models?: { name?: string }[] };
+    const body = await readJson<{ models?: { name?: string }[] }>(res, "GET /api/tags");
     const names = (body.models ?? []).map((m) => String(m.name));
     if (!modelPresent(names, name)) {
       throw new OllamaError("model-missing", `model "${name}" is not installed (installed: ${names.join(", ") || "none"}) — no silent substitution`);
@@ -138,6 +174,13 @@ export function makeOllamaResident(opts: OllamaResidentOptions): OllamaResident 
     baseUrl: base,
     preflight,
     roundTrips: () => trips,
+    async unload(): Promise<void> {
+      if (inFlight) throw new OllamaError("concurrent-run", `unload requested while a unit is in flight — never unload the model out from under a running unit (P-III)`);
+      const res = await request(`${base}/api/generate`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ model: name, keep_alive: 0 }) }, Math.min(timeoutMs, 60_000), `POST /api/generate (unload "${name}")`);
+      if (!res.ok) throw new OllamaError("bad-status", `unload "${name}" → HTTP ${res.status}: ${(await res.text()).slice(0, 200)}`);
+      await res.body?.cancel().catch(() => undefined);
+      verified = false; // the model is gone; re-verify on the next run
+    },
     model(): string {
       return name; // a NAME, never a URL (P-VIII)
     },
@@ -159,6 +202,7 @@ export function makeOllamaResident(opts: OllamaResidentOptions): OllamaResident 
               messages: [{ role: "user", content: promptFor(unit) }],
               stream: false,
               think: false, // MANDATORY (D4/O2) — else a thinking model can spend the budget and return ''
+              keep_alive: opts.keepAlive ?? "30m", // CR-5: hold the model between units (Ollama's default would unload it after 5 minutes)
               options: { temperature: opts.temperature ?? 0, seed: opts.seed ?? 42, num_predict: opts.numPredict ?? 128 },
             }),
           },
@@ -170,7 +214,7 @@ export function makeOllamaResident(opts: OllamaResidentOptions): OllamaResident 
           if (res.status === 404) throw new OllamaError("model-missing", `model "${name}" not found by the server: ${text}`);
           throw new OllamaError("bad-status", `POST /api/chat → HTTP ${res.status}: ${text}`);
         }
-        const body = (await res.json()) as { message?: { content?: string } };
+        const body = await readJson<{ message?: { content?: string } }>(res, `POST /api/chat (unit "${unit.id}")`);
         trips++; // a response WAS received — counted even if it turns out to be empty (a performed trip)
         const content = body.message?.content ?? "";
         if (content.trim() === "") {

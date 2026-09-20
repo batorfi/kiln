@@ -21,9 +21,8 @@
 // Falsify: `--broken` (no-silent-approval), `--broken-render`, `--broken-gate0`, `--stub-unlogged`.
 // CLI: `node kiln/validate/live-ready.ts [--broken | --broken-render | --broken-gate0 | --stub-unlogged]`.
 
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { type FactoryState } from "../src/types.ts";
 import { buildLiveWalk, liveWalkRecordsSelection } from "../src/live-walk.ts";
 import { selectResident } from "../src/live-resident.ts";
 import { checkOverlayReady, type OverlayReadyOverride, type Check, type OverlayReadyResult } from "./overlay-ready.ts";

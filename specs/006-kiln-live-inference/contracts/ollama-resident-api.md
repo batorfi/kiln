@@ -77,3 +77,12 @@ resident selection → live model=<name> @ loopback (NC2-A: local, not cloud)
 **Rule**: the factory-log records **that** a unit ran, on **which** resident, at what cost — not the
 model's prompt or completion text. The log is an audit trail of decisions and transitions (P-VII), not
 a transcript store. Work product flows to the walk (O4), not into the JSONL.
+
+
+## Amendments after code review (2026-09-20)
+
+- **O3 gains two failure codes:** `redirect-refused` (any 3xx is refused — the resident never follows a redirect, so the destination is pinned to the validated
+  loopback host; CR-2) and `bad-body` (HTTP success but a body that is not valid JSON; CR-6).
+- **O2 gains `keep_alive`** — default `"30m"` (`keepAlive` option; `-1` = never unload). Ollama's own default is 5 minutes, which a human gate outlasts (CR-5).
+- **New method `unload()`** — `POST /api/generate {model, keep_alive: 0}`. Not a work round-trip; refused with `concurrent-run` while a unit is in flight.
+- **A failed unit is recorded.** `run` may reject; the *lane* reclaims its slot and the walk records a durable `wait` (CR-3) — see `async-spine.md`.

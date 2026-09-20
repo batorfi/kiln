@@ -133,3 +133,66 @@ test("S6: different units yield different prompts (so a real model's output vari
   assert.notEqual(promptFor(unit("a", "concept-writer")), promptFor(unit("b", "code-reviewer")));
   assert.match(promptFor({ id: "x", role: "worker", tier: "standard", work: "rate limiter" }), /Input: rate limiter/);
 });
+
+// ───────────────────────── code review fixes (CR-2 · CR-5 · CR-6) ─────────────────────────
+
+test("CR-2 (P-VIII): the resident NEVER follows a redirect — a redirect off the validated host is a NAMED refusal, and nothing is re-sent", async () => {
+  const hits: string[] = [];
+  const target = createServer((req, res) => { req.resume(); req.on("end", () => { hits.push(`${req.method} ${req.url}`); res.writeHead(200, { "content-type": "application/json" }); res.end(JSON.stringify({ message: { content: "served by the REDIRECT TARGET" } })); }); });
+  await new Promise<void>((ok) => target.listen(0, "127.0.0.1", ok));
+  const targetPort = (target.address() as { port: number }).port;
+  try {
+    // (a) the CHAT request is redirected (a 307 preserves the POST body — the prompt would be re-sent)
+    const redirecting = createServer((req, res) => { req.resume(); req.on("end", () => {
+      if (req.url?.startsWith("/api/tags")) { res.writeHead(200, { "content-type": "application/json" }); return res.end(JSON.stringify({ models: [{ name: "m:1b" }] })); }
+      res.writeHead(307, { location: `http://127.0.0.1:${targetPort}/elsewhere` }); res.end();
+    }); });
+    await new Promise<void>((ok) => redirecting.listen(0, "127.0.0.1", ok));
+    const host = `127.0.0.1:${(redirecting.address() as { port: number }).port}`;
+    try {
+      await assert.rejects(makeOllamaResident({ model: "m:1b", host }).run(unit("u")), (e: unknown) => e instanceof OllamaError && e.code === "redirect-refused" && /307/.test(e.message));
+      assert.deepEqual(hits, [], "the redirect TARGET received NOTHING — the prompt was not re-sent to another origin");
+      // (b) the PREFLIGHT request is redirected too
+      const pre = createServer((req, res) => { req.resume(); req.on("end", () => { res.writeHead(302, { location: `http://127.0.0.1:${targetPort}/tags` }); res.end(); }); });
+      await new Promise<void>((ok) => pre.listen(0, "127.0.0.1", ok));
+      try {
+        await assert.rejects(makeOllamaResident({ model: "m:1b", host: `127.0.0.1:${(pre.address() as { port: number }).port}` }).preflight(), (e: unknown) => e instanceof OllamaError && e.code === "redirect-refused");
+        assert.deepEqual(hits, [], "…and neither was the preflight followed");
+      } finally { pre.closeAllConnections?.(); pre.close(); }
+    } finally { redirecting.closeAllConnections?.(); redirecting.close(); }
+  } finally { target.closeAllConnections?.(); target.close(); }
+});
+
+test("CR-6: a 200 whose body is not valid JSON is a NAMED `bad-body` failure — not a raw SyntaxError", async () => {
+  for (const [label, tagsBody, chatBody] of [["HTML on /api/tags (a proxy error page)", "<html>bad gateway</html>", ""], ["HTML on /api/chat", '{"models":[{"name":"m:1b"}]}', "<html>oops</html>"]] as const) {
+    const f = await fakeOllama((u) => (u.startsWith("/api/tags") ? { text: tagsBody } : { text: chatBody }));
+    try {
+      await assert.rejects(makeOllamaResident({ model: "m:1b", host: f.host }).run(unit("u")), (e: unknown) => e instanceof OllamaError && e.code === "bad-body", label);
+    } finally { await f.close(); }
+  }
+});
+
+test("CR-5: `keep_alive` is SENT (default 30m) so the model is HELD between units — Ollama's own default is 5 minutes", async () => {
+  const f = await fakeOllama((u) => (u.startsWith("/api/tags") ? tags("m:1b") : chat("ok")));
+  try {
+    await makeOllamaResident({ model: "m:1b", host: f.host }).run(unit("a"));
+    assert.equal(f.requests.find((q) => q.url === "/api/chat")!.body.keep_alive, "30m", "the default holds the model for 30 minutes");
+    await makeOllamaResident({ model: "m:1b", host: f.host, keepAlive: -1 }).run(unit("b"));
+    assert.equal(f.requests.filter((q) => q.url === "/api/chat").at(-1)!.body.keep_alive, -1, "configurable — `-1` means 'never unload'");
+  } finally { await f.close(); }
+});
+
+test("CR-5: `unload()` sends keep_alive 0 for THIS model, is not counted as a round-trip, and refuses to run under an in-flight unit", async () => {
+  const f = await fakeOllama((u) => (u.startsWith("/api/tags") ? tags("m:1b") : u.startsWith("/api/generate") ? { json: { done: true } } : { hang: true }));
+  try {
+    const r = makeOllamaResident({ model: "m:1b", host: f.host, timeoutMs: 400 });
+    await r.unload();
+    const call = f.requests.find((q) => q.url === "/api/generate")!;
+    assert.deepEqual(call.body, { model: "m:1b", keep_alive: 0 }, "an explicit unload of exactly this model");
+    assert.equal(r.roundTrips(), 0, "an unload is not a work round-trip");
+    const pending = r.run(unit("busy")).catch((e) => e);
+    await new Promise((ok) => setTimeout(ok, 50));
+    await assert.rejects(r.unload(), (e: unknown) => e instanceof OllamaError && e.code === "concurrent-run", "never unload the model out from under a running unit");
+    await pending;
+  } finally { await f.close(); }
+});

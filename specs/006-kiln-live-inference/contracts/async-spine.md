@@ -72,3 +72,16 @@ a new way to be silently wrong (D8).
 Every probe CLI (`runtime-ready`, `overlay-ready`, `live-ready`, `ollama-ready`) must exit **non-zero**
 on a rejected promise. An unhandled rejection that exits 0 is a contract violation — it converts a
 failed proof into a passing command.
+
+
+## Amendment after code review (2026-09-20) — the failure path (CR-3)
+
+The async spine originally had no failure path: a rejected `resident.run` left `lane.running` claimed and, because the walk's ledger lived only in memory,
+left **no record**. Now:
+
+- **`run` reclaims the slot** in a `catch` and throws **`LaneRunError`** (`unitId`, `cause`, and `partial` — the snapshots, transitions, costs and outputs so far).
+  `F-SINGLE` holds over the partial snapshots, and the lane is reusable afterwards.
+- **`buildLiveWalk` records the halt** — a `hold` transition naming the unit and the failure **code** (never the error text, which may quote server output) and a
+  durable **`wait`** at the gate that unit feeds — then throws **`WalkHaltedError`** (`unit`, `code`, and `walk`: the partial `LiveWalk` with its ledger, which passes
+  001's `log.ts`). It is deliberately still an exception: a caller that ignores it cannot mistake a halted walk for a finished one.
+- `WalkHaltedError` is the **only** new async-set surface; the synchronous set (A2) is unchanged.
