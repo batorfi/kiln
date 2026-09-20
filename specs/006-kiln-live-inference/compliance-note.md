@@ -79,9 +79,10 @@ The plan was right in shape and wrong in six details. Each was found by running 
 
 ## The r3 record was corrected (FR-014 / SC-010)
 
-A dated, **append-only** correction banner (original text preserved verbatim — **0 lines deleted**, 150 added) now heads the
-seven documents that carried a claim the evidence did not support: r3's `implementation-report.md`, `quickstart-run.md`,
-`compliance-note.md`, `contracts/live-walk.md`, `contracts/live-ready.md` — **and** r1's and r2's `compliance-note.md`, because
+A dated, **append-only** correction banner (original text preserved verbatim — **0 lines deleted**; 150 lines added across the first seven, 26 more for r3's overview) now heads the
+eight documents that carried a claim the evidence did not support: r3's `implementation-report.md`, `quickstart-run.md`,
+`compliance-note.md`, `contracts/live-walk.md`, `contracts/live-ready.md`, and — added afterwards, because it was **missed the first time** (it was not on
+FR-014's list of five) — its plain-language `overview.md`, which said r3 "fires a real local model" — **and** r1's and r2's `compliance-note.md`, because
 the vacuous zero-network scan undermined their "zero-cloud" assurances too. `gate0.note` entries 4 and 5 in
 `specs/ROADMAP.md` were **deliberately not touched**: the ledger is append-only, and entry 5 already records the correction.
 r3 stays `done` @PR#3; everything it truly delivered still stands.
