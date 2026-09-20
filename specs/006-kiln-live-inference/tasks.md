@@ -182,6 +182,28 @@ provably miss; the allowlisted module passes by name; a second loopback module f
 
 ---
 
+## Phase 8: Code-review fixes (CR-1 … CR-12)
+
+**Purpose**: address the twelve findings of [code-review-report.md](./code-review-report.md). Added after the lane closed at `471e1c6`;
+each was proven by a new test, and each fix was then mutation-tested (12 of 12 killed).
+
+- [x] T049 [CR-1] Add the cwd-independent runner `kiln/tests/run.ts` (own-location paths, env flags, **zero-test guard**, serial for cost) and rewrite all 15 scripts in `kiln/package.json` to package-relative paths; guard with `kiln/tests/runner/scripts.test.ts`
+- [x] T050 [CR-2] `redirect: "manual"` in `kiln/src/ollama-resident.ts`; a 3xx is a named `redirect-refused`; test with a two-server redirect in `kiln/tests/ollama-resident/failure-modes.test.ts`
+- [x] T051 [CR-3] `LaneRunError` + slot reclaim in `kiln/src/lane.ts`; `WalkHaltedError` carrying a partial ledger with a durable `wait` in `kiln/src/live-walk.ts`; runners persist it; `kiln/tests/lane/failure.test.ts`
+- [x] T052 [CR-4] Replace the comment-stripping regex in `kiln/validate/_netscan.ts` with a tokenizer; recurse; cover `.js/.mjs/.cjs`; flag aliasing / computed access / computed loads; `kiln/tests/netscan/bypass.test.ts`
+- [x] T053 [CR-5] `keepAlive` (default `"30m"`) and `unload()` in `kiln/src/ollama-resident.ts`; tests + a live smoke
+- [x] T054 [CR-6] `readJson` → named `bad-body`; the probe separates *absent* (skip) from *misbehaving* (fail); `kiln/tests/ollama-ready/classification.test.ts`
+- [x] T055 [CR-7] `selectResident` throws on contradictory options in `kiln/src/live-resident.ts`; `kiln/tests/ollama-resident/select-resident.test.ts`
+- [x] T056 [CR-8] normalise separators in the allowlist key; no `VAR=value` script prefixes
+- [x] T057 [CR-9] `OllamaReady`: driving-walk (d), dead branch removed, overall deadline, halted walk named — `kiln/validate/ollama-ready.ts`
+- [x] T058 [CR-10] pin `kiln/tests/netscan/untouched.test.ts` to r7's own range `c99e241..471e1c6`
+- [x] T059 [CR-11] the cost test becomes its own opt-in (`KILN_LIVE_COST=1`) with a noise-floor skip — `kiln/tests/_live-gate.ts`, `kiln/tests/switch-cost/switch-cost.test.ts`
+- [x] T060 [CR-12] remove unused imports and the duplicate export; one `isLoopbackHost`; reuse the tokenizer in tests; clean up temp dirs
+
+**Checkpoint**: default suite **229 tests · 217 pass · 0 fail · 12 skipped**; `npm run test:live` **229/229**; 4/4 probes READY; 13/13 hooks flip.
+
+---
+
 ## Dependencies & Execution Order
 
 ```
@@ -261,5 +283,5 @@ E1, O1–O6 · Phase 4 → US2, FR-005, FR-006, SC-002, SC-003, E3, R2–R4 · P
 SC-004–SC-006, E4, E5, R7 · Phase 6 → US4, FR-010, FR-011, SC-007, E6, R6 · Phase 7 → FR-014,
 FR-016, SC-009, SC-010.
 
-**Task count**: 48 · **Setup** 4 · **Foundational** 11 · **US1** 8 · **US2** 8 · **US3** 7 ·
+**Task count**: 60 (48 + 12 code-review fixes) · **Setup** 4 · **Foundational** 11 · **US1** 8 · **US2** 8 · **US3** 7 ·
 **US4** 4 · **Polish** 6.

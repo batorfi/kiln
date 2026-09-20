@@ -45,8 +45,8 @@ deterministic, so each pre-existing log was regenerated and **byte-compared** ag
 
 | walk | result |
 |---|---|
-| `r1-walk` (11 records) | **byte-identical** |
-| `program-walk` (5 records) | **byte-identical** |
+| `r1-walk` (12 records) | **byte-identical** |
+| `program-walk` (6 records) | **byte-identical** |
 | `r3-live-stub` (25 records) | **byte-identical** |
 | `r3-live-broken` (25 records) | **byte-identical** |
 | `r3-live-walk` (25 records) | differs on **line 1 only** — the on-disk artifact had been left by a `--stub` run (`to: stub`); lines 2–25 identical; the regenerated `--live` log **PASSes** `log.ts` |

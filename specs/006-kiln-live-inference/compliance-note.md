@@ -91,3 +91,19 @@ r3 stays `done` @PR#3; everything it truly delivered still stands.
 r7 is complete and **Gate 0 re-opens at this seam**. r4's deps `[r2, r3, r7]` are now all `done`, so **r4 becomes eligible** —
 but `chain_unattended=false`, so it waits for the human's re-admission. Recorded for that decision: **`batorfi/kiln` is already
 public**, so r4's remaining content is a curated release dist + manifest + `PublishedReady`, not "make the kiln reachable by URL".
+
+
+---
+
+## Post-review hardening (2026-09-20)
+
+A code review ([code-review-report.md](./code-review-report.md)) found gaps that touched three principles; all are fixed, and the P-VIII exception's
+"the guard ends up strictly stronger" condition is now *better* met:
+
+- **P-VIII.** The loopback pin used to be only as deep as the *configured* host: a local service answering `307 Location: <elsewhere>` would have the
+  prompt re-sent off-box. The resident now **refuses every redirect** (`redirect-refused`). The scan itself could be fooled by a `//` inside a string, and never
+  read subfolders or `.js` files; it now uses a real tokenizer, recurses, and flags aliasing and computed loads. It is stated plainly to be a **lint, not a sandbox**.
+- **P-VII / P-V.** A failed unit used to vanish: no ledger record, and the lane's slot left claimed. It now records a `hold` and a **durable `wait`** and reclaims the
+  slot; the halt is a loud exception carrying the partial ledger, never a silent one.
+- **The claim that `npm run test:live` is one command** — made in this note — was **false as shipped** (it ran zero tests and exited 0). It is true now, and a test
+  asserts every script resolves and that a zero-test run fails.
