@@ -1,9 +1,9 @@
 # Verification report — 006-kiln-live-inference (r7)
 
-**Verdict: VERIFIED — with one open deviation (F-1) and stated limits.** The feature works end to end against a **real local
+**Verdict: VERIFIED — with one deviation from the spec's wording (F-1, decided: keep as is) and stated limits.** The feature works end to end against a **real local
 model**, from a **clean clone of `origin/main`**, and its tests are demonstrably able to fail: **17 of 17 deliberate breakages
-were caught**. One behaviour differs from the spec's wording (F-1, below) — it fails *loudly* rather than skipping, so it is
-safe, but it needs a decision.
+were caught**. One behaviour differs from the spec's wording (F-1, below) — it fails *loudly* rather than skipping. It is
+safe, and the human decided (2026-09-20) to keep it.
 
 | | |
 |---|---|
@@ -51,7 +51,7 @@ unchanged.* Each clause was exercised for real, not only asserted by a unit test
 | V7 | Mutation testing | ✔ **17 / 17 killed**, each by the intended test; every file restored |
 | V8 | Governance / static | ✔ all clean (§4.7) |
 | V9 | Requirement trace | ✔ **0 unmet** — FR-001…FR-018, FR-015a, SC-001…SC-010 |
-| — | `KILN_LIVE=1`, Ollama down | ⚠ **F-1** — 12 tests fail loudly instead of skipping |
+| — | `KILN_LIVE=1`, Ollama down | ✔ **F-1** — 12 tests fail loudly instead of skipping; **decided: keep as is** |
 
 ---
 
@@ -197,7 +197,7 @@ Generated from the live run's captured results: a requirement is ✔ only if **e
 | **FR-003** empty-visible is a fault | ✔ | `O3 empty-visible`; `O2` (request carries `think:false`); **M16** live |
 | **FR-004** model missing fails by name | ✔ | offline `O3 model-missing`; live `a model that is not installed fails BY NAME` |
 | **FR-005** `OllamaReady` checks | ✔ | baseline + `S5 (live)` + all four r7 hooks |
-| **FR-006** skip with reason; offline green | ✔ | `R3` ×3, `S2`; §4.1 (incl. dead-endpoint run) — *but see F-1* |
+| **FR-006** skip with reason; offline green | ✔ | `R3` ×3, `S2`; §4.1 (incl. dead-endpoint run) — *see F-1: decided* |
 | **FR-007** invariants live | ✔ | `S8 (live)` ×3 |
 | **FR-008** switch tax asserted | ✔ | `S9 (live, P-IV)` — 6.2× |
 | **FR-009** replay from fixture | ✔ | `S10` ×2; §4.4 reproducibility |
@@ -205,7 +205,7 @@ Generated from the live run's captured results: a requirement is ✔ only if **e
 | **FR-011** one allowlisted module | ✔ | `FR-011`, `R6` ×2; M9 |
 | **FR-012** log records resident + location | ✔ | `O5` ×2; §4.7 |
 | **FR-013** `DEFAULT_LOCAL_MODEL` verifiable | ✔ | `gemma4:12b` **is in** `/api/tags`; `R3: model absent` catches a stale one |
-| **FR-014 / SC-010** r3 record corrected | ✔ | banners present in **7** docs (`grep r7-correction`) |
+| **FR-014 / SC-010** r3 record corrected | ✔ | banners present in **7** docs at the verified commit (`grep -l '^<!-- r7-correction -->$'`); an **eighth** — r3's `overview.md`, missed at first — was added afterwards |
 | **FR-015** additive | ✔ | canonical diff empty; fixture uses only 001's union; r3 marker byte-identical without `location` |
 | **FR-015a** no concurrency | ✔ | `A4` static + dynamic + live; resident refusal; M4 |
 | **FR-016 / SC-009** no admission | ✔ | ROADMAP no diff; only `wait` at `gate0` |
@@ -219,7 +219,7 @@ Generated from the live run's captured results: a requirement is ✔ only if **e
 
 | ID | Severity | Status | Finding |
 |---|---|---|---|
-| **F-1** | Low–Medium | **OPEN — needs a decision** | **`KILN_LIVE=1` with Ollama unreachable makes the 12 gated tests FAIL, not skip.** Observed: exit 1, `tests 49 · pass 37 · fail 12`, each failing on a named `endpoint-unreachable`. **FR-006** says the live tier "SHALL skip with a recorded reason" when a precondition fails. The gate is only the env var; the probe skips correctly, the tests do not. It is **safe** (loud, never a silent pass; the default suite is unaffected) and arguably right — an operator who sets `KILN_LIVE=1` *demanded* live. **Either** add an endpoint/model precondition to `_live-gate.ts` so the tests skip with `endpoint unreachable`, **or** amend FR-006 to say *"an explicit `KILN_LIVE=1` with no endpoint fails, named"*. Not changed during verification. |
+| **F-1** | Low–Medium | **DECIDED — keep as is** | **`KILN_LIVE=1` with Ollama unreachable makes the 12 gated tests FAIL, not skip.** Observed: exit 1, `tests 49 · pass 37 · fail 12`, each failing on a named `endpoint-unreachable`. **FR-006** says the live tier "SHALL skip with a recorded reason" when a precondition fails. The gate is only the env var; the probe skips correctly, the tests do not. It is **safe** (loud, never a silent pass; the default suite is unaffected) and arguably right — an operator who sets `KILN_LIVE=1` *demanded* live. **Either** add an endpoint/model precondition to `_live-gate.ts` so the tests skip with `endpoint unreachable`, **or** amend FR-006 to say *"an explicit `KILN_LIVE=1` with no endpoint fails, named"*. **Decision (human, 2026-09-20): keep as is.** An explicit `KILN_LIVE=1` is the operator *demanding* the live tier, so with no endpoint the gated tests fail, named — a skip there would let a broken setup look green. FR-006's *skip with a recorded reason* applies when the gate is **closed** (the default) and to the `OllamaReady` probe; spec FR-006 was clarified to say so, and `kiln/tests/runner/live-gate.test.ts` pins it. |
 | **F-2** | Low | **FIXED (uncommitted)** | `quickstart-run.md` gave **11** and **5** records for `r1-walk` / `program-walk`. Those were `wc -l` counts of files with **no trailing newline**, which undercounts by one; the runner reports, and the files contain, **12** and **6**. Corrected. A *documentation* error only — no code or test was affected. |
 | **F-3** | Info | recorded | The **P-IV ratio is not a constant**: 6.1× (earlier), 6.2× (here) with the weights in the OS page cache; ≈64× on a first-ever load from disk. The floor-based assertion is the correct design. |
 | **F-4** | Info | recorded (known) | The lane's `swap` is still **bookkeeping** (`from == to`). r7 measures a real load but does not map tiers to different models. |
@@ -269,7 +269,7 @@ green; the P-VIII guard now scans 33 files instead of 0 and stops a planted viol
 and the offline experience is unchanged even with Ollama genuinely absent. Seventeen deliberate breakages, including two run
 against the real server, were all caught.
 
-**For the human:** decide **F-1** (skip vs. fail-loud under `KILN_LIVE=1` with no endpoint), then close r7 at the Gate-0 seam.
+**For the human:** F-1 was decided (fail loudly under an explicit `KILN_LIVE=1` — keep as is); the remaining step is to close r7 at the Gate-0 seam.
 Nothing in this verification admitted a program or advanced a gate (P-VI); `specs/ROADMAP.md` was not touched.
 
 
@@ -295,6 +295,6 @@ committed — no git-ignored logs, nothing from the working tree). It was not pu
 | **Mutation testing — 29 / 29 killed** | ✔ the **12** breakages of the review fixes (redirects followed, slot not reclaimed, no `wait`, tokenizer blind to strings, no recursion, `keep_alive` dropped, `bad-body` renamed, contradictory options ignored, misbehaving server excused as a skip, a root-relative script, a runner that accepts zero tests, Windows separators) **and** the original **17**, re-run against the current code with updated patterns — including the two run against the **real server** (`think:false` removed ⇒ the real `gemma4:12b` returned nothing and the resident raised `empty-visible`; round-trip counter removed ⇒ check `(e)` fails) |
 | Restoration | ✔ every mutated file was restored with `git checkout`; the clone was clean afterwards |
 
-**F-1 is unchanged and still open** (`KILN_LIVE=1` with Ollama unreachable fails loudly, not skips). It was not a code-review finding and still needs a decision.
+**F-1 was decided: keep as is** (`KILN_LIVE=1` with Ollama unreachable fails loudly, not skips) — see the decision in §5. It was not a code-review finding.
 
 **Limits, as before:** one host (macOS, Node v26.8.2, Ollama 0.34.2); only `gemma4:12b` exercised end to end in this addendum (the non-thinking `qwen3-coder-next` was exercised in §4.5, before the fixes); CR-8's Windows handling was **not run on Windows**; and the fixes are **local commits — not yet pushed**.

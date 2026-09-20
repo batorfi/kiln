@@ -161,8 +161,8 @@ reloads or Ollama upgrades. And Principle IV finally has a number:
   exception, so a non-loopback value is refused at construction.
 - **Author/judge separation (P-I).** The resident *runs* work; every gate in the fixture carries a human `decidedBy` or a
   distinct `pre-delegation`, and the no-`decidedBy` sibling FAILs by a named R3.
-- **The r3 record was corrected, append-only.** A dated banner heads **seven** documents (r3's five, plus r1's and r2's
-  compliance notes) — **150 lines added, 0 deleted**; `gate0.note` entries 4 and 5 were deliberately left verbatim.
+- **The r3 record was corrected, append-only.** A dated banner heads **eight** documents (r3's six — the five first listed, plus its
+  plain-language overview, which was missed at first — and r1's and r2's compliance notes) — **176 lines added, 0 deleted**; `gate0.note` entries 4 and 5 were deliberately left verbatim.
 
 ---
 
@@ -246,7 +246,7 @@ $ git diff --quiet specs/ROADMAP.md && echo "NO DIFF"                      # P-V
 
 Most of the 160 production deletions are the **three deleted copies of the network scan** (gross deletions in `live-ready` −47,
 `runtime-ready` −52, `overlay-ready` −35 = 134 lines, partly offset by the `await`s and shared-scan calls added back). The docs' 63 deletions are 48 task-checkbox ticks plus in-place corrections to
-`research.md`/`data-model.md`/two contracts; the **seven banner documents had 0 deletions**.
+`research.md`/`data-model.md`/two contracts; the **eight banner documents had 0 deletions**.
 
 | Commit | Contents |
 |---|---|
@@ -310,4 +310,4 @@ The rest — `bad-body` as a named failure, refusing contradictory options, an o
 to r7's own commit range, giving the cost test its own opt-in, and the housekeeping — are itemised in the review report's §0.
 
 **Still true after the fixes:** the lane's `swap` is bookkeeping (wiring `unload()` into it needs a tier→model mapping), and verification finding F-1
-(`KILN_LIVE=1` with no Ollama fails loudly instead of skipping) remains open.
+(`KILN_LIVE=1` with no Ollama fails loudly instead of skipping) was **decided: keep as is** — an explicit opt-in is a demand for the live tier.

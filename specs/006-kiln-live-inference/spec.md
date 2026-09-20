@@ -243,6 +243,10 @@ still fails R5.
   SHALL NOT report success. The **offline suite SHALL remain green** with no Ollama installed.
   *(NC3 = A: the live tier is gated behind an environment flag — `KILN_LIVE=1` — and the default
   `node --test` run never requires a model.)*
+  *(**Clarified 2026-09-20, decided by `human@batorfi` — verification finding F-1:** "skip with a recorded reason" applies when the gate is
+  **closed** (the default) and to the `OllamaReady` probe. An **explicit `KILN_LIVE=1`** is the operator demanding the live tier: if the endpoint or
+  model is then unavailable, the gated tests **FAIL, named** (`endpoint-unreachable` / `model-missing`) — they do not skip, because a skip there could
+  let a broken setup look green. Never a silent pass either way.)*
 - **FR-007** The **constitutional invariants SHALL be re-asserted live**: `F-SINGLE` over live
   snapshots (P-III), realized switches `== switchCount(units)` (P-IV), every line-of-defense role
   bound `strongest` (P-II).

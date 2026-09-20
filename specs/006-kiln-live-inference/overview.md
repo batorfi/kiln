@@ -230,8 +230,9 @@ instead of disturbing the other tests.) The runner refuses to report success if 
 
 ## Where it leaves the program
 
-r7 is complete, tested, and — after the review — hardened. One question is still open, and it is small: if someone turns the live tests on but Ollama isn't running, the tests fail loudly rather
-than skip, whereas the spec's wording says skip. It's safe, but it needs a decision.
+r7 is complete, tested, and — after the review — hardened. One small question was settled on purpose: if someone turns the live tests on but Ollama isn't running, the tests **fail loudly** rather than skip. Turning that switch on is
+asking for the live tier, so a missing model is an error to see — a quiet skip there could let a broken setup look green. When the switch is off (the default), and for the readiness
+checker, skipping-with-a-reason is still the rule. The spec's wording was clarified to match.
 
 The move after that belongs to a human: close r7 at the Gate-0 seam, and re-admit the publishing, installer and docs phases that were waiting behind it. The three problems the review flagged as sitting
 on the surface the *next* phase is about to publish — redirects, failure handling and the scan — are fixed, which was the reason to fix them first. One fact worth carrying forward: the repository is

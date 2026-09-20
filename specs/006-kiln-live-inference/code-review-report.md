@@ -35,8 +35,8 @@ new test was then **mutation-tested**: the fix was broken on purpose and the sui
 
 **Re-verification of the fixed code** (a fresh clone of commit `0c5bc19`; full detail in [verification-report.md](./verification-report.md) §9): default suite **229 tests · 217 pass · 0 fail · 12 skipped**
 (each skip with its reason); `npm run test:live` **229/229**; all four probes READY (`[33 files scanned]`); **13 of 13** hooks flip; a fresh
-live capture reproduces both committed ledgers **byte for byte**; **29 of 29** mutations killed (these 12 fixes plus the original 17). **Still open, unchanged:** verification finding **F-1** (`KILN_LIVE=1` with
-Ollama unreachable fails loudly rather than skipping) — it was not a code-review finding and still needs a decision.
+live capture reproduces both committed ledgers **byte for byte**; **29 of 29** mutations killed (these 12 fixes plus the original 17). **Decided, unchanged:** verification finding **F-1** (`KILN_LIVE=1` with
+Ollama unreachable fails loudly rather than skipping) — not a code-review finding; the human decided to keep it as is.
 
 ---
 
@@ -279,7 +279,7 @@ scale the absolute floor to the measured warm time.
 | Suspicion | Result |
 |---|---|
 | `think:false` is rejected by a **non-thinking** model | ✔ `qwen3-coder-next` accepted it (14.7 s incl. a 51.7 GB cold load) |
-| The pre-r7 probes really were green with a planted violation — **including a fetch-only plant** | ✔ verified directly on `c99e241`: fetch-only and import+`require("http")` plants both left all three probes green, so the seven correction banners are accurate |
+| The pre-r7 probes really were green with a planted violation — **including a fetch-only plant** | ✔ verified directly on `c99e241`: fetch-only and import+`require("http")` plants both left all three probes green, so the correction banners are accurate |
 | `schedule` can throw synchronously despite being promise-returning | ✔ non-`async` by design; `assert.throws` unchanged; mutation M5 kills the async variant |
 | A concurrent `run` on one resident | ✔ refused (`concurrent-run`); mutation M4 |
 | `OLLAMA_HOST` can redirect the lane to a remote host | ✔ refused at construction |

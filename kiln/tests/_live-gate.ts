@@ -6,6 +6,10 @@
 // reason is printed in the test report itself (P-V lifted to the suite). Not a `*.test.ts`, so the
 // `kiln/tests/**/*.test.ts` glob does not pick it up as a suite of its own.
 
+// F-1 (verification finding — DECIDED 2026-09-20, keep as is): with `KILN_LIVE=1` the gate is OPEN unconditionally; it does NOT probe the
+// endpoint. If Ollama or the model is then absent, the live tests FAIL with a named error rather than skip. Setting the flag is the operator
+// DEMANDING the live tier, and a skip there could let a broken setup look green. Skip-with-a-recorded-reason applies when the gate is CLOSED
+// (the default) and to the `OllamaReady` probe. Pinned by `tests/runner/live-gate.test.ts`.
 export const LIVE_ENV = "KILN_LIVE";
 
 /** True iff the live tier is explicitly enabled (`KILN_LIVE=1`). */
