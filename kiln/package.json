@@ -5,18 +5,23 @@
   "type": "module",
   "engines": {
     "node": ">=22.6"
-   },
+  },
   "scripts": {
     "test": "node --test \"kiln/tests/**/*.test.ts\"",
     "validate:log": "node kiln/validate/log.ts",
     "validate:roadmap": "node kiln/validate/roadmap.ts",
     "firing-ready": "node kiln/validate/firing-ready.ts",
     "runtime-ready": "node kiln/validate/runtime-ready.ts",
-   "dogfood": "node kiln/tests/dogfood/run.ts",
+    "dogfood": "node kiln/tests/dogfood/run.ts",
     "program-walk": "node kiln/tests/dogfood/run-program.ts",
     "overlay-ready": "node kiln/validate/overlay-ready.ts",
     "live-walk": "node kiln/tests/dogfood/run-live.ts",
-    "live-ready": "node kiln/validate/live-ready.ts"
-   },
+    "live-ready": "node kiln/validate/live-ready.ts",
+    "ollama-ready": "node kiln/validate/ollama-ready.ts",
+    "live-inference": "node --test --test-concurrency=1 kiln/tests/live-inference",
+    "switch-cost": "node --test --test-concurrency=1 kiln/tests/switch-cost",
+    "capture-fixture": "node kiln/tests/dogfood/capture-fixture.ts",
+    "test:live": "KILN_LIVE=1 node --test --test-concurrency=1 \"kiln/tests/**/*.test.ts\""
+  },
   "dependencies": {}
 }

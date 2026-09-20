@@ -34,3 +34,13 @@ export { makeLiveResident, selectResident, residentSelectionMarker, isResidentSe
 export { buildLiveWalk, liveWalkRecordsSelection, assertLiveSingleLane, type LiveWalk, type LiveWalkOptions } from "./src/live-walk.ts"; // E2
 export { renderLive, renderLiveSurfaces, attachLiveTui, liveTuiOrTwin, LIVE_REDRAW_TRIGGERS, type LiveTuiSurfaces, type LiveUICtx, type LiveTuiSurface, type LiveTuiResult } from "./ui/live-tui.ts"; // E4
 export { checkLiveModelReady, reportLiveModelReady, type LiveModelReadyOverride } from "./validate/live-ready.ts"; // E5
+
+// ── r7 (006): TRUE live local inference — a real Ollama-backed resident (the first that actually calls a model),
+// driven by the SAME lane through an async spine (NC1=B), with the P-VIII loopback exception spent by exactly ONE
+// allowlisted module (NC2=A). Wiring it admits no program and advances no gate (P-VI): the human's Gate-0 move is
+// the only admission, and r7's own close RE-OPENS Gate 0. It is judged by 001's unmodified `log.ts` plus r1/r2/r3's
+// probes; `OllamaReady` (validate/ollama-ready.ts) is the probe that actually dials.
+export { makeOllamaResident, promptFor, isLoopbackHost, resolveOllamaBase, OllamaError, OLLAMA_DEFAULT_HOST, type OllamaResident, type OllamaResidentOptions, type OllamaErrorCode } from "./src/ollama-resident.ts";
+export { bindAll } from "./src/scheduler.ts";
+export { type ResidentLocation } from "./src/live-resident.ts";
+export { checkOllamaReady, reportOllamaReady, type OllamaReadyOverride, type OllamaReadyResult } from "./validate/ollama-ready.ts"; // E3 (r7 OllamaReady — the probe that actually dials)

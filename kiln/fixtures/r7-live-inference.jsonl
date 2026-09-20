@@ -1,0 +1,25 @@
+{"recordType":"transition","ts":"2026-09-13T00:01:00.000Z","seq":0,"transition":{"kind":"load","from":"cold","to":"live","reason":"resident selection → live model=gemma4:12b @ loopback (NC2-A: local, not cloud)"}}
+{"recordType":"transition","ts":"2026-09-13T00:02:00.000Z","seq":1,"transition":{"kind":"swap","from":"gemma4:12b","to":"gemma4:12b","reason":"tier strongest → standard"}}
+{"recordType":"cost","ts":"2026-09-13T00:03:00.000Z","seq":2,"cost":{"switches":1,"wallClock":"00:00"}}
+{"recordType":"transition","ts":"2026-09-13T00:04:00.000Z","seq":3,"transition":{"kind":"swap","from":"gemma4:12b","to":"gemma4:12b","reason":"tier standard → strongest"}}
+{"recordType":"cost","ts":"2026-09-13T00:05:00.000Z","seq":4,"cost":{"switches":2,"wallClock":"00:00"}}
+{"recordType":"transition","ts":"2026-09-13T00:06:00.000Z","seq":5,"transition":{"kind":"swap","from":"gemma4:12b","to":"gemma4:12b","reason":"tier strongest → standard"}}
+{"recordType":"cost","ts":"2026-09-13T00:07:00.000Z","seq":6,"cost":{"switches":3,"wallClock":"00:00"}}
+{"recordType":"human-decision","ts":"2026-09-13T00:08:00.000Z","seq":7,"human-decision":{"gate":"1","decidedBy":"human@batorfi","move":"approve"}}
+{"recordType":"gate-completion","ts":"2026-09-13T00:09:00.000Z","seq":8,"gate-completion":{"gate":1,"move":"approve","cost":{"switches":3,"wallClock":"00:00"},"decidedBy":"human@batorfi"}}
+{"recordType":"human-decision","ts":"2026-09-13T00:10:00.000Z","seq":9,"human-decision":{"gate":"2","decidedBy":"human@batorfi","move":"approve"}}
+{"recordType":"gate-completion","ts":"2026-09-13T00:11:00.000Z","seq":10,"gate-completion":{"gate":2,"move":"approve","cost":{"switches":3,"wallClock":"00:00"},"decidedBy":"human@batorfi"}}
+{"recordType":"human-decision","ts":"2026-09-13T00:12:00.000Z","seq":11,"human-decision":{"gate":"3","decidedBy":"human@batorfi","move":"approve"}}
+{"recordType":"gate-completion","ts":"2026-09-13T00:13:00.000Z","seq":12,"gate-completion":{"gate":3,"move":"approve","cost":{"switches":3,"wallClock":"00:00"},"decidedBy":"human@batorfi"}}
+{"recordType":"pre-delegation","ts":"2026-09-13T00:15:00.000Z","seq":13,"pre-delegation":{"of":"4","by":"plan #42 approved T","at":"2026-09-13T00:14:00.000Z","reviewer":"code-reviewer","note":"no objections"}}
+{"recordType":"gate-completion","ts":"2026-09-13T00:16:00.000Z","seq":14,"gate-completion":{"gate":4,"move":"approve","cost":{"switches":3,"wallClock":"00:00"},"preDelegation":{"of":"4","by":"plan #42 approved T","at":"2026-09-13T00:14:00.000Z","reviewer":"code-reviewer","note":"no objections"}}}
+{"recordType":"human-decision","ts":"2026-09-13T00:17:00.000Z","seq":15,"human-decision":{"gate":"5","decidedBy":"human@batorfi","move":"split+revise"}}
+{"recordType":"gate-completion","ts":"2026-09-13T00:18:00.000Z","seq":16,"gate-completion":{"gate":5,"move":"split+revise","cost":{"switches":3,"wallClock":"00:00"},"decidedBy":"human@batorfi"}}
+{"recordType":"human-decision","ts":"2026-09-13T00:19:00.000Z","seq":17,"human-decision":{"gate":"6","decidedBy":"human@batorfi","move":"approve"}}
+{"recordType":"gate-completion","ts":"2026-09-13T00:20:00.000Z","seq":18,"gate-completion":{"gate":6,"move":"approve","cost":{"switches":3,"wallClock":"00:00"},"decidedBy":"human@batorfi"}}
+{"recordType":"wait","ts":"2026-09-13T00:22:00.000Z","seq":19,"wait":{"gate":"7","token":"g7","deadline":"2026-09-13T00:21:00.000Z"}}
+{"recordType":"human-decision","ts":"2026-09-13T00:23:00.000Z","seq":20,"human-decision":{"gate":"8","decidedBy":"human@batorfi","move":"approve"}}
+{"recordType":"gate-completion","ts":"2026-09-13T00:24:00.000Z","seq":21,"gate-completion":{"gate":8,"move":"approve","cost":{"switches":3,"wallClock":"00:00"},"decidedBy":"human@batorfi"}}
+{"recordType":"human-decision","ts":"2026-09-13T00:25:00.000Z","seq":22,"human-decision":{"gate":"9","decidedBy":"human@batorfi","move":"approve"}}
+{"recordType":"gate-completion","ts":"2026-09-13T00:26:00.000Z","seq":23,"gate-completion":{"gate":9,"move":"approve","cost":{"switches":3,"wallClock":"00:00"},"decidedBy":"human@batorfi"}}
+{"recordType":"wait","ts":"2026-09-13T00:28:00.000Z","seq":24,"wait":{"gate":"gate0","token":"g0","deadline":"2026-09-13T00:27:00.000Z"}}

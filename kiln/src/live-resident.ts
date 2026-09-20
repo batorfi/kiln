@@ -33,9 +33,13 @@ import type { Tier } from "./roles.ts";
 
 // ── E1 ───────────────────────────────────────────────────────────────────────────────────────────
 
-/** A *local* model name (P-VIII): a NAME, never an http/remote endpoint. Guaranteed available in
- *  r3's environment (NC2) — the default resident is live. */
-export const DEFAULT_LOCAL_MODEL = "ollama/llama3.2:3b";
+/** A *local* model name (P-VIII): a NAME, never an http/remote endpoint.
+ *
+ *  r7 (FR-013): this was `ollama/llama3.2:3b` — a model that was NEVER INSTALLED on the reference host,
+ *  because nothing in r3 ever resolved it (the "live" resident was a pure function, so no lookup could
+ *  fail). It now names a model that IS present (the smallest installed), and `OllamaReady` check (b)
+ *  verifies it against `/api/tags` automatically, so a stale default is caught by the probe, not by eye. */
+export const DEFAULT_LOCAL_MODEL = "gemma4:12b";
 
 export type ResidentMode = "live" | "stub";
 
@@ -75,10 +79,17 @@ export function makeLiveResident(opts: LiveResidentOptions = {}): Resident {
 /** The transition `reason` that RECORDS a resident selection (rides 001's `transition`, D8/NC3). */
 const RESIDENT_MARKER_PREFIX = "resident selection →";
 
+/** Where a resident runs, recorded SYMBOLICALLY (r7 · O5): `@ loopback`, never a raw address — a ledger
+ *  reconstructs decisions, and `127.0.0.1:11434` is noise there. R5 scans record KEYS, not values, so this
+ *  rides the existing `transition.reason` slot and 001's `log.ts` is unchanged (research D5). */
+export type ResidentLocation = "loopback";
+
 /** The recorded marker for a selection — the `transition.reason` that names which resident ran. */
-export function residentSelectionMarker(mode: ResidentMode, model: string = DEFAULT_LOCAL_MODEL): string {
+export function residentSelectionMarker(mode: ResidentMode, model: string = DEFAULT_LOCAL_MODEL, location?: ResidentLocation): string {
    if (mode === "live") {
-    return `${RESIDENT_MARKER_PREFIX} live model=${model} (NC2 primary proof)`;
+    return location === "loopback"
+      ? `${RESIDENT_MARKER_PREFIX} live model=${model} @ loopback (NC2-A: local, not cloud)`
+      : `${RESIDENT_MARKER_PREFIX} live model=${model} (NC2 primary proof)`;
     }
   return `${RESIDENT_MARKER_PREFIX} stub (RECORDED fallback, NC2)`;
 }
@@ -107,6 +118,11 @@ export interface SelectResidentOptions {
   /** NC2 belt-and-suspenders: if a live head is genuinely unreachable, FALL BACK to the stub and
    *  RECORD it (`unavailableResource`-style flag, never silent). Default `true` (live is guaranteed). */
   assumeLiveAvailable?: boolean;
+  /** r7: a PRE-BUILT live resident (e.g. `makeOllamaResident(...)`) to drive instead of r3's deterministic
+   *  adapter. Additive + optional — omit it and r3's behaviour is byte-identical. */
+  resident?: Resident;
+  /** r7: where that resident runs, recorded symbolically in the selection marker (O5). */
+  location?: ResidentLocation;
 }
 
 /**
@@ -126,9 +142,9 @@ export function selectResident(opts: SelectResidentOptions = {}): ResidentSelect
    }
 
   if (mode === "live") {
-    const resident = makeLiveResident({ model, tier: opts.tier });
+    const resident = opts.resident ?? makeLiveResident({ model, tier: opts.tier });
       // The marker records the resident in the log; a silent stand-in omits it.
-    const marker = residentSelectionMarker("live", resident.model());
+    const marker = residentSelectionMarker("live", resident.model(), opts.location);
     return { mode, resident, marker, recorded: recordSelection };
     }
 
