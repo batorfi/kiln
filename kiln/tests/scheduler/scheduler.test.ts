@@ -15,15 +15,15 @@ test("US4 SC-004 (F-AFFINITY): all-same-tier ⇒ switches = 0; one boundary ⇒ 
   assert.equal(switchCount([W("x", "worker", "standard"), W("y", "techwriter", "standard")]), 0, "counter is not inflated");
 });
 
-test("US4: the lane's realized switches agree with switchCount (T021)", () => {
+test("US4: the lane's realized switches agree with switchCount (T021)", async () => {
   const units = [W("a", "concept-writer", "strongest"), W("b", "techwriter", "standard"), W("c", "worker", "standard"), W("d", "adr-maker", "cheap")];
   const resident = makeStubResident({ model: "stub", tier: "strongest" });
-  const result = schedule(units, resident);
+  const result = await schedule(units, resident);
   assert.equal(result.switches, switchCount(units), "the scheduler's realized switch count is the minimum the tier sequence requires");
   assert.equal(result.costs.length, switchCount(units), "each genuine boundary is bracketed by a cost record");
 });
 
-test("US4 (P-II / G2): the four line-of-defense roles bind strongest and a weaker binding is REJECTED at schedule time", () => {
+test("US4 (P-II / G2): the four line-of-defense roles bind strongest and a weaker binding is REJECTED at schedule time", async () => {
   const lod = [
      W("critic", "architecture-critic", "strongest"),
      W("verifier", "verifier", "strongest"),
@@ -32,9 +32,12 @@ test("US4 (P-II / G2): the four line-of-defense roles bind strongest and a weake
     ] as WorkUnit[];
   assert.ok(lodUnitsBoundStrongest(lod), "the four LoD units bind strongest");
   const resident = makeStubResident({ model: "stub", tier: "strongest" });
-  assert.doesNotThrow(() => schedule(lod, resident), "a strongest LoD binding is accepted");
+  // r7 (NC1=B, D3): `schedule` now returns a PROMISE, so `assert.doesNotThrow(() => schedule(...))` would pass
+  // VACUOUSLY on a rejection. `doesNotReject` is the honest form for the accepting case.
+  await assert.doesNotReject(async () => schedule(lod, resident), "a strongest LoD binding is accepted");
 
-    // A weaker LoD binding is rejected AT SCHEDULE TIME (P-II / G2 / L1).
+    // A weaker LoD binding is rejected AT SCHEDULE TIME (P-II / G2 / L1) — as a SYNCHRONOUS throw, before any
+    // promise exists (D3). This `assert.throws` is deliberately UNCHANGED from r1: `schedule` is not `async`.
   const weaker = lod.map((u) => ({ ...u, tier: "standard" as WorkUnit["tier"] }));
   for (const weak of weaker) {
     assert.throws(() => schedule([weak], resident), /G2|strongest|line-of-defense/i, `${weak.role} on a sub-strongest tier is a config error`);

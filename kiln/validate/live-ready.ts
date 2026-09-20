@@ -30,6 +30,8 @@ import { checkOverlayReady, type OverlayReadyOverride, type Check, type OverlayR
 import { makeClock } from "../src/clock.ts";
 import { validateLog } from "./log.ts";
 import { fmt, PASS } from "./_report.ts";
+import { runCli } from "./_cli.ts";
+import { zeroNetworkScan, SCAN_DIRS } from "./_netscan.ts";
 
 const parse = (lines: string[]): Record<string, unknown>[] =>
    lines.map((l) => l.trim()).filter((l) => l !== "").map((l) => JSON.parse(l) as Record<string, unknown>);
@@ -62,39 +64,15 @@ function fileExists(p: string): boolean {
    }
 }
 
-// ── (e) the zero-network scan (P-VIII), re-derived over ALL FOUR live dirs incl. r3's new modules ──
-const EXTERNAL_IMPORT = /(?:^|\s)(?:import|export)\s+[^;'"]*?\s+from\s*["']([^"']+)["']|require\(\s*["']([^"']+)["']\s*\)|import\(\s*["']([^"']+)["']\s*\)/g;
-const NET_PRIMITIVE = /\b(?:new\s+(?:Server|Socket|WebSocket))\b|\brequire\(\s*["'](?:http|https|net|dns|tls)["']/;
-function zeroNetworkScan(dirs: string[]): { ok: boolean; detail: string } {
-  const offenders: string[] = [];
-  for (const dir of dirs) {
-    if (!fileExists(dir) || !statSync(dir).isDirectory()) continue;
-    for (const f of readdirSync(dir)) {
-      if (!f.endsWith(".ts")) continue;
-      const p = `${dir}/${f}`;
-      const codeText = readFileSync(p, "utf8");
-      if (NET_PRIMITIVE.test(codeText)) offenders.push(`${p}: a socket/server/network primitive`);
-      let m: RegExpExecArray | null;
-      EXTERNAL_IMPORT.lastIndex = 0;
-      while ((m = EXTERNAL_IMPORT.exec(codeText)) !== null) {
-        const spec = m[1] ?? m[2] ?? m[3] ?? "";
-        if (spec && !/^(\.|\/|node:)/.test(spec)) offenders.push(`${p}: external dependency "${spec}"`);
-      }
-    }
-  }
-  return offenders.length === 0
-    ? { ok: true, detail: "no external dep; no socket/server/timer on r3's live modules (P-VIII)" }
-    : { ok: false, detail: offenders.join("; ") };
-}
 
 /** LiveModelReady (E5): the r3 handoff probe — the live path is wired + PASSES-emit + F-NOT-SILENT + determinist + blocking Gate 0 + cloud-free. */
-export function checkLiveModelReady(override: LiveModelReadyOverride = {}): LiveModelReadyResult {
+export async function checkLiveModelReady(override: LiveModelReadyOverride = {}): Promise<LiveModelReadyResult> {
   const clock = makeClock();
   const schema = JSON.parse(readFileSync(schemaPath, "utf8"));
   const checks: Check[] = [];
    // ── compose ON r2's OverlayCReady (→ r1's RuntimeReady): spine wiring + blocking headless Gate 0 +
    //   F1 + zero-net + a closed-row program walk PASSES/named-R3 ──
-  const overlay = checkOverlayReady({
+  const overlay = await checkOverlayReady({
    brokenRender: override.brokenRender,
     brokenGate0: override.brokenGate0,
     });
@@ -126,7 +104,7 @@ export function checkLiveModelReady(override: LiveModelReadyOverride = {}): Live
    checks.push({ name: "kiln/index.ts exports the live path (on r1+r2's spine)", ok: liveWired, detail: liveWired ? "makeLiveResident / buildLiveWalk / live-tui / checkLiveModelReady exported" : "index does not export the live pieces" });
 
    // ── (b) PASSES-emit live: the LIVE full-rail walk PASSES 001's UNMODIFIED log.ts (SC-001/SC-002→003) ──
-  const liveWalk = buildLiveWalk({ mode: "live", clock, brokenNoDecider: override.brokenDogfood });
+  const liveWalk = await buildLiveWalk({ mode: "live", clock, brokenNoDecider: override.brokenDogfood });
   const liveRes = validateLog(parse(liveWalk.lines), schema);
    checks.push({
     name: "the live walk PASSES 001's unmodified log.ts (SC-001, 'the kiln fires LIVE')",
@@ -135,7 +113,7 @@ export function checkLiveModelReady(override: LiveModelReadyOverride = {}): Live
       });
 
    // (b/neg) a broken no-silent-approval variant FAILs the log with a NAMED R3 (SC-002→SC-003) ──
-  const brokenWalk = buildLiveWalk({ mode: "live", clock, brokenNoDecider: true });
+  const brokenWalk = await buildLiveWalk({ mode: "live", clock, brokenNoDecider: true });
    const brokenRes = validateLog(parse(brokenWalk.lines), schema);
    const brokenNamesR3 = !brokenRes.valid && /R3/.test(brokenRes.failures.join("\n"));
     checks.push({
@@ -145,10 +123,10 @@ export function checkLiveModelReady(override: LiveModelReadyOverride = {}): Live
       });
 
     // ── (d) F-NOT-SILENT: a --stub selection is RECORDED; an UNLOGGED stand-in is CAUGHT (P-V/P-VII) ──
-   const stubWalk = buildLiveWalk({ mode: "stub", clock }); // --stub: a RECORDED fallback
+   const stubWalk = await buildLiveWalk({ mode: "stub", clock }); // --stub: a RECORDED fallback
   const stubRecorded = liveWalkRecordsSelection(stubWalk, "stub");
    const liveRecorded = liveWalkRecordsSelection(liveWalk, "live"); // --live also records
-  const unloggedWalk = buildLiveWalk({ mode: "stub", recordSelection: false, clock }); // the violation
+  const unloggedWalk = await buildLiveWalk({ mode: "stub", recordSelection: false, clock }); // the violation
   const unloggedCaught = !liveWalkRecordsSelection(unloggedWalk, "stub"); // the detection is REAL
   const fNotSilent = stubRecorded && liveRecorded && unloggedCaught && !override.stubUnlogged;
    checks.push({
@@ -162,7 +140,10 @@ export function checkLiveModelReady(override: LiveModelReadyOverride = {}): Live
       });
 
    // ── (e) no cloud: a zero-network scan over ALL FOUR live dirs (P-VIII), both toggle positions ──
-  const scan = zeroNetworkScan([srcDir, uiDir, validateDir, contractsDir]);
+  const scan = zeroNetworkScan(
+    SCAN_DIRS.map((d) => dirOf(`../${d}`)),
+    "no external dep; no socket/server/timer on r3's live modules (P-VIII)",
+  ); // r7: the SHARED scan — the local copy scanned NOTHING (fileExists(dir) is isFile(): false for a directory)
    // both toggle positions are cloud-free (the scan reads the MODULES, not a run, so positions agree):
   scan.ok = selectResident({ mode: "live" }).resident.model() !== undefined &&
     selectResident({ mode: "stub" }).resident.model() !== undefined &&
@@ -180,8 +161,8 @@ export function checkLiveModelReady(override: LiveModelReadyOverride = {}): Live
 }
 
 /** The r3→r4 handoff report: READY, or the named gaps. RUNS NO GATE, ADMIITS NO PROGRAM (P-VI / SC-007). */
-export function reportLiveModelReady(override: LiveModelReadyOverride = {}): string {
-  const r = checkLiveModelReady(override);
+export async function reportLiveModelReady(override: LiveModelReadyOverride = {}): Promise<string> {
+  const r = await checkLiveModelReady(override);
   if (r.ready) {
    return [
     PASS,
@@ -201,18 +182,19 @@ function isMain(): boolean {
    }
 }
 if (isMain()) {
-  const ov: LiveModelReadyOverride = {
-     brokenDogfood: process.argv.includes("--broken"),
-     brokenRender: process.argv.includes("--broken-render"),
-     brokenGate0: process.argv.includes("--broken-gate0"),
-     stubUnlogged: process.argv.includes("--stub-unlogged"),
-      };
-  const r = checkLiveModelReady(ov);
-  if (r.ready) {
-    console.log(reportLiveModelReady(ov));
-    process.exit(0);
-  } else {
-    console.error(reportLiveModelReady(ov));
-    process.exit(1);
-   }
+  runCli(async () => {
+    const ov: LiveModelReadyOverride = {
+      brokenDogfood: process.argv.includes("--broken"),
+      brokenRender: process.argv.includes("--broken-render"),
+      brokenGate0: process.argv.includes("--broken-gate0"),
+      stubUnlogged: process.argv.includes("--stub-unlogged"),
+    };
+    const r = await checkLiveModelReady(ov);
+    if (r.ready) {
+      console.log(await reportLiveModelReady(ov));
+      return 0;
+    }
+    console.error(await reportLiveModelReady(ov));
+    return 1;
+  });
 }

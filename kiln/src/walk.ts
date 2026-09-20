@@ -38,7 +38,7 @@ export interface BuildStubWalkOptions {
  *   (a gate a missing UI may only record, never resolve). Every line stamps seq/ts; the stream
  *   passes 001's `kiln/validate/log.ts`.
  */
-export function buildStubWalk(opts: BuildStubWalkOptions = {}): StubWalk {
+export async function buildStubWalk(opts: BuildStubWalkOptions = {}): Promise<StubWalk> {
   const clock = opts.clock ?? makeClock();
   const human = opts.human ?? "human@batorfi";
   const writer = new LogWriter(clock);
@@ -53,8 +53,8 @@ export function buildStubWalk(opts: BuildStubWalkOptions = {}): StubWalk {
   const resident = makeStubResident({ model: "stub", tier: "strongest" });
   const u1: WorkUnit = { id: "concept", role: "concept-writer", tier: "strongest", out: "concept-ok" };
   const u2: WorkUnit = { id: "spec", role: "worker", tier: "strongest", out: "spec-ok" };
-  resident.run(u1);
-  resident.run(u2);
+  await resident.run(u1); // r7: direct calls outside lane.run (walk.ts) — awaited, sequential
+  await resident.run(u2);
   emit({ recordType: "transition", transition: { kind: "load", from: "cold", to: "stub" } });
   emit({ recordType: "transition", transition: { kind: "hold", to: "stub" } });
   emit({ recordType: "transition", transition: { kind: "yield", to: "concept", reason: "run concept-writer on stub" } });

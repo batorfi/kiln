@@ -32,12 +32,19 @@ export interface TransitionEvent {
 /** A cost bracketing a swap transition (P-IV; one `cost` per genuine tier boundary). */
 export type CostEvent = Cost;
 
+/** A unit's captured work product (r7 · O4). Before r7 the result was discarded at a bare `resident.run(unit)`. */
+export interface WorkOutput {
+  duId: string;
+  output: unknown;
+}
+
 /** The outcome of a walk: the final state, the snapshots (for F-SINGLE), and the emitted events. */
 export interface WalkResult {
   state: Lane;
   snapshots: Lane[]; // FactoryState captured at each step (F-SINGLE asserted over these)
   transitions: TransitionEvent[];
   costs: CostEvent[]; // one per `transition.kind=swap`, bracketing it
+  outputs: WorkOutput[]; // r7 · O4: each unit's captured work product, in run order (was discarded)
   switches: number; // the realized switch-tax (# genuine tier boundaries)
   wallClock: string; // "HH:MM"
   resident: { model: string; tier: string } | null;
@@ -92,12 +99,22 @@ export function hold(lane: Lane, resident: Resident, first?: WorkUnit, out: Tran
  * Yield the running slot to exactly one unit and run it (P-III). Returns the post-yield snapshot,
  * in which EXACTLY one unit is live — the instant F-SINGLE must hold. The slot is NOT reclaimed
  * here; that is `resume` (so a snapshot can capture the live unit).
+ *
+ * r7 (NC1=B): ASYNC — the resident may be a real model call. Sequential, never concurrent (FR-015a /
+ * P-III): the snapshot is taken with the unit live, then exactly ONE `await` is in flight; the next
+ * unit starts only after this one is reclaimed. The unit's work product is CAPTURED into `outputs`.
  */
-export function yield_(lane: Lane, unit: WorkUnit, resident: Resident, out: TransitionEvent[] = []): Lane {
+export async function yield_(
+  lane: Lane,
+  unit: WorkUnit,
+  resident: Resident,
+  out: TransitionEvent[] = [],
+  outputs: WorkOutput[] = [],
+): Promise<Lane> {
   lane.running = { duId: unit.id, role: unit.role };
   out.push({ kind: "yield", to: unit.id, reason: `run ${unit.role} on ${resident.model()}` });
   const s = snap(lane); // the live instant: one resident + one running unit
-  resident.run(unit); // the stub returns a fixed output (NC2 deterministic)
+  outputs.push({ duId: unit.id, output: await resident.run(unit) }); // ONE in-flight call; output kept (O4)
   return s;
 }
 
@@ -114,15 +131,16 @@ export function resume(lane: Lane, out: TransitionEvent[] = []): Lane {
  * bracketing that swap with a `cost` record. Emits each transition (and a bracketing cost per swap)
  * through `sink` if provided. Same-tier units incur ZERO switches (F-AFFINITY preview; SC-004).
  */
-export function run(
+export async function run(
   lane: Lane,
   units: WorkUnit[],
   resident: Resident,
   sink?: (ev: TransitionEvent | CostEvent) => void,
-): WalkResult {
+): Promise<WalkResult> {
   const snapshots: Lane[] = [];
   const transitions: TransitionEvent[] = [];
   const costs: CostEvent[] = [];
+  const outputs: WorkOutput[] = [];
   let residentTier = resident.tier();
 
   for (const unit of units) {
@@ -148,7 +166,7 @@ export function run(
 
      // P-III: yield to exactly one unit, then reclaim it — the next unit never starts before the
     // current one is reclaimed (F-SINGLE).
-    yield_(lane, unit, resident, transitions);
+    await yield_(lane, unit, resident, transitions, outputs); // sequential: ONE unit in flight (FR-015a)
     snapshots.push(snap(lane)); // the LIVE instant captured: exactly one running unit
     resume(lane, transitions); // reclaim the slot
     snapshots.push(snap(lane));
@@ -160,6 +178,7 @@ export function run(
     snapshots,
     transitions,
     costs,
+    outputs,
     switches: lane.switches,
     wallClock: lane.wallClock,
     resident: lane.resident,

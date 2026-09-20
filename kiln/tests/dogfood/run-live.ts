@@ -24,7 +24,7 @@ const name = (args.find((a) => !a.startsWith("--")) ?? "r3-live-walk").replace(/
 const logDir = fileURLToPath(new URL("../../factory-log/", import.meta.url));
 const outPath = `${logDir}${name}.jsonl`;
 
-const walk = buildLiveWalk({
+const walk = await buildLiveWalk({
   mode,
   brokenNoDecider: broken,
  });

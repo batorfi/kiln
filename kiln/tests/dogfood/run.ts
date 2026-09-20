@@ -17,7 +17,7 @@ const broken = args.includes("--broken");
 const name = args.find((a) => !a.startsWith("--")) ?? "stub-walk";
 const outPath = `${fileURLToPath(new URL("../../factory-log/", import.meta.url))}${name}.jsonl`;
 
-const walk = buildStubWalk({ preDelegate: true, haltOnVeto: !broken });
+const walk = await buildStubWalk({ preDelegate: true, haltOnVeto: !broken });
 const lines = walk.lines.slice();
 
 if (broken) {

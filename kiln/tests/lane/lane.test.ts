@@ -14,10 +14,10 @@ function unit(id: string, tier: WorkUnit["tier"]): WorkUnit {
   return { id, role: tier === "strongest" ? "architecture-critic" : "worker", tier, out: `done-${id}-${tier}` };
 }
 
-test("US1 SC-1: a 2-unit same-tier lane holds exactly one resident + one running unit", () => {
+test("US1 SC-1: a 2-unit same-tier lane holds exactly one resident + one running unit", async () => {
   const lane = makeLane();
   const resident = makeStubResident({ model: "stub", tier: "strongest" });
-  const result = run(lane, [unit("A", "strongest"), unit("B", "strongest")], resident);
+  const result = await run(lane, [unit("A", "strongest"), unit("B", "strongest")], resident);
   // F-SINGLE over every captured snapshot.
   assert.doesNotThrow(() => assertSingleLane(result.snapshots), "a single-lane walk must never be a foundry");
    // Exactly one resident resident at every instant.
@@ -33,19 +33,19 @@ test("US1 SC-1: a 2-unit same-tier lane holds exactly one resident + one running
   assert.ok(reclaims >= 2, "each unit is reclaimed before the next runs");
 });
 
-test("US1 SC-4: a same-tier 2-unit walk incurs ZERO switches (F-AFFINITY preview, SC-004)", () => {
+test("US1 SC-4: a same-tier 2-unit walk incurs ZERO switches (F-AFFINITY preview, SC-004)", async () => {
   const lane = makeLane();
   const resident = makeStubResident({ model: "stub", tier: "strongest" });
-  const result = run(lane, [unit("A", "strongest"), unit("B", "strongest"), unit("C", "strongest")], resident);
+  const result = await run(lane, [unit("A", "strongest"), unit("B", "strongest"), unit("C", "strongest")], resident);
   assert.equal(result.switches, 0, "no swap on an affinity-compatible interior boundary");
   assert.equal(result.costs.length, 0, "no cost bracketing a non-existent swap");
   assert.equal(hasSwapTransition(result.transitions), false, "a same-tier walk emits no swap transition");
 });
 
-test("US1: a single tier change lands exactly one swap + a bracketing cost", () => {
+test("US1: a single tier change lands exactly one swap + a bracketing cost", async () => {
   const lane = makeLane();
   const resident = makeStubResident({ model: "stub", tier: "strongest" });
-  const result = run(lane, [unit("A", "strongest"), unit("B", "standard"), unit("C", "standard")], resident);
+  const result = await run(lane, [unit("A", "strongest"), unit("B", "standard"), unit("C", "standard")], resident);
   assert.equal(result.switches, 1, "one genuine tier boundary ⇒ one swap");
   assert.equal(result.costs.length, 1, "a cost brackets the swap");
   assert.equal(result.costs[0].switches, 1, "the cost carries the switch count");

@@ -28,7 +28,11 @@ export interface WorkUnit {
  * emitted log replayable (D5) and the "at any instant" invariants reproducible (SC-001).
  */
 export interface Resident {
-  run(workUnit: WorkUnit): unknown;
+  // r7 (NC1=B, D1/A1): WIDENED by UNION — a resident may now be async (a real model call). r1's stub and
+  // r3's adapter still return plain values and stay conforming and UNEDITED: `await` on a non-Promise is
+  // a pass-through, so the change lands in the CALLERS. (No `tsc` runs in this zero-dep repo — node strips
+  // types — so this union is a CONTRACT, not something the toolchain enforces; T012 guards the runtime.)
+  run(workUnit: WorkUnit): unknown | Promise<unknown>;
   model(): string;
   tier(): Tier;
 }

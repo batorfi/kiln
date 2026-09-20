@@ -32,11 +32,19 @@ export function switchCount(units: WorkUnit[]): number {
  * (P-II / G2 / L1), so the rejection happens at schedule time, before anything runs. THEN run the
  * affinity walk (the lane's swaps == switchCount). Returns the lane's WalkResult (switches/costs).
  */
-export function schedule(units: WorkUnit[], resident: Parameters<typeof run>[2]): WalkResult {
-   // P-II / G2 / L1: reject any weaker line-of-defense binding at schedule time.
+export function bindAll(units: WorkUnit[]): void {
+  // P-II / G2 / L1: reject any weaker line-of-defense binding at schedule time — SYNCHRONOUSLY.
   for (const u of units) {
     bindRole(u.role, u.tier); // throws a G2/L1 config error on a sub-strongest LoD tier
-    }
+  }
+}
+
+// r7 (NC1=B, D3): `schedule` is deliberately NOT `async`. A throw inside an `async` function becomes a
+// REJECTED PROMISE, so a config error would stop being a synchronous throw (P-II's "rejected at schedule
+// time, before anything runs") — and `assert.doesNotThrow(() => schedule(...))` would pass VACUOUSLY on a
+// rejection. As a plain function, `bindAll` throws synchronously here, and only then is a promise made.
+export function schedule(units: WorkUnit[], resident: Parameters<typeof run>[2]): Promise<WalkResult> {
+  bindAll(units); // sync throw — BEFORE any promise exists
   return run(makeLane(), units, resident);
 }
 

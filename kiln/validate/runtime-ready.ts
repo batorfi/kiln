@@ -20,6 +20,8 @@ import { fileURLToPath } from "node:url";
 import { buildStubWalk } from "../src/walk.ts";
 import { validateLog } from "./log.ts";
 import { fmt, PASS } from "./_report.ts";
+import { runCli } from "./_cli.ts";
+import { zeroNetworkScan, SCAN_DIRS } from "./_netscan.ts";
 
 const parse = (lines: string[]): Record<string, unknown>[] =>
    lines.map((l) => l.trim()).filter((l) => l !== "").map((l) => JSON.parse(l) as Record<string, unknown>);
@@ -69,39 +71,7 @@ function fileExists(p: string): boolean {
    }
 }
 
-// ---- (c) the zero-network scan (P-VIII) ----
-const EXTERNAL_IMPORT = /(?:^|\s)(?:import|export)\s+[^;'"]*?\s+from\s*["']([^"']+)["']|require\(\s*["']([^"']+)["']\s*\)|import\(\s*["']([^"']+)["']\s*\)/g;
-const NET_PRIMITIVE = /\b(?:new\s+(?:Server|Socket|WebSocket))\b|\brequire\(\s*["'](?:http|https|net|dns|tls)["']/;
-
-function isExternalSpecifier(spec: string): boolean {
-  const s = spec.trim();
-  if (s.startsWith(".") || s.startsWith("/") || s.startsWith("node:")) return false;
-  return true;
-}
-
-function zeroNetworkScan(dirs: string[]): { ok: boolean; detail: string } {
-  const offenders: string[] = [];
-  for (const dir of dirs) {
-    if (!fileExists(dir) || !statSync(dir).isDirectory()) continue;
-    for (const f of readdirSync(dir)) {
-      if (!f.endsWith(".ts")) continue;
-      const p = `${dir}/${f}`;
-      const codeText = readFileSync(p, "utf8");
-      if (NET_PRIMITIVE.test(codeText)) offenders.push(`${p}: a socket/server/network primitive`);
-      let m: RegExpExecArray | null;
-      EXTERNAL_IMPORT.lastIndex = 0;
-      while ((m = EXTERNAL_IMPORT.exec(codeText)) !== null) {
-        const spec = m[1] ?? m[2] ?? m[3] ?? "";
-        if (isExternalSpecifier(spec)) offenders.push(`${p}: external dependency "${spec}"`);
-       }
-    }
-}
-  return offenders.length === 0
-    ? { ok: true, detail: "no external dependency; no socket/server/timer (P-VIII)" }
-     : { ok: false, detail: offenders.join("; ") };
-}
-
-export function checkRuntimeReady(override: RuntimeReadyOverride = {}): RuntimeReadyResult {
+export async function checkRuntimeReady(override: RuntimeReadyOverride = {}): Promise<RuntimeReadyResult> {
   const d = { ...DEFAULT_DEPS, ...override };
   const checks: Check[] = [];
 
@@ -143,7 +113,7 @@ export function checkRuntimeReady(override: RuntimeReadyOverride = {}): RuntimeR
      }
 
      // (b) valid log — the stub walk's emitted JSOnL PASSES 001's kiln/validate/log.ts.
-   const walk = buildStubWalk({ preDelegate: true, haltOnVeto: false });
+   const walk = await buildStubWalk({ preDelegate: true, haltOnVeto: false }); // r7: async spine — an un-awaited walk must never read as green
    let records = parse(walk.lines);
   if (override.brokenDogfood) {
       // Falsify (b): open the no-silent-approval hole (strip a human decider) → the emitted log
@@ -160,19 +130,17 @@ export function checkRuntimeReady(override: RuntimeReadyOverride = {}): RuntimeR
     });
 
      // (c) no cloud.
-   const scan = zeroNetworkScan([
-    fileURLToPath(new URL("../src", import.meta.url)),
-    fileURLToPath(new URL("../ui", import.meta.url)),
-    fileURLToPath(new URL("../validate", import.meta.url)),
-    fileURLToPath(new URL("../contracts", import.meta.url)),
-      ]);
+   const scan = zeroNetworkScan(
+    SCAN_DIRS.map((d) => fileURLToPath(new URL(`../${d}`, import.meta.url))),
+    "no external dependency; no socket/server/timer (P-VIII)",
+  ); // r7: the SHARED scan (src/ui/validate/contracts — src is finally really scanned)
   checks.push({ name: "zero-network (P-VIII)", ok: scan.ok, detail: scan.detail });
 
   return { ready: checks.every((c) => c.ok), checks };
 }
 
-export function reportRuntimeReady(override: RuntimeReadyOverride = {}): string {
-  const r = checkRuntimeReady(override);
+export async function reportRuntimeReady(override: RuntimeReadyOverride = {}): Promise<string> {
+  const r = await checkRuntimeReady(override);
   if (r.ready) {
    return [PASS, "RuntimeReady — the kiln fires on a stub (no gate advanced, no cloud):", ...r.checks.map((c) => `   ✓ ${c.name}: ${c.detail}`)].join("\n");
       }
@@ -188,14 +156,15 @@ function isMain(): boolean {
      }
 }
 if (isMain()) {
-  const broken = process.argv.includes("--broken");
-  const ov: RuntimeReadyOverride = broken ? { brokenDogfood: true } : {};
-  const r = checkRuntimeReady(ov);
-  if (r.ready) {
-    console.log(reportRuntimeReady(ov));
-     process.exit(0);
-      } else {
-    console.error(reportRuntimeReady(ov));
-      process.exit(1);
-       }
+  runCli(async () => {
+    const broken = process.argv.includes("--broken");
+    const ov: RuntimeReadyOverride = broken ? { brokenDogfood: true } : {};
+    const r = await checkRuntimeReady(ov);
+    if (r.ready) {
+      console.log(await reportRuntimeReady(ov));
+      return 0;
+    }
+    console.error(await reportRuntimeReady(ov));
+    return 1;
+  });
 }

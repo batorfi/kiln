@@ -28,6 +28,8 @@ import { recordGate0Decision } from "../ui/gate0-face.ts";
 import { buildProgramWalk } from "../src/walk.ts";
 import { validateLog } from "./log.ts";
 import { fmt, PASS } from "./_report.ts";
+import { runCli } from "./_cli.ts";
+import { zeroNetworkScan, SCAN_DIRS } from "./_netscan.ts";
 
 // Reuse r1's spine + its dogfood/scan where it is an extension, not a re-derivation.
 import { checkRuntimeReady, DEFAULT_DEPS } from "./runtime-ready.ts";
@@ -97,7 +99,7 @@ function fileExists(p: string): boolean {
 const uiDir = fileURLToPath(new URL("../ui", import.meta.url));
 const CONTRACTS = fileURLToPath(new URL("../contracts", import.meta.url));
 
-export function checkOverlayReady(override: OverlayReadyOverride = {}): OverlayReadyResult {
+export async function checkOverlayReady(override: OverlayReadyOverride = {}): Promise<OverlayReadyResult> {
   const checks: Check[] = [];
 
   // ── (a) presence + wiring: the overlay set exists; kiln/index.ts exports it on top of r1's spine ──
@@ -120,7 +122,7 @@ export function checkOverlayReady(override: OverlayReadyOverride = {}): OverlayR
      });
 
     // r1's spine must still be ready (OverlayCReady composes ON runtime-ready).
-  const spine = checkRuntimeReady();
+  const spine = await checkRuntimeReady(); // r7: async spine — un-awaited, `spine.ready` would be undefined
   checks.push({
        name: "r1 spine runtime-ready (composes on runtime-ready)",
        ok: spine.ready,
@@ -183,25 +185,12 @@ export function checkOverlayReady(override: OverlayReadyOverride = {}): OverlayR
        });
 
         // ── (c) no cloud (P-VIII) — a zero-network scan over the overlay set ──
-  const net = { ok: true, detail: "no external dep; no socket/server (P-VIII)" };
-   const EXTERNAL = /(?:^|\s)(?:import|export)\s+[^;'"]*?\s+from\s*["']([^"']+)["']|require\(\s*["']([^"']+)["']\s*\)|import\(\s*["']([^"']+)["']\s*\)/g;
-  const NET = /\b(?:new\s+(?:Server|Socket|WebSocket))\b|\brequire\(\s*["'](?:http|https|net|dns|tls)["']/;
-   const dirs = [uiDir, CONTRACTS, fileURLToPath(new URL("../validate", import.meta.url))];
-   const offenders: string[] = [];
-     for (const d of dirs) {
-    for (const f of readdirSync(d)) {
-      if (!f.endsWith(".ts")) continue;
-      const codeText = readFileSync(`${d}/${f}`, "utf8");
-      if (NET.test(codeText)) offenders.push(`${d}/${f}: a socket/server/network primitive`);
-      let m: RegExpExecArray | null;
-      EXTERNAL.lastIndex = 0;
-       while ((m = EXTERNAL.exec(codeText)) !== null) {
-        const spec = m[1] ?? m[2] ?? m[3] ?? "";
-        if (spec && !/^(\.|\/|node:)/.test(spec)) offenders.push(`${d}/${f}: external dependency "${spec}"`);
-          }
-       }
-    }
-  checks.push({ name: "zero-network (P-VIII)", ok: offenders.length === 0, detail: offenders.length === 0 ? net.detail : offenders.join("; ") });
+  // r7: the SHARED scan. The inline copy scanned ui/contracts/validate but NEVER `src` (where residents live).
+  const netScan = zeroNetworkScan(
+    SCAN_DIRS.map((d) => fileURLToPath(new URL(`../${d}`, import.meta.url))),
+    "no external dep; no socket/server (P-VIII)",
+  );
+  checks.push({ name: "zero-network (P-VIII)", ok: netScan.ok, detail: netScan.detail });
 
      // traceability note (the runtime analogue of FR-009 / r1's SC-006).
   checks.push({
@@ -213,8 +202,8 @@ export function checkOverlayReady(override: OverlayReadyOverride = {}): OverlayR
   return { ready: checks.every((c) => c.ok), checks };
 }
 
-export function reportOverlayReady(override: OverlayReadyOverride = {}): string {
-  const r = checkOverlayReady(override);
+export async function reportOverlayReady(override: OverlayReadyOverride = {}): Promise<string> {
+  const r = await checkOverlayReady(override);
   if (r.ready) {
    return [PASS, "OverlayCReady — Layer C is drawn: deterministic, a blocking headless Gate 0, cloud-free:", ...r.checks.map((c) => `    ✓ ${c.name}: ${c.detail}`)].join("\n");
        }
@@ -230,16 +219,17 @@ function isMain(): boolean {
      }
 }
 if (isMain()) {
-  const ov: OverlayReadyOverride = {
-     brokenRender: process.argv.includes("--broken-render"),
-     brokenGate0: process.argv.includes("--broken-gate0"),
-      };
-   const r = checkOverlayReady(ov);
-   if (r.ready) {
-    console.log(reportOverlayReady(ov));
-     process.exit(0);
-       } else {
-    console.error(reportOverlayReady(ov));
-      process.exit(1);
-        }
+  runCli(async () => {
+    const ov: OverlayReadyOverride = {
+      brokenRender: process.argv.includes("--broken-render"),
+      brokenGate0: process.argv.includes("--broken-gate0"),
+    };
+    const r = await checkOverlayReady(ov);
+    if (r.ready) {
+      console.log(await reportOverlayReady(ov));
+      return 0;
+    }
+    console.error(await reportOverlayReady(ov));
+    return 1;
+  });
 }

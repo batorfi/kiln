@@ -28,12 +28,14 @@ import { makeLane, run, assertSingleLane, type Lane } from "./lane.ts";
 import { makePreDelegation, tokenFor, type Gate } from "./gate.ts";
 import { makeClock, type Clock } from "./clock.ts";
 import { switchCount } from "./scheduler.ts";
-import type { WorkUnit } from "./stub-resident.ts";
+import type { WorkUnit, Resident } from "./stub-resident.ts";
+import type { WorkOutput } from "./lane.ts";
 import {
    selectResident,
    isResidentSelectionRecorded,
    type ResidentMode,
    type ResidentSelection,
+   type ResidentLocation,
 } from "./live-resident.ts";
 
 /**
@@ -70,6 +72,12 @@ export interface LiveWalkOptions {
    /** Demonstrate a line-of-defense VETO that HALTS the cruise (a durable `wait`, "the crack in the cool", FR-011). */
   haltVeto?: boolean;
 
+  /** r7: drive a PRE-BUILT resident (e.g. a real `makeOllamaResident`) instead of r3's deterministic adapter.
+   *  Additive + optional; omit it and this walk is byte-identical to r3's. */
+  resident?: Resident;
+  /** r7: where that resident runs — recorded SYMBOLICALLY in the selection marker (`@ loopback`, O5). */
+  location?: ResidentLocation;
+
   /** FALSIFY (the r1 `run.ts --broken` vector, reused on the live emit): strip one gate's
     *  `decidedBy` so the emitted log FAILs 001's log.ts with a NAMED R3 (SC-002 → SC-003). */
   brokenNoDecider?: boolean;
@@ -80,6 +88,7 @@ export interface LiveWalk {
    lines: string[]; // emitted JSONL lines
    jsonl: string; // the full emitted stream
    snapshots: Lane[]; // per-step FactoryState — `assertSingleLane` (F-SINGLE / SC-003) over these
+   outputs: WorkOutput[]; // r7 · O4: each unit's CAPTURED work product (kept in memory; never written to the ledger, O6)
    switches: number; // realized affinity tax; SHALL == `switchCount(THROWAWAY_UNITS)` (SC-004 / P-IV)
    gates: Gate[]; // the gates the live lane opened/resolved
    mode: ResidentMode;
@@ -89,7 +98,7 @@ export interface LiveWalk {
 }
 
 /** Build a LIVE, full-rail nine-gate walk over the throwaway (E2, D7). */
-export function buildLiveWalk(opts: LiveWalkOptions = {}): LiveWalk {
+export async function buildLiveWalk(opts: LiveWalkOptions = {}): Promise<LiveWalk> {
   const clock = opts.clock ?? makeClock();
   const human = opts.human ?? "human@batorfi";
   const mode = opts.mode ?? "live"; // NC2: live default
@@ -104,6 +113,8 @@ export function buildLiveWalk(opts: LiveWalkOptions = {}): LiveWalk {
     model: opts.model,
     assumeLiveAvailable: true, // NC2: the local head is guaranteed; the fallback is belt-and-suspenders
     recordSelection,
+    resident: opts.resident, // r7: a real resident, when given
+    location: opts.location,
   });
 
   const writer = new LogWriter(clock);
@@ -129,7 +140,7 @@ export function buildLiveWalk(opts: LiveWalkOptions = {}): LiveWalk {
       { id: "r3", short: "first live-model smoke walk", deps: ["r1"], status: "active", gate: 1 },
      ],
    });
-  const res = run(lane, THROWAWAY_UNITS, resident.resident, (ev) => {
+  const res = await run(lane, THROWAWAY_UNITS, resident.resident, (ev) => { // r7: async spine (NC1=B), still ONE unit in flight
    if ("kind" in ev) emit({ recordType: "transition", transition: ev });
        else emit({ recordType: "cost", cost: ev });
    });
@@ -222,6 +233,7 @@ export function buildLiveWalk(opts: LiveWalkOptions = {}): LiveWalk {
     lines,
     jsonl: lines.join("\n"),
     snapshots: res.snapshots,
+    outputs: res.outputs,
     switches: res.switches,
     gates,
      mode,
