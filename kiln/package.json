@@ -10,7 +10,7 @@
   "author": "Zsolt Bátorfi",
   "type": "module",
   "engines": {
-    "node": ">=22.6"
+    "node": "^22.18.0 || >=23.6.0"
   },
   "scripts": {
     "test": "node tests/run.ts",

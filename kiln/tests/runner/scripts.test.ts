@@ -39,14 +39,14 @@ test("CR-1: the runner works from ANY working directory — kiln/, the repo root
   for (const cwd of [kiln, repo, tmpdir()]) {
     const r = sh(process.execPath, [runner, "tests/negative/async-await.test.ts"], cwd);
     assert.equal(r.status, 0, `cwd=${cwd}\n${r.stdout.slice(-400)}${r.stderr.slice(-400)}`);
-    assert.match(r.stdout, /ℹ tests [1-9]\d*/, `cwd=${cwd}: tests actually ran`);
+    assert.match(r.stdout, /(?:ℹ |# )tests [1-9]\d*/, `cwd=${cwd}: tests actually ran`);
   }
 });
 
 test("CR-1: a run that executes ZERO tests FAILS — `node --test` alone exits 0 on 'tests 0', a silent pass", () => {
   const bare = sh(process.execPath, ["--test", "tests/__none__/*.test.ts"], kiln);
   assert.equal(bare.status, 0, "precondition: plain `node --test` really does exit 0 when nothing matched (the hazard)");
-  assert.match(bare.stdout, /ℹ tests 0/);
+  assert.match(bare.stdout, /(?:ℹ |# )tests 0/); // older Node prints TAP (`# tests 0`); newer prints the spec reporter (`ℹ tests 0`)
   const guarded = sh(process.execPath, [runner, "tests/__none__/*.test.ts"], kiln);
   assert.equal(guarded.status, 1, "the runner refuses it");
   assert.match(guarded.stderr, /ZERO tests/);
@@ -66,9 +66,17 @@ test("CR-1 (the real path): the scripts work when run through `npm run`, exactly
   assert.match(roadmap.stdout, /PASS/);
   const suite = sh("npm", ["test", "--", "tests/negative/async-await.test.ts"], kiln);
   assert.equal(suite.status, 0, suite.stdout.slice(-600) + suite.stderr.slice(-300));
-  assert.match(suite.stdout, /ℹ tests [1-9]\d*/, "`npm test` ran real tests");
+  assert.match(suite.stdout, /(?:ℹ |# )tests [1-9]\d*/, "`npm test` ran real tests");
   const none = sh("npm", ["run", "test:live", "--", "tests/__none__/*.test.ts"], kiln);
   assert.equal(none.status, 1, "`npm run test:live` can no longer pass with zero tests");
+});
+
+test("engines.node is the MEASURED floor — `^22.18.0 || >=23.6.0`, not the earlier guess of `>=22.6`", () => {
+  // Measured 2026-09-21 by running `node kiln/tests/run.ts` (the documented command) under each Node: 22.6.0 ✗ (even with the flag, one test
+  // file fails to load on a non-null `!`), 22.12.0/22.17.1 ✗ as documented (need --experimental-strip-types), 22.18.0 ✓, 23.5.0 ✗ as documented,
+  // 23.6.0 ✓, 24.21.0 ✓, 25.9.0 ✓, 26.8.2 ✓. Type-stripping is unflagged from 22.18.0 and 23.6.0. Change this only with new measurements
+  // (see specs/006-kiln-live-inference/verification-report.md §10).
+  assert.equal((pkg as unknown as { engines: { node: string } }).engines.node, "^22.18.0 || >=23.6.0");
 });
 
 test("dependencies stay empty (P-VIII) — the runner is Node's own child_process, not a package", () => {

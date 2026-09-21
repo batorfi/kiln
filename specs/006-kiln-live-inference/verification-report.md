@@ -298,3 +298,32 @@ committed — no git-ignored logs, nothing from the working tree). It was not pu
 **F-1 was decided: keep as is** (`KILN_LIVE=1` with Ollama unreachable fails loudly, not skips) — see the decision in §5. It was not a code-review finding.
 
 **Limits, as before:** one host (macOS, Node v26.8.2, Ollama 0.34.2); only `gemma4:12b` exercised end to end in this addendum (the non-thinking `qwen3-coder-next` was exercised in §4.5, before the fixes); CR-8's Windows handling was **not run on Windows**; and the fixes are **local commits — not yet pushed**.
+
+---
+
+## 10. Addendum — the Node version floor, measured (2026-09-21)
+
+*Sections 6 and 9 said the declared `engines.node >= 22.6` was **unverified**. It is now verified — and it was wrong.* The documented command
+(`node kiln/tests/run.ts`, which is what `npm test` runs) was run under each Node below, fetched with `npx node@<version>`, both as documented and with
+`--experimental-strip-types` (offline suite; the live tier needs no particular Node).
+
+| Node | As documented | With `--experimental-strip-types` |
+|---|---|---|
+| 20.19.0 | ✗ `ERR_UNKNOWN_FILE_EXTENSION` | ✗ option unsupported |
+| **22.6.0** *(the old declared floor)* | ✗ | ✗ **218 of 232 tests**: one test file fails to load — the older type-stripper rejects a non-null `!` (`failure-modes.test.ts:101`); the production code itself loads |
+| 22.12.0 · 22.17.1 | ✗ | ✓ **232 tests · 220 pass · 0 fail · 12 skipped** |
+| **22.18.0** | ✓ 232 · 220 · 0 · 12 | ✓ |
+| 23.5.0 | ✗ | ✓ |
+| **23.6.0** | ✓ | ✓ |
+| 24.21.0 · 25.9.0 · 26.8.2 | ✓ | ✓ |
+
+**Result.** Type-stripping is unflagged from **22.18.0** and **23.6.0**, so the flag-free scripts need **`^22.18.0 || >=23.6.0`**. The old `>=22.6` was wrong
+twice: it admitted versions that cannot run the commands at all (22.6–22.17, 23.0–23.5 without a flag), and 22.6 does not fully work even with the flag.
+`engines.node` is now `^22.18.0 || >=23.6.0` and a test pins it. Older releases from 22.12 up work **with** `--experimental-strip-types`; anything that fails with
+`ERR_UNKNOWN_FILE_EXTENSION` is a Node that is too old (or is missing the flag).
+
+**A defect this found in the tests (fixed).** Two of the new script tests asserted the newer spec reporter's `ℹ tests N` output, so they failed on Node ≤ 24's TAP
+output (`# tests N`) even though the code was correct. They are now reporter-agnostic. This is exactly the kind of assumption a single-Node verification cannot see.
+
+**Still unverified:** Linux and Windows (this was all macOS), and Node 22.6–22.11 with the flag beyond the one file noted above.
+
