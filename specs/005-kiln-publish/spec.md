@@ -1,22 +1,19 @@
-# Feature Specification: KILN Publish — the URL-runnable distribution point (row r4)
+# Feature Specification: KILN Release — cut the kiln-v1 release (row r4)
 
-**Feature Branch**: `005-kiln-publish`  *(provisional short-name; renameable before /speckit.plan —
-the spec-directory name is per-checkout state, not a committed artifact)*
+**Feature Branch**: `005-kiln-publish`  *(the directory name is kept so existing references resolve, though the row is now "cut the release" — see the Revision below)*
 
 **Created**: 2026-09-19
 
-**Status**: **Draft — first `/speckit.specify` pass, ready for the human's gate-1 sign-off.** r4 is
-roadmap row **r4** in [specs/ROADMAP.md](../../ROADMAP.md): short "publish the kiln toolchain to a
-public GitHub repo (the URL-runnable distribution point)", `deps: [r2, r3]`, `status: queued`. r4 is
-the **distribution point**: the URL from which r5's installer *runs* and r6's docs *host*. This
-draft is **NOT yet clarified** — three decisions (**NC1 manifest / NC2 target + mechanism / NC3 the
-P-VIII reconciliation**) genuinely branch the spec and are held, unresolved, at gate-1. **Nothing
-here admits a program, advances a gate, or performs a publish** (P-VI / P-V / P-VIII).
+**Status**: **Draft — REVISED 2026-09-21 at the r7 seam; not yet clarified.** r4 is roadmap row **r4** in
+[specs/ROADMAP.md](../ROADMAP.md), now worded **"cut the kiln-v1 release — a curated, versioned, URL-runnable distribution of the
+runnable factory"** (it was *"publish the kiln toolchain to a public GitHub repo"*), `deps: [r2, r3, r7, r8, r9, r10, r11]`, `status: queued`.
+r4 is **no longer the next row**: it fires only after **r11**, when the factory is runnable. The three original decisions (**NC1 manifest /
+NC2 target + mechanism / NC3 the P-VIII reconciliation**) are **still open** but have been **narrowed by facts** — see the Revision and the
+status table under *Clarifications*. **Nothing here admits a program, advances a gate, or performs a release** (P-VI / P-V / P-VIII).
 
-**Input**: the **kiln-v1** firing program row **r4** in
-[specs/ROADMAP.md](../../ROADMAP.md). Re-admitted at the 2026-09-19 r3 seam as the
-**admitted next-to-fire** row; it stays `queued` (not `active`) per **M4** because its lane has no
-live gate yet (`chain_unattended=false`; r4 is not auto-lifted by r3's close).
+**Input**: the **kiln-v1** firing program row **r4** in [specs/ROADMAP.md](../ROADMAP.md). At the r7 seam (2026-09-21) the human defined
+`kiln-v1` as **a fully runnable factory (real UI, commands, director, roles)**, added **r8**, then **split it into r8–r11** and **reworded r4**.
+r4 stays `queued` (not `active`) per **M4** until its own lane has a live gate (`chain_unattended=false`).
 
 **Provenance (what r4 builds on, all closed to `main`)**:
 - **r1** `002-kiln-lane` — the runtime spine + Layers A/B over one `FactoryState`, a headless
@@ -26,23 +23,49 @@ live gate yet (`chain_unattended=false`; r4 is not auto-lifted by r3's close).
 - **r3** `004-kiln-live-walk` — the **first live-model smoke walk**: the live net (live resident,
    live walk PASSes 001's `log.ts` while a broken no-decider FAILs it by name), the deferred live
    TUI of Layers A/B/C, the `LiveModelReady` handoff probe, and the recorded `--stub` toggle
-   (@PR#3). **r3 *supplies r4's proof that the kiln actually fires* — it is the trust anchor r4's
-   public distribution point stands on.**
+   (@PR#3). *This draft originally called r3 "the trust anchor" for r4. That was overstated: r3's resident was a deterministic stand-in and never called
+   a model. r3 supplies the walk and the log-replay net; **r7** supplies the proof that the kiln actually fires.*
+- **r7** `006-kiln-live-inference` — a **real Ollama-backed resident**, `OllamaReady` (fails a *claimed* live run that *performed* nothing), and a P-VIII scan that
+   genuinely reads the code (@PR#4).
+- **r8–r11** *(not yet built)* — the Pi extension foundation, the real UI, role agents and tiers, and the director and commands. **They are what r4 releases.**
+
+---
+
+## Revision 2026-09-21 — what changed since this draft, and what it means
+
+This spec was drafted on 2026-09-19 when r4 was "publish the kiln toolchain to a public GitHub repo" and was the next row. Four facts have since overtaken it.
+**The original text below is kept, and each place it is superseded is marked.**
+
+1. **The repository is already public, and now has its legal files.** `batorfi/kiln` has been public throughout; it now carries a `README.md`, an **Apache-2.0** `LICENSE`, a
+   `NOTICE`, and `THIRD-PARTY-NOTICES.md` (22 files here were installed by GitHub Spec Kit, MIT-licensed, whose notice must be kept). So **"exactly one public, URL-runnable
+   distribution point" (SC-001) is already true.** r4 does not *create* a distribution point; it **cuts a release** of one.
+2. **`kiln-v1` means a fully runnable factory** — real UI, commands, director and roles (defined by the human, 2026-09-21). Today nothing can be *run*: `kiln/bin` is empty, the only
+   Pi-API references in `kiln/` are comments, `.pi/` holds only spec-kit prompts, and there are no role agents or director. That is **r8–r11**, and **r4 depends on all four** —
+   otherwise it would release a library and call it a factory.
+3. **r7 is done.** The "trust anchor" claim about r3 is superseded (see Provenance): r7 is the proof that the kiln fires.
+4. **The Node floor was measured** and is `^22.18.0 || >=23.6.0`, not the `>=22.6` previously declared; the earlier value admitted versions that cannot run the commands.
+
+**Consequences.** (a) **FR-013 is superseded** — the deps are now `[r2, r3, r7, r8, r9, r10, r11]`, and trimming the UI dependency no longer arises. (b) **NC1 option B is the status quo** — the whole repo, history
+and `specs/` lineage included, is *already* public — so the open question is only what a **release artifact** contains. (c) **NC2's target question is resolved by fact** — the current repository, already public. (d) The
+"one network-permitting row" framing (FR-010) narrows: r4's **only** network action is the **human-gated release push**; the loopback call r7 added is a separate exception that r7's scan already guards. (e) Three
+requirements are **added** (FR-014 – FR-016) and two success criteria (SC-008, SC-009).
 
 ---
 
 ## Why this row, and the scope it is *already* fixed on
+
+*(2026-09-21: the repository is already public; r4 now **cuts a release** of it — see the Revision above.)*
 
 r4 exists so the kiln has a **single, public, URL-runnable distribution point**: a public GitHub repo
 that *hosts the toolchain* such that a newcomer can stand it up (r5) and read it (r6) **without a
 clone of the dev tree**. It is the row that turns "the kiln is a repo on one developer's machine"
 into "the kiln is a thing you can point a URL at." The stable, already-admitted framing:
 
-- **The full capability, UI included (`deps: [r2, r3]`).** The human confirmed at Gate 0 that r4
+- **The full capability, UI included (`deps: [r2, r3]`).** *(Superseded 2026-09-21: deps are now `[r2, r3, r7, r8, r9, r10, r11]`, and the trim below no longer arises.)* The human confirmed at Gate 0 that r4
    needs the *full* capability — runtime **and** Layer C **and** the live proof — *not* just the
    runtime + proof. A future revision may trim this to `[r1, r3]` (publish the runtime + proof without
    waiting on Layer C); **that trim is out of r4's scope** and would be its own Gate-0 move.
-- **It is P-VIII's one *network-permitting* exception — by design, and only as a handoff.** The
+- **It is P-VIII's one *network-permitting* exception — by design, and only as a handoff.** *(2026-09-21: narrowed — r4's only network action is the human-gated release push; see FR-010.)* The
    constitution says *no cloud round-trip*; r4 is the **single** row whose deliverable literally *is*
    distribution over the network, and it is permitted **precisely because it is the bootstrap**: the
    *firing* stays 100% local, the *distribution handoff* is the one network action, and **once a
@@ -184,9 +207,9 @@ are **imported, not re-declared**; and r4 lands as an additive extension that **
 
 - **FR-001** KILN SHALL produce a **public, URL-runnable distribution point** for the kiln
    toolchain — a point a newcomer can *resolve by URL* to stand the kiln up **without cloning the
-   dev tree** (the r5/r6 "from a public GitHub URL" premise).
+   dev tree** (the r5/r6 "from a public GitHub URL" premise). *(2026-09-21: the repository is already public, so this is **already true**; r4 makes it a **curated, versioned release**.)*
 - **FR-002** The distribution point SHALL carry the **full capability** the ROADMAP pinned for r4 —
-   **runtime + Layer C UI + the live proof** (deps `[r2, r3]`), as one coherent, versioned dist.
+   **runtime + Layer C UI + the live proof** (deps `[r2, r3]`), as one coherent, versioned dist. *(Superseded 2026-09-21: r4 releases the **runnable factory** — real Pi UI, commands, director and roles — plus the runtime and proofs; deps `[r2, r3, r7, r8, r9, r10, r11]`.)*
       *(Content boundary held at NC1.)*
 - **FR-003** The distribution point SHALL be a **falsifiable `PublishedReady`-style proof**, not a
    bare assertion: its "exists / is complete / is wired / is cloud-free in the firing / carries no
@@ -210,7 +233,7 @@ are **imported, not re-declared**; and r4 lands as an additive extension that **
    from the log alone; a closed terminal leaves a complete trail.
 - **FR-009** r4 SHALL **discharge r3's handoff**: r3 named r4 as "the public distribution point the
    live proof is for"; r4 is that point, and r5/r6 are thereby unblocked.
-- **FR-010** Because r4 is the one **network-permitting** row, it SHALL **state its P-VIII
+- **FR-010** *(2026-09-21: r4's **only** network action is the human-gated release push.)* Because r4 is a **network-permitting** row, it SHALL **state its P-VIII
    exception explicitly and narrowly** — *distribution handoff only, human-gated,
    resident-stays-local-afterward* — and a missing UI **degrades to a print-and-`WAIT`, never a
    silent publish** of the point.
@@ -220,9 +243,16 @@ are **imported, not re-declared**; and r4 lands as an additive extension that **
 - **FR-012** *(Scope guard, out of r4.)* r4 SHALL NOT perform r5's **installer** (the fetch/bootstrap
    that *runs the* distribution point) or r6's **docs/Pages** build; those are the downstream rows it
    **unblocks**, not part of r4.
-- **FR-013** *(Scope guard, out of r4.)* r4 SHALL NOT re-trim r4's own `deps` to `[r1, r3]` (the
+- **FR-013** *(**Superseded 2026-09-21** — r4's deps are now `[r2, r3, r7, r8, r9, r10, r11]`.)* *(Scope guard, out of r4.)* r4 SHALL NOT re-trim r4's own `deps` to `[r1, r3]` (the
    "publish the runtime + proof without Layer C" future revision) — that is a **Gate-0 / roadmap**
    move, not an in-lane change.
+
+- **FR-014** *(Added 2026-09-21.)* The release SHALL ship `LICENSE`, `NOTICE`, `THIRD-PARTY-NOTICES.md` and `README.md`, and `PublishedReady` SHALL **fail by name** if any is missing, or if
+   any Spec Kit file listed in the install manifests ships without its MIT notice.
+- **FR-015** *(Added 2026-09-21.)* The release SHALL declare its supported Node range as `engines.node` — the **measured** floor `^22.18.0 || >=23.6.0` — and its notes SHALL state which
+   platforms were actually verified (macOS only, so far).
+- **FR-016** *(Added 2026-09-21.)* `PublishedReady` SHALL check that what ships is a **runnable factory** — that the Pi extension r8–r11 deliver loads — not merely that files are present. *(The concrete check is
+   defined once r8–r11 exist; this spec only fixes that it must be one.)*
 
 ### Key Entities
 
@@ -246,7 +276,7 @@ are **imported, not re-declared**; and r4 lands as an additive extension that **
 
 ### Measurable Outcomes
 
-- **SC-001** The kiln has **exactly one** public, URL-runnable distribution point, and a newcomer can
+- **SC-001** *(Already true of the repository as of 2026-09-21; r4 makes it a curated release.)* The kiln has **exactly one** public, URL-runnable distribution point, and a newcomer can
    resolve it by URL (the r5/r6 "from a public GitHub URL" premise is *real*, verifiable by resolving
    the URL — not by cloning the dev tree).
 - **SC-002** A `PublishedReady` probe runs **green** on the complete + wired + cloud-free dist, with
@@ -257,7 +287,7 @@ are **imported, not re-declared**; and r4 lands as an additive extension that **
 - **SC-004** **Zero cloud in the firing**: a zero-network scan over r4's new publish code finds **0**
    external round-trips *inside* the run; the only network action is the single human-gated
    *handoff* (P-VIII).
-- **SC-005** The dist carries the **full capability** (runtime + Layer C + live proof), and the
+- **SC-005** The dist carries the **full capability** (runtime + Layer C + live proof — *and, from 2026-09-21, the runnable factory of r8–r11*), and the
    "wired" checks confirm r1/r2/r3 artifacts are **imported, not re-declared** (**no new** log
    `recordType`; upstream shapes untouched).
 - **SC-006** **Zero self-admission**: at r4's close Gate 0 *re-opens*; r4 has admitted **no** program
@@ -265,6 +295,9 @@ are **imported, not re-declared**; and r4 lands as an additive extension that **
 - **SC-007** r4 is a **single full lane**, judgeable by the same unmodified validators/probes r1–r3
    left **plus** `PublishedReady`; r5 is thereby **unblocked** ("runs from the published URL"), and
    r4 has **discharged r3's handoff** (SC-009 analogue: r3's "for r4" is met).
+
+- **SC-008** *(Added 2026-09-21.)* GitHub **recognises the license** of the released repository, and `PublishedReady` proves the legal files (FR-014) ship.
+- **SC-009** *(Added 2026-09-21.)* The released `engines.node` equals the **measured** floor (FR-015), and a fresh checkout on a Node within that range runs the documented commands unchanged.
 
 ## Assumptions
 
@@ -295,6 +328,15 @@ The following three decisions genuinely branch the spec and have **multiple reas
 interpretations with no single safe default** (r4 is the network-permitting row, so the stakes are
 higher than a throwaway). They are **held, not resolved**, for the human's gate-1 sign-off. Per
 `/speckit.specify`, at most 3 markers are carried; each offers the strongest options.
+
+> **Status after the r7 seam (2026-09-21)** — the three questions are still **open**, but facts have narrowed them. The option tables below are unchanged (they are the record); this table
+> is the director's **updated recommendation**, for the human to decide at r4's own gate 1.
+>
+> | | Narrowed to | Recommendation |
+> |---|---|---|
+> | **NC1** what ships | The whole repo — history and `specs/` lineage included — is **already public** (that is option **B**, now the status quo), so the leak concern is moot; git-ignored logs stay excluded. What is left is **what a *release artifact* contains and excludes**. | **C (hybrid):** the repository stays as it is, and a curated release artifact (`kiln/` + scaffolding + `docs/concepts/` + constitution + legal files) is attached to a version tag. |
+> | **NC2** target + mechanism + who pushes | **(a) target — resolved by fact:** the current repository (public). **(b) mechanism:** a git tag and a GitHub Release. **(c) does r4's lane push?** — still open. | **A:** r4 specifies and gates; **the human pushes** (a recorded human decision). |
+> | **NC3** P-VIII reconciliation | r4's **only** network action is the release push; r7 has already made the *firing's* guard stronger (a scan that reads the code, one allowlisted loopback module, no redirects). | **A:** cloud-free firing, one human-gated handoff. |
 
 #### Q (NC1) — *What* is "the kiln toolchain" that r4 publishes?
 

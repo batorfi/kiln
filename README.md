@@ -4,7 +4,7 @@
 One model at a time, a human at every gate, no cloud.
 
 > **Status: early.** KILN's first version, `kiln-v1`, is defined as a **fully runnable factory** — a real UI, commands to run a lane,
-> a director and roles. **That is not built yet** (it is roadmap row `r8`). What exists today is the verified foundation: the single-lane
+> a director and roles. **That is not built yet** (it is roadmap rows `r8`–`r11`). What exists today is the verified foundation: the single-lane
 > runtime, the gate and log machinery, a real local-model worker, and the checks that prove them. You can run and inspect all of it —
 > but you cannot yet point KILN at a feature and have it run the whole process for you. See [What works today](#what-works-today-and-what-does-not).
 
@@ -37,10 +37,10 @@ The rules are written down as a [constitution](./.specify/memory/constitution.md
   content and still blocks.
 - **Validators** for the factory-log and the roadmap, and **four readiness probes** (`runtime-ready`, `overlay-ready`, `live-ready`,
   `ollama-ready`) that each fail by name when something is missing — `ollama-ready` actually calls the model.
-- **232 tests** (12 of them need a running Ollama and skip, with a printed reason, when it is absent), plus a committed log of a real
+- **233 tests** (12 of them need a running Ollama and skip, with a printed reason, when it is absent), plus a committed log of a real
   nine-gate run for offline replay.
 
-**Does not exist yet** (this is what `r8` is for):
+**Does not exist yet** (this is what `r8`–`r11` are for):
 
 - Real **Pi integration** — the UI layers are written against an abstract interface, not Pi's real one.
 - **Commands** to start a lane or answer a gate, and a **director** that turns an approved spec into gated work units. Today the only walk is a
@@ -50,8 +50,9 @@ The rules are written down as a [constitution](./.specify/memory/constitution.md
 
 ## Requirements
 
-- **Node.js** — tested on **v26.8.2**. The package declares `>= 22.6`, but that floor is **unverified**: the code is TypeScript run directly
-  by Node with no build step, and older Node 22 releases need `--experimental-strip-types`.
+- **Node.js `^22.18.0 || >=23.6.0`** (measured). The code is TypeScript run directly by Node with no build step, which needs Node's type-stripping — unflagged from 22.18.0 and
+  23.6.0. Verified as documented on 22.18.0, 23.6.0, 24.21.0, 25.9.0 and 26.8.2; 22.12, 22.17 and 23.5 also work with `--experimental-strip-types`; 22.6 and 20 do not. If you see
+  `ERR_UNKNOWN_FILE_EXTENSION`, your Node is too old. Verified on **macOS only** so far.
 - **Git.** There are **no runtime dependencies** (`dependencies: {}`), and nothing to `npm install`.
 - *Optional, for the live tier:* [Ollama](https://ollama.com) with a model. The tests default to `gemma4:12b`; set `KILN_LIVE_MODEL` to use another.
 
@@ -63,7 +64,7 @@ The npm scripts live in `kiln/` and are run from there:
 git clone https://github.com/batorfi/kiln.git
 cd kiln/kiln
 
-npm test                                   # 232 tests; the 12 live ones skip, each printing why
+npm test                                   # 233 tests; the 12 live ones skip, each printing why
 npm run runtime-ready                      # the readiness probes (no Ollama needed)
 npm run overlay-ready
 npm run live-ready
@@ -103,8 +104,11 @@ the program at Gate 0 and re-admits it at every seam between rows**. The roadmap
 | r2 | The roadmap overlay (UI layer C) | done |
 | r3 | The first full-rail smoke walk | done |
 | r7 | True live local inference — a real Ollama-backed worker | done |
-| **r8** | **Make it runnable: real Pi integration, commands, a director, roles** | **next** |
-| r4 | Cut the `kiln-v1` release | queued |
+| **r8** | **The Pi extension foundation — opens with a spike of the Pi extension API** | **next** |
+| r9 | The real UI on Pi — a human answers a gate in Pi | queued |
+| r10 | Role agents, a tier → model mapping, and real model swaps | queued |
+| r11 | The director and commands — the acceptance row: run a lane on a real feature | queued |
+| r4 | Cut the `kiln-v1` release (the repository is already public) | queued |
 | r5 | A URL-runnable installer | queued |
 | r6 | Newcomer docs on GitHub Pages | queued |
 

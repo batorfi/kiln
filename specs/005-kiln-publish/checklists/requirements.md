@@ -1,5 +1,8 @@
 # Specification Quality Checklist: KILN Publish — the URL-runnable distribution point
 
+> **Revised 2026-09-21:** the spec was reworded and re-scoped at the r7 seam (r4 is now *cut the kiln-v1 release*, gated on r8–r11). The checks below describe the *original* draft; see the spec's Revision section.
+
+
 **Purpose**: Validate specification completeness and quality before proceeding to planning
 **Created**: 2026-09-19 · **Feature**: [spec.md](../spec.md) · **Row**: r4 of
 [specs/ROADMAP.md](../../ROADMAP.md) (`deps: [r2, r3]`, re-admitted 2026-09-19 r3 seam; `queued`)
