@@ -1,7 +1,13 @@
 {
   "name": "kiln",
   "version": "0.1.0",
-  "description": "KILN — pre-lane planning contracts: factory-log + roadmap schemas, gate-rail, FiringReady check. Zero runtime deps (P-VIII); no lane wired (Q1=C).",
+  "description": "KILN — a local, single-lane, spec-driven development factory for Pi: one model at a time, a human at every gate, no cloud. Zero runtime dependencies.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/batorfi/kiln.git"
+  },
+  "author": "Zsolt Bátorfi",
   "type": "module",
   "engines": {
     "node": ">=22.6"
