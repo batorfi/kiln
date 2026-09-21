@@ -4,8 +4,8 @@
 for, what we already learned by trying it, and where the road leads — in prose, without the tables. Every number here comes from the spec, and the measured ones can be re-run
 from [`pre-spec-probe/`](./pre-spec-probe).*
 
-> **Status, stated plainly:** r8 is a **drafted spec, nothing more**. No r8 code exists. Three questions are still open for a human (see
-> [The three decisions still open](#the-three-decisions-still-open)), and the roadmap row is `queued`. What *does* exist is a small set of measurements taken on real software, which
+> **Status, stated plainly:** r8 is a **clarified spec, nothing more**. No r8 code exists. The three open questions were decided by a human on 2026-09-21 (see
+> [The three decisions](#the-three-decisions)), the next step is a plan, and the roadmap row is `queued`. What *does* exist is a small set of measurements taken on real software, which
 > is why this overview can say what Pi actually does rather than what its documentation says.
 
 ---
@@ -111,7 +111,7 @@ This is the one piece of r8 where a mistake would be silent, so it gets the stri
 
 1. **The findings record.** Answers to all eleven questions, with the evidence, plus dated correction notes on the design doc where it was wrong. The originals stay as written; corrections are
    appended, as is done elsewhere in this project.
-2. **KILN as a Pi extension.** A single entry point Pi loads. When Pi loads it, it registers commands and starts *nothing* — no process, no timer, no network call — and it survives a reload
+2. **KILN as a Pi extension.** A single entry point Pi loads — by `pi -e <path>` and through a package manifest in `kiln/package.json` (decision 2). When Pi loads it, it registers commands and starts *nothing* — no process, no timer, no network call — and it survives a reload
    without registering things twice. It adds no runtime dependencies.
 3. **A read-only status command.** It shows the factory's current state from inside Pi. It cannot start a lane, decide a gate, or write to the log. Where it *prints* depends on the mode (Pi
    shows nothing for notifications when there is no screen), and r8 has to say plainly which modes it can and cannot show.
@@ -119,7 +119,8 @@ This is the one piece of r8 where a mistake would be silent, so it gets the stri
 5. **A new checker, `PiReady`,** in the family of KILN's other readiness checks. It starts a real Pi in a clean, offline, model-free setting; loads KILN; runs the command; feeds the translator
    Pi's real non-answers; and reports READY — or fails **by name**, with names such as *Pi missing*, *version not measured*, *extension failed to load*, *command missing*, and above all
    *a non-answer was approved*.
-6. **A package layout** with a written note saying where r9's screens, r10's roles and r11's commands each go, so none of them has to move anything r8 built.
+6. **One human smoke test in a real terminal**, recorded in the verification report as done or not done (decision 1) — the part automation cannot reach.
+7. **A package layout** with a written note saying where r9's screens, r10's roles and r11's commands each go, so none of them has to move anything r8 built.
 
 Like r7's live tests, the Pi tests are **opt-in**: with Pi absent they skip and print why; if someone explicitly asks for them (`KILN_PI=1`) and Pi is missing, they **fail loudly**, because a quiet
 skip there could make a broken setup look green.
@@ -137,20 +138,21 @@ skip there could make a broken setup look green.
 
 ---
 
-## The three decisions still open
+## The three decisions
 
-The spec cannot be planned until a human answers three questions. Each has a recommendation.
+The spec had three open questions. A human answered them on 2026-09-21, and each landed on the recommendation.
 
-**1. What proves "loaded as a real Pi extension"?** Automatic testing through Pi's scripting mode is fast and needs no model — but that mode cannot draw an overlay, and the terminal screen is
-the only place KILN's layers will ever live. *Recommended:* the automatic check **plus one recorded human smoke test** in a real terminal. It is one action at one gate, and it is honest about what
-automation cannot reach. (The alternative, a fake-terminal harness, is a large build for a single phase.)
+**1. What proves "loaded as a real Pi extension"?** *Decided: the automatic check plus one recorded human smoke test.* Testing through Pi's scripting mode is fast and needs no model — but that mode cannot draw an overlay,
+and the terminal screen is the only place KILN's layers will ever live. So the automatic check carries the repeatable proof, and **one person, once, in a real terminal** confirms the rest: KILN loads, its status shows, an overlay draws
+and closes, and a gate-shaped question answered by hand counts as an answer while pressing Esc does not. The verification report must say whether that was done — it cannot be left out or implied. (A fake-terminal harness was judged
+a large build for a single phase.)
 
-**2. How is KILN placed and loaded?** *Recommended:* an explicit load (`pi -e <path>`) **plus a Pi package manifest**, so a later `pi install` works. The tempting third option — dropping it into the
-project's own `.pi/extensions/` folder so it loads automatically — would load KILN into *every* Pi session in this repository, including the sessions that are *building* KILN. That is a trap for a project
-that builds itself with itself.
+**2. How is KILN placed and loaded?** *Decided: an explicit load (`pi -e <path>`) plus a Pi package manifest*, so a later `pi install` works — and the check exercises both, the install into an empty temporary Pi setup so nobody's own settings
+are touched. The tempting third option — dropping KILN into the project's own `.pi/extensions/` folder so it loads automatically — was rejected: it would load KILN into *every* Pi session in this repository, including the sessions that are
+*building* KILN. That is a trap for a project that builds itself with itself, and there will be a test that no such auto-load exists.
 
-**3. Does the constitution's wording change?** The principle is fine; the phrase "headless means `!ctx.hasUI`" is not sufficient. *Recommended:* leave the text alone for now and implement the stricter rule, with the
-reasoning recorded. Code that is *stricter* than the text cannot violate it, and the wording will matter more once the real UI exists in r9. An amendment stays available to the human at any Gate 0.
+**3. Does the constitution's wording change?** *Decided: no.* The principle is fine; the phrase "headless means `!ctx.hasUI`" is not sufficient. r8 implements the stricter rule, and writes down both an exact definition of "headless" and a note
+explaining why code that is *stricter* than the text cannot violate it. The wording gets another look at r9, when the real UI exists and shows what it ought to say. An amendment stays available to the human at any Gate 0.
 
 ---
 
@@ -174,7 +176,7 @@ r8 only notes that it exists.
 
 Honesty about the edges of what was measured:
 
-- **The terminal mode itself was not run** — only the scripting, JSON and print modes. Its behaviour is documented, not measured. That is exactly what the human smoke test in decision 1 would cover.
+- **The terminal mode itself was not run** — only the scripting, JSON and print modes. Its behaviour is documented, not measured. That is exactly what the human smoke test in decision 1 covers.
 - **One machine, one Pi.** macOS, Pi 0.85.1. Pi is before version 1.0 and changing; that is why r8 only *declares* versions it has actually run — the lesson learned from the Node version floor, where a range nobody had tested turned out to be wrong.
 - **Linux and Windows** are unmeasured.
 - **Reload and session-switching mid-gate** — what happens to a dialog left open across a reload — is a question r8 must *measure*; nothing is assumed.

@@ -4,7 +4,7 @@
 
 **Created**: 2026-09-21
 
-**Status**: **Draft — three clarifications OPEN (NC1–NC3, each with a recommendation); not yet ready for `/speckit.plan`.**
+**Status**: **Draft — CLARIFIED (2026-09-21); ready for `/speckit.plan`.** NC1, NC2 and NC3 were resolved by the human on 2026-09-21 — see *Clarifications* below; each landed on the recommended option.
 Roadmap row **`r8`** was admitted at Gate 0 (`human@batorfi`, 2026-09-21T04:21:47Z, ledger entry 7 in [specs/ROADMAP.md](../ROADMAP.md)) and is `queued`,
 `deps: ["r7"]`. It stays `queued` — never `active` — until its own Gates 1–9 lane opens a live gate (`chain_unattended=false`). **Nothing here admits a
 program, advances a gate, decides a gate, or edits the roadmap** (P-VI): the row carries no `spec` pointer yet, and adding one is a Gate-0 edit the human makes.
@@ -45,7 +45,7 @@ extension driven through a **real** `pi --mode rpc` in an empty, hermetic `PI_CO
 
 1. **P-V's literal wording is not enough.** P-V says *"In headless (`!ctx.hasUI`) every gate … degrades to a durable `WAIT`."* M5 is a state that is **not** `!ctx.hasUI` and
    still cannot show a gate popup; M6 is `!ctx.hasUI` where a *naive* `if (!answer) continue` would sail through with exit 0. The principle is intact
-   ("never silently approves"); its **detection recipe** is not. See NC3.
+   ("never silently approves"); its **detection recipe** is not. See NC3 (resolved: no amendment).
 2. **A timeout is not a decision, and not KILN's to set.** Pi dialogs accept a `timeout` that auto-dismisses. P-IX says *"no surface blocks on a timer."* A gate waits for a human.
 3. **The design doc's `confirmed` column is not evidence.** `ui-layers-deep.md` §10 marks APIs *confirmed* that were only read about. r8 replaces that column with measurements.
 
@@ -55,7 +55,7 @@ extension driven through a **real** `pi --mode rpc` in an empty, hermetic `PI_CO
 - **Not r10 / r11.** No role agents, no tier→model mapping, no director, no lane-starting command. r8's command surface is **read-only status**.
 - **Not a gate decision.** r8 writes **no** gate decision to the factory-log. A scripted test driver is never recorded as `human@…` (P-I, P-VII).
 - **Not r4/r5.** Nothing is published or installed; `PiReady` runs Pi `--offline`.
-- **Not a constitution amendment** — unless NC3 resolves that way, in which case it carries the rationale, version bump and migration note the Governance section requires.
+- **Not a constitution amendment.** NC3 resolved to *no amendment*: the code is stricter than P-V's wording, and the reasoning is recorded (FR-007, FR-017). An amendment stays available to the human at any Gate 0.
 
 ---
 
@@ -84,7 +84,7 @@ An operator starts real Pi with KILN loaded and runs a KILN command; KILN answer
 **Independent Test**: `npm run pi-ready` (or the documented one-liner) starts Pi, loads KILN, runs the status command, and reports READY — or fails by name.
 
 **Acceptance Scenarios**:
-1. **Given** Pi is installed, **When** KILN is loaded the way NC2 resolves, **Then** Pi lists KILN's command with `source: extension` and the command returns a `FactoryState` summary.
+1. **Given** Pi is installed, **When** KILN is loaded by `pi -e <path>` or through its package manifest (NC2), **Then** Pi lists KILN's command with `source: extension` and the command returns a `FactoryState` summary.
 2. **Given** the extension's factory function, **When** Pi loads it, **Then** it registers commands and handlers **only** — it starts no process, socket, timer, watcher, or network call (Pi's own rule for factories).
 3. **Given** the extension is reloaded (`/reload`), **When** it loads a second time, **Then** nothing is doubly registered and shutdown handlers are idempotent.
 4. **Given** Pi is **not** installed, **When** the tests run, **Then** they skip with a printed reason; **when** the operator explicitly asked for the Pi tier (`KILN_PI=1`), **then** they fail loudly (the F-1 rule).
@@ -149,19 +149,21 @@ The author of r9, r10 or r11 opens the package and finds, written down, where th
 
 - **FR-001** The findings record (`research.md`) SHALL answer SQ1–SQ11 — each with a **measured** answer and the command that reproduces it, or an explicit *not measured — reason — owner row*. No question is silently dropped. *(US1)*
 - **FR-002** Where a measurement contradicts `ui-layers-deep.md` §10/§11 (notably M3), the doc SHALL gain an **append-only correction banner** naming the measurement; the original text is not rewritten. *(US1)*
-- **FR-003** KILN SHALL load as a real Pi extension through the mechanism **[NEEDS CLARIFICATION: NC2 — how KILN is placed and loaded]**, importing KILN's own modules with **no build step** and **no new runtime dependency** (`kiln/package.json` keeps `dependencies: {}`). *(US2)*
+- **FR-003** KILN SHALL load as a real Pi extension through **two** mechanisms *(NC2 = A + B)*: an explicit `pi -e <path>` for development, and a **Pi package manifest** (`"pi": {"extensions": […]}` in `kiln/package.json`) so `pi install ./kiln` works. Both SHALL import KILN's own modules with **no build step** and **no new runtime dependency** (`kiln/package.json` keeps `dependencies: {}`), and `PiReady` SHALL exercise **both**, the install into an empty, temporary Pi config dir so the operator's own settings are never touched. KILN SHALL **NOT** be auto-loaded: the repository SHALL carry **no** project-local `.pi/extensions/` entry for KILN, because that would load KILN into every Pi session in this repo, including the ones building KILN (a testable file check). *(US2)*
 - **FR-004** The extension's factory function SHALL start **no** process, socket, timer, watcher or network call, register commands and handlers only, and be safe under `/reload` (no double registration; idempotent `session_shutdown`). *(US2)*
 - **FR-005** r8 SHALL register a **read-only** status command returning a `FactoryState` summary. The plan SHALL state, per mode, where that output goes — or that a mode cannot show it (SQ11) — and `PiReady` SHALL report it. It SHALL NOT start a lane, decide a gate, or write the factory-log. *(US2)*
 - **FR-006** A **single seam** SHALL translate Pi's dialog results into `answered(option)` or `no-answer`. Only an **explicit selection of one of the offered options, delivered by a mode that can reach a human,** is `answered`. `undefined`, `null`, `false`-from-a-headless-mode, cancellation, timeout, and `custom()` → `undefined` are all `no-answer`; `no-answer` SHALL become a durable `WAIT` and SHALL NOT be mapped to approve, reject or defer. *(US3; P-V)*
-- **FR-007** "Headless" SHALL be decided from **mode and measured capability, not `ctx.hasUI` alone** (M5). A missing capability **hides** a layer and degrades; it never advances a gate. **[NEEDS CLARIFICATION: NC3 — is P-V's `!ctx.hasUI` wording amended, or read as implemented-more-strictly?]** *(US3; P-V, P-IX)*
+- **FR-007** "Headless" SHALL be decided from **mode and measured capability, not `ctx.hasUI` alone** (M5). A missing capability **hides** a layer and degrades; it never advances a gate. *(NC3 = A: the constitution text is **not** amended; this rule is deliberately **stricter** than P-V's `!ctx.hasUI`, so it cannot violate it — see FR-017.)* *(US3; P-V, P-IX)*
 - **FR-008** A gate dialog built by KILN SHALL carry **no `timeout`** option: a gate waits for a human and does not expire into anything (P-IX). *(US3)*
 - **FR-009** r8 SHALL write **no gate decision** to the factory-log, and a scripted driver's reply SHALL NEVER be recorded as `human@…` (P-I, P-VII). Any record r8 does emit SHALL add **no new `recordType`** and pass 001's **unmodified** `log.ts`. *(US3)*
-- **FR-010** A probe **`PiReady`** (`npm run pi-ready`) SHALL start a **real** Pi in a hermetic environment (empty `PI_CODING_AGENT_DIR`, `--offline`, `--no-session`, no model), load KILN, run the status command, and exercise the FR-006 seam against real Pi's non-answer shapes. It SHALL **fail by name** for: `pi-missing`, `pi-version-unmeasured`, `extension-load-error`, `command-missing`, `round-trip-mismatch`, and — most important — `non-answer-approved`. Its sufficiency as *the* acceptance test is **[NEEDS CLARIFICATION: NC1 — what proves "loaded as a real Pi extension"]**. *(US2, US3)*
+- **FR-010** A probe **`PiReady`** (`npm run pi-ready`) SHALL start a **real** Pi in a hermetic environment (empty `PI_CODING_AGENT_DIR`, `--offline`, `--no-session`, no model), load KILN, run the status command, and exercise the FR-006 seam against real Pi's non-answer shapes. It SHALL **fail by name** for: `pi-missing`, `pi-version-unmeasured`, `extension-load-error`, `command-missing`, `round-trip-mismatch`, and — most important — `non-answer-approved`. `PiReady` is the **automated** half of the acceptance test; the other half is FR-016 *(NC1 = B)*. *(US2, US3)*
 - **FR-011** Pi-dependent tests SHALL skip with a **printed reason** when Pi is absent and **fail loudly** when `KILN_PI=1` was set explicitly (r7's F-1 rule). A run that executes zero Pi tests when Pi was requested is a failure. *(US2)*
 - **FR-012** The package layout SHALL be documented so that r9 (UI on Pi), r10 (role agents, tiers) and r11 (director, commands) each have a named home that needs **no** r8 file to move. *(US4)*
 - **FR-013** **Nothing existing changes behaviour.** The 233-test suite stays green; r1–r7 validators and probes are unmodified; `roadmap.ts` still PASSes; the only edits to existing files are additive wiring and the FR-002 banners. *(all)*
 - **FR-014** The P-VIII scan SHALL cover the new extension code like `kiln/src`. KILN's only network use stays r7's one allowlisted module; Pi's own provider traffic is Pi's, and `PiReady` runs Pi `--offline`. *(P-VIII)*
 - **FR-015** Only **measured** Pi versions are declared supported (the lesson of the Node floor: a range nobody ran is a false claim). The README states the measured Pi version(s), and `PiReady` reports the version it ran. *(US2)*
+- **FR-016** *(NC1 = B.)* Because RPC mode returns `custom() → undefined` (M5), automation cannot prove any overlay. **One human smoke in a real terminal (`tui`) SHALL be recorded in the verification report**, covering: KILN loads; the status command shows its summary; one `ctx.ui.custom(…, {overlay: true})` draws and closes; and one gate-shaped dialog **answered by the human** yields `answered` while **Esc yields `no-answer`**. The report SHALL state it as done or **not done** — it may not be omitted or implied. Pi's TUI is otherwise unmeasured (see Assumptions). *(US2, US3)*
+- **FR-017** *(NC3 = A.)* The plan SHALL record an **operational definition of "headless"** (mode plus measured capability, per FR-006/007) in an r8 contract, and a **compliance note** stating why an implementation stricter than P-V's `!ctx.hasUI` wording is compliant. The wording is to be **revisited at the r9 seam**, once a real UI exists. *(US3; P-V)*
 
 ### Key Entities
 
@@ -180,14 +182,29 @@ The author of r9, r10 or r11 opens the package and finds, written down, where th
 - **SC-005** **0** new runtime dependencies; the existing suite is green with **0** newly failing tests; **0** existing behaviours changed.
 - **SC-006** **0** statements in `ui-layers-deep.md` remain marked *confirmed* that the findings measured false.
 - **SC-007** A human reviewer, reading only the layout note, can point to where each of r9, r10 and r11 puts its code.
+- **SC-008** The verification report records the FR-016 terminal smoke as **done** by a named human on a stated date, or states plainly that it was **not done** — never silence.
+- **SC-009** `pi install ./kiln` into an empty, temporary Pi config loads KILN and lists its command; no project-local KILN auto-load exists in the repository.
 
-## Clarifications — **OPEN** (NC1–NC3, recommendations offered; the human decides)
+## Clarifications
 
-| # | Question | Options | Recommended |
-|---|---|---|---|
-| **NC1** | What is the acceptance test for *"loaded as a real Pi extension"*? | **A.** Automated only: `PiReady` against real Pi in RPC mode (model-free; measured feasible in 0.2 s). **B.** A, **plus** one human TUI smoke recorded in the verification report. **C.** A TUI driven by a pty/tmux harness. | **B.** RPC returns `custom() → undefined` (M5), so **A cannot prove any overlay**; the TUI is the only place the layers will ever live. A pty harness (C) is a large build for one row. The human smoke is one Gate-7 action and is honest about what automation cannot reach. |
-| **NC2** | How is KILN placed and loaded? | **A.** Explicit `pi -e <path>` only. **B.** A Pi package manifest (`"pi": {"extensions": […]}` in `kiln/package.json`), so `pi install ./kiln` works. **C.** Project-local `.pi/extensions/kiln/` auto-discovery. | **A + B.** C needs project trust and would **auto-load KILN into every Pi session in this repo — including the sessions that are building KILN with Spec Kit**, a dogfooding conflict. The manifest is what r4/r5 will ship, so r8 should prove it now. |
-| **NC3** | P-V says headless is `!ctx.hasUI`; M5 and M6 show that is neither necessary nor sufficient. | **A.** No amendment: implement the stricter rule (FR-006/007), record an operational definition in the r8 contract and a compliance note. **B.** Amend P-V's wording (patch `1.0.1`, with the Governance rationale and migration note). | **A** now: the principle — *never silently approves* — is untouched and the code is *stricter* than the text, so it cannot violate it. Revisit at r9, when the real UI makes the wording matter. B is available to the human at any Gate 0. |
+### Session 2026-09-21 — **RESOLVED** (decided by `human@batorfi`)
+
+All three were decided on **2026-09-21**, on the measured evidence above rather than on description. Each landed on the recommended option.
+
+| # | Question | Resolution |
+|---|---|---|
+| **NC1** | What proves *"loaded as a real Pi extension"*? | **Option B — automated `PiReady` (RPC, model-free) plus one recorded human TUI smoke** (FR-010, FR-016) |
+| **NC2** | How is KILN placed and loaded? | **Option A + B — explicit `pi -e <path>` plus a Pi package manifest**; no project-local auto-load (FR-003) |
+| **NC3** | P-V's `!ctx.hasUI` wording vs the measured world | **Option A — no amendment; implement the stricter rule and record it** (FR-007, FR-017) |
+
+#### The evidence each was decided on
+
+- **NC1.** RPC mode is fast (0.2 s) and needs no model, so it carries the repeatable proof — but M5 shows `custom()` returns `undefined` there, so it can never show an overlay, and the terminal is the only place
+  the layers will live. Rejected: *automated only* (nothing would ever prove a real terminal), and a *pty/tmux harness* (a large, timing-sensitive build for one row).
+- **NC2.** The manifest is what r4/r5 will ship, so r8 proves it now. Rejected: *project-local `.pi/extensions/`* — it needs project trust and would auto-load KILN into every Pi session in this repository,
+  **including the sessions that are building KILN with Spec Kit**.
+- **NC3.** The principle — *never silently approves* — is untouched; M5 (a UI that is "present" but cannot draw) and M6 (`!hasUI` where a naive `if (!answer) continue` sails through with exit 0) show the *detection
+  recipe* is what is wrong. Code stricter than the text cannot violate it. Rejected for now: *patch amendment `1.0.1`* — it would change the constitution before the real UI exists to show what the wording should say.
 
 ## Assumptions
 
