@@ -1,0 +1,10 @@
+{
+  "name": "kiln-bad-manifest-fixture",
+  "version": "0.0.0",
+  "private": true,
+  "description": "T033, r8 — a Pi package manifest that names a file that does not exist. Used by PiReady's --bad-manifest hook to prove manifest-load-error.",
+  "dependencies": {},
+  "pi": {
+    "extensions": ["./does-not-exist.ts"]
+  }
+}

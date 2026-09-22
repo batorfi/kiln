@@ -1,5 +1,40 @@
 # KILN — the UI layers, in depth
 
+<!-- r8-correction -->
+> **⚠ Correction recorded by r8 (2026-09-21) — read this first. The original text below is preserved verbatim (P-VII: recorded, never rewritten).**
+>
+> §10 and §11 were written from Pi's **documentation**, never run. r8's spike ran them against real Pi `0.85.1` (hermetic, no model — see
+> [specs/007-kiln-pi-extension/research.md](../../specs/007-kiln-pi-extension/research.md) Part B). Where the doc's claim and the measurement
+> disagree, **the measurement wins**; the original prose below is left as written.
+>
+> **1 · `ctx.ui.headless` does not exist.** §10 lists `ctx.hasUI` / `ctx.ui.headless` as *confirmed*. Pi's `ctx.ui` has 28 members and none of
+> them is `headless`. There is `ctx.hasUI` and a `ctx.mode` (`"tui" | "rpc" | "json" | "print"`) — and **`ctx.hasUI` alone is not enough**:
+> in `rpc` mode `hasUI` is `true` even though the mode cannot draw an overlay (`ctx.ui.custom` resolves to `undefined` there). Read "headless"
+> below as *"a mode/capability combination that cannot obtain an explicit human choice"* (r8's `detectCapability`), not `!ctx.hasUI`.
+>
+> **2 · `ctx.ui.confirm` — §10's "spike, fall back to `select`" and §11 Q4 are decided: `select` only.** Measured: `confirm` returns `false`
+> for an explicit "No", for a cancelled dialog, for a timed-out dialog, **and** for both headless modes (`json`, `print`) — one value for five
+> situations. `select` returns a string only for an explicit choice, and `undefined` for every non-answer. r8's gates use `select` exclusively.
+>
+> **3 · `ctx.ui.setStatus`'s signature.** §10 calls it *confirmed*; it is `setStatus(key, text)`, not the one-argument `setStatus(footer)` this
+> project's own `LiveUICtx` assumed.
+>
+> **4 · `ctx.ui.custom` is confirmed to exist, but not to draw.** §10 calls it *confirmed (doom)*. It returns a `Promise<T | undefined>`,
+> resolved by a `done` callback — and measured to resolve to `undefined`, with no UI request even emitted, in `rpc`, `json` and `print`. KILN's
+> `raiseOverlay(layer, content)` push (`kiln/ui/live-tui.ts`) has **no counterpart** in Pi's API; r9 must build a mapping, not a rename.
+>
+> **5 · A `timeout` is not a decision.** Pi's dialogs accept a `timeout` that auto-resolves to a non-answer. Nothing in §4/§11 flags this. A
+> gate built on `ctx.ui` must never pass one (P-IX): it waits for a human, not a clock.
+>
+> **6 · §11's seven open questions, resolved or placed:** **Q1** (overlay survival across `turn_end`/compaction) and **Q2** (hosting a `select`
+> inside an overlay) are **unmeasured over RPC** (need the terminal) → **owned by r9**. **Q3** (exact `overlayOptions` for a full-width modal) is
+> documented, not run → **r9**. **Q4** (`confirm` vs `select`) is **decided above: `select`**. **Q5** (Layer-C sizing / the `M` key conflict) and
+> **Q6** (the Gate-0 face) are **r9 design questions**, out of scope for r8's read-only status/self-test commands. **Q7** (roadmap-as-artifact) is
+> unchanged by anything r8 measured.
+>
+> Full findings register: SQ1–SQ11 in [research.md](../../specs/007-kiln-pi-extension/research.md) Part B.
+<!-- /r8-correction -->
+
 > Companion to `20260911-concept.md`. The status layer that replaces the old
 > dashboard — the three surfaces described as **UI concepts**. Three surfaces
 > read one shared `FactoryState` and one event stream: **Layer A = Flow HUD**

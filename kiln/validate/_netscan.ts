@@ -25,8 +25,12 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { isLoopbackHost } from "../src/ollama-resident.ts";
 
-/** The directories the P-VIII scan covers — `src` included (the old probes never really scanned it). */
-export const SCAN_DIRS = ["src", "ui", "validate", "contracts"] as const;
+/**
+ * The directories the P-VIII scan covers — `src` included (the old probes never really scanned it). r8 adds `pi`: the ONE directory where Pi's
+ * shape appears in KILN, so the extension code is policed like `kiln/src` (FR-014). It may import `node:fs`/`node:path`/`node:url` and relative
+ * modules, and nothing else — not even a type from Pi (research D1).
+ */
+export const SCAN_DIRS = ["src", "ui", "validate", "contracts", "pi"] as const;
 
 /** Source files worth scanning. Recursive; `node_modules` and dot-directories are skipped. */
 export const SCAN_EXTENSIONS = /\.(?:ts|mts|cts|js|mjs|cjs)$/;
@@ -37,6 +41,15 @@ export const SCAN_EXTENSIONS = /\.(?:ts|mts|cts|js|mjs|cjs)$/;
  * `--extra-loopback`). By path, not bare basename, so a same-named file elsewhere does not inherit the exemption.
  */
 export const LOOPBACK_ALLOWLIST: readonly string[] = ["src/ollama-resident.ts"];
+
+/**
+ * r8 (research D6): the ONLY module(s) permitted to import `node:child_process` — `PiReady` must START a real Pi, and the scan forbids that everywhere
+ * else. EXACTLY one entry, keyed by PATH like the loopback list (a same-named file elsewhere does not inherit it), refused otherwise by
+ * `processAllowlistIsSingle` (falsify hook `--extra-process`). It exempts ONLY the `child_process` import: every network rule still applies to that
+ * file, and the two exemptions never ride on each other (the loopback module may not spawn; the driver may not dial). The driver itself refuses to
+ * spawn anything but `pi`, with `shell: false` (contracts/pi-ready.md R5).
+ */
+export const PROCESS_ALLOWLIST: readonly string[] = ["validate/_pi-driver.ts"];
 
 // ── the ORIGINAL patterns, kept verbatim (so nothing the old scan meant to catch is lost) ─────────────
 const EXTERNAL_IMPORT = /(?:^|\s)(?:import|export)\s+[^;'"]*?\s+from\s*["']([^"']+)["']|require\(\s*["']([^"']+)["']\s*\)|import\(\s*["']([^"']+)["']\s*\)/g;
@@ -51,6 +64,8 @@ const NET_ALIAS = /(?<![\w$.])fetch\b(?!\s*[(:=])|\b(?:globalThis|window)\s*\.\s
 const COMPUTED_LOAD = /\b(?:import|require)\s*\(\s*(?!["'`])/;
 /** Network/process modules — bare OR `node:`-prefixed (the old scan let every `node:` specifier through). */
 const NET_MODULE = /^(?:node:)?(?:http|https|http2|net|tls|dns|dgram|child_process)$/;
+/** The one member of NET_MODULE the PROCESS allowlist may exempt (r8). */
+const PROCESS_MODULE = /^(?:node:)?child_process$/;
 /** An absolute URL literal, to check its host against loopback. */
 const URL_LITERAL = /["'`]((?:https?|wss?):\/\/(\[[^\]]+\]|[^/"'`:?#\s$]+|\$\{[^}]*\})(?::\d+)?[^"'`\s]*)["'`]/g; // host: `[::1]` | name/IPv4 | `${…}`
 
@@ -152,10 +167,18 @@ function defaultKey(fullPath: string): string {
 }
 
 /** Offenders for ONE file's text. Pure — the unit the planted-violation tests drive. */
-export function scanText(text: string, path: string, allowlist: readonly string[] = LOOPBACK_ALLOWLIST, relKey?: string): string[] {
+export function scanText(
+  text: string,
+  path: string,
+  allowlist: readonly string[] = LOOPBACK_ALLOWLIST,
+  relKey?: string,
+  processAllowlist: readonly string[] = PROCESS_ALLOWLIST, // r8 — optional, so every pre-existing call keeps its exact behaviour
+): string[] {
   const out: string[] = [];
   const { code, blanked } = tokenize(text);
-  const allowed = allowlist.includes(relKey ?? defaultKey(path));
+  const key = relKey ?? defaultKey(path);
+  const allowed = allowlist.includes(key);
+  const mayImportProcess = processAllowlist.includes(key);
 
   if (NET_PRIMITIVE.test(code)) out.push(`${path}: a socket/server/network primitive`);
 
@@ -164,7 +187,10 @@ export function scanText(text: string, path: string, allowlist: readonly string[
   while ((m = EXTERNAL_IMPORT.exec(code)) !== null) {
     const spec = m[1] ?? m[2] ?? m[3] ?? "";
     if (!spec) continue;
-    if (NET_MODULE.test(spec)) out.push(`${path}: imports the network/process module "${spec}"`);
+    if (NET_MODULE.test(spec)) {
+      if (mayImportProcess && PROCESS_MODULE.test(spec)) continue; // r8: the ONE process-spawning module — and only the process import
+      out.push(`${path}: imports the network/process module "${spec}"`);
+    }
     else if (!/^(\.|\/|node:)/.test(spec)) out.push(`${path}: external dependency "${spec}"`);
   }
 
@@ -208,7 +234,12 @@ function collect(dir: string, key: string, out: { path: string; key: string }[])
  * Scan every source file under each of `dirs`, RECURSIVELY. NEVER VACUOUS: a scan that examined ZERO files fails (the
  * pre-r7 probes "passed" while scanning nothing), and so does a missing directory.
  */
-export function zeroNetworkScan(dirs: string[], okDetail: string, allowlist: readonly string[] = LOOPBACK_ALLOWLIST): NetScanResult {
+export function zeroNetworkScan(
+  dirs: string[],
+  okDetail: string,
+  allowlist: readonly string[] = LOOPBACK_ALLOWLIST,
+  processAllowlist: readonly string[] = PROCESS_ALLOWLIST, // r8 — optional
+): NetScanResult {
   const offenders: string[] = [];
   let filesScanned = 0;
   for (const dir of dirs) {
@@ -226,7 +257,7 @@ export function zeroNetworkScan(dirs: string[], okDetail: string, allowlist: rea
     collect(dir.replace(/[\\/]+$/, ""), dir.replace(/\\/g, "/").replace(/\/+$/, "").split("/").pop() ?? "", files);
     for (const f of files) {
       filesScanned++;
-      offenders.push(...scanText(readFileSync(f.path, "utf8"), f.path, allowlist, f.key));
+      offenders.push(...scanText(readFileSync(f.path, "utf8"), f.path, allowlist, f.key, processAllowlist));
     }
   }
   if (filesScanned === 0) offenders.push("zero-network scan examined ZERO files — a vacuous scan proves nothing (P-VIII)");
@@ -237,5 +268,10 @@ export function zeroNetworkScan(dirs: string[], okDetail: string, allowlist: rea
 
 /** Contract R6 / check (f): the loopback allowlist must have EXACTLY ONE entry. */
 export function allowlistIsSingle(list: readonly string[] = LOOPBACK_ALLOWLIST): boolean {
+  return list.length === 1;
+}
+
+/** r8 (R5 / check i): the process allowlist must ALSO have EXACTLY ONE entry — a second is refused (falsify hook `--extra-process`). */
+export function processAllowlistIsSingle(list: readonly string[] = PROCESS_ALLOWLIST): boolean {
   return list.length === 1;
 }

@@ -9,12 +9,16 @@
   },
   "author": "Zsolt Bátorfi",
   "type": "module",
+  "pi": {
+    "extensions": ["./pi/index.ts"]
+  },
   "engines": {
     "node": "^22.18.0 || >=23.6.0"
   },
   "scripts": {
     "test": "node tests/run.ts",
     "test:live": "node tests/run.ts --cost",
+    "test:pi": "node tests/run.ts --pi \"tests/pi/*.test.ts\"",
     "live-inference": "node tests/run.ts --live --serial tests/live-inference",
     "switch-cost": "node tests/run.ts --cost tests/switch-cost",
     "validate:log": "node validate/log.ts",
@@ -24,6 +28,7 @@
     "overlay-ready": "node validate/overlay-ready.ts",
     "live-ready": "node validate/live-ready.ts",
     "ollama-ready": "node validate/ollama-ready.ts",
+    "pi-ready": "node validate/pi-ready.ts",
     "dogfood": "node tests/dogfood/run.ts",
     "program-walk": "node tests/dogfood/run-program.ts",
     "live-walk": "node tests/dogfood/run-live.ts",

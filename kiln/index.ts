@@ -43,3 +43,16 @@ export { checkLiveModelReady, reportLiveModelReady, type LiveModelReadyOverride 
 export { makeOllamaResident, promptFor, isLoopbackHost, resolveOllamaBase, OllamaError, OLLAMA_DEFAULT_HOST, type OllamaResident, type OllamaResidentOptions, type OllamaErrorCode } from "./src/ollama-resident.ts";
 export { type ResidentLocation } from "./src/live-resident.ts";
 export { checkOllamaReady, reportOllamaReady, type OllamaReadyOverride, type OllamaReadyResult } from "./validate/ollama-ready.ts"; // E3 (r7 OllamaReady — the probe that actually dials)
+
+// ── r8 (007): KILN ON PI — the extension foundation. KILN declares its OWN structural view of Pi (`pi/port.ts`) and imports
+// nothing from Pi itself (research D1) — the P-VIII scan flags a type-only Pi import as an external dependency. The seam
+// (`pi/outcome.ts`) turns whatever Pi's dialogs return into `answered`/`no-answer`; every non-answer becomes r1's OWN
+// `headlessWait` — never a second Wait mechanism, never a decision (P-I, P-V, P-VII). `PiReady` (validate/pi-ready.ts) is the
+// probe that starts a REAL Pi, hermetically, and dials it both ways (`-e` and the package manifest). `kiln/pi/index.ts` itself
+// is NOT re-exported here — it stays behind the `"pi"` manifest in package.json (NC2 = A + B), the way Pi actually loads it.
+export {
+  detectCapability, type PiMode, type PiCtx, type PiUi, type PiApi, type PiCommand, type PiDialogOptions,
+  type Capability, type GateQuestion, type NoAnswerReason, type Outcome,
+} from "./pi/port.ts";
+export { interpret, askGate, resolveAsk, type AskResult } from "./pi/outcome.ts";
+export { checkPiReady, reportPiReady, HOOK_NAMES, type PiReadyOptions, type PiReadyHooks, type PiReadyResult, type PiReadyCheck, type PiReadyFailure } from "./validate/pi-ready.ts";
