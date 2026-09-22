@@ -3,18 +3,16 @@
 // scheduler, resident) or r7 (the async spine, Ollama resident, OllamaReady) changed while r8 was implemented. Pinning BOTH ends makes the test
 // stable across later rows, the way r7's own version is.
 //
-// BASE/CLOSE CANNOT BE SET UNTIL THE IMPLEMENTATION IS COMMITTED (they name commits that do not exist yet in this working tree). Per this
-// project's own rule ("skip is never silent"), the placeholder below SKIPS with a printed reason rather than pretending to pass — filling in
-// the two hashes at the close-out commit (T052) is a recorded TODO, not a silent gap.
+// Pinned at the close-out commit (T052): BASE = 28897f8 (specs+tasks for r8, the plan-and-tasks commit — the parent of r8's first
+// implementation commit); CLOSE = bea0683 (docs(007-kiln-pi-extension): r8 reports, spike scripts, README and overview — the last commit
+// of the r8 lane). The same pattern as kiln/tests/netscan/untouched.test.ts pins r7's BASE/CLOSE.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-// TODO(T052, at r8's close-out commit): set these to the parent of r8's FIRST implementation commit and the SHA of its LAST, respectively —
-// the same way kiln/tests/netscan/untouched.test.ts pins r7's BASE/CLOSE. Until then this test SKIPS, with the reason printed below.
-const BASE: string | null = null;
-const CLOSE: string | null = null;
+const BASE: string | null = "28897f8";
+const CLOSE: string | null = "bea0683";
 
 const repo = fileURLToPath(new URL("../../..", import.meta.url)).replace(/[\\/]$/, "");
 const git = (...a: string[]) => spawnSync("git", a, { cwd: repo, encoding: "utf8" });
