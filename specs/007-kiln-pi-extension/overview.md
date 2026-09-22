@@ -4,9 +4,7 @@
 for, what we already learned by trying it, and where the road leads — in prose, without the tables. Every number here comes from the spec, and the measured ones can be re-run
 from [`pre-spec-probe/`](./pre-spec-probe).*
 
-> **Status, stated plainly:** r8 is a **clarified spec, nothing more**. No r8 code exists. The three open questions were decided by a human on 2026-09-21 (see
-> [The three decisions](#the-three-decisions)), the next step is a plan, and the roadmap row is `queued`. What *does* exist is a small set of measurements taken on real software, which
-> is why this overview can say what Pi actually does rather than what its documentation says.
+> **Status, stated plainly (updated 2026-09-22):** r8's code is **implemented, reviewed and verified end to end** — the extension, the seam, the probe, 376 tests (up from 233), all green — but **nothing is committed**, and the roadmap row **stays `queued`**: only a human closes a row at its Gate-0 seam (see the [implementation report](./implementation-report.md) and the [verification report](./verification-report.md)). The human terminal smoke test in [`quickstart.md`](./quickstart.md) §5 has now been **performed** — and it did exactly what it was there for: it found a real bug (the self-test overlay could not close) that no automated check could ever have seen, since Pi's scripting mode never draws one. The bug is fixed, and the smoke test then passed clean. Everything below that used to describe a plan now describes what was actually built, measured, and — in one case — found broken and fixed by a human at a keyboard.
 
 ---
 
@@ -119,7 +117,7 @@ This is the one piece of r8 where a mistake would be silent, so it gets the stri
 5. **A new checker, `PiReady`,** in the family of KILN's other readiness checks. It starts a real Pi in a clean, offline, model-free setting; loads KILN; runs the command; feeds the translator
    Pi's real non-answers; and reports READY — or fails **by name**, with names such as *Pi missing*, *version not measured*, *extension failed to load*, *command missing*, and above all
    *a non-answer was approved*.
-6. **One human smoke test in a real terminal**, recorded in the verification report as done or not done (decision 1) — the part automation cannot reach.
+6. **One human smoke test in a real terminal**, recorded in the verification report (decision 1) — the part automation cannot reach, and the one that found the row's only live-discovered defect.
 7. **A package layout** with a written note saying where r9's screens, r10's roles and r11's commands each go, so none of them has to move anything r8 built.
 
 Like r7's live tests, the Pi tests are **opt-in**: with Pi absent they skip and print why; if someone explicitly asks for them (`KILN_PI=1`) and Pi is missing, they **fail loudly**, because a quiet
@@ -158,8 +156,8 @@ explaining why code that is *stricter* than the text cannot violate it. The word
 
 ## Where it is heading
 
-If r8 goes to plan, KILN can be loaded into real Pi and answers a command there; every question about Pi's extension system has a recorded answer; the design docs stop claiming things that were never tested; and the
-"silent human" hazard is closed at its one entrance. Then:
+**All of that is now true**: KILN loads into real Pi and answers a command there, both ways (an explicit load and a package install); every question about Pi's extension system has a recorded answer; the design docs' wrong claims were corrected, in the append-only style this project always uses; and the
+"silent human" hazard is closed at its one entrance, proven by deliberately breaking it nine different ways and watching each break get caught by name. What is left before the *row* can close is one human action — the terminal smoke test — and then the human's own decision to admit it. Once that happens:
 
 - **r9** puts the real footer, popup and overlay on Pi and lets a human answer a gate *in Pi* — the first time the whole point of the project can be seen with eyes.
 - **r10** brings the role agents and a model per tier, and turns the lane's model "swap" — which today is bookkeeping, naming the same model on both sides — into a real one.
@@ -176,10 +174,11 @@ r8 only notes that it exists.
 
 Honesty about the edges of what was measured:
 
-- **The terminal mode itself was not run** — only the scripting, JSON and print modes. Its behaviour is documented, not measured. That is exactly what the human smoke test in decision 1 covers.
+- **The terminal mode has now been run, once, by a human** — the five-step smoke test in decision 1. It is still true that no automated check ever exercises it (Pi's scripting mode never draws an overlay), so it remains a one-time, human-performed check, not a repeatable automated one; a future row that changes the overlay code should repeat it.
 - **One machine, one Pi.** macOS, Pi 0.85.1. Pi is before version 1.0 and changing; that is why r8 only *declares* versions it has actually run — the lesson learned from the Node version floor, where a range nobody had tested turned out to be wrong.
 - **Linux and Windows** are unmeasured.
-- **Reload and session-switching mid-gate** — what happens to a dialog left open across a reload — is a question r8 must *measure*; nothing is assumed.
+- **`/reload` sent over the scripting channel showed no observable effect** — no re-run, no session event. Whether it behaves differently at a real keyboard is folded into the same terminal smoke test. Session-switching *with* a dialog left open **was** measured: the switch succeeds immediately, and a late answer is still delivered to the (by then stale) handler — a detail now owned by whichever row (r9 or r11) first applies an answer as a real decision.
+- **`fork`, `clone`, and a meaningful `switch_session`** all need a saved session, which needs a real model turn — outside what a Pi-loaded-with-no-model row can measure.
 
 ---
 

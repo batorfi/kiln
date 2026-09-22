@@ -55,6 +55,9 @@ The rules are written down as a [constitution](./.specify/memory/constitution.md
   `ERR_UNKNOWN_FILE_EXTENSION`, your Node is too old. Verified on **macOS only** so far.
 - **Git.** There are **no runtime dependencies** (`dependencies: {}`), and nothing to `npm install`.
 - *Optional, for the live tier:* [Ollama](https://ollama.com) with a model. The tests default to `gemma4:12b`; set `KILN_LIVE_MODEL` to use another.
+- *Optional, for the Pi tier:* [Pi](https://github.com/earendil-works/pi) — an **external** tool KILN loads into, not something KILN vendors.
+  Verified on **`0.85.1`, macOS only** so far (Pi is pre-1.0 and moving; only measured versions are declared supported — see
+  `kiln/validate/_pi-driver.ts`). Without it, `npm test` skips the Pi tier with a printed reason.
 
 ## Try it
 
@@ -70,6 +73,13 @@ npm run overlay-ready
 npm run live-ready
 npm run validate:roadmap -- ../specs/ROADMAP.md     # the project's own roadmap, judged by its own validator
 npm run validate:log -- fixtures/r7-live-inference.jsonl   # a real nine-gate run's log
+```
+
+With Pi installed:
+
+```bash
+npm run pi-ready                           # starts a REAL Pi, hermetically, and loads KILN both ways: READY
+npm run test:pi                            # the Pi tier of the suite; refuses a run that answers zero of its own tests
 ```
 
 With Ollama running and a model installed:
