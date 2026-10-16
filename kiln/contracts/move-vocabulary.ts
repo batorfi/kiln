@@ -75,3 +75,26 @@ export const CHECKPOINT_GATE: GateId = 5;
 export const REVIEW_GATE: GateId = 6;
 /** G5/G4: which gate has the bounded mitigation loop. */
 export const VERIFICATION_GATE: GateId = 7;
+
+// ── r9 (008-kiln-pi-ui), T006: an ADDITIVE gate-id -> human-name map (research D3, data-model E1). ──
+// Nothing above this line changes. `GATE_TO_KEY`'s `N-` numeric prefix is a SORT key, not a name — never shown to a user;
+// this drops it. `gate0` never changes (it has no numeric form to replace, contract presentation-wrapper.md P1).
+export const GATE_NAME: Record<GateId, string> = {
+  gate0: "gate0",
+  1: "concept",
+  2: "architecture",
+  3: "spec",
+  4: "plan",
+  5: "checkpoint",
+  6: "review",
+  7: "verification",
+  8: "docs",
+  9: "pull request",
+};
+
+/** The human-readable name for a gate id (`gateName(3) === "spec"`); covers every `GateId` with no `undefined` result. */
+export function gateName(id: GateId): string {
+  const name = GATE_NAME[id];
+  if (!name) throw new Error(`unknown gate id: ${String(id)}`);
+  return name;
+}

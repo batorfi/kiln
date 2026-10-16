@@ -56,3 +56,14 @@ export {
 } from "./pi/port.ts";
 export { interpret, askGate, resolveAsk, type AskResult } from "./pi/outcome.ts";
 export { checkPiReady, reportPiReady, HOOK_NAMES, type PiReadyOptions, type PiReadyHooks, type PiReadyResult, type PiReadyCheck, type PiReadyFailure } from "./validate/pi-ready.ts";
+
+// ── r9 (008): KILN's real UI on Pi. `present.ts` (FR-015, the presentation wrapper — gate names, timestamps, header wording,
+// applied AFTER r1/r2's own renders, which stay byte-for-byte unmodified); `identity.ts` (NC1, `KILN_HUMAN`); `live-ctx.ts`
+// (`makeLiveUICtx` — the real `LiveUICtx` body, NC2 = A, over r8's own seam); `UiReady` (the sixth probe, contract `ui-ready.md`).
+// `gateName` (`move-vocabulary.ts`'s additive export, research D3) is the human-name half of FR-015 transform (a). r9 admits no
+// program and advances no gate (P-VI) — it wires the display/decision surfaces r1/r2/r8 already built.
+export { gateName } from "./contracts/move-vocabulary.ts";
+export { resolveIdentity, type IdentityResult } from "./pi/ui/identity.ts";
+export { presentHud, presentPopup, presentOverlay, presentGate0Face } from "./pi/ui/present.ts";
+export { makeLiveUICtx, type LiveUICtxOverrides } from "./pi/ui/live-ctx.ts";
+export { checkUiReady, reportUiReady, type UiReadyOptions, type UiReadyHooks, type UiReadyResult, type UiReadyCheck, type UiReadyFailure } from "./validate/ui-ready.ts";
