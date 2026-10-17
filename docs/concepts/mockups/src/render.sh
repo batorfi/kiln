@@ -38,3 +38,7 @@ render 32-adding-research               1600,1180
 render 33-hosts                          1600,1100
 render 34-placing-a-factory              1600,1000
 render 35-moving-and-sleeping            1600,1020
+render 36-team-space                     1600,1180
+render 37-adopting-a-team-feature        1600,1080
+render 38-teammate-review                1600,1040
+render 39-merge-gate-in-a-team           1600,1140

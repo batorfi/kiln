@@ -1,0 +1,72 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Merge gate in a team</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.cond{display:grid;grid-template-columns:24px 1fr auto;gap:12px;padding:11px 0;border-top:1px solid var(--line-2);font-size:12.5px;align-items:start}
+.cond:first-of-type{border-top:0}
+.ok2{color:var(--ok);font-weight:700;font-size:15px}.wt{color:var(--wait);font-weight:700;font-size:15px}
+.q3{display:flex;gap:6px;margin-top:6px}.q3 span{border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:11.5px;background:var(--surface)}
+.q3 span.me{border-color:var(--ember);background:var(--ember-soft);font-weight:650}
+.pubrow{display:grid;grid-template-columns:22px 1fr auto;gap:10px;padding:8px 0;border-top:1px solid var(--line-2);font-size:12.5px;align-items:center}
+.pubrow:first-of-type{border-top:0}
+.tg{width:30px;height:17px;border-radius:9px;background:var(--line);position:relative}.tg::after{content:"";position:absolute;width:13px;height:13px;border-radius:50%;background:#fff;top:2px;left:2px}
+.tg.on{background:var(--ok)}.tg.on::after{left:15px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Zsolt's workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a class="on">Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0"><b>kiln-v1</b> · Feature r10 · Role agents and model tiers · Oct 21, 09:31</div><span class="grow"></span><span class="pill">team space kiln</span><span class="pill wait">Waiting 52 min</span><span class="pill local">local-only</span></div>
+    <div class="row" style="margin-top:12px;gap:24px;align-items:center">
+      <div style="min-width:470px"><div class="kicker">Merge gate · 9 of 9 · into the team's shared main</div><div class="q">Do we ship this feature?</div><div class="sub">Your decision — with the team's merge rules shown as conditions, and what your teammates merged in the meantime.</div></div>
+      <div class="grow"><div class="rail"><div class="g done"><div class="c">✓</div><div class="l">Concept</div></div><div class="g done"><div class="c">✓</div><div class="l">Design</div></div><div class="g done"><div class="c">✓</div><div class="l">Spec</div></div><div class="g done"><div class="c">✓</div><div class="l">Plan</div></div><div class="g done"><div class="c">✓</div><div class="l">Impl.</div></div><div class="g done"><div class="c">✓</div><div class="l">Code review</div></div><div class="g done"><div class="c">✓</div><div class="l">Verify</div></div><div class="g done"><div class="c">✓</div><div class="l">Docs</div></div><div class="g now"><div class="c"></div><div class="l">Merge</div></div></div></div></div>
+  </div>
+  <div class="grid" style="grid-template-columns:1.15fr 1fr;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>The team's conditions</h2><span class="sub">from the team rules · mirrored with PR #58</span></div>
+        <div class="cond"><span class="ok2">✓</span><div><b>One teammate review</b> — approved by <b>Anna Kovács</b> at 09:24<div class="sub">signed with her key · posted to PR #58 · her note: “LaneHeldError could also name the holding feature — fine as a follow-up”</div></div><span class="pill ok">met</span></div>
+        <div class="cond"><span class="ok2">✓</span><div><b>Checks green</b> on the code host<div class="sub">248 tests · lint · network check · on the rebased branch</div></div><span class="pill ok">met</span></div>
+        <div class="cond"><span class="ok2">✓</span><div><b>Provenance linked</b><div class="sub">signed summary of all 9 gates, deciders, judges and models — attached to PR #58</div></div><span class="pill ok">met</span></div>
+        <div class="cond"><span class="wt">◷</span><div><b>Merge queue</b> on the code host — position <b>2 of 3</b><div class="q3"><span>1 · Bence · team space docs</span><span class="me">2 · you · r10</span><span>3 · Anna · gate brief prep</span></div><div class="sub" style="margin-top:6px">approving now puts r10 in the queue; the code host merges it after re-testing on the latest main</div></div><span class="pill">queued on approve</span></div></div>
+      <div class="card"><div class="card-h"><h2>What changed on main since you started</h2><span class="sub">base drift</span></div>
+        <div style="font-size:12.5px"><b>Bence's Host channel</b> merged Oct 20 and changed <span class="mono">src/lane.ts</span> — a file r10 also changes.</div>
+        <div class="kv2" style="grid-template-columns:150px 1fr;margin-top:8px"><span>Rebased</span><span>onto main at <span class="mono">d41e7aa</span> · 1 conflict, resolved by the worker, reviewed by Anna</span><span>Re-verified</span><span><span class="check">✓</span> Verification re-run on the new base · 7 of 7 · 31 min</span><span>Recorded</span><span><span class="mono">team.overlap_detected</span> · <span class="mono">unit.settled</span> (re-verification)</span></div></div>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>What will be published</h2><span class="sub">your policy · default coordination</span></div>
+        <div class="pubrow"><span class="ok2">✓</span><span>Gate outcome · merged, decided by you</span><span class="pill">always</span></div>
+        <div class="pubrow"><span class="ok2">✓</span><span>Claim released · <span class="mono">src/tiers.ts · src/lane.ts · src/roles.ts · agents/</span></span><span class="pill">always</span></div>
+        <div class="pubrow"><span class="ok2">✓</span><span>Provenance on PR #58</span><span class="pill">default on</span></div>
+        <div class="pubrow"><span></span><span><b>Feature story</b> to team knowledge — “r10 — How it was built” (9 pages)</span><span class="tg"></span></div>
+        <div class="pubrow"><span></span><span>Learning — “Write the failing test first for lane changes”</span><span class="tg on"></span></div>
+        <div class="sub" style="margin-top:6px">Feature stories go to team knowledge by your choice. Transcripts never leave your workshop.</div></div>
+      <div class="card options-card"><div class="card-h"><h2>The options</h2></div>
+        <div class="grid" style="gap:8px">
+          <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Approve — merge</h3><p>r10 joins the code host's merge queue at position 2; when it merges, your claim is released and the team roadmap shows it.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Reject <span class="pill" style="font-weight:500">note required</span></h3><p>Nothing merges; your note says where the feature returns. Anna's review stays on record.</p></div>
+          <div class="row"><span class="btn bad grow">Reject</span><span class="btn ok grow">Approve and queue</span></div>
+          <div class="sub" style="text-align:center">Only you decide this gate — the team's conditions are met, they do not decide it for you.</div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

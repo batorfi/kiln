@@ -211,7 +211,8 @@ portable — moving it never changes a decision*.
 
 ## 13. Open questions
 
-1. Should a host be able to belong to more than one workshop?
+1. ~~Should a host be able to belong to more than one workshop?~~ Answered by `team-space.md` §13: yes — a host may serve
+   several member workshops of a team space, each with its own leases, stores and secrets.
 2. How should a factory's workspace move — full copy, or a git remote the new host clones?
 3. Should the workshop itself be able to move, or fail over to a standby?
 4. Which container and orchestration forms should KILN support first, if any?

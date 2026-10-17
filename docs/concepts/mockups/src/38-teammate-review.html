@@ -1,0 +1,62 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — A teammate's review</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.shared td{font-size:12.5px}
+.sig{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface-2);font-size:12.5px}
+.mirror{display:grid;grid-template-columns:1fr 30px 1fr;gap:8px;align-items:center;font-size:12.5px}
+.mirror>div.b{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface)}
+.notshared{font-size:12px;color:var(--muted);background:var(--surface-2);border:1px dashed var(--line);border-radius:8px;padding:9px 11px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Anna's workshop · anna-mbp</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a class="on">Needs you <span class="n">1</span></a>
+    <a>Factories <span class="s">1</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot run"></span>kiln-ui</span><span class="s">working</span></a>
+  </div>
+  <div class="machine"><b>anna-mbp</b> · this host · 64 GB<div style="margin-top:6px">gemma4:27b · qwen3-coder:30b</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0">Anna's workshop · request from <b>Zsolt Bátorfi</b> · via team space <b>kiln</b> · Oct 21, 08:41</div><span class="grow"></span><span class="pill">required review</span><span class="pill wait">waiting 37 min</span></div>
+    <div class="kicker" style="margin-top:12px">A teammate asks · not your gate</div>
+    <div class="q">Should r10 — Role agents and model tiers — be merged into main?</div>
+    <div class="sub">The team's merge rule requires one teammate's review. Your answer satisfies a condition of Zsolt's Merge gate; his own move still decides it. Nothing is approved by waiting.</div>
+  </div>
+  <div class="grid" style="grid-template-columns:1.2fr 1fr;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>What Zsolt's workshop shared</h2><span class="sub">by his publishing policy — coordination, plus what he chose</span></div>
+        <table class="shared"><tr><td class="muted" style="width:150px">Gates</td><td>all 9 passed · Code review in 3 rounds (2 restarts) · Verification passed, live tests included</td></tr>
+          <tr><td class="muted">Judges</td><td>code reviewer and verifier on gemma4:27b (strongest local) · 3 findings, all addressed</td></tr>
+          <tr><td class="muted">Changes</td><td>12 files · +486 −73 · <span class="mono">src/tiers.ts</span>, <span class="mono">src/lane.ts</span>, <span class="mono">src/roles.ts</span>, <span class="mono">agents/</span> — full diff on PR #58</td></tr>
+          <tr><td class="muted">Feature story</td><td><b>shared by Zsolt</b> · “r10 — How it was built”</td></tr>
+          <tr><td class="muted">Overlap</td><td><span class="mono">src/lane.ts</span> also claimed by Bence · Bence's host channel merged Oct 20; r10 re-verified on the new base ✓</td></tr></table>
+        <div class="notshared" style="margin-top:10px">Not shared: transcripts (never), the factory's private notes. Ask Zsolt if you need more — your request keeps this review open.</div></div>
+      <div class="card"><div class="card-h"><h2>Mirrored with the code host</h2></div>
+        <div class="mirror"><div class="b"><b>KILN</b> · condition on Zsolt's Merge gate<div class="sub">“1 teammate review” · waiting for you</div></div><div style="text-align:center;color:var(--faint);font-size:18px">⇄</div><div class="b"><b>PR #58</b> · kiln/kiln on the team's code host<div class="sub">review requested from Anna · branch protection requires 1</div></div></div>
+        <div class="sub" style="margin-top:8px">Answer in either place — here, or on the pull request — and the other shows it, with who gave it.</div></div>
+    </div>
+    <div class="grid">
+      <div class="card options-card"><div class="card-h"><h2>Your answer</h2><span class="sub">signed by you, recorded in both workshops</span></div>
+        <div class="grid" style="gap:8px">
+          <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Approve</h3><p>Satisfies the review condition. Zsolt still decides his Merge gate.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--wait)"></span>Request changes <span class="pill" style="font-weight:500">note required</span></h3><p>Your note appears in his brief as attributed evidence; the condition stays open.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Decline to review</h3><p>Someone else on the team can review instead.</p></div>
+          <div class="note-box">Your note — e.g. “LaneHeldError should name the holding gate's feature too”</div>
+          <div class="row"><span class="btn grow">Request changes</span><span class="btn ok grow">Approve and sign</span></div></div></div>
+      <div class="sig"><span style="font-size:18px">🔑</span><div><b>Signing as Anna Kovács</b><div class="sub">personal key <span class="mono">ed25519 · 7F3A…C21E</span> on anna-mbp · registered through the team's identity provider</div></div></div>
+      <div class="card"><div class="card-h"><h2>Meanwhile, in your workshop</h2></div>
+        <div style="font-size:12.5px">kiln-ui keeps working on <b>Gate brief on the web</b> — answering this does not touch your own gates or your lane.</div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

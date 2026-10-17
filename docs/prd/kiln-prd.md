@@ -1,4 +1,4 @@
-> Status: product requirements — draft for review (2026-10-17) — **not admitted**
+> Status: product requirements — draft for review (rev 2, 2026-10-17) — **not admitted**
 > Type: PRD (high level)
 >
 > Scope note: this document defines **the new KILN codebase** — what it must do, how it is organised, and which of the
@@ -14,6 +14,7 @@
 >   - `docs/concepts/pi-durable.md` — the durable substrate
 >   - `docs/concepts/factory-wiki.md` — knowledge (rev 4)
 >   - `docs/concepts/factories-anywhere.md` — hosts
+>   - `docs/concepts/team-space.md` — teams: personal workshops and a team space
 >   - `docs/concepts/concept.md`, `gates-why-how-what.md` — the original concept and gate rationale
 >   - the existing codebase under `kiln/` (r1–r9, ~5,900 lines of source, 98 test files)
 
@@ -60,7 +61,8 @@ old code that still expresses a rule we keep** (§10).
    built.
 5. **Local by default, open by choice** — a `local-only` factory provably makes no outbound call; anything else is a
    configured, recorded, policy-checked choice.
-6. **Grows without redesign** — one factory → several → several hosts → a team, with the same concepts.
+6. **Grows without redesign** — one factory → several → several hosts → a team of personal workshops sharing a team
+   space, with the same concepts.
 
 ### 3.2 Non-goals
 
@@ -96,6 +98,7 @@ old code that still expresses a rule we keep** (§10).
 | **P9** | **The front door is a window, never the source of truth** — surfaces are driven by events, never by polling. | server (§6.7) |
 | **P10** | **Knowledge is context, never authority** — every claim traceable to a source; no page settles a gate. | knowledge module (§6.11) |
 | **P11** | **A factory is portable** — moving it never changes a decision. | hosts (§6.12) |
+| **P12** | **Workshops are sovereign** — no act from a team space or another workshop settles a gate; every act between workshops is signed by a person. | team space (§6.14) |
 
 ## 6. Capabilities
 
@@ -235,6 +238,20 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | OBS-4 | **Insights**: evidence for people, never automatic change. | Should |
 | PPL-1 | **People and roles** per factory: Decider, Operator, Curator, Observer, Auditor; identity on every decision. | Must (single user) / Should (team) |
 
+### 6.14 Teams and the team space
+
+| ID | Requirement | |
+|---|---|---|
+| TEAM-1 | **Team space repository**: a git repository holding the team roadmap, claims, team knowledge, published digests, decision requests and responses, team rules and members; every write a signed commit. | Should |
+| TEAM-2 | **Subscribe and publish**: each workshop pulls and verifies the team space into events of its own record, and publishes by its policy; default level **coordination**. | Should |
+| TEAM-3 | **Team roadmap** changed by a **quorum** of named deciders; factories adopt team features at their own Roadmap gate. | Should |
+| TEAM-4 | **Claims**: made on adoption, refined at Work plan, released at merge, expiring when stale; **advisory by default**, exclusive on protected paths; **overlap detection** across workshops shown in both gate briefs. | Should |
+| TEAM-5 | **Decisions across workshops**: opinions, required reviews, delegated deciders — signed, recorded on both sides; required reviews **mirrored** with the code host's pull request. | Should |
+| TEAM-6 | **Merge gate in a team**: base drift, required reviews and checks, the code host's merge-queue position; no KILN queue. | Should |
+| TEAM-7 | **Team knowledge** tier in the team space, editable by every member, included as `team/` in member vaults; merged-feature stories by the author's choice. | Should |
+| TEAM-8 | **Identity**: personal signing keys, registered and revoked through the team's identity provider where one exists; shared workshops join as one member. | Should |
+| TEAM-9 | **Shared hosts** serving several member workshops with isolated leases, stores and secrets. | Should |
+
 ## 7. Non-functional requirements
 
 | Area | Requirement |
@@ -285,6 +302,7 @@ kiln/
     knowledge/     wikis: ingest / query / lint, vault contract, implementation knowledge
     workshop/      registry, people & roles, policies, placement, gate inbox
     host/          host runtime, host channel, moves, sleep
+    team/          team-space repository: subscribe/publish, signatures, claims, requests, team rules
     server/        HTTP, auth, read models, push, intake
     web/           the front door (prebuilt assets)
     cli/           kiln serve · kiln host · kiln check · kiln replay
@@ -295,7 +313,7 @@ kiln/
 ```
 
 **Dependency direction:** `contracts` ← `record` ← `durable` ← `lane`, `workers` ← `director` ← `workshop`, `host` ←
-`server` ← `web`/`cli`. Only `durable` imports Pi Durable; only `workers` imports `pi-ai`; only `lane` talks to Ollama's
+`server` ← `web`/`cli`; `team` sits beside `workshop`. Only `durable` imports Pi Durable; only `workers` imports `pi-ai`; only `lane` talks to Ollama's
 management API; only `server` and `host` open network listeners.
 
 ## 9. Data and storage
@@ -309,7 +327,8 @@ management API; only `server` and `host` open network listeners.
 | Factory wiki | git + Obsidian vault | on the factory's host; reachable as a git remote |
 | Workshop store | registry, people, policies, placement, workshop events | with the workshop |
 | Workshop wiki | git + Obsidian vault | with the workshop; included read-only in factory vaults |
-| Secrets | provider keys, host identities | OS / host secret store only |
+| Team space | team roadmap, claims, team knowledge, digests, requests, rules, members' public keys | a shared git repository, signed commits |
+| Secrets | provider keys, host identities, members' private signing keys | OS / host secret store only |
 
 ## 10. What we keep from the existing code
 
@@ -370,10 +389,11 @@ Each milestone is a candidate roadmap row with its own gates. Every milestone en
 | **M9** | **Observability** | metrics, traces, health, insights, time travel | M2, M4 | OBS-1…4, EVT-6 |
 | **M10** | **Models beyond the machine** | catalog, profiles, routing, egress policy, budgets, fallback, policy stops | M3, M5 | MOD-1…5, HITL-3 |
 | **M11** | **Factories anywhere** | host runtime and channel, placement, moves, sleeping hosts, network failure | M8 | HOST-2…7, WEB-2 (network) |
-| **M12** | **`kiln-v1` release** | installer, newcomer docs, demo mode from committed replays | M1–M7 (+ chosen Shoulds) | §3.1 goals |
+| **M12** | **Team space** | team-space repository, signed acts and keys, team roadmap by quorum, claims and overlap, requests and mirrored reviews, team-aware Merge gate, team knowledge | M7, M8 | TEAM-1…9 |
+| **M13** | **`kiln-v1` release** | installer, newcomer docs, demo mode from committed replays | M1–M7 (+ chosen Shoulds) | §3.1 goals |
 
-**`kiln-v1`** = M0–M8 plus the *Must* items of M9; M10 and M11 can follow as `kiln-v1.x` without changing anything
-built before them, because the single-machine, local-only workshop is their degenerate case.
+**`kiln-v1`** = M0–M8 plus the *Must* items of M9; M10, M11 and M12 can follow as `kiln-v1.x` without changing
+anything built before them, because the single-machine, local-only, single-person workshop is their degenerate case.
 
 ## 12. Success measures
 
@@ -397,6 +417,7 @@ From the vision, made measurable:
 | Scope: the concepts describe a lot | strict Must/Should; `kiln-v1` ends at M8 |
 | Two products during the transition | `legacy/` frozen; no feature work there |
 | Security surface grows with servers and hosts | loopback default; network modes opt-in, behind M11 |
+| Teams collide on shared code | claims and overlap detection from the Work plan gate; protected paths; base drift at merge |
 
 ## 14. Open decisions
 
@@ -411,6 +432,7 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 7. Several Deciders collaborating on one gate — M8.
 8. Hosts in several workshops; how workspaces move; workshop failover; container forms — M11.
 9. Egress policy language and model-family identity — M10.
+10. Exact quorum rules, exclusive-claim expiry, publishing levels beyond coordination — M12.
 
 ## 15. Constitution amendments required
 
@@ -422,7 +444,7 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 | VII Everything recorded | the ordered event stream is the primary record; the factory-log is a projection (MAJOR) |
 | VIII Local-first | local by default; egress, remote models and hosts only by configured, recorded, policy-checked choice; authenticated, encrypted connections beyond loopback (MAJOR) |
 | IX No dashboard | a web front door that is never a source of truth; real authentication when shared over a network (MAJOR) |
-| *new* | knowledge is context, never authority (MINOR) · a factory is portable — moving it never changes a decision (MINOR) |
+| *new* | knowledge is context, never authority (MINOR) · a factory is portable — moving it never changes a decision (MINOR) · workshops are sovereign — no act from a team space or another workshop settles a gate (MINOR) |
 | *dependency stance* | runtime dependencies allowed, pinned, recorded |
 
 ## 16. Glossary
@@ -431,6 +453,8 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 |---|---|---|
 | Workshop | workshop | where people work: front door, people, policies, gate inbox |
 | Host | host | a machine factories run on |
+| Team space | team space | the shared git repository where a team's personal workshops meet |
+| Claim | claim | a factory's signed note of which team feature it builds and which code it touches |
 | Factory | flow | one roadmap, one lane, one record |
 | Feature | row | one roadmap item, walked through nine gates |
 | Step | unit | one piece of work by one role |

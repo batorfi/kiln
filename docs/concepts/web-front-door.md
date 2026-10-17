@@ -1,4 +1,4 @@
-> Status: exploratory concept (proposal, rev 12, 2026-10-17) — **not admitted**
+> Status: exploratory concept (proposal, rev 13, 2026-10-17) — **not admitted**
 > Type: concept
 >
 > Scope note: this doc describes a *scenario* — KILN with a locally hosted webapp as its front door, its
@@ -28,6 +28,7 @@
 >     `factory-wiki.md`). Rev 11: the LLM writes directly as in Karpathy's pattern; Curators may edit; a workshop wiki
 >     anyone can edit sits alongside the factory wikis.
 >   - **Factories can run anywhere** (rev 12, §15; full concept in `factories-anywhere.md`): one workshop, many hosts.
+>   - **Teams work in personal workshops joined by a team space** (rev 13, §16; full concept in `team-space.md`).
 >
 > Pi facts below come from Earendil's published material and the `@earendil-works/pi-durable` README
 > (1.3.0). API names are quoted as published and are expected to move; the concept depends on the
@@ -43,6 +44,7 @@
 >   - How KILN uses Pi Durable:        `pi-durable.md`
 >   - The factory wiki:                `factory-wiki.md`
 >   - Factories anywhere:              `factories-anywhere.md`
+>   - Teams and the team space:        `team-space.md`
 
 # KILN — the web front door, on durable agents and durable gates
 
@@ -400,6 +402,7 @@ publish (an invalid event is a bug and fails the commit, not the consumer).
 | **Command** | `command.accepted` · `command.refused` |
 | **Wiki** | `wiki.ingest_started` · `wiki.ingest_completed` (pages changed) · `wiki.page_edited` (by whom, where) · `wiki.reverted` · `wiki.query_answered` · `wiki.answer_filed` · `wiki.lint_finding` · `wiki.finding_resolved` · `wiki.schema_changed` · `wiki.digest_proposed` · `wiki.conformance_failed` · `wiki.workshop_updated` · `wiki.digest_added` · `wiki.learning_recorded` · `wiki.page_drifted` |
 | **Host** | `host.joined` · `host.revoked` · `host.online` · `host.offline` · `host.suspended` · `host.resumed` · `factory.placed` · `factory.move_requested` · `factory.moved` (from, to) · `factory.move_failed` · `move.applying_on_wake` |
+| **Team** | `team.subscribed` · `team.published` · `team.claim_made` · `team.claim_refined` · `team.claim_released` · `team.claim_expired` · `team.overlap_detected` · `team.request_sent` · `team.request_received` · `team.response_signed` · `team.roadmap_vote` · `team.roadmap_changed` · `team.rules_changed` · `team.member_joined` · `team.key_revoked` |
 | **System** | `server.started` · `server.recovered` (resumed tasks, waiting gates) · `store.migrated` · `dependency.upgraded` |
 
 The catalog is a contract: adding a type is MINOR, changing a payload's meaning is a new schema version, and
@@ -569,6 +572,9 @@ The webapp reads only committed state, through the server, and never polls:
 | VII. Everything recorded | **Redefined (MAJOR)**: the ordered domain-event stream, committed atomically with state in the durable store, is the primary record; the factory-log and every other view are rebuildable projections of it (§6). |
 | VIII. Local-first | **Redefined (MAJOR)**: "local by default; egress only by a configured, recorded, policy-checked choice" (§13). Under the default `local-only` profile it holds exactly as today. Clarifications kept: a loopback-only listener is not an outbound dependency; the optional OTLP exporter is loopback-only. The network scan becomes a check of the per-flow allowlist. Extended for factories anywhere (§15): every host and every host–workshop connection is configured, authenticated, encrypted and recorded; each host's allowlist is checked. |
 | IX. No dashboard, no server | **Redefined (MAJOR)**: "one committed state, surfaces driven by domain events (never polling), a loopback server that is never a source of truth". The "event-driven, never polling" half of IX is kept and strengthened. A workshop reachable over a network (§15) requires real authentication. |
+
+Also proposed (MINOR): **workshops are sovereign** — no act from a team space or another workshop settles a gate; only
+the owning workshop's deciders, or a person it explicitly names, do (§16).
 
 Also proposed (MINOR): a new rule that **knowledge is context, never authority** — every wiki claim traceable to a
 source, and no wiki content settles a gate (§14).
@@ -935,7 +941,33 @@ design; the all-in-one machine remains the default, and everything here is opt-i
   allow.
 - **Record.** New events in the *Host* group (§6.4); placement and moves join the workshop's stream.
 
-## 16. Living with an experimental substrate
+## 16. Teams: personal workshops and a team space
+
+`team-space.md` lets a team work on one codebase while each person runs **their own workshop**. Workshops stay
+sovereign; they coordinate through a **team space** — a git repository first, written only by members' signed commits.
+This section records how that fits the design.
+
+- **Contents.** The team roadmap (changed by a **quorum** of named deciders), claims, team knowledge, published digests,
+  decision requests and responses, team rules (merge rules, policy floors, protected paths, shared role instructions),
+  and members with their public keys.
+- **Subscribe and publish.** Each workshop pulls the team space, verifies signatures and turns what it finds into events in
+  its own record; it publishes signed files by its policy. Default publishing level: **coordination** — claims, gate
+  outcomes for team-roadmap features without content, provenance for pull requests to the shared `main`.
+- **Claims** are made at the Roadmap gate when a team feature is adopted, refined at the Work plan gate, released at merge;
+  **advisory by default**, exclusive only on protected paths; overlap across workshops appears in the gate briefs of both.
+- **Decisions across workshops.** A workshop can ask for an *opinion*, satisfy a *required review* from the team's merge
+  rules, or name a *delegated decider*. A required review is mirrored **in both** the Merge gate and the code host's pull
+  request. Only the owning workshop's deciders — or a person it explicitly names — settle its gates.
+- **Merging.** The Merge gate shows base drift (teammates' overlapping merges since the restorable start), required reviews
+  and checks, and the position in the code host's merge queue when the team has one; KILN builds no queue of its own.
+- **Knowledge.** A **team knowledge** tier lives in the team space, editable by every member, included read-only in member
+  vaults as `team/`; merged features' stories are published to it by the author's choice.
+- **Identity.** Every act is signed by a person, with **personal keys** registered through the team's **identity
+  provider** where one exists; removal there revokes the key. Shared workshops can join as one member.
+- **Shared hosts.** A host may serve several member workshops, each with its own leases, stores and secrets.
+- **Record.** New events in the *Team* group (§6.4).
+
+## 17. Living with an experimental substrate
 
 KILN accepts Pi Durable's experimental status and evolves with it. To keep that cheap:
 
@@ -947,11 +979,13 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 - **Contribute back.** Where KILN needs something the library lacks (for example, a first-class "complete a
   waiting task from outside"), the preferred path is upstream, not a local workaround.
 
-## 17. Security posture
+## 18. Security posture
 
 - bind to `127.0.0.1` only — unless the workshop is deliberately shared over a network (§15), in which case it uses
   TLS and the team's identity provider;
 - hosts and workshop authenticate each other and encrypt all traffic; host identities are revocable (§15);
+- every act in a team space is signed with a member's personal key; keys are registered through the team's identity
+  provider where one exists and revoked there (§16);
 - a random per-launch secret establishes the human's session — no other local process or browser tab may
   submit a move or a command;
 - reject requests whose `Host`/`Origin` are not the server's own (DNS rebinding, cross-site requests);
@@ -963,7 +997,7 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 - provider credentials live in the OS keychain only; every outbound request is checked against the flow's
   egress policy and allowlist before it leaves (§13.4).
 
-## 18. Open design questions
+## 19. Open design questions
 
 - **Workspace isolation**: shared repo or per-row worktrees, and which task owns cleanup.
 - **Model residency**: loading and evicting the resident Ollama model stays KILN's job
@@ -980,7 +1014,9 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 - **Model-family identity**: how the catalog records families so cross-family judging can be enforced.
 - **Telemetry retention**: how long spans and fine-grained metrics are kept locally before ageing out
   (domain events are never aged out).
-- **Factories anywhere**: hosts in more than one workshop; how workspaces move; workshop failover; which container
+- **Teams**: exact quorum rules per team; how exclusive claims expire; publishing levels beyond coordination
+  (`team-space.md`).
+- **Factories anywhere**: hosts in more than one workshop (answered for team spaces: yes, `team-space.md` §13); how workspaces move; workshop failover; which container
   forms to support; other Pi Durable storage adapters (`factories-anywhere.md` §13).
 - **Wikis**: a dedicated wiki keeper role or the researcher with a schema; how long a page may go unreviewed before a
   gate brief flags it; how often a factory's copy of the workshop wiki is updated; how much code implementation pages
@@ -992,7 +1028,7 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 - **Positioning**: from "a factory *for Pi*" to "a factory *built on* Pi's durable substrate, with its own
   surface".
 
-## 19. Roadmap consequences (sketch, for a Roadmap gate conversation)
+## 20. Roadmap consequences (sketch, for a Roadmap gate conversation)
 
 Not a decision — the shape the Roadmap gate would be asked to consider:
 
@@ -1013,6 +1049,9 @@ Not a decision — the shape the Roadmap gate would be asked to consider:
 - **Models beyond the machine** — model catalog, profiles, per-role routing, egress policy and checks,
   budgets, fallback rules, egress audit. Can follow the local-only rows: `local-only` is the default and needs
   none of it.
+- **Team space** — the team-space repository, subscribe/publish, signed acts and member keys, claims and overlap,
+  decision requests, merge-gate conditions mirrored to the code host, team knowledge. Can follow the workshop and
+  knowledge rows.
 - **Factories anywhere** — host runtime and registry, host channel and identities, placement at the Roadmap gate,
   moves with handover, sleeping hosts, per-host model pools, replication of records to the workshop, network
   authentication for a shared workshop. Can follow the workshop row: one machine is the degenerate case.
@@ -1025,7 +1064,7 @@ Not a decision — the shape the Roadmap gate would be asked to consider:
   are idempotent commits.
 - **r4 (cut `kiln-v1`)** — gated on the above.
 
-## 20. One sentence
+## 21. One sentence
 
 KILN keeps its kiln — one lane, held heat, a human at every gate — and makes every part of the firing
 durable: workers that survive a crash, gates that wait as long as the human needs, a director that resumes

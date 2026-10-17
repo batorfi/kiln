@@ -1,4 +1,4 @@
-> Status: concept draft for review (rev 7, 2026-10-17) — **not admitted**
+> Status: concept draft for review (rev 8, 2026-10-17) — **not admitted**
 > Type: concept
 >
 > Scope note: this doc describes the **KILN user experience at the conceptual level** — who uses KILN, what they
@@ -17,7 +17,8 @@
 >   - Human gates — why & how & what:    `gates-why-how-what.md`
 >   - The factory wiki:                  `factory-wiki.md`
 >   - Factories anywhere:                `factories-anywhere.md`
->   - Illustrative mockups:              `mockups/` — thirty-five high-resolution illustrations covering every capability below. They
+>   - Teams and the team space:          `team-space.md`
+>   - Illustrative mockups:              `mockups/` — thirty-nine high-resolution illustrations covering every capability below. They
 >     are discussion aids, not design decisions; this doc governs where they differ.
 
 # KILN — the user experience, as a concept
@@ -92,6 +93,8 @@ The experience stands or falls on a small, stable set of ideas the human can hol
 | Term (user-facing) | What it is | Internal term in `web-front-door.md` |
 |---|---|---|
 | **Workshop** | the home of all factories; owns the people, the policies, and the single place where every waiting decision is visible | workshop |
+| **Team space** | where a team's personal workshops meet: team roadmap, claims, team knowledge, published progress, requests | team space (`team-space.md`) |
+| **Claim** | *this feature is being built by this factory, touching these files* — visible to the whole team | claim |
 | **Host** | a machine a factory runs on — this machine, a team server, a cloud machine, a container — with its own models; online, sleeping or offline | host (`factories-anywhere.md`) |
 | **Factory** | one independent line of work with its own roadmap, its own record and its own deciders | flow |
 | **Roadmap** | the ordered list of features a factory will build, approved at the Roadmap gate | roadmap |
@@ -358,6 +361,21 @@ proposals.
 - a host that goes offline is shown at once, with what that means: work continues to the next gate, and nothing can be
   decided on that host until it returns.
 
+### 7.17 Working in a team space
+
+*Purpose:* build one product with teammates who each keep their own workshop.
+*Guarantees:*
+- the Roadmap gate shows the team roadmap beside the factory's own — which features are free, claimed, or depend on
+  someone else's work; adopting a team feature makes a **claim** the whole team sees;
+- overlap with a teammate's work is shown from the Work plan gate on, in both workshops, with the person to talk to; a
+  protected path held by someone else blocks with *ask or wait*, never silently;
+- a person can ask a teammate for an **opinion**, receive a **required review**, or name a **delegated decider** — every one
+  signed, recorded on both sides, and none able to move a gate the person did not grant;
+- answering a teammate's request shows exactly what their policy shared, and the answer is signed and mirrored to the
+  code host's pull request where it applies;
+- what a workshop publishes is visible to its owner before it goes, and defaults to *coordination*;
+- the team roadmap changes only by its quorum, visibly.
+
 ## 8. The gate brief: rich context at every gate
 
 A gate is the moment KILN hands a decision to a human. The quality of that decision depends on what the human
@@ -448,12 +466,12 @@ The structure is fixed; the emphasis follows the gate's question.
 | **Concept gate** | the problem, the premises and the scope; the research it rests on; what is explicitly out of scope |
 | **Design gate** | the proposed structure and its alternatives; the architecture critic's objections and how the design answers them |
 | **Specification gate** | what "done" means, requirement by requirement; how each will be verified; that this is where the unattended tail can be armed, and what arming it would cover |
-| **Work plan gate** | the pieces and their order; the model order this implies and its expected cost in time and swaps |
+| **Work plan gate** | the pieces and their order; the model order this implies and its expected cost in time and swaps; **overlap with teammates' claims** |
 | **Implementation gate** | the restorable starting point; the size of the work ahead; whether it is still one feature, and what a split would look like |
 | **Code review gate** | the changes, mapped to the specification; the code reviewer's findings by severity; that `restart` is the only corrective move, and what it rebuilds |
 | **Verification gate** | requirement-by-requirement results; the automatic fix rounds already attempted and what they changed; the verifier's diagnosis |
 | **Documentation gate** | what the documentation now says, compared with what was built |
-| **Merge gate** | the whole feature end to end — every gate's decision and by whom; open risks carried forward; what left the machine; what merging will do; **what the feature added to the wiki**, starting with its feature story |
+| **Merge gate** | the whole feature end to end — every gate's decision and by whom; open risks carried forward; what left the machine; what merging will do; **what the feature added to the wiki**, starting with its feature story; in a team: **required reviews and checks, base drift, the code host's merge-queue position, and what will be published** |
 
 ### 8.6 What the brief must never do
 
@@ -524,6 +542,7 @@ The same concepts must work from the smallest to the largest setup, without a mo
 | **One person, one factory, local only** | the workshop is nearly invisible; everything is about one roadmap | gates, moves, the record |
 | **One person, several factories** | "what needs me" spans factories; capacity becomes visible | each factory's rules and identity |
 | **A team sharing a workshop** | who may decide which factory; whose decision it was | the meaning of every move |
+| **Personal workshops with a team space** | the team roadmap, claims and overlap, teammates' requests, published progress | each workshop's gates and rules are its own |
 | **Factories on several hosts** | where each factory runs, host health and sleep, moves between hosts | the gates, the record, one place to decide |
 | **Hybrid or cloud models** | where models run and what left becomes part of orientation and of gate evidence | the human decides; policy is enforced |
 
@@ -573,7 +592,8 @@ Collected for review; each needs a decision before the interaction design phase.
 | 8 | 2026-10-17 | A **workshop wiki** sits alongside the factory wikis, and **anyone** in the workshop can edit it | §4, §7.13 | human |
 | 9 | 2026-10-17 | Factories write **implementation knowledge** into their wikis as they build — feature stories, overviews, explainers, how-tos, reference, learnings | §7.15 | human |
 | 10 | 2026-10-17 | Factories can **run anywhere** — on any host — placed by people at the Roadmap gate, movable, sleeping while they wait | §4, §7.16 | human |
-| 11 | | *(your decisions from this review)* | | |
+| 11 | 2026-10-17 | Teams work in **personal workshops joined by a team space** (git repository first; team roadmap by quorum; advisory claims; required reviews mirrored in the code host; coordination publishing by default; personal keys plus identity provider) | §4, §7.17 | human |
+| 12 | | *(your decisions from this review)* | | |
 
 ## 16. One sentence
 

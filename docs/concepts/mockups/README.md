@@ -5,7 +5,7 @@
 > layout, control and colour here is open; what they are meant to show is the *content and the guarantees* the
 > UX concept asks for.
 
-All thirty-five share one scenario: one person (Zsolt) runs a **workshop** on a 128 GB Mac Studio-class machine (host
+All thirty-nine share one scenario: one person (Zsolt) runs a **workshop** on a 128 GB Mac Studio-class machine (host
 `studio-m5`, joined by a team server, a cloud machine and a spare server in 33–35) with four
 factories — `kiln-v1` and `docs-site` (local-only), `billing-service` (hybrid, cloud judges) and `handbook` (new,
 waiting for its first roadmap). Most mockups show the same morning after an overnight crash; those marked
@@ -29,6 +29,15 @@ waiting for its first roadmap). Most mockups show the same morning after an over
 | 33 | [Hosts](33-hosts.png) *(this afternoon)* | one workshop and four hosts — local, team server, cloud VM, offline spare — with their models, capacity, cost, state and factories; host events; how hosts are kept safe |
 | 34 | [Where a factory runs](34-placing-a-factory.png) | moving billing-service: each host checked for policy, model and capacity fit, with cost — the cloud host ruled out by billing's own policy; what moving does and never does |
 | 35 | [Moving and sleeping](35-moving-and-sleeping.png) | the move in five steps with the Merge gate still waiting; the host asleep while it waits; a decision recorded as *applying on wake*; what sleeping saved |
+
+### Teams — personal workshops and a team space
+
+| # | Mockup | Illustrates |
+|---|---|---|
+| 36 | [The team space](36-team-space.png) *(Oct 21)* | three workshops on one codebase — two personal, one shared — the team roadmap with a quorum vote, claims (one exclusive on a protected path), an overlap, requests, published progress, team rules |
+| 37 | [Adopting a team feature](37-adopting-a-team-feature.png) | a Roadmap gate with the team roadmap beside it; the claim adopting would make; a protected path held by a teammate (*ask or wait*) and an advisory overlap |
+| 38 | [A teammate's review](38-teammate-review.png) | seen from Anna's own workshop: what Zsolt's policy shared, the review mirrored with the pull request, signing with her personal key — not her gate |
+| 39 | [Merge gate in a team](39-merge-gate-in-a-team.png) | the team's merge conditions (review met, checks, provenance, the code host's merge queue), base drift and re-verification, what will be published |
 
 ### Gate briefs — one for each kind of gate
 
@@ -132,6 +141,7 @@ and where it is illustrated:
 | Health without decisions | 19 |
 | Factory-log as a validated projection | 18 · 19 |
 | People, roles (including Curators), hand-over, identity on every decision | 20 · 02 · 03 |
+| Team space: team roadmap by quorum, claims and protected paths, overlap, requests, mirrored reviews, merge queue, publishing | 36 · 37 · 38 · 39 |
 | Loopback-only session security | 20 |
 
 ## Regenerating

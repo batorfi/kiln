@@ -201,7 +201,16 @@ names (including collisions with `workshop/`), forbidden characters, missing or 
 `raw/` that do not resolve, plugin-only syntax, and embeds whose files are missing. A wiki that fails conformance is
 reported in Health, like a factory-log that fails validation.
 
-## 7. The workshop wiki
+## 7. Team knowledge
+
+In a team whose members run their own workshops (`team-space.md`), a third tier joins factory and workshop knowledge:
+**team knowledge**, a vault in the team space holding architecture, conventions, shared services, models, lessons that hold
+for the team, and the stories of features merged to the shared `main` — the latter published **by the author's choice**.
+Every member can edit it; every edit is signed, recorded and linted. It is included read-only in each member's factory
+vaults as `team/`, so pages link to it with ordinary wikilinks. In a personal workshop, *workshop knowledge* is that
+person's own; team-wide knowledge belongs in team knowledge.
+
+## 7a. The workshop wiki
 
 **What belongs there.** Knowledge that every factory needs and no factory owns: how each local and remote model
 behaves, Ollama, Pi and Pi Durable, the machine, team conventions and coding standards, shared services and their

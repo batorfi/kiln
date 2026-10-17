@@ -1,0 +1,73 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Adopting a team feature</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.tr td{font-size:12.5px;vertical-align:middle}.tr tr.sel td{background:var(--ember-soft)}
+.claim{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--surface-2);font-size:12.5px}
+.pth{display:grid;grid-template-columns:1fr auto;gap:8px;padding:7px 0;border-top:1px solid var(--line-2);font-size:12.5px;align-items:center}
+.pth:first-of-type{border-top:0}
+.block{border:1.5px solid var(--bad-line);background:var(--bad-soft);border-radius:10px;padding:12px 14px;font-size:12.5px}
+.adv{border:1.5px solid var(--wait-line);background:var(--wait-soft);border-radius:10px;padding:12px 14px;font-size:12.5px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Zsolt's workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a class="on">Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0"><b>kiln-v1</b> · Roadmap gate · Oct 21, 11:05 · after r10 merged</div><span class="grow"></span><span class="pill wait">Waiting 6 min</span><span class="pill local">local-only</span></div>
+    <div class="kicker" style="margin-top:12px">Roadmap gate · with the team roadmap beside it</div>
+    <div class="q">Which features do we build, in what order?</div>
+    <div class="sub">The director proposes adopting the team's <b>Event backbone</b> next. Adopting it makes a claim the whole team sees — and one path it needs is held by a teammate.</div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Team roadmap</h2><span class="sub">from the team space · synced 1 min ago</span></div>
+        <table class="tr"><tr><th>Team feature</th><th>Status</th><th>For kiln-v1</th></tr>
+          <tr><td>Role agents and model tiers (r10)</td><td><span class="pill ok">merged today</span></td><td class="muted">done</td></tr>
+          <tr class="sel"><td><b>Event backbone</b></td><td>free · depends on r10 ✓</td><td><b>proposed next</b></td></tr>
+          <tr><td>Director and commands (r11)</td><td>free · depends on r10 ✓</td><td class="muted">after Event backbone</td></tr>
+          <tr><td>Gate brief on the web</td><td>Anna · Code review</td><td class="muted">claimed</td></tr>
+          <tr><td>Team space repository</td><td>Bence · Work plan</td><td class="muted">claimed</td></tr></table>
+        <div class="sub" style="margin-top:8px">Why this one, says the director: r10 is merged, the event backbone unblocks Director (r11), and nobody has claimed it. <span class="muted">— cites the team roadmap and the team knowledge page “Event backbone design”.</span></div></div>
+      <div class="card"><div class="card-h"><h2>The claim adopting it would make</h2><span class="sub">visible to the whole team · refined at Work plan</span></div>
+        <div class="claim"><b>Event backbone</b> · built by <b>Zsolt · kiln-v1</b> · expected paths:
+          <div style="margin-top:8px">
+            <div class="pth"><span class="mono">packages/record/</span><span class="pill ok">free</span></div>
+            <div class="pth"><span class="mono">ui/factory-state.ts</span><span class="pill wait">overlaps Anna — advisory</span></div>
+            <div class="pth"><span class="mono">contracts/events/</span><span class="pill bad">protected · held by Anna until Oct 23</span></div></div></div></div>
+    </div>
+    <div class="grid">
+      <div class="block"><div class="row"><span class="pill bad">Blocked by a protected path</span></div>
+        <div style="margin-top:8px"><span class="mono">contracts/</span> is protected by the team rules, so claims on it are exclusive. Anna holds <span class="mono">contracts/events/</span> for the gate brief's event schemas until <b>Oct 23</b>, renewed daily.</div>
+        <div class="sub" style="margin-top:6px">Ask or wait — KILN never takes it from her, and never lets work start on it silently.</div></div>
+      <div class="adv"><div class="row"><span class="pill wait">Advisory overlap</span></div>
+        <div style="margin-top:8px">Anna's gate brief also changes <span class="mono">ui/factory-state.ts</span>. Not blocked — both briefs will show it, and the first to merge makes the other re-verify on the new base.</div></div>
+      <div class="card options-card"><div class="card-h"><h2>The options</h2><span class="sub">your Roadmap gate, your decision</span></div>
+        <div class="grid" style="gap:8px">
+          <div class="opt"><h3><span class="dot" style="background:var(--info)"></span>Ask Anna for <span class="mono">contracts/events/</span></h3><p>Sends a signed request through the team space. The gate keeps waiting; her answer appears here.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Adopt without the schemas part</h3><p>Edit the row to leave <span class="mono">contracts/events/</span> out until Anna's claim ends; the claim covers only the free paths.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--wait)"></span>Adopt Director (r11) first</h3><p>Re-order: r11 touches no protected path. Event backbone follows when the schemas are free.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Reject</h3><p>Nothing is adopted; no claim is made.</p></div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

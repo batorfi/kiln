@@ -1,4 +1,4 @@
-> Status: vision (proposal, rev 3, 2026-10-17) — **not admitted**
+> Status: vision (proposal, rev 4, 2026-10-17) — **not admitted**
 > Type: vision
 >
 > Scope note: this is the *why* and the *where to* of KILN, written for anyone deciding whether KILN is worth
@@ -166,6 +166,15 @@ workshop**; each factory keeps its single lane, its durable record, its wiki and
 **sleep while its factories wait for a human** and wake when someone decides — paying only for work. The all-in-one
 machine stays the default; everything else is a choice you make and the record shows. (`factories-anywhere.md`)
 
+### 6.8 Teams: your own workshop, one team space
+
+A team builds one product while each engineer keeps **their own workshop** — their own factories, gates, models and
+machines. They meet in a **team space**: a shared git repository holding the team roadmap (decided by a quorum), claims
+that show who is building what, team knowledge, published progress, and requests between teammates. Overlapping work is
+impossible to miss; a teammate's review can be required before merging to `main`, mirrored in the code host; merged
+features can bring their story into team knowledge. The team space coordinates — it never decides: no one's gate can be
+moved from outside their workshop, and every act in it is signed by a person. (`team-space.md`)
+
 ## 7. What KILN is not
 
 - **Not an autopilot.** It never ships anything a human has not approved, directly or by explicit delegation.
@@ -189,6 +198,8 @@ machine stays the default; everything else is a choice you make and the record s
   and where independent judges compensate for their weaknesses.
 - **Engineers who own a system's knowledge** — Curators who want the context behind every roadmap to be current,
   traceable and maintained without the usual decay of a team wiki.
+- **Teams where everyone keeps their own workshop** — who want each engineer's environment to stay their own while the
+  whole team sees who is building what, shares knowledge and reviews each other's work on one codebase.
 - **Teams that outgrow one machine** — who want factories on team servers or rented machines, one workshop for
   everyone, and placement that respects where their code may go.
 - **Teams mixing local and cloud models** who want each role on the right model, with a hard line on what
@@ -207,6 +218,7 @@ The path is a sequence of horizons, each admitted at the Roadmap gate in its own
 | **Roles and the director** | the full set of role agents on their model tiers; a director that turns an approved specification into gated work | planned (r10, r11), reshaped by this vision |
 | **The workshop** | several factories on one machine, sharing a model pool, with one place to decide | this vision |
 | **The factory wiki** | an LLM-maintained, Curator-curated wiki per factory that gives roadmaps and gates their context | this vision |
+| **The team space** | personal workshops on one codebase: team roadmap by quorum, claims and overlap, team knowledge, teammate reviews mirrored in the code host | this vision |
 | **Factories anywhere** | one workshop, factories on any host — laptop, team server, cloud VM, container — placed by people, moved without losing a step, sleeping while they wait | this vision |
 | **Models beyond the machine** | private and cloud models when configured: per-role routing, egress policy, budgets, an audit of what left the machine | this vision |
 | **The `kiln-v1` release** | a runnable factory a newcomer can install and point at a feature | the goal |
@@ -231,6 +243,8 @@ KILN builds on Pi's durable substrate while it is still experimental, and evolve
   code is the way it is — and start from any file to find the pages that explain it.
 - **Roadmaps are better informed over time.** The director's proposals cite the wiki, and the wiki keeps growing
   from every feature, incident and decision — while every cited claim still traces back to its source.
+- **Teammates never collide by surprise.** Overlapping work is visible from the moment it is planned, and every merge to
+  `main` shows who reviewed it and how it was built.
 - **Hardware is never the ceiling.** A team adds a server or a rented machine and its factories run there — same
   gates, same record — and a rented machine costs nothing while its factories wait for people.
 - **The machine is busy while the human thinks.** With several factories, time spent waiting for decisions is
