@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="KILN">
+  <title>KILN</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A2420"/><stop offset="1" stop-color="#14110F"/></linearGradient>
+    <linearGradient id="kiln-shell" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FB923C"/><stop offset="1" stop-color="#B8380B"/></linearGradient>
+    <radialGradient id="kiln-ember" cx="0.5" cy="0.42" r="0.6"><stop offset="0" stop-color="#FFF1C2"/><stop offset="0.45" stop-color="#FDBA4A"/><stop offset="1" stop-color="#EA580C"/></radialGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.72" r="0.32"><stop offset="0" stop-color="#F97316" stop-opacity=".35"/><stop offset="1" stop-color="#F97316" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+  <rect width="128" height="128" rx="28" fill="url(#glow)"/>
+  <g transform="translate(32 30)">
+    <path fill="url(#kiln-shell)" fill-rule="evenodd" d="M8 58V31a24 24 0 0 1 48 0v27H44V32a12 12 0 0 0-24 0v26Z"/>
+    <circle cx="32" cy="47" r="7" fill="url(#kiln-ember)"/>
+  </g>
+</svg>

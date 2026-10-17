@@ -1,4 +1,4 @@
-> Status: concept draft for review (rev 3, 2026-10-17) — **not admitted**
+> Status: concept draft for review (rev 7, 2026-10-17) — **not admitted**
 > Type: concept
 >
 > Scope note: this doc describes the **KILN user experience at the conceptual level** — who uses KILN, what they
@@ -15,7 +15,9 @@
 >   - The vision:                        `vision.md`
 >   - The design behind it:              `web-front-door.md`
 >   - Human gates — why & how & what:    `gates-why-how-what.md`
->   - Illustrative mockups:              `mockups/` — twenty high-resolution illustrations covering every capability below. They
+>   - The factory wiki:                  `factory-wiki.md`
+>   - Factories anywhere:                `factories-anywhere.md`
+>   - Illustrative mockups:              `mockups/` — thirty-five high-resolution illustrations covering every capability below. They
 >     are discussion aids, not design decisions; this doc governs where they differ.
 
 # KILN — the user experience, as a concept
@@ -42,6 +44,7 @@ Personas are framed by the **job** a person does in KILN, not by their title. On
 | **The Operator** | sets up the workshop: models, profiles, policies, budgets, workspaces | that the factory runs reliably, within limits, without surprises |
 | **The Observer** | follows progress without deciding — a lead, a stakeholder, a teammate | an honest picture of where things stand and why |
 | **The Auditor** | reconstructs what happened after the fact — for compliance, a post-mortem, or curiosity | a complete, trustworthy record: who decided what, on what evidence, and what left the machine |
+| **The Curator** | keeps a factory's wiki: chooses sources, talks ingests through with the LLM, edits pages, acts on lint findings, refines the schema | a knowledge corpus that is current, traceable and actually used by roadmaps and gates |
 | **The Evaluator** | judges whether models and policies are good enough — local versus cloud, which role on which model | measured outcomes, comparable across models and over time |
 
 The primary persona is the **Decider**. Every other persona's needs are served without competing with the
@@ -73,6 +76,8 @@ experience must support, in order of importance:
 8. **Understand afterwards.** Reconstruct any feature, decision or moment from the record alone.
 9. **Learn and improve.** See where time goes, which gates keep sending work back, which judges catch real
    problems, and which models earn their place.
+10. **Curate the knowledge.** Keep the factory's wiki current and traceable, so roadmaps and gates work from
+    everything the factory has learned.
 
 > **Review:** Is the order right? In particular, should "know what needs me" (2) rank above "decide at a gate"
 > (1) once several factories run?
@@ -86,7 +91,8 @@ The experience stands or falls on a small, stable set of ideas the human can hol
 
 | Term (user-facing) | What it is | Internal term in `web-front-door.md` |
 |---|---|---|
-| **Workshop** | the machine-wide home of all factories; owns the shared models, the policies, and the single place where every waiting decision is visible | workshop (supervisor) |
+| **Workshop** | the home of all factories; owns the people, the policies, and the single place where every waiting decision is visible | workshop |
+| **Host** | a machine a factory runs on — this machine, a team server, a cloud machine, a container — with its own models; online, sleeping or offline | host (`factories-anywhere.md`) |
 | **Factory** | one independent line of work with its own roadmap, its own record and its own deciders | flow |
 | **Roadmap** | the ordered list of features a factory will build, approved at the Roadmap gate | roadmap |
 | **Feature** | one item on the roadmap, walked through the nine feature gates | row |
@@ -98,6 +104,10 @@ The experience stands or falls on a small, stable set of ideas the human can hol
 | **Director** | the factory's orchestrator: plans steps, orders them, keeps the line moving; never decides a gate | row and roadmap tasks |
 | **The lane** | the factory's single line of work: one step at a time | lane |
 | **The record** | everything that happened, in order, with who caused it and why | event stream |
+| **Wiki** | a factory's knowledge: pages an LLM writes and Curators shape, every claim traced to a source | factory wiki (`factory-wiki.md`) |
+| **Workshop wiki** | knowledge every factory shares — models, tools, conventions — that anyone can improve | workshop wiki |
+| **Source** | a document the wiki is built from — added by a Curator, never changed afterwards | raw source |
+| **Curator** | the person responsible for a factory's wiki | Curator |
 
 ### 4.2 The ideas behind the nouns
 
@@ -290,9 +300,63 @@ proposals.
   models compare on outcomes, and what waiting on humans costs;
 - insights are presented as **evidence for the human's judgment**, never as automatic changes.
 
+### 7.13 Keeping the wikis
+
+*Purpose:* keep the factory's and the workshop's knowledge current, traceable and worth reading.
+*Guarantees:*
+- a factory's Curators decide which sources enter its wiki; anyone can add sources to the workshop wiki;
+- the person who starts an ingest talks the takeaways through with the keeper and can steer it; the LLM then writes the
+  pages directly, as in Karpathy's pattern — there is no approval step;
+- every ingest ends with a **summary**: the takeaways, every page changed with its diff, new pages, contradictions
+  resolved or left open — and every ingest, edit and filed answer can be **reverted** as a whole;
+- Curators **edit factory pages directly** — in KILN, Obsidian or any editor; anyone can edit the workshop wiki; every
+  edit is attributed, recorded and checked by lint;
+- lint findings arrive as decisions for the people who keep the wiki — fix, dismiss with a reason, or source;
+- the people who keep a wiki can see which pages roadmaps and gate briefs actually cite, and which are stale;
+- every wiki can **always be read without KILN**: an Obsidian vault with wikilinks, plain markdown that reads cleanly
+  in an editor such as Zed — KILN offers to open it in either.
+
+### 7.14 Asking the wikis
+
+*Purpose:* get an answer from everything the factory and the workshop know, with sources.
+*Guarantees:*
+- every answer cites pages, labelled by wiki, and every page cites its sources — down to the original document;
+- the person who asked can file a good answer back as a page, if they may edit that wiki;
+- asking never decides anything, and asking while a gate is open leaves the gate waiting;
+- citations are wikilinks, so any cited page can be opened in Obsidian or an editor as it is.
+
+### 7.15 Understanding how the code was built
+
+*Purpose:* let a person explore and understand code that agents wrote — while it is being built and long after.
+*Guarantees:*
+- every feature leaves a **feature story** — how it came to be, gate by gate, including rejected designs, findings,
+  failed rounds, restarts and the steers people gave — plus **technical overviews**, **explainers**, **how-to guides**,
+  **reference** and **learnings**, written as the factory works, not at the end;
+- every claim about code shows the code it rests on, **at a commit**, and every page can be traced to the record events
+  it describes;
+- a person can start **from a file** and find every page that explains it, or start from a feature, a question, or a
+  learning;
+- a page whose code has changed since it was written is marked **drifted** wherever it appears;
+- learnings that hold beyond one factory reach the workshop wiki;
+- all of it reads the same in Obsidian or Zed.
+
 > **Review:** Is anything missing from the core experiences? Candidates left out on purpose: onboarding a
 > brand-new user; importing an existing project mid-way; collaborating on one gate decision with several
 > Deciders.
+
+### 7.16 Placing and moving factories
+
+*Purpose:* run each factory where its hardware, data and budget say it should — and change that safely.
+*Guarantees:*
+- where a factory runs is decided by a person at the Roadmap gate, with the fit shown — policy, models, capacity and
+  cost — and is visible wherever the factory is;
+- a `local-only` factory can only run on a local host;
+- moving a factory is a recorded request that checks fit first, waits for a step boundary, and never approves, skips
+  or reopens a gate — waiting gates arrive on the new host still waiting, with the same brief;
+- a host that sleeps while its factories wait shows what it saves; a decision made meanwhile shows as *decided,
+  applying on wake* until it is applied;
+- a host that goes offline is shown at once, with what that means: work continues to the next gate, and nothing can be
+  decided on that host until it returns.
 
 ## 8. The gate brief: rich context at every gate
 
@@ -331,9 +395,9 @@ decides how to present it.
 | **1. Orientation** | *Where am I?* | the factory, the feature, the gate and its place among the gates; what has been decided so far for this feature; how long the gate has been waiting; whether this is the first round or a return after a corrective move |
 | **2. The decision** | *What am I deciding?* | the gate's question in plain words; what approving **commits to** and what it does **not**; what is at stake if the decision is wrong; whether this is a judged gate |
 | **3. The work** | *What was produced?* | a plain summary of the artifact, then the artifact itself; on a return round, **what changed since last time** and **how the human's previous note was addressed** |
-| **4. The yardstick** | *What is it measured against?* | the earlier approved artifacts this one must honour — the concept, the specification, the work plan — and how each requirement maps to the work and the evidence |
+| **4. The yardstick** | *What is it measured against?* | the earlier approved artifacts this one must honour — the concept, the specification, the work plan — and how each requirement maps to the work and the evidence; **context from the wiki** — constraints, prior decisions, past incidents — with citations |
 | **5. The evidence** | *Is it right?* | the judges' verdicts with their reasoning and findings, by severity; test and verification results; automatic fix rounds and their outcomes; anything the factory checked and how |
-| **6. Risks and open issues** | *What should worry me?* | assumptions the agents made; questions they could not resolve; disagreements between author and judge; what could not be done (a missing source, a blocked request, an unavailable model) |
+| **6. Risks and open issues** | *What should worry me?* | assumptions the agents made; questions they could not resolve; disagreements between author and judge; what could not be done (a missing source, a blocked request, an unavailable model); cited wiki pages that are **stale or contradicted** |
 | **7. Provenance** | *Who did this, and how?* | the steps taken, by which roles, on which models and where they ran (local, private, cloud); the human interventions during the work — steering, approved or refused actions; time and cost; what left the machine for this work |
 | **8. History** | *How did we get here?* | earlier rounds at this gate, with their moves and notes; related decisions at earlier gates; delegation state — and, if delegation was in force, **why this gate stopped for the human** |
 | **9. The options** | *What can I decide, and what happens then?* | every move this gate allows, each with its meaning, its **consequence** (what the factory will do next, how far back the work goes, what is kept and what is redone), its cost in time, and whether a note is required; the moves this gate does **not** have, and why |
@@ -380,7 +444,7 @@ The structure is fixed; the emphasis follows the gate's question.
 
 | Gate | The brief puts first |
 |---|---|
-| **Roadmap gate** | the features, their order and dependencies; what changed since the last approval; what the next feature needs from the human; the factory's profile, egress policy and budget |
+| **Roadmap gate** | the features, their order and dependencies; what changed since the last approval; **the wiki context behind the proposal, with citations**; what the next feature needs from the human; the factory's profile, egress policy, budget — and **where it runs**, with the fit of each candidate host |
 | **Concept gate** | the problem, the premises and the scope; the research it rests on; what is explicitly out of scope |
 | **Design gate** | the proposed structure and its alternatives; the architecture critic's objections and how the design answers them |
 | **Specification gate** | what "done" means, requirement by requirement; how each will be verified; that this is where the unattended tail can be armed, and what arming it would cover |
@@ -389,7 +453,7 @@ The structure is fixed; the emphasis follows the gate's question.
 | **Code review gate** | the changes, mapped to the specification; the code reviewer's findings by severity; that `restart` is the only corrective move, and what it rebuilds |
 | **Verification gate** | requirement-by-requirement results; the automatic fix rounds already attempted and what they changed; the verifier's diagnosis |
 | **Documentation gate** | what the documentation now says, compared with what was built |
-| **Merge gate** | the whole feature end to end — every gate's decision and by whom; open risks carried forward; what left the machine; what merging will do |
+| **Merge gate** | the whole feature end to end — every gate's decision and by whom; open risks carried forward; what left the machine; what merging will do; **what the feature added to the wiki**, starting with its feature story |
 
 ### 8.6 What the brief must never do
 
@@ -460,6 +524,7 @@ The same concepts must work from the smallest to the largest setup, without a mo
 | **One person, one factory, local only** | the workshop is nearly invisible; everything is about one roadmap | gates, moves, the record |
 | **One person, several factories** | "what needs me" spans factories; capacity becomes visible | each factory's rules and identity |
 | **A team sharing a workshop** | who may decide which factory; whose decision it was | the meaning of every move |
+| **Factories on several hosts** | where each factory runs, host health and sleep, moves between hosts | the gates, the record, one place to decide |
 | **Hybrid or cloud models** | where models run and what left becomes part of orientation and of gate evidence | the human decides; policy is enforced |
 
 > **Review:** Is the team case in scope for the first experience concept, or should it be a follow-up doc?
@@ -502,7 +567,13 @@ Collected for review; each needs a decision before the interaction design phase.
 | 2 | 2026-10-16 | The pre-lane gate is called the **Roadmap gate**; the nine feature gates have plain names | §4, §11 | human |
 | 3 | 2026-10-16 | Gate 5 is called the **Implementation gate** | §4 | human |
 | 4 | 2026-10-16 | Every gate is presented with a **gate brief**: rich, self-contained context, the options and their consequences, and the other actions available; a move can only be made where the full brief is available | §8 | human |
-| 5 | | *(your decisions from this review)* | | |
+| 5 | 2026-10-17 | Every factory keeps a **wiki** in Karpathy's LLM Wiki pattern, maintained by an LLM and curated by **Curators**; the wiki is context, never authority | §2, §4, §7.13–7.14, §8 | human |
+| 6 | 2026-10-17 | The wikis **follow Karpathy**: the LLM writes directly, with no approval step | §7.13 | human |
+| 7 | 2026-10-17 | **Curators may edit** factory wiki pages directly | §7.13 | human |
+| 8 | 2026-10-17 | A **workshop wiki** sits alongside the factory wikis, and **anyone** in the workshop can edit it | §4, §7.13 | human |
+| 9 | 2026-10-17 | Factories write **implementation knowledge** into their wikis as they build — feature stories, overviews, explainers, how-tos, reference, learnings | §7.15 | human |
+| 10 | 2026-10-17 | Factories can **run anywhere** — on any host — placed by people at the Roadmap gate, movable, sleeping while they wait | §4, §7.16 | human |
+| 11 | | *(your decisions from this review)* | | |
 
 ## 16. One sentence
 

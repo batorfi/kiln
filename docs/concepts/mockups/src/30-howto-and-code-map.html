@@ -1,0 +1,90 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — How-to and exploring by code</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.doc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 28px;font-size:13px;line-height:1.65}
+.doc h1{font-size:21px;margin-bottom:6px}
+.step{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-2)}
+.step:first-of-type{border-top:0}
+.step .n{width:24px;height:24px;border-radius:7px;background:var(--ink);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:12px}
+.step h3{font-size:13.5px}.step p{color:var(--ink-2);margin:3px 0 6px}
+.snip{background:#1F1B17;color:#E9E2D9;border-radius:7px;font-family:var(--mono);font-size:11.5px;line-height:1.6;padding:8px 12px;white-space:pre}
+.snip .k{color:#FDBA74}.snip .s{color:#86EFAC}.snip .c{color:#8C8279}
+.proof{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;margin-top:6px;color:var(--ok);font-weight:600}
+.proof.w{color:var(--wait)}
+.tree{font-family:var(--mono);font-size:12px;line-height:2}
+.tree .r{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:0 6px;border-radius:6px}
+.tree .r.on{background:var(--ember-soft)}
+.tree .ind{padding-left:16px}.tree .ind2{padding-left:32px}
+.cnt{font-family:var(--sans);font-size:11px;color:var(--muted)}
+.pl .li{font-size:12.5px;align-items:center}
+.ty{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-radius:5px;padding:2px 6px;min-width:76px;text-align:center}
+.ty.o{background:var(--info-soft);color:var(--info)}.ty.e{background:var(--deleg-soft);color:var(--deleg)}.ty.h{background:var(--ok-soft);color:var(--ok)}.ty.r{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Record</a>
+    <a class="on">Knowledge</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Wiki · <b>kiln-v1</b> · explore by code</div><h1>Start from the code — find every page that explains it</h1>
+    <div class="sub" style="margin-top:4px">Every implementation page lists the code it covers, at a commit. Pick a file to see its overview, explainers, how-tos and reference.</div></div>
+    <span class="pill">code at 7c2e9a1 · r10 round 3</span></div>
+  <div class="grid" style="grid-template-columns:330px 1fr;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Code</h2><span class="sub">pages per file</span></div>
+        <div class="tree">
+          <div class="r"><span>▾ src/</span><span></span></div>
+          <div class="r ind"><span>lane.ts</span><span class="cnt">2 pages</span></div>
+          <div class="r ind on"><span><b>tiers.ts</b></span><span class="cnt">4 pages</span></div>
+          <div class="r ind"><span>roles.ts</span><span class="cnt">2 · <span style="color:var(--wait)">1 drifted</span></span></div>
+          <div class="r ind"><span>walk.ts</span><span class="cnt">1 page</span></div>
+          <div class="r ind"><span>scheduler.ts</span><span class="cnt">3 pages</span></div>
+          <div class="r ind"><span>gate.ts</span><span class="cnt">5 pages</span></div>
+          <div class="r ind"><span>ollama-resident.ts</span><span class="cnt">2 pages</span></div>
+          <div class="r"><span>▸ agents/</span><span class="cnt">1 page</span></div>
+          <div class="r"><span>▸ kiln/pi/</span><span class="cnt">6 pages</span></div>
+          <div class="r"><span>▸ validate/</span><span class="cnt">4 pages</span></div></div></div>
+      <div class="card pl"><div class="card-h"><h2>src/tiers.ts</h2><span class="sub">4 pages</span></div>
+        <div class="li"><span class="ty o">overview</span><span>Tier map and model binding</span></div>
+        <div class="li"><span class="ty e">explainer</span><span>Why judges fail closed</span></div>
+        <div class="li"><span class="ty e">explainer</span><span>Why model names live only in the tier map</span></div>
+        <div class="li"><span class="ty h">how-to</span><span><b>Add a role to the tier map</b></span></div>
+        <div class="li"><span class="ty r">reference</span><span class="muted">Tier map configuration — at Merge</span></div></div>
+    </div>
+    <div class="doc">
+      <div class="crumb" style="margin-bottom:8px">Wiki · kiln-v1 · features · r10 · how-to</div>
+      <h1>Add a role to the tier map</h1>
+      <div class="row" style="gap:6px;margin-bottom:8px"><span class="pill ok">how-to</span><span class="pill wait">in progress · 3 of 4 steps proven · waits for Verification</span><span class="pill">code at 7c2e9a1</span></div>
+      <div style="color:var(--ink-2);margin-bottom:6px">Use this when the factory needs a new kind of agent — for example a security reviewer. Roles are declared once and bound to a model in one place; judges can only bind to the strongest model.</div>
+      <div class="step"><span class="n">1</span><div><h3>Write the role's agent definition</h3><p>Create <code>agents/security-reviewer.md</code> with its instructions and whether it is a line-of-defense role.</p>
+        <div class="snip"><span class="c">---</span>
+<span class="k">role</span>: <span class="s">security-reviewer</span>
+<span class="k">lineOfDefense</span>: <span class="s">true</span>
+<span class="c">---</span></div><div class="proof">✓ proven by <span class="mono">roles.test.ts › every role has an agent definition</span></div></div></div>
+      <div class="step"><span class="n">2</span><div><h3>Bind it in the tier map</h3><p>Add one line in <code>src/tiers.ts</code>. A judge bound to anything but the strongest model fails closed with <code>TierPolicyError</code> — see <i>Why judges fail closed</i>.</p>
+        <div class="snip"><span class="k">bindRole</span>(roles.securityReviewer, <span class="k">strongest</span>());</div><div class="proof">✓ proven by <span class="mono">tiers.test.ts › judges bind only to the strongest model</span></div></div></div>
+      <div class="step"><span class="n">3</span><div><h3>Never name the model anywhere else</h3><p>Model names live only in the tier map; the reviewer's finding 2 removed the last hard-coded names from <code>roles.ts</code> and <code>walk.ts</code>.</p>
+        <div class="proof">✓ proven by <span class="mono">tiers.test.ts › no model names outside the tier map</span></div></div></div>
+      <div class="step"><span class="n">4</span><div><h3>Check the role runs on a live model</h3><p>Run the live tier with a local model loaded; the new judge should hold the lane through its verdict.</p>
+        <div class="proof w">◷ waits for Verification — the live tests are running now</div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

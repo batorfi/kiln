@@ -1,0 +1,112 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Adding research to knowledge</title><link rel="stylesheet" href="kiln-mock.css">
+<style>
+.src{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.src .hd{background:var(--surface-2);border-bottom:1px solid var(--line);padding:9px 12px;font-size:12px;display:flex;gap:8px;align-items:center}
+.fm{background:#1F1B17;color:#E9E2D9;font-family:var(--mono);font-size:11.5px;line-height:1.6;padding:9px 12px;white-space:pre}
+.fm .k{color:#9CDCFE}.fm .v{color:#CE9178}.fm .d{color:#6A9955}
+.body{padding:12px 14px;font-size:12.5px;line-height:1.6;color:var(--ink-2)}
+.body h4{font-size:13px;color:var(--ink);margin:4px 0 6px}
+.cmp td,.cmp th{font-size:11.5px;padding:5px 6px}
+.cmp td:first-child{color:var(--muted)}
+.att{display:flex;gap:6px;flex-wrap:wrap;padding:0 14px 12px}
+.chat{display:flex;flex-direction:column;gap:10px}
+.msg{border-radius:12px;padding:10px 13px;font-size:12.5px;line-height:1.55;max-width:92%}
+.msg.k{background:var(--surface);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.a{background:var(--ink);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.msg .who{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.6;margin-bottom:3px}
+.wl{color:var(--deleg);border-bottom:1px solid var(--deleg-line)}
+.msg.a .wl{color:#C4B5FD;border-color:rgba(196,181,253,.4)}
+.flag{border:1.5px solid var(--wait-line);background:var(--wait-soft);border-radius:10px;padding:9px 12px;font-size:12.5px}
+.plan .pp{display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+.plan .pp:first-of-type{border-top:0}
+.ty{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-radius:5px;padding:2px 6px;text-align:center;align-self:start}
+.ty.c{background:var(--info-soft);color:var(--info)}.ty.e{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}.ty.w{background:#ECF8F0;color:#15803D}
+.where{font-size:11px;color:var(--muted);margin-top:2px}
+.road{border:1px dashed var(--line);border-radius:10px;padding:10px 12px;font-size:12.5px;background:var(--surface-2)}
+</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">2</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Record</a>
+    <a class="on">Knowledge</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Knowledge · <b>kiln-v1</b> · add knowledge · today 10:42</div><h1>Anna adds her research: dependencies for a future observability exporter</h1>
+    <div class="sub" style="margin-top:4px">A personal research note becomes a source. Before writing anything, the wiki keeper talks the takeaways through with Anna — then writes the pages directly, as in Karpathy's pattern.</div></div>
+    <div class="row"><span class="pill">personal research</span><span class="pill ember">for a future feature</span><span class="pill local">local-only</span></div></div>
+
+  <div class="grid" style="grid-template-columns:1.05fr 1.15fr 0.95fr;align-items:start">
+    <!-- the source -->
+    <div class="grid">
+      <div class="card" style="padding:14px"><div class="card-h"><h2>The source</h2><span class="pill">raw/research/ · immutable once added</span></div>
+        <div class="src">
+          <div class="hd"><span class="mono">otel-exporter-dependency-options.md</span><span class="grow"></span><span class="muted">4.8 KB</span></div>
+<div class="fm"><span class="d">---</span>
+<span class="k">kind</span>: <span class="v">personal research</span>
+<span class="k">author</span>: <span class="v">Anna Kovács</span>
+<span class="k">status</span>: <span class="v">exploratory</span>
+<span class="k">for</span>: <span class="v">"loopback OTLP exporter (future row)"</span>
+<span class="k">researched</span>: <span class="v">2026-10-16 → 2026-10-17</span>
+<span class="d">---</span></div>
+          <div class="body"><h4>Exporting traces to a local collector — three options</h4>
+            <table class="cmp"><tr><th></th><th>OTel SDK (full)</th><th>OTel exporter only</th><th>Hand-written OTLP/HTTP</th></tr>
+              <tr><td>New packages</td><td>~40 transitive</td><td>~12 transitive</td><td>0</td></tr>
+              <tr><td>License</td><td>Apache-2.0</td><td>Apache-2.0</td><td>—</td></tr>
+              <tr><td>Loopback-only?</td><td>configurable</td><td>configurable</td><td>by construction</td></tr>
+              <tr><td>Runs without a build step?</td><td>not tested</td><td>yes, tested</td><td>yes</td></tr>
+              <tr><td>Upkeep</td><td>follows the spec</td><td>follows the spec</td><td>ours to maintain</td></tr></table>
+            <div style="margin-top:8px">“My lean: exporter-only. The full SDK pulls in auto-instrumentation we would have to disable.”</div></div>
+          <div class="att"><span class="pill">📎 3 pages clipped locally</span><span class="pill">📎 benchmark notes</span><span class="pill">📎 spike branch <span class="mono">anna/otel-spike</span></span></div>
+        </div></div>
+      <div class="card"><div class="card-h"><h2>Where it fits</h2></div>
+        <div class="road"><b>Roadmap · not yet admitted:</b> “Observability — the opt-in loopback OTLP exporter” (design doc §6.7). When the director proposes it at the Roadmap gate, this research is what it will cite.</div>
+        <div class="sub" style="margin-top:8px">Research informs; it decides nothing. Choosing a dependency happens at that feature's Design gate, by a human.</div></div>
+    </div>
+
+    <!-- the conversation -->
+    <div class="card" style="background:var(--surface-2)"><div class="card-h"><div><div class="kicker">Ingest · talking it through</div><h2 style="margin-top:2px">Wiki keeper · qwen3-coder:30b <span class="pill local" style="margin-left:4px">local</span></h2></div><span class="pill ok">takeaways agreed · ready to write</span></div>
+      <div class="chat">
+        <div class="msg k"><div class="who">Keeper</div>I read your note, the 3 clipped pages and the index. Three takeaways — tell me if I have them right:<br>1. <b>Exporter-only</b> is the favoured option: ~12 packages, tested without a build step.<br>2. <b>Every option must target 127.0.0.1 only</b> — that matches <a class="wl">Local by default, open by choice</a> and the optional exporter rule in <a class="wl">Egress policy</a>.<br>3. The hand-written option is a fallback if the dependency footprint is refused.</div>
+        <div class="msg a"><div class="who">Anna</div>1 and 2 yes. For 3, say it plainly: hand-written means we own spec changes forever. That cost is the real reason I lean away from it.</div>
+        <div class="msg k"><div class="who">Keeper</div>Noted — I'll put the upkeep cost first in the comparison.</div>
+        <div class="flag"><b style="color:var(--wait)">One thing your note assumes</b> — it treats new runtime dependencies as needing approval. The knowledge base says they were <b>approved on Oct 16</b> (<a class="wl">New runtime dependencies approved</a>). I'll describe the options against that decision, and keep your caution as a note. OK?</div>
+        <div class="msg a"><div class="who">Anna</div>Yes — approved, but footprint still matters. Also: the package pages belong in the workshop knowledge, any factory could need them.</div>
+        <div class="msg k"><div class="who">Keeper</div>Agreed. One caution I'll record on every page: package sizes and test results come from your research on Oct 16–17 and <b>are not verified</b> by KILN — this factory is local-only, so I cannot check them online.</div>
+        <div class="note-box" style="background:#fff">Reply to the keeper…</div>
+      </div></div>
+
+    <!-- what will be written -->
+    <div class="grid">
+      <div class="card plan"><div class="card-h"><h2>What the keeper will write</h2><span class="sub">after you agree</span></div>
+        <div class="pp"><span class="ty c">comparison</span><div><b>Observability exporter — dependency options</b><div class="where">kiln-v1 · status exploratory · upkeep cost first · cites your note and clips</div></div></div>
+        <div class="pp"><span class="ty w">entity</span><div><b>@opentelemetry/exporter-trace-otlp-http</b><div class="where">workshop knowledge · shared with every factory</div></div></div>
+        <div class="pp"><span class="ty w">entity</span><div><b>@opentelemetry/sdk-node</b><div class="where">workshop knowledge · notes the auto-instrumentation to disable</div></div></div>
+        <div class="pp"><span class="ty e">summary</span><div><b>Source — otel exporter dependency options</b><div class="where">kiln-v1 · personal research · unverified claims marked</div></div></div>
+        <div class="pp"><span class="ty e">links</span><div>Egress policy · Local by default · Event backbone · index.md<div class="where">kiln-v1 and workshop indexes</div></div></div>
+        <hr><div class="row" style="gap:8px"><span class="btn grow">Keep talking</span><span class="btn primary grow">Write the pages</span></div>
+        <div class="sub" style="margin-top:8px">One commit per wiki, under the ingest started by Anna Kovács · any page can be edited or reverted afterwards.</div></div>
+      <div class="card"><div class="card-h"><h2>How it will be used</h2></div>
+        <div class="kv2" style="grid-template-columns:110px 1fr"><span>Director</span><span>cites the comparison when it proposes the exporter feature</span><span>Design gate</span><span>the brief shows it as context, labelled <i>personal research · exploratory</i></span><span>Lint</span><span>flags it stale in 30 days, or sooner if the packages change</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

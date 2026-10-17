@@ -1,7 +1,7 @@
 <!doctype html><html><head><meta charset="utf-8"><title>KILN — People & permissions</title><link rel="stylesheet" href="kiln-mock.css">
 <style>.ppl td{font-size:12.5px;vertical-align:middle}.av{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;margin-right:8px;vertical-align:middle}
 .role{font-size:11px;font-weight:650;border-radius:5px;padding:1px 6px;margin-right:4px}
-.role.d{background:var(--ember-soft);color:var(--ember)}.role.o{background:var(--info-soft);color:var(--info)}.role.v{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}.role.a{background:var(--deleg-soft);color:var(--deleg)}
+.role.d{background:var(--ember-soft);color:var(--ember)}.role.o{background:var(--info-soft);color:var(--info)}.role.v{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}.role.a{background:var(--deleg-soft);color:var(--deleg)}.role.c{background:#ECF8F0;color:#15803D}
 .mx td,.mx th{text-align:center;font-size:12px}.mx td:first-child,.mx th:first-child{text-align:left}
 .ho{border:1.5px solid var(--wait-line);background:var(--wait-soft);border-radius:12px;padding:14px 16px}</style></head><body>
 <div class="app">
@@ -11,9 +11,10 @@
     <a>Needs you <span class="n">3</span></a>
     <a>Factories <span class="s">4</span></a>
     <a>Record</a>
+    <a>Knowledge</a>
     <a>Insights</a>
     <a>Models &amp; policy</a>
-    <a>Machine</a>
+    <a>Hosts</a>
     <a>Health</a>
     <a class="on">People</a>
   </div>
@@ -23,7 +24,7 @@
     <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
     <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
   </div>
-  <div class="machine"><b>Machine</b> · 128 GB unified memory
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
     <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
     <div><b>81 GB</b> of 104 GB budget in use</div></div>
 </aside>
@@ -36,15 +37,15 @@
       <div class="card"><div class="card-h"><h2>People</h2></div>
         <table class="ppl"><tr><th>Person</th><th>Workshop role</th><th>Signed in</th></tr>
           <tr><td><span class="av" style="background:#9A3412">ZB</span>Zsolt Bátorfi</td><td><span class="role o">Operator</span><span class="role d">Decider</span></td><td>this browser · since 08:05</td></tr>
-          <tr><td><span class="av" style="background:#1D4ED8">AK</span>Anna Kovács</td><td><span class="role d">Decider</span></td><td>not signed in</td></tr>
+          <tr><td><span class="av" style="background:#1D4ED8">AK</span>Anna Kovács</td><td><span class="role d">Decider</span><span class="role c">Curator</span></td><td>not signed in</td></tr>
           <tr><td><span class="av" style="background:#6D28D9">BN</span>Bence Nagy</td><td><span class="role a">Auditor</span></td><td>not signed in</td></tr></table></div>
       <div class="card"><div class="card-h"><h2>Per factory</h2><span class="sub">who may do what</span></div>
         <table class="mx"><tr><th>Factory</th><th>Zsolt</th><th>Anna</th><th>Bence</th></tr>
-          <tr><td>kiln-v1</td><td><span class="role d">Decider</span></td><td><span class="role v">Observer</span></td><td><span class="role a">Auditor</span></td></tr>
+          <tr><td>kiln-v1</td><td><span class="role d">Decider</span><span class="role c">Curator</span></td><td><span class="role v">Observer</span><span class="role c">Curator</span></td><td><span class="role a">Auditor</span></td></tr>
           <tr><td>billing-service</td><td><span class="role d">Decider</span></td><td><span class="role d">Decider</span></td><td><span class="role a">Auditor</span></td></tr>
-          <tr><td>docs-site</td><td><span class="role d">Decider</span></td><td><span class="role d">Decider</span></td><td><span class="role a">Auditor</span></td></tr>
+          <tr><td>docs-site</td><td><span class="role d">Decider</span></td><td><span class="role d">Decider</span><span class="role c">Curator</span></td><td><span class="role a">Auditor</span></td></tr>
           <tr><td>handbook</td><td><span class="role d">Decider</span></td><td>—</td><td>—</td></tr></table>
-        <div class="kv2" style="margin-top:12px"><span><span class="role d">Decider</span></span><span>moves gates, steers work steps, approves risky actions, arms delegation</span><span><span class="role o">Operator</span></span><span>models, policies, budgets, the machine — changes are recorded decisions</span><span><span class="role v">Observer</span></span><span>sees everything live; decides nothing</span><span><span class="role a">Auditor</span></span><span>reads the record and every gate brief as it was seen; decides nothing</span></div></div>
+        <div class="kv2" style="margin-top:12px"><span><span class="role d">Decider</span></span><span>moves gates, steers work steps, approves risky actions, arms delegation</span><span><span class="role o">Operator</span></span><span>models, policies, budgets, the machine — changes are recorded decisions</span><span><span class="role v">Observer</span></span><span>sees everything live; decides nothing</span><span><span class="role a">Auditor</span></span><span>reads the record and every gate brief as it was seen; decides nothing</span><span><span class="role c">Curator</span></span><span>keeps a factory wiki: adds sources, runs ingests, edits pages, acts on lint findings · the workshop wiki is open to everyone</span></div></div>
     </div>
     <div class="grid">
       <div class="ho"><div class="row"><span class="pill wait">Handed over to you</span><span class="sub">docs-site · from Anna · today 08:40</span></div>
@@ -53,7 +54,7 @@
         <div class="row" style="margin-top:10px"><span class="btn">Hand back</span><span class="btn primary">Open the gate brief</span></div>
         <div class="sub" style="margin-top:8px">A hand-over moves who is asked; it never moves the gate.</div></div>
       <div class="card"><div class="card-h"><h2>Who decided, last 30 days</h2></div>
-        <div class="kv2"><span>Zsolt Bátorfi</span><span>41 gate decisions · 6 risky actions · 3 delegations armed</span><span>Anna Kovács</span><span>12 gate decisions · 1 hand-over</span><span>Under delegation</span><span>17 gates · all labelled as such</span><span>By anyone else</span><span>none — nothing is ever decided by a clock, a restart or a missing screen</span></div></div>
+        <div class="kv2"><span>Zsolt Bátorfi</span><span>41 gate decisions · 6 risky actions · 3 delegations armed</span><span>Anna Kovács</span><span>12 gate decisions · 1 hand-over · 9 wiki ingests run · 14 page edits</span><span>Under delegation</span><span>17 gates · all labelled as such</span><span>By anyone else</span><span>none — nothing is ever decided by a clock, a restart or a missing screen</span></div></div>
       <div class="card"><div class="card-h"><h2>This browser session</h2></div>
         <div class="kv2"><span>Address</span><span class="mono">127.0.0.1 only</span><span>Session</span><span>per-launch secret · this browser · Zsolt Bátorfi</span><span>Other local apps</span><span>cannot submit moves — wrong origin or no secret</span><span>Recorded as</span><span>human:zsolt on every decision from here</span></div></div>
     </div>

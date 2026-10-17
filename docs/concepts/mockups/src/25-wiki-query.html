@@ -1,0 +1,72 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Asking the wiki</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.qbox{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:12px 14px;font-size:14px}
+.ans{font-size:13px;line-height:1.65;color:var(--ink)}
+.ans p{margin:0 0 10px}
+.cit{display:inline-flex;align-items:center;gap:3px;font-size:11px;background:var(--ember-soft);color:var(--ember);border:1px solid var(--ember-line);border-radius:6px;padding:0 6px;margin:0 1px;white-space:nowrap}
+.trail{display:flex;flex-direction:column;gap:0}
+.tn{display:grid;grid-template-columns:18px 1fr;gap:10px;font-size:12.5px;padding:6px 0;position:relative}
+.tn .d{width:12px;height:12px;border-radius:3px;background:var(--surface);border:2px solid var(--ember);margin-top:3px;z-index:1}
+.tn.src .d{border-radius:50%;border-color:var(--ink-2)}
+.tn::before{content:"";position:absolute;left:5px;top:18px;bottom:-6px;width:2px;background:var(--line)}
+.tn:last-child::before{display:none}
+.use td{font-size:12.5px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Record</a>
+    <a class="on">Knowledge</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Wiki · <b>kiln-v1</b> · ask</div><h1>Ask the wiki — answers with their sources, all the way down</h1>
+    <div class="sub" style="margin-top:4px">Asked while deciding the r10 Code review gate. The gate keeps waiting; asking never decides anything.</div></div>
+    <span class="pill wait">Code review gate open · r10</span></div>
+  <div class="qbox"><span class="grow"><b>You:</b> If the lane refuses to unload a held judge's model, what happens when memory runs out?</span><span class="pill">asked 10:01</span></div>
+  <div class="grid" style="grid-template-columns:1fr 400px;align-items:start">
+    <div class="card"><div class="card-h"><div><div class="kicker">Answer</div><h2 style="margin-top:2px">From 5 pages · wiki keeper · 41 s · local</h2></div><span class="pill ok">all claims cited</span></div>
+      <div class="ans">
+        <p>The work that needs memory <b>waits</b>; nothing is evicted and nothing fails. A held judge's model stays loaded until its verdict <span class="cit">Judge hold</span>, and the model pool will not grant a lease that exceeds the memory budget — the requesting step stays <i>queued</i> <span class="cit">Model pool</span>.</p>
+        <p>Ollama on its own would not guarantee this: <span class="mono">keep_alive</span> is a request, and the server can evict under memory pressure <span class="cit">Ollama</span>. That is exactly what happened on Oct 14 <span class="cit">Model eviction mid-judgment</span> <span class="pill ok" style="font-size:10.5px">new today</span>.</p>
+        <p>So the change r10 is making — the lane itself refusing to unload a held judge's model — closes the gap the incident exposed, provided the pool also pins the model <span class="cit">Single lane</span>.</p>
+        <p class="muted" style="font-size:12px">Not in the wiki: how long a queued step may wait before the health watcher reports it. The schema has no page for it.</p>
+      </div>
+      <hr><div class="row"><span class="btn">Ask a follow-up</span><span class="btn">Open the pages</span><span class="grow"></span><span class="btn primary">File as a page</span></div>
+      <div class="sub" style="margin-top:8px">Filing writes the page “What happens when a held judge meets memory pressure” now, as you — and it can be edited or reverted like any change.</div></div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Where it came from</h2><span class="sub">answer → pages → sources</span></div>
+        <div class="trail">
+          <div class="tn"><span class="d"></span><div><b>Judge hold</b> <span class="muted">· page · reviewed 6 days ago</span></div></div>
+          <div class="tn src"><span class="d"></span><div><span class="mono">raw/gates-why-how-what.md</span> <span class="muted">· external · design doc</span></div></div>
+          <div class="tn"><span class="d"></span><div><b>Model pool</b> <span class="muted">· page · reviewed 2 days ago</span></div></div>
+          <div class="tn src"><span class="d"></span><div><span class="mono">raw/web-front-door.md</span> <span class="muted">· external · design doc</span></div></div>
+          <div class="tn"><span class="d"></span><div><b>Ollama</b> <span class="muted">· page</span></div></div>
+          <div class="tn src"><span class="d"></span><div><span class="mono">raw/ollama-faq.md</span> <span class="muted">· external · clipped by Zsolt</span></div></div>
+          <div class="tn src"><span class="d"></span><div><span class="mono">raw/incident-2026-10-14-eviction.md</span> <span class="muted">· external · ingested today</span></div></div></div></div>
+      <div class="card"><div class="card-h"><h2>How the factory uses the wiki</h2><span class="sub">last 30 days</span></div>
+        <table class="use"><tr><td><b>Director · roadmap proposals</b></td><td>3 proposals · 19 citations</td></tr>
+          <tr><td><b>Research and concept steps</b></td><td>started from the wiki 7 times</td></tr>
+          <tr><td><b>Gate briefs</b></td><td>28 citations · 2 flagged stale</td></tr>
+          <tr><td><b>People asking</b></td><td>16 questions · 5 filed as pages</td></tr></table>
+        <div class="sub" style="margin-top:8px">Context, never authority: a cited page is evidence in a brief, shown with its sources and its review date.</div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

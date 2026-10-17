@@ -1,4 +1,4 @@
-> Status: vision (proposal, 2026-10-16) — **not admitted**
+> Status: vision (proposal, rev 3, 2026-10-17) — **not admitted**
 > Type: vision
 >
 > Scope note: this is the *why* and the *where to* of KILN, written for anyone deciding whether KILN is worth
@@ -9,6 +9,7 @@
 >
 > Companion docs:
 >   - The design behind this vision:   `web-front-door.md`
+>   - The factory wiki:                `factory-wiki.md`
 >   - The original concept:            `concept.md`
 >   - Human gates — why & how & what:  `gates-why-how-what.md`
 
@@ -20,7 +21,8 @@
 every decision that matters.** You give it a roadmap; it walks each feature through ten clear gates — from
 "is this worth building?" to "do we ship it?" — on local models by default — and on private or cloud models only where you choose. Every piece of work
 survives a crash, every decision is recorded with who made it and why, and the whole process is visible,
-live, in a browser on your own machine. On a large enough machine, several of these factories run side by
+live, in a browser on your own machine. Each factory keeps a wiki — written by an LLM, curated by engineers — on top
+of a workshop wiki everyone shares, remembering everything it has learned and gives every roadmap its context. On a large enough machine, several of these factories run side by
 side, sharing models and keeping the human's attention, not the hardware, as the only real limit.
 
 ## 2. Why KILN exists
@@ -83,18 +85,22 @@ judge agrees. Any objection from a judge stops the line and hands it back to the
 
 ## 5. The human's role
 
-KILN is designed around what the human actually does, which is three things:
+KILN is designed around what the humans actually do, which is four things:
 
 - **Shape the program.** Agree with the factory's director on the roadmap: which features, in what order,
   with what dependencies. Revisit it between features.
 - **Decide at the gates.** Read what the agents produced and what the judges said, then approve, send back
   with a note, or stop. The decision is a deliberate act, recorded under the human's name.
+- **Curate the knowledge.** Curators — engineers responsible for the factory's knowledge corpus — choose the
+  sources that go into the factory's wiki, talk them through with the LLM, edit and correct pages, and keep the wiki
+  healthy; everyone can improve the workshop wiki, so the
+  director and every gate work from context that is current and traceable.
 - **Watch the kiln.** See where every feature stands, what the agents are doing right now, which model is
   loaded, and where time is going — and step in when something looks wrong: steer a working agent, approve a
   risky action, pause, or abort.
 
-Everything else — research, writing, coding, reviewing, verifying, ordering the work, loading and swapping
-models — is the factory's job.
+Everything else — research, writing, coding, reviewing, verifying, maintaining the wiki, ordering the work,
+loading and swapping models — is the factory's job.
 
 ## 6. The pillars
 
@@ -139,11 +145,33 @@ author so they do not share its blind spots. Every model call that leaves the ma
 factory's policy before it goes, attributed after, and counted against a budget. KILN itself — the record,
 the decisions, the web front door — always stays local.
 
+### 6.6 A wiki for every factory, and one for the workshop
+
+Every factory keeps its own **wiki**, and the workshop keeps one more for what all factories share — following the LLM
+Wiki pattern published by Andrej Karpathy: raw sources that never change, a set of interlinked pages an LLM writes and
+keeps current, and a schema that says how. Curators add a factory's sources — design notes, decisions, incidents,
+customer requests, and digests of what the factory itself learned — talk the takeaways through with the LLM, and edit
+pages whenever a person says it better; anyone can improve the workshop wiki. As factories build, they write back
+what they learned and how the code was made — feature stories, technical overviews, explainers and how-to guides,
+grounded in the code and the record — so code written by agents never becomes code nobody understands. Every wiki is a plain Obsidian vault,
+readable in any editor. The director reads the wikis when it proposes a roadmap; gate briefs cite them. Knowledge compounds instead of leaving with each feature — and it stays **context, never
+authority**: every claim traces back to a source, and no page ever decides a gate. (`factory-wiki.md`)
+
+### 6.7 Factories anywhere
+
+A factory can run wherever its hardware, data and budget say it should: on the machine in front of you, on a team GPU
+server, on a virtual machine in your own cloud account, in a container. People still decide every gate from **one
+workshop**; each factory keeps its single lane, its durable record, its wiki and its gates wherever it runs, and can
+**move** between machines without losing a step. Because gates hold no model while they wait, a rented machine can
+**sleep while its factories wait for a human** and wake when someone decides — paying only for work. The all-in-one
+machine stays the default; everything else is a choice you make and the record shows. (`factories-anywhere.md`)
+
 ## 7. What KILN is not
 
 - **Not an autopilot.** It never ships anything a human has not approved, directly or by explicit delegation.
-- **Not a cloud service.** There is no account and no hosted backend. Cloud models are an option you
-  configure, never a dependency.
+- **Not a hosted service.** There is no KILN account and no KILN backend. You run it — on your laptop, your servers,
+  or machines in your own cloud account; cloud models and cloud machines are options you configure, never a
+  dependency.
 - **Not a swarm.** It does not run dozens of agents at once on one feature; it runs the right agent, on the
   right model, at the right time.
 - **Not a dashboard bolted onto an agent.** The process, the gates and the record come first; the web front
@@ -159,6 +187,10 @@ the decisions, the web front door — always stays local.
   who approved what.
 - **Teams evaluating local models** who need to see, measurably, whether those models are good enough —
   and where independent judges compensate for their weaknesses.
+- **Engineers who own a system's knowledge** — Curators who want the context behind every roadmap to be current,
+  traceable and maintained without the usual decay of a team wiki.
+- **Teams that outgrow one machine** — who want factories on team servers or rented machines, one workshop for
+  everyone, and placement that respects where their code may go.
 - **Teams mixing local and cloud models** who want each role on the right model, with a hard line on what
   data may leave and a record of everything that did.
 
@@ -174,6 +206,8 @@ The path is a sequence of horizons, each admitted at the Roadmap gate in its own
 | **Event-based observability** | the event stream, its views, metrics, traces, health, replay | this vision |
 | **Roles and the director** | the full set of role agents on their model tiers; a director that turns an approved specification into gated work | planned (r10, r11), reshaped by this vision |
 | **The workshop** | several factories on one machine, sharing a model pool, with one place to decide | this vision |
+| **The factory wiki** | an LLM-maintained, Curator-curated wiki per factory that gives roadmaps and gates their context | this vision |
+| **Factories anywhere** | one workshop, factories on any host — laptop, team server, cloud VM, container — placed by people, moved without losing a step, sleeping while they wait | this vision |
 | **Models beyond the machine** | private and cloud models when configured: per-role routing, egress policy, budgets, an audit of what left the machine | this vision |
 | **The `kiln-v1` release** | a runnable factory a newcomer can install and point at a feature | the goal |
 
@@ -193,6 +227,12 @@ KILN builds on Pi's durable substrate while it is still experimental, and evolve
   it.
 - **Nothing leaves unseen.** For any feature, the record shows every model call that left the machine, to whom,
   and under which rule — and a `local-only` factory can show that nothing did.
+- **Generated code stays understandable.** For any merged feature, an engineer can read how it was built and why the
+  code is the way it is — and start from any file to find the pages that explain it.
+- **Roadmaps are better informed over time.** The director's proposals cite the wiki, and the wiki keeps growing
+  from every feature, incident and decision — while every cited claim still traces back to its source.
+- **Hardware is never the ceiling.** A team adds a server or a rented machine and its factories run there — same
+  gates, same record — and a rented machine costs nothing while its factories wait for people.
 - **The machine is busy while the human thinks.** With several factories, time spent waiting for decisions is
   used for other work.
 
@@ -203,7 +243,8 @@ Adopting it needs deliberate, recorded human decisions:
 - **Constitution amendments**: local by default with egress only by configured, recorded choice
   (Principle VIII); one lane *per factory* with a machine-wide model budget (Principle III); the
   event stream as the primary record (Principle VII); a local web front door in place of "no dashboard, no
-  server" (Principle IX); the Roadmap gate's new name (Principle VI).
+  server" (Principle IX); the Roadmap gate's new name (Principle VI); and a new rule that knowledge is
+  context, never authority.
 - **A Roadmap gate amendment** that admits the new horizons and decides the future of the Pi-integrated UI.
 - **Acceptance of new dependencies** — Pi's durable substrate and its companions — already approved in
   principle.
@@ -211,4 +252,5 @@ Adopting it needs deliberate, recorded human decisions:
 ## 12. One sentence
 
 KILN is a calm, local-by-default, accountable software factory: agents do the work, independent judges check it, a human
-decides at every gate — and every firing is durable, visible and explainable, on your own machine.
+decides at every gate, a wiki remembers what every factory has learned — and every firing is durable, visible and
+explainable, on your own machine.

@@ -1,4 +1,4 @@
-> Status: exploratory concept (proposal, rev 9, 2026-10-16) — **not admitted**
+> Status: exploratory concept (proposal, rev 12, 2026-10-17) — **not admitted**
 > Type: concept
 >
 > Scope note: this doc describes a *scenario* — KILN with a locally hosted webapp as its front door, its
@@ -24,6 +24,10 @@
 >     Implementation · Code review · Verification · Documentation · Merge.
 >   - **KILN may use non-local models when configured** (rev 9, §13): local by default; egress only by a
 >     configured, recorded, policy-checked choice.
+>   - **Every factory keeps an LLM-maintained wiki, curated by Curators** (rev 10, §14; full concept in
+>     `factory-wiki.md`). Rev 11: the LLM writes directly as in Karpathy's pattern; Curators may edit; a workshop wiki
+>     anyone can edit sits alongside the factory wikis.
+>   - **Factories can run anywhere** (rev 12, §15; full concept in `factories-anywhere.md`): one workshop, many hosts.
 >
 > Pi facts below come from Earendil's published material and the `@earendil-works/pi-durable` README
 > (1.3.0). API names are quoted as published and are expected to move; the concept depends on the
@@ -36,6 +40,9 @@
 >   - The base concept:                `concept.md`
 >   - UI layers & headless contract:   `ui-layers-deep.md`
 >   - Human gates — why & how & what:  `gates-why-how-what.md`
+>   - How KILN uses Pi Durable:        `pi-durable.md`
+>   - The factory wiki:                `factory-wiki.md`
+>   - Factories anywhere:              `factories-anywhere.md`
 
 # KILN — the web front door, on durable agents and durable gates
 
@@ -391,6 +398,8 @@ publish (an invalid event is a bug and fails the commit, not the consumer).
 | **Mitigation** | `mitigation.round_started` (n of 2) · `mitigation.exhausted` |
 | **Tool approval** | `tool_approval.requested` · `tool_approval.decided` |
 | **Command** | `command.accepted` · `command.refused` |
+| **Wiki** | `wiki.ingest_started` · `wiki.ingest_completed` (pages changed) · `wiki.page_edited` (by whom, where) · `wiki.reverted` · `wiki.query_answered` · `wiki.answer_filed` · `wiki.lint_finding` · `wiki.finding_resolved` · `wiki.schema_changed` · `wiki.digest_proposed` · `wiki.conformance_failed` · `wiki.workshop_updated` · `wiki.digest_added` · `wiki.learning_recorded` · `wiki.page_drifted` |
+| **Host** | `host.joined` · `host.revoked` · `host.online` · `host.offline` · `host.suspended` · `host.resumed` · `factory.placed` · `factory.move_requested` · `factory.moved` (from, to) · `factory.move_failed` · `move.applying_on_wake` |
 | **System** | `server.started` · `server.recovered` (resumed tasks, waiting gates) · `store.migrated` · `dependency.upgraded` |
 
 The catalog is a contract: adding a type is MINOR, changing a payload's meaning is a new schema version, and
@@ -558,8 +567,11 @@ The webapp reads only committed state, through the server, and never polls:
 | V. Headless never silently approves | Unchanged; a `WAIT` *is* a waiting gate task, and only a committed move settles it (§5.2). |
 | VI. Gate 0 human-only | Unchanged in substance; **renamed** to "the Roadmap gate is human-only" (a PATCH-level wording amendment). The roadmap task accepts no delegated move. The Roadmap gate is per flow; starting a flow is a recorded human command, and delegation never crosses flows (§12.6). |
 | VII. Everything recorded | **Redefined (MAJOR)**: the ordered domain-event stream, committed atomically with state in the durable store, is the primary record; the factory-log and every other view are rebuildable projections of it (§6). |
-| VIII. Local-first | **Redefined (MAJOR)**: "local by default; egress only by a configured, recorded, policy-checked choice" (§13). Under the default `local-only` profile it holds exactly as today. Clarifications kept: a loopback-only listener is not an outbound dependency; the optional OTLP exporter is loopback-only. The network scan becomes a check of the per-flow allowlist. |
-| IX. No dashboard, no server | **Redefined (MAJOR)**: "one committed state, surfaces driven by domain events (never polling), a loopback server that is never a source of truth". The "event-driven, never polling" half of IX is kept and strengthened. |
+| VIII. Local-first | **Redefined (MAJOR)**: "local by default; egress only by a configured, recorded, policy-checked choice" (§13). Under the default `local-only` profile it holds exactly as today. Clarifications kept: a loopback-only listener is not an outbound dependency; the optional OTLP exporter is loopback-only. The network scan becomes a check of the per-flow allowlist. Extended for factories anywhere (§15): every host and every host–workshop connection is configured, authenticated, encrypted and recorded; each host's allowlist is checked. |
+| IX. No dashboard, no server | **Redefined (MAJOR)**: "one committed state, surfaces driven by domain events (never polling), a loopback server that is never a source of truth". The "event-driven, never polling" half of IX is kept and strengthened. A workshop reachable over a network (§15) requires real authentication. |
+
+Also proposed (MINOR): a new rule that **knowledge is context, never authority** — every wiki claim traceable to a
+source, and no wiki content settles a gate (§14).
 
 Also superseded: the **zero-runtime-dependency** stance (Pi Durable, `pi-ai`, `chord` approved), and
 `concept.md` §1 / §7 ("Pi-native UI", "no website") — marked with correction banners per P-VII, not rewritten.
@@ -853,7 +865,77 @@ in events, whatever the model's locality.
 - **`local-only` remains the default and remains provable.** A machine that configures nothing behaves, and
   can be shown to behave, exactly like today's KILN.
 
-## 14. Living with an experimental substrate
+## 14. The factory wikis and the workshop wiki
+
+Every factory keeps its own **wiki**, and the workshop keeps one more for what all factories share — following Andrej
+Karpathy's *LLM Wiki* pattern as published: immutable raw sources, interlinked markdown pages an LLM writes and
+maintains **directly**, and a schema that tells it how. **Curators** — engineers responsible for a factory's knowledge
+corpus — choose its sources and may edit its pages; **anyone** in the workshop can edit the workshop wiki. The full
+concept is in `factory-wiki.md`; this section records how it fits the design.
+
+- **Readable without KILN.** Every wiki is a valid **Obsidian vault** with **wikilinks**, YAML properties and no plugin
+  dependencies, so it opens in Obsidian, in editors such as Zed, or in any text editor; lint checks this contract
+  (`factory-wiki.md` §6).
+- **Storage.** A git repository of plain markdown per wiki: `raw/` (immutable sources), `pages/` (written by the wiki
+  keeper, edited by people, including `index.md`), `AGENTS.md` (the schema). Each ingest, edit and filed answer is a
+  commit with an author, so every change can be reverted.
+- **No approval step.** As in Karpathy's pattern, the keeper writes pages directly. The person who starts an ingest
+  discusses the takeaways with the keeper and can steer it; the result is shown as an ingest summary that anyone who
+  may edit can adjust or revert. Lint, on the strongest model and where possible another family, is the independent
+  check.
+- **The workshop wiki** is included read-only in every factory vault as `workshop/`, so factory pages link to workshop
+  pages with ordinary wikilinks; it is edited in its own vault, and its steps run on spare workshop capacity at the
+  lowest priority.
+- **Operations as steps.** Factory-wiki ingests, queries and lint passes run as durable steps on the factory's lane, at
+  lower priority than feature work, typically while the factory waits on a human, never interrupting a feature step or
+  a held judge.
+- **Implementation knowledge.** As each gate settles, KILN adds an implementation digest of the record to `raw/record/`
+  (factory-produced, no approval step), and the keeper writes from it: a **feature story**, **technical overviews**,
+  **explainers**, **how-to guides**, **reference** pages and **learnings** — grounded in code excerpts at a commit and in
+  record events, marked *in progress* until the feature merges, and checked by lint for **drift** from the code. The
+  Merge gate brief shows what the feature added to the wiki (`factory-wiki.md` §9).
+- **Use.** The director queries the factory wiki, then the workshop wiki, when it proposes a roadmap; research and
+  concept steps start from them; gate briefs show *Context from the wiki* with citations labelled by wiki, flagging
+  pages that are stale, contradicted or changed while the gate was open. The wikis are **context, never authority**: no
+  page settles a gate.
+- **Record.** Wiki operations are events in the factory's or the workshop's stream (§6.4, *Wiki* group); `log.md` is a
+  projection of them, so it cannot drift.
+- **Policy.** Sources and pages stay local; a keeper on a non-local model is governed by the egress policy (§13.4);
+  restricted factory content never leaves the machine and never moves to the workshop wiki on its own.
+
+## 15. Factories anywhere
+
+The workshop described so far is one machine. `factories-anywhere.md` separates **where people decide** from **where
+factories work**: the **workshop** keeps the front door, people, policies, the gate inbox, the host registry and the
+workshop wiki; **factories run on hosts** — a laptop, a team server, a VM in the team's own cloud account, a container
+— each running KILN's host runtime with its own model pool and scheduler. This section records how that fits the
+design; the all-in-one machine remains the default, and everything here is opt-in.
+
+- **Hosts.** Each host has a kind, a locality (`local` · `private` · `cloud`, as for models in §13), a region and owner,
+  capacity, the models it can load, a cost model and a state (online · suspended · offline). A host joins by an
+  Operator's recorded approval and receives a revocable identity.
+- **Placement** is a human decision at the Roadmap gate, beside profile, policy and budget; the workshop checks policy,
+  model and capacity fit and estimates cost, but never decides. A `local-only` factory can be placed only on a local
+  host.
+- **One factory, one host.** A factory keeps its single lane, durable store, record, workspace and wiki on exactly one
+  host; §12's model pool, leases and scheduler become per host.
+- **Moving** a factory is a recorded command: fit check, quiesce at a step boundary, hand over the store, workspace and
+  wiki, resume on the new host. Waiting gates keep waiting with the same brief; nothing is approved, skipped or
+  reopened; a failed transfer leaves the factory on the old host.
+- **Sleeping hosts.** A rented host whose factories all wait at gates can be suspended — gates hold no model and run no
+  code — and woken by a move; the decision shows as *decided, applying on wake* until the store is open again.
+- **Network failure.** A host that loses the workshop works on to its next gates; no gate is settled while its host is
+  unreachable; a move made meanwhile applies exactly once on reconnection; each factory's record lives on its host and
+  the workshop's views catch up in order.
+- **Data.** Workspace, store and secrets stay on the host; the record is replicated to the workshop without content, as
+  always; the factory wiki is reachable as a git remote; restricted content is streamed to authorised browsers without
+  being stored by the workshop.
+- **Security.** Host and workshop authenticate each other and encrypt all traffic; a workshop reached over a network
+  uses the team's identity provider; each host's allowlist covers only the workshop, its models and what its policies
+  allow.
+- **Record.** New events in the *Host* group (§6.4); placement and moves join the workshop's stream.
+
+## 16. Living with an experimental substrate
 
 KILN accepts Pi Durable's experimental status and evolves with it. To keep that cheap:
 
@@ -865,9 +947,11 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 - **Contribute back.** Where KILN needs something the library lacks (for example, a first-class "complete a
   waiting task from outside"), the preferred path is upstream, not a local workaround.
 
-## 15. Security posture
+## 17. Security posture
 
-- bind to `127.0.0.1` only;
+- bind to `127.0.0.1` only — unless the workshop is deliberately shared over a network (§15), in which case it uses
+  TLS and the team's identity provider;
+- hosts and workshop authenticate each other and encrypt all traffic; host identities are revocable (§15);
 - a random per-launch secret establishes the human's session — no other local process or browser tab may
   submit a move or a command;
 - reject requests whose `Host`/`Origin` are not the server's own (DNS rebinding, cross-site requests);
@@ -879,7 +963,7 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 - provider credentials live in the OS keychain only; every outbound request is checked against the flow's
   egress policy and allowlist before it leaves (§13.4).
 
-## 16. Open design questions
+## 18. Open design questions
 
 - **Workspace isolation**: shared repo or per-row worktrees, and which task owns cleanup.
 - **Model residency**: loading and evicting the resident Ollama model stays KILN's job
@@ -896,6 +980,11 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 - **Model-family identity**: how the catalog records families so cross-family judging can be enforced.
 - **Telemetry retention**: how long spans and fine-grained metrics are kept locally before ageing out
   (domain events are never aged out).
+- **Factories anywhere**: hosts in more than one workshop; how workspaces move; workshop failover; which container
+  forms to support; other Pi Durable storage adapters (`factories-anywhere.md` §13).
+- **Wikis**: a dedicated wiki keeper role or the researcher with a schema; how long a page may go unreviewed before a
+  gate brief flags it; how often a factory's copy of the workshop wiki is updated; how much code implementation pages
+  reproduce (`factory-wiki.md` §14).
 - **Event schema evolution**: upcasting old event versions on replay versus keeping every version's
   consumer logic.
 - **r9 and the Pi extension**: `kiln/pi/` remains an alternate surface or is retired — decided at the Roadmap gate,
@@ -903,7 +992,7 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 - **Positioning**: from "a factory *for Pi*" to "a factory *built on* Pi's durable substrate, with its own
   surface".
 
-## 17. Roadmap consequences (sketch, for a Roadmap gate conversation)
+## 19. Roadmap consequences (sketch, for a Roadmap gate conversation)
 
 Not a decision — the shape the Roadmap gate would be asked to consider:
 
@@ -924,13 +1013,19 @@ Not a decision — the shape the Roadmap gate would be asked to consider:
 - **Models beyond the machine** — model catalog, profiles, per-role routing, egress policy and checks,
   budgets, fallback rules, egress audit. Can follow the local-only rows: `local-only` is the default and needs
   none of it.
+- **Factories anywhere** — host runtime and registry, host channel and identities, placement at the Roadmap gate,
+  moves with handover, sleeping hosts, per-host model pools, replication of records to the workshop, network
+  authentication for a shared workshop. Can follow the workshop row: one machine is the degenerate case.
+- **Wikis** — a wiki repository per factory and one for the workshop, keeper and lint roles, ingest / query / lint as
+  steps, ingest summaries and revert, record digests, *Context from the wiki* in gate briefs, wiki events and the
+  `log.md` projection.
 - **r10 (roles and tiers)** — `agents/*.md` become conversation instructions; the tier map binds models and
   tool sets per role.
 - **r11 (director and commands)** — largely absorbed: the director *is* the row and roadmap tasks; commands
   are idempotent commits.
 - **r4 (cut `kiln-v1`)** — gated on the above.
 
-## 18. One sentence
+## 20. One sentence
 
 KILN keeps its kiln — one lane, held heat, a human at every gate — and makes every part of the firing
 durable: workers that survive a crash, gates that wait as long as the human needs, a director that resumes

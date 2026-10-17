@@ -1,0 +1,77 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Workshop wiki</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.tile .n{font-size:22px;font-weight:680;letter-spacing:-.02em}.tile .l{font-size:11.5px;color:var(--muted)}
+.ed .li{font-size:12.5px;align-items:center}.av{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex:none}
+.ed time{font-family:var(--mono);color:var(--faint);font-size:11.5px;min-width:70px}
+.idx .cat{padding:9px 0;border-top:1px solid var(--line-2)}.idx .cat:first-child{border-top:0}
+.idx h3{display:flex;align-items:center;gap:8px;font-size:13px}.idx .pg{font-size:12.5px;color:var(--ink-2);margin-top:5px;line-height:1.75}.idx .pg a{color:var(--info)}
+.facs td{font-size:12.5px}.btn{white-space:nowrap}.up{border:1.5px solid var(--ember-line);background:var(--ember-soft);border-radius:10px;padding:12px 14px;font-size:12.5px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Record</a>
+    <a class="on">Knowledge</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Wiki · <b>workshop</b></div><h1>The workshop wiki — what every factory shares, and anyone can improve</h1>
+    <div class="sub" style="margin-top:4px">Models, tools, conventions and lessons that belong to no single factory. Written directly by the wiki keeper; open to everyone in the workshop to add sources and edit.</div></div>
+    <div class="row"><span class="pill ok">✓ valid Obsidian vault</span><span class="pill ok">open to everyone</span><span class="btn">Open in Obsidian</span><span class="btn primary">Edit a page</span></div></div>
+  <div class="tiles">
+    <div class="tile"><div class="n">31</div><div class="l">sources</div></div>
+    <div class="tile"><div class="n">96</div><div class="l">pages</div></div>
+    <div class="tile"><div class="n">3</div><div class="l">people edited this week — everyone who can</div></div>
+    <div class="tile"><div class="n">4</div><div class="l">factory vaults include it</div></div>
+    <div class="tile"><div class="n">22</div><div class="l">citations in roadmaps and briefs · 30 days</div></div></div>
+  <div class="grid" style="grid-template-columns:1.15fr 1fr;align-items:start">
+    <div class="grid">
+      <div class="card idx"><div class="card-h"><h2>index.md</h2><span class="sub">96 pages</span></div>
+        <div class="cat"><h3>Models <span class="pill">14</span></h3><div class="pg"><a>qwen3-coder:30b</a> — work model; tool calling reliable, 41 tok/s alone · <a>gemma4:27b</a> — pinned judge · <a>claude-opus-5-5</a> — cloud judge for hybrid factories · …</div></div>
+        <div class="cat"><h3>Tools and platform <span class="pill">19</span></h3><div class="pg"><a>Ollama</a> — residency and eviction · <a>Pi Durable</a> · <a>The machine</a> — studio-m5, memory budget · …</div></div>
+        <div class="cat"><h3>Conventions <span class="pill">23</span></h3><div class="pg"><a>Commit messages</a> · <a>Testing before code</a> · <a>Writing a specification</a> · …</div></div>
+        <div class="cat"><h3>Shared services <span class="pill">12</span></h3><div class="pg"><a>Auth service</a> · <a>Billing API</a> — owned by billing-service · …</div></div>
+        <div class="cat"><h3>Lessons across factories <span class="pill">9</span></h3><div class="pg"><a>Broken links after URL changes</a> (docs-site, handbook) · <a>Cold model loads after restarts</a> · …</div></div></div>
+      <div class="card facs"><div class="card-h"><h2>Included in every factory vault</h2><span class="sub">as a read-only <span class="mono">workshop/</span> folder</span></div>
+        <table><tr><th>Factory</th><th>Version included</th><th>Pages its wiki links to</th></tr>
+          <tr><td>kiln-v1</td><td class="mono">a71f2d3 · current</td><td>18</td></tr>
+          <tr><td>billing-service</td><td class="mono">a71f2d3 · current</td><td>11</td></tr>
+          <tr><td>docs-site</td><td class="mono">a71f2d3 · current</td><td>9</td></tr>
+          <tr><td>handbook</td><td class="mono">a71f2d3 · current</td><td>4</td></tr></table>
+        <div class="sub" style="margin-top:8px">So a factory page writes <span class="mono">[[Ollama]]</span> and it resolves — in KILN, Obsidian and Zed. Workshop pages are edited here, never through a factory's copy.</div></div>
+    </div>
+    <div class="grid">
+      <div class="card ed"><div class="card-h"><h2>Recent changes</h2><span class="sub">every change has an author · any can be reverted</span></div>
+        <div class="li"><time>09:44</time><span class="av" style="background:#1D4ED8">AK</span><div><b>Anna</b> edited <b>Ollama</b> in Obsidian · “keep_alive is not a guarantee” · linted ✓</div></div>
+        <div class="li"><time>08:57</time><span class="av" style="background:#15803D">KE</span><div><b>wiki keeper</b> ingested <span class="mono">ollama-0.13-release-notes.md</span> with Bence · 6 pages</div></div>
+        <div class="li"><time>yesterday</time><span class="av" style="background:#6D28D9">BN</span><div><b>Bence</b> added a source: <span class="mono">team-coding-standards-v4.md</span></div></div>
+        <div class="li"><time>yesterday</time><span class="av" style="background:#9A3412">ZB</span><div><b>Zsolt</b> filed an answer: <b>Choosing a judge model</b></div></div>
+        <div class="li"><time>Oct 15</time><span class="av" style="background:#1D4ED8">AK</span><div><b>Anna</b> reverted an ingest · “duplicate of an existing source”</div></div></div>
+      <div class="up"><div class="row"><span class="pill ember">Lint suggests moving knowledge up</span></div>
+        <div style="margin-top:8px"><b>“Broken links after URL changes”</b> appears in the docs-site and handbook wikis in slightly different words. A workshop page would let both link to one place.</div>
+        <div class="row" style="margin-top:10px"><span class="btn">Create the workshop page</span><span class="btn ghost">Not now</span></div>
+        <div class="sub" style="margin-top:6px">Restricted factory content never moves up on its own.</div></div>
+      <div class="card"><div class="card-h"><h2>How it is kept</h2></div>
+        <div class="kv2"><span>Who can edit</span><span>everyone in the workshop · in KILN, Obsidian or any editor</span><span>Keeper steps</span><span>on spare workshop capacity · lowest priority · never delays a factory</span><span>Lint</span><span>gemma4:27b, another family from the keeper · last pass 07:30 · 2 findings</span><span>Read by</span><span>the director and research steps of every factory, after the factory's own wiki</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

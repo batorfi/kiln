@@ -1,0 +1,68 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Where a factory runs</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.cands{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.cand{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:14px 15px;display:flex;flex-direction:column;gap:8px}
+.cand.pick{border:2px solid var(--ok);box-shadow:0 8px 22px rgba(21,128,61,.10)}
+.cand.no{background:var(--surface-2)}
+.cand h3{font-size:14.5px;display:flex;align-items:center;gap:8px}
+.fit{display:grid;grid-template-columns:18px 1fr;gap:6px;font-size:12px;align-items:start}
+.fit .y{color:var(--ok);font-weight:700}.fit .n{color:var(--bad);font-weight:700}.fit .w{color:var(--wait);font-weight:700}
+.cost{font-size:12px;border-top:1px solid var(--line-2);padding-top:7px;color:var(--ink-2)}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a class="on">Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a class="on"><span class="fac"><span class="dot wait"></span>billing-service</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0"><b>billing-service</b> · where it runs · today 14:12</div><span class="grow"></span><span class="pill wait">waiting at its Merge gate</span><span class="pill cloud">hybrid</span></div>
+    <div class="kicker" style="margin-top:12px">Move a factory · a recorded request</div>
+    <div class="q">Where should billing-service run?</div>
+    <div class="sub">Zsolt wants to free studio-m5 for handbook. KILN checks each host against billing-service's policy, models and capacity — and estimates the cost. It never chooses; you do.</div>
+  </div>
+  <div class="cands">
+    <div class="cand no"><h3><span class="dot run"></span>studio-m5 <span class="pill">current</span></h3><div class="sub">local machine · owned</div>
+      <div class="fit"><span class="y">✓</span><span>policy: any locality allowed for hybrid</span><span class="y">✓</span><span>models: qwen3-coder, gemma4 resident</span><span class="w">!</span><span>capacity: 81 of 104 GB · handbook would need ~18 GB more</span></div>
+      <div class="cost">owned · shares the pool with 3 other factories (−29% tokens/s when two generate)</div></div>
+    <div class="cand pick"><h3><span class="dot" style="background:#8B5CF6"></span>gpu-01 <span class="pill ok">fits</span></h3><div class="sub">team server · owned · office network · private</div>
+      <div class="fit"><span class="y">✓</span><span>policy: source code may live on private hosts (<span class="mono">source-to-private</span>)</span><span class="y">✓</span><span>models: qwen3-coder local; cloud judges reachable under policy; llama-4-70b local</span><span class="y">✓</span><span>capacity: 0 of 180 GB used</span></div>
+      <div class="cost">owned · no hourly cost · can sleep while billing-service waits</div></div>
+    <div class="cand no"><h3><span class="dot idle"></span>cloud-eu-1 <span class="pill bad">not allowed</span></h3><div class="sub">cloud VM · rented · EU · suspended</div>
+      <div class="fit"><span class="n">✕</span><span>policy: billing-service's source may not live on a cloud host — only on private ones</span><span class="y">✓</span><span>models: qwen3-coder</span><span class="y">✓</span><span>capacity: 70 GB free</span></div>
+      <div class="cost">would cost ~$2.40 / h running · not offered because the policy fails</div></div>
+    <div class="cand no"><h3><span class="dot bad"></span>build-box-02 <span class="pill">offline</span></h3><div class="sub">team server · owned · private</div>
+      <div class="fit"><span class="y">✓</span><span>policy: private allowed</span><span class="n">✕</span><span>offline since 07:12 — cannot receive a factory</span></div>
+      <div class="cost">not offered while offline</div></div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
+    <div class="card"><div class="card-h"><h2>What moving does</h2><span class="sub">and what it never does</span></div>
+      <div class="kv2" style="grid-template-columns:140px 1fr"><span>When</span><span>now — billing-service is between steps, waiting at its Merge gate</span><span>Moves</span><span>the durable store · the workspace · the factory wiki</span><span>Stays the same</span><span>the waiting Merge gate and its brief · delegation state · the record · every decision so far</span><span>Never</span><span>approves, skips or reopens a gate; moves mid-step</span><span>If it fails</span><span>studio-m5 reopens the store; nothing has changed</span><span>Takes</span><span>about 3 minutes · a decision made meanwhile applies when the move completes</span></div></div>
+    <div class="card options-card"><div class="card-h"><h2>Your decision</h2><span class="sub">recorded as a command, not a gate move</span></div>
+      <div class="grid" style="gap:8px">
+        <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Move to gpu-01</h3><p>Hand over now; billing-service resumes on gpu-01 with its Merge gate still waiting.</p></div>
+        <div class="opt"><h3><span class="dot" style="background:var(--wait)"></span>Move at the next gate</h3><p>Not needed here — it is already waiting at one.</p></div>
+        <div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Keep it on studio-m5</h3><p>Nothing changes.</p></div>
+        <div class="row"><span class="btn grow">Keep it here</span><span class="btn primary grow">Move to gpu-01</span></div>
+        <div class="sub" style="text-align:center">Placement for local-only factories (kiln-v1, docs-site, handbook) is limited to local hosts — studio-m5.</div></div></div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

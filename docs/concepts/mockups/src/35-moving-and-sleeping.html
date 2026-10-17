@@ -1,0 +1,66 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Moving and sleeping</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.steps{display:flex;flex-direction:column}
+.st{display:grid;grid-template-columns:26px 1fr auto;gap:12px;padding:10px 0;border-top:1px solid var(--line-2);font-size:12.5px;align-items:start}
+.st:first-child{border-top:0}
+.st .c{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;background:var(--ok)}
+.st time{font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+.sleep{background:repeating-linear-gradient(135deg,#FBFAF8 0 10px,#F4F0FA 10px 20px);border:1px solid var(--deleg-line);border-radius:12px;padding:16px 18px}
+.big{font-size:20px;font-weight:650;letter-spacing:-.01em}
+.need{display:grid;grid-template-columns:4px 1fr auto;gap:14px;align-items:stretch;padding:13px 15px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.need .stripe{border-radius:3px;background:var(--wait)}
+.wake{border:1.5px solid var(--deleg);background:var(--deleg-soft);border-radius:10px;padding:11px 14px;font-size:12.5px}
+.sv td{font-size:12.5px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a class="on">Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a class="on"><span class="fac"><span class="dot wait"></span>billing-service</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb"><b>billing-service</b> · on gpu-01 · today 14:40</div><h1>Moved in three minutes, asleep while it waits</h1>
+    <div class="sub" style="margin-top:4px">billing-service moved to gpu-01 with its Merge gate still waiting. With nothing to run until a person decides, gpu-01 went to sleep.</div></div>
+    <div class="row"><span class="pill deleg">gpu-01 asleep · 9 min</span><span class="pill wait">Merge gate waiting · 30 min</span></div></div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
+    <div class="card"><div class="card-h"><h2>The move</h2><span class="sub">studio-m5 → gpu-01 · requested by Zsolt</span></div>
+      <div class="steps">
+        <div class="st"><span class="c">✓</span><div><b>Fit checked</b><div class="sub">policy ✓ · models ✓ · capacity ✓ — cloud-eu-1 ruled out by policy</div></div><time>14:12</time></div>
+        <div class="st"><span class="c">✓</span><div><b>Quiesced</b><div class="sub">already between steps — waiting at the Merge gate</div></div><time>14:12</time></div>
+        <div class="st"><span class="c">✓</span><div><b>Handed over</b><div class="sub">durable store 312 MB · workspace 48 MB · factory wiki 9 MB — closed on studio-m5, sent over the host channel</div></div><time>14:14</time></div>
+        <div class="st"><span class="c">✓</span><div><b>Resumed on gpu-01</b><div class="sub">gpu-01 opened the store and became its only owner; the Merge gate task resumed as <i>waiting</i>, same brief</div></div><time>14:15</time></div>
+        <div class="st"><span class="c" style="background:var(--deleg)">☾</span><div><b>gpu-01 asleep</b><div class="sub">sleep policy: when every factory on it has waited at a gate for 15 minutes</div></div><time>14:31</time></div></div>
+      <hr><div class="kv2" style="grid-template-columns:150px 1fr"><span>Carried over unchanged</span><span>Merge gate and brief · delegation ended at Verification · 214 record events · wiki with 6 pages for b2</span><span>On studio-m5</span><span>billing-service no longer competes for this pool — room for handbook · nothing left behind</span><span>Record</span><span><span class="mono">factory.moved</span> (studio-m5 → gpu-01) · <span class="mono">host.suspended</span></span></div></div>
+    <div class="grid">
+      <div class="sleep"><div class="row"><span class="pill deleg">asleep</span><span class="sub">gpu-01 · team server · office network</span></div>
+        <div class="big" style="margin-top:8px">Nothing is running, and nothing is lost.</div>
+        <div style="font-size:12.5px;color:var(--ink-2);margin-top:6px">A waiting gate holds no model and runs no code, so its host can sleep. The workshop keeps the gate's brief, so you can read and decide as usual.</div></div>
+      <div class="card"><div class="card-h"><h2>Needs you</h2></div>
+        <div class="need"><div class="stripe"></div><div><div class="row"><b>Merge gate</b><span class="pill">billing-service · b2</span><span class="pill deleg">host asleep</span></div><div class="sub" style="margin-top:3px">Do we ship this feature? · brief available · moves: approve · reject</div></div><div style="display:flex;align-items:center"><span class="btn primary">Open gate brief</span></div></div>
+        <div class="wake" style="margin-top:12px"><b>If you approve now:</b> your move is recorded at once as <b>decided · applying on wake</b>. gpu-01 wakes (about 40 seconds), opens the store, and the merge is applied exactly once. Until then nothing is merged, and the record says so.</div></div>
+      <div class="card sv"><div class="card-h"><h2>Sleeping, this week</h2><span class="sub">all hosts</span></div>
+        <table><tr><th>Host</th><th>Asleep</th><th>Saved</th></tr>
+          <tr><td>cloud-eu-1</td><td>126 h</td><td>$302 · rented</td></tr>
+          <tr><td>gpu-01</td><td>38 h</td><td>≈ 19 kWh · owned</td></tr>
+          <tr><td>studio-m5</td><td>never</td><td>workshop runs here</td></tr></table></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

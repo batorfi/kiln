@@ -12,7 +12,7 @@ render 06-feature-record           1600,1260
 render 07-specification-gate-delegation 1600,1300
 render 08-implementation-gate-split     1600,1120
 render 09-verification-gate-fix-rounds  1600,1220
-render 10-merge-gate                    1600,1060
+render 10-merge-gate                    1600,1160
 render 11-stepping-in                   1600,1110
 render 12-policy-stops                  1600,980
 render 13-director-conversation         1600,1180
@@ -23,3 +23,18 @@ render 17-trace                         1600,1000
 render 18-record-explorer               1600,1110
 render 19-health                        1600,960
 render 20-people-and-permissions        1600,980
+render 21-live-implementation           1600,1380
+render 22-wiki-home                     1600,1260
+render 23-wiki-ingest-summary           1600,1200
+render 24-wiki-lint                     1600,1000
+render 25-wiki-query                    1600,960
+render 26-wiki-in-obsidian-and-zed     1600,1060
+render 27-workshop-wiki                 1600,980
+render 28-feature-knowledge              1600,1180
+render 29-explainer                      1600,1320
+render 30-howto-and-code-map             1600,1160
+render 31-learnings-and-drift            1600,1060
+render 32-adding-research               1600,1180
+render 33-hosts                          1600,1100
+render 34-placing-a-factory              1600,1000
+render 35-moving-and-sleeping            1600,1020

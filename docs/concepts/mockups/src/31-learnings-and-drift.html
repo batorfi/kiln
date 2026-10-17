@@ -1,0 +1,63 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Learnings and drift</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.lr{display:grid;grid-template-columns:110px 1fr auto;gap:14px;padding:12px 0;border-top:1px solid var(--line-2);align-items:start}
+.lr:first-child{border-top:0}.lr h3{font-size:13.5px}.lr .d{font-size:12.5px;color:var(--ink-2);margin-top:3px}
+.lr .src{font-size:11.5px;color:var(--muted);margin-top:5px}
+.fpill{font-size:11px;font-weight:650;border-radius:6px;padding:2px 8px;border:1px solid var(--line);background:var(--surface-2);text-align:center}
+.diff{background:#1F1B17;color:#E9E2D9;border-radius:7px;font-family:var(--mono);font-size:11.5px;line-height:1.6;padding:8px 12px;white-space:pre;margin-top:8px}
+.diff .a{color:#86EFAC}.diff .d{color:#FCA5A5}.diff .c{color:#8C8279}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Record</a>
+    <a class="on">Knowledge</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Wiki · all factories · learnings</div><h1>What the factories learned while building — and what no longer matches the code</h1>
+    <div class="sub" style="margin-top:4px">Learnings are recorded the moment a finding, a failed round or a surprise reveals them. Pages that cite changed code are marked drifted until someone refreshes them.</div></div>
+    <div class="row"><span class="pill">last 7 days · 12 learnings</span><span class="pill wait">3 pages drifted</span></div></div>
+  <div class="grid" style="grid-template-columns:1.3fr 1fr;align-items:start">
+    <div class="card"><div class="card-h"><h2>Learnings</h2><span class="sub">newest first</span></div>
+      <div class="lr"><span class="fpill">kiln-v1</span><div><h3>Write the failing test first for lane changes</h3><div class="d">In round 3 the worker wrote the hold-flag test before the fix; the round passed Code review first time. Rounds 1 and 2, written fix-first, were both restarted.</div><div class="src">revealed by: Code review round 3 approved · r10 · 12:10</div></div><span class="pill ember">proposed for workshop</span></div>
+      <div class="lr"><span class="fpill">billing-service</span><div><h3>Leap years break naive period lengths</h3><div class="d">The verifier rejected FR-5: Feb 29 → Mar 29 counted 29 days. The fix used calendar arithmetic from the date library, not day counts.</div><div class="src">revealed by: Verification reject · b2 · 09:53 · fixed in automatic round 1</div></div><span class="pill ok">workshop page created</span></div>
+      <div class="lr"><span class="fpill">docs-site</span><div><h3>The 60 s index target was never measured</h3><div class="d">Two fix rounds could not reach it; the verifier's diagnosis was that the requirement, not the code, was wrong. Measure performance targets before the Specification gate.</div><div class="src">revealed by: Verification · d4 · 2 fix rounds exhausted</div></div><span class="pill ember">proposed for workshop</span></div>
+      <div class="lr"><span class="fpill">kiln-v1</span><div><h3>Restart notes work best when they name the finding</h3><div class="d">Round 2 → 3 took 1 h 24 min with a note naming finding 1; round 1 → 2 took 3 h with a general note.</div><div class="src">revealed by: comparing two restarts · r10</div></div><span class="pill">factory</span></div>
+      <div class="lr"><span class="fpill">kiln-v1</span><div><h3>keep_alive is not residency</h3><div class="d">Ollama evicted a held judge's model under memory pressure. KILN must pin judges itself.</div><div class="src">revealed by: incident Oct 14 · ingested today</div></div><span class="pill ok">in workshop wiki</span></div></div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Drifted pages</h2><span class="sub">the code moved on since they were written</span></div>
+        <div style="font-size:12.5px"><b>How a role picks its model</b> <span class="muted">· explainer · kiln-v1 · written in r7</span></div>
+        <div class="sub">cites <span class="mono">src/roles.ts</span> lines 15–19 at <span class="mono">a9067f1</span>; changed in <span class="mono">7c2e9a1</span> by r10's finding 2</div>
+        <div class="diff"><span class="c">src/roles.ts · a9067f1 → 7c2e9a1</span>
+<span class="d">-   const model = "gemma4:12b";</span>
+<span class="a">+   const model = tierMap.modelFor(role);</span></div>
+        <div class="row" style="margin-top:10px"><span class="btn">Ask the keeper to refresh</span><span class="btn ghost">Edit it myself</span></div>
+        <hr><div style="font-size:12.5px"><b>URL scheme</b> <span class="muted">· overview · docs-site</span> <span class="pill wait">cited at the Roadmap gate</span></div>
+        <div class="sub">3 routes renamed since the page was written</div>
+        <hr><div style="font-size:12.5px"><b>Search index layout</b> <span class="muted">· explainer · docs-site</span></div>
+        <div class="sub">the index format changed in d4's second fix round</div></div>
+      <div class="card"><div class="card-h"><h2>Claims the code does not support</h2><span class="pill bad">1 finding</span></div>
+        <div style="font-size:12.5px"><b>“Verification retries until the target is met”</b> <span class="muted">· how-to draft · docs-site</span></div>
+        <div class="sub" style="margin-top:4px">The code caps automatic fix rounds at 2 (<span class="mono">MITIGATION_CAP</span>). Checked by lint on gemma4:27b against the cited code.</div>
+        <div class="row" style="margin-top:10px"><span class="btn">Queue a fix</span><span class="btn ghost">Dismiss with reason…</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

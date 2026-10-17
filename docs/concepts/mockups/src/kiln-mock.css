@@ -19,7 +19,7 @@ html,body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-siz
 /* sidebar */
 .side{background:var(--side);color:var(--side-ink);padding:18px 14px;display:flex;flex-direction:column;gap:18px}
 .brand{display:flex;align-items:center;gap:10px;padding:2px 6px 8px}
-.brand .mark{width:28px;height:28px;border-radius:8px;background:linear-gradient(145deg,#F97316,#9A3412);box-shadow:inset 0 -6px 10px rgba(0,0,0,.25)}
+.brand .mark{width:36px;height:36px;background:url(../../../brand/kiln-mark.svg) center/contain no-repeat;flex:none}
 .brand b{font-size:15px;letter-spacing:.14em}
 .brand small{display:block;color:var(--side-muted);font-size:11px;letter-spacing:0}
 .nav-h{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--side-muted);padding:0 8px 6px}
