@@ -1,0 +1,70 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Coming back</title><link rel="stylesheet" href="kiln-mock.css">
+<style>
+.recover{background:linear-gradient(180deg,#FFFDF9,#FFF8EF);border:1px solid var(--wait-line);border-radius:12px;padding:18px 22px}
+.big{font-size:20px;font-weight:650;letter-spacing:-.01em}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.three div{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:11px 13px;font-size:12.5px}
+.three b{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.guar{display:flex;align-items:center;gap:10px;margin-top:14px;padding:10px 12px;border-radius:9px;background:var(--ok-soft);border:1px solid var(--ok-line);color:#14532D;font-size:13px;font-weight:600}
+.fac-sum td{font-size:12.5px;vertical-align:top}
+.tl .li{font-size:12.5px}
+.tl time{font-family:var(--mono);font-size:11.5px;color:var(--faint);min-width:46px}
+.prio{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+.prio:first-child{border-top:0}
+.prio .n{width:24px;height:24px;border-radius:7px;background:var(--ink);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:12px}
+</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a class="on">Needs you <span class="n">3</span></a><a>Factories <span class="s">4</span></a><a>Record</a><a>Insights</a><a>Models &amp; policy</a><a>Machine</a><a>Health</a><a>People</a></div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a></div>
+  <div class="machine"><b>Machine</b> · 128 GB unified memory
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Workshop · since you left at 18:40 yesterday · 15 h 06 min</div><h1>Welcome back — here is what happened while you were away</h1></div><span class="pill">Last activity 2 min ago</span></div>
+
+  <div class="recover">
+    <div class="row"><span class="pill wait">Recovered after a crash</span><span class="sub">03:12 · the machine restarted (macOS update) · KILN resumed at 03:14</span></div>
+    <div class="big" style="margin-top:10px">All four factories resumed from where they stopped. Nothing was lost.</div>
+    <div class="three">
+      <div><b>In flight at 03:12</b>billing-service · worker step 3 of b2, mid tool call (<span class="mono">npm test</span>)</div>
+      <div><b>Resumed</b>The worker step continued; the interrupted test run was <em>not</em> replayed automatically — the worker was told and re-ran it.</div>
+      <div><b>Kept waiting</b>2 gates: kiln-v1 · Code review, handbook · Roadmap. They were waiting before, and still are.</div></div>
+    <div class="guar"><span style="font-size:16px">✓</span>Nothing was approved by the restart. Every gate that was waiting is still waiting for you.</div>
+  </div>
+
+  <div class="grid" style="grid-template-columns:1.25fr 1fr;align-items:start">
+    <div class="card"><div class="card-h"><h2>By factory</h2><span class="sub">what changed, and what it cost</span></div>
+      <table class="fac-sum"><tr><th>Factory</th><th>While you were away</th><th>Now</th><th>Cost</th></tr>
+        <tr><td><b>billing-service</b><br><span class="pill cloud" style="margin-top:4px">hybrid</span></td><td>b2 passed <b>Work plan, Implementation, Code review</b> under your delegation — no objections. 3 cloud requests, all under policy.</td><td>Verifier running</td><td>3 h 10 min<br>$4.12</td></tr>
+        <tr><td><b>docs-site</b><br><span class="pill local" style="margin-top:4px">local-only</span></td><td>d4 Verification <b>rejected</b> by the verifier; 2 automatic fix rounds failed. <b>Your delegation ended</b> there.</td><td><span class="pill wait">needs you</span></td><td>2 h 25 min</td></tr>
+        <tr><td><b>kiln-v1</b><br><span class="pill local" style="margin-top:4px">local-only</span></td><td>Nothing — waiting for you since 17:59. One research step was <b>blocked by policy</b> at 22:47 (tried to reach a cloud model).</td><td><span class="pill wait">needs you</span></td><td>—</td></tr>
+        <tr><td><b>handbook</b><br><span class="pill" style="margin-top:4px">new</span></td><td>The director drafted a first roadmap of 4 features.</td><td><span class="pill wait">needs you</span></td><td>12 min</td></tr></table></div>
+
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>What needs you now</h2><span class="sub">suggested order — your choice</span></div>
+        <div class="prio"><span class="n">1</span><div><b>kiln-v1 · Code review gate</b><div class="sub">judged gate · reviewer objects with 2 major findings</div></div><span class="pill wait">15 h 47 min</span></div>
+        <div class="prio"><span class="n">2</span><div><b>docs-site · Verification gate</b><div class="sub">judged gate · failed after 2 fix rounds · ended your delegation</div></div><span class="pill wait">7 h 02 min</span></div>
+        <div class="prio"><span class="n">3</span><div><b>handbook · Roadmap gate</b><div class="sub">first roadmap · decides profile, policy and budget</div></div><span class="pill wait">10 h 04 min</span></div>
+        <div class="sub" style="margin-top:8px">Why this order: judged gates first, then by how long they have waited. Waiting never decides anything.</div></div>
+
+      <div class="card tl"><div class="card-h"><h2>Timeline</h2><span class="sub">from the record</span></div>
+        <div class="list">
+          <div class="li"><time>22:47</time><div>kiln-v1 · request to a cloud model <b>blocked by policy</b></div></div>
+          <div class="li"><time>23:05</time><div>Overlap: billing-service and kiln-v1 both change <span class="mono">shared/config.ts</span></div></div>
+          <div class="li"><time>01:30</time><div>billing-service · Code review <b>passed under delegation</b> · no objections</div></div>
+          <div class="li"><time>02:51</time><div>docs-site · verifier rejected · 2 fix rounds failed · delegation ended</div></div>
+          <div class="li"><time>03:12</time><div><b>Crash</b> · machine restarted · resumed 03:14</div></div>
+          <div class="li"><time>09:40</time><div>billing-service · verifier started</div></div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

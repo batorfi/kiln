@@ -1,4 +1,4 @@
-> Status: concept draft for review (2026-10-16) — **not admitted**
+> Status: concept draft for review (rev 3, 2026-10-17) — **not admitted**
 > Type: concept
 >
 > Scope note: this doc describes the **KILN user experience at the conceptual level** — who uses KILN, what they
@@ -9,12 +9,14 @@
 >
 > **How to review this draft.** Each section ends with a **Review** block listing the choices most worth
 > challenging. Answer them inline, or strike and rewrite anything. Decisions you make are collected in the
-> decision log (§14) so later revisions can trace them.
+> decision log (§15) so later revisions can trace them.
 >
 > Companion docs:
 >   - The vision:                        `vision.md`
 >   - The design behind it:              `web-front-door.md`
 >   - Human gates — why & how & what:    `gates-why-how-what.md`
+>   - Illustrative mockups:              `mockups/` — twenty high-resolution illustrations covering every capability below. They
+>     are discussion aids, not design decisions; this doc governs where they differ.
 
 # KILN — the user experience, as a concept
 
@@ -122,8 +124,9 @@ These principles decide trade-offs in later design. When two conflict, the earli
    delegation" unmistakable.
 2. **Attention is the scarcest resource.** Ask the human only for what is genuinely theirs to decide. Everything
    the factory can handle, it handles; everything it cannot, it brings with the evidence attached.
-3. **Decide with evidence, not with faith.** At a gate, the human sees what was produced, against what it was
-   measured, what the judges said, and what it cost — enough to decide without digging.
+3. **Decide with evidence, not with faith.** Every gate comes with a **gate brief** (§8): the context, the work,
+   what it is measured against, the evidence, the risks, the options and their consequences — enough to
+   understand and decide without digging, and depth on request.
 4. **Always oriented.** At any moment, from anywhere in the experience, the human can tell where things stand and
    what needs them. No state is hidden, and none has to be inferred.
 5. **Honest about state.** The experience shows what is true, including what is uncomfortable: a failed
@@ -185,11 +188,11 @@ carried out.
 
 *Purpose:* the central act of KILN — a human decision made well and recorded honestly.
 *Guarantees:*
-- the gate's question is stated plainly (§3.1 of `web-front-door.md`), together with the artifact under judgment,
-  what it is measured against (concept, specification, plan), who produced it on which model, what the judges
-  concluded, and what it cost;
+- the gate is always presented with its **gate brief** (§8): orientation, the decision and what it commits to, the
+  work, the yardstick, the evidence, risks and open issues, provenance, history, the options with their
+  consequences, and the other actions available;
 - only the moves that make sense at this gate are offered — the human never meets a move the gate does not
-  have;
+  have — and each is explained by what will happen next;
 - sending work back requires saying why, and that note becomes the next step's instruction;
 - the decision is deliberate: it cannot be made by accident, by default or by timeout;
 - after deciding, the human knows what the factory will do next.
@@ -291,7 +294,116 @@ proposals.
 > brand-new user; importing an existing project mid-way; collaborating on one gate decision with several
 > Deciders.
 
-## 8. Trust and safety in the experience
+## 8. The gate brief: rich context at every gate
+
+A gate is the moment KILN hands a decision to a human. The quality of that decision depends on what the human
+can see and understand at that moment. So **every time a gate is presented, it comes with a gate brief**: a
+complete, self-contained account of the context, the decision, the options and the actions available. The brief
+is a concept, not a screen — it defines *what the human must be able to read and understand*, and later design
+decides how to present it.
+
+### 8.1 Rules
+
+1. **No gate without its brief.** A gate is never presented as a bare request for a yes or no. Wherever a gate
+   appears — in the list of things waiting, in a notification, in the factory's own view — it carries at least the
+   **brief's headline** (§8.3), and a **move can only be made where the full brief is available**.
+2. **Self-contained.** The brief can be understood by someone who did not watch the work happen, has been away for
+   days, or is new to this factory. It never assumes the human remembers earlier context.
+3. **Layered.** It starts with what the human needs to orient and decide, and lets them go as deep as they want —
+   down to the full artifact, every finding, every transcript — without leaving the brief.
+4. **Same shape at every gate.** Every brief has the same parts in the same order (§8.2), so the human learns it
+   once. What changes from gate to gate is the emphasis (§8.5), not the structure.
+5. **Honest about gaps.** If a part is missing — a judge did not run, a test could not execute, a source was
+   unavailable, a budget stopped a step — the brief says so explicitly. An absent section is never silently
+   omitted.
+6. **Complete before it is presented.** A gate opens for the human only when its brief is assembled. If evidence is
+   still being produced, the gate is not yet waiting for the human, and the experience says what it is waiting
+   for instead.
+7. **Recorded as seen.** The brief the human saw is part of the record, together with the move made from it. Anyone
+   reviewing the decision later — including an Auditor — sees exactly what the Decider saw.
+8. **Advice is labelled as advice.** Judges' verdicts and any factory recommendation appear as clearly attributed
+   evidence, never as a pre-selected answer.
+
+### 8.2 What a gate brief contains
+
+| Part | Answers | Contents |
+|---|---|---|
+| **1. Orientation** | *Where am I?* | the factory, the feature, the gate and its place among the gates; what has been decided so far for this feature; how long the gate has been waiting; whether this is the first round or a return after a corrective move |
+| **2. The decision** | *What am I deciding?* | the gate's question in plain words; what approving **commits to** and what it does **not**; what is at stake if the decision is wrong; whether this is a judged gate |
+| **3. The work** | *What was produced?* | a plain summary of the artifact, then the artifact itself; on a return round, **what changed since last time** and **how the human's previous note was addressed** |
+| **4. The yardstick** | *What is it measured against?* | the earlier approved artifacts this one must honour — the concept, the specification, the work plan — and how each requirement maps to the work and the evidence |
+| **5. The evidence** | *Is it right?* | the judges' verdicts with their reasoning and findings, by severity; test and verification results; automatic fix rounds and their outcomes; anything the factory checked and how |
+| **6. Risks and open issues** | *What should worry me?* | assumptions the agents made; questions they could not resolve; disagreements between author and judge; what could not be done (a missing source, a blocked request, an unavailable model) |
+| **7. Provenance** | *Who did this, and how?* | the steps taken, by which roles, on which models and where they ran (local, private, cloud); the human interventions during the work — steering, approved or refused actions; time and cost; what left the machine for this work |
+| **8. History** | *How did we get here?* | earlier rounds at this gate, with their moves and notes; related decisions at earlier gates; delegation state — and, if delegation was in force, **why this gate stopped for the human** |
+| **9. The options** | *What can I decide, and what happens then?* | every move this gate allows, each with its meaning, its **consequence** (what the factory will do next, how far back the work goes, what is kept and what is redone), its cost in time, and whether a note is required; the moves this gate does **not** have, and why |
+| **10. Other actions** | *What else can I do before deciding?* | actions that do not decide the gate (§8.4), each clearly marked as not a decision |
+
+### 8.3 The headline
+
+The headline is the brief in a few lines — the minimum that travels with a gate wherever it appears:
+
+- **factory, feature and gate**, with the gate's question;
+- **how long it has waited** and whether it is a return round;
+- **the evidence in one line** — for example "all judges agree", "code reviewer objects: 2 major findings",
+  "verification failed after 2 automatic fix rounds";
+- **the moves available**;
+- **anything that makes this gate unusual** — a gap in the evidence, a stopped delegation, a blocked request, a
+  budget reached.
+
+The headline is enough to understand what is waiting and how much attention it needs. It is never enough to
+decide: deciding always happens with the full brief.
+
+### 8.4 Actions besides deciding
+
+At a gate the human can do more than choose a move. These actions are always available from the brief, and none
+of them settles the gate:
+
+- **Read deeper** — the full artifact, the full findings, the transcripts of the steps that produced the work, the
+  relevant part of the record.
+- **Ask** — put a question to the director or about the work ("why was this approach chosen?", "which requirement
+  does this test cover?"). An answer that needs an agent to do work runs as a step of its own, visible and
+  recorded, and the gate keeps waiting.
+- **Request more evidence** — ask for an additional check, a second judge, or a judge from another model family,
+  where the factory's policy allows it. The gate stays open; the brief is updated when the evidence arrives,
+  and the update is marked as such.
+- **Leave it waiting** — decide later. Waiting has no penalty and no deadline that decides for the human.
+- **Hand it over** — in a team, pass the decision to another person allowed to decide this factory's gates, with a
+  note.
+- **Pause or stop the factory** — when the issue is bigger than this gate.
+
+Every one of these actions is recorded, and the brief shows what was done while the gate was open.
+
+### 8.5 Emphasis per gate
+
+The structure is fixed; the emphasis follows the gate's question.
+
+| Gate | The brief puts first |
+|---|---|
+| **Roadmap gate** | the features, their order and dependencies; what changed since the last approval; what the next feature needs from the human; the factory's profile, egress policy and budget |
+| **Concept gate** | the problem, the premises and the scope; the research it rests on; what is explicitly out of scope |
+| **Design gate** | the proposed structure and its alternatives; the architecture critic's objections and how the design answers them |
+| **Specification gate** | what "done" means, requirement by requirement; how each will be verified; that this is where the unattended tail can be armed, and what arming it would cover |
+| **Work plan gate** | the pieces and their order; the model order this implies and its expected cost in time and swaps |
+| **Implementation gate** | the restorable starting point; the size of the work ahead; whether it is still one feature, and what a split would look like |
+| **Code review gate** | the changes, mapped to the specification; the code reviewer's findings by severity; that `restart` is the only corrective move, and what it rebuilds |
+| **Verification gate** | requirement-by-requirement results; the automatic fix rounds already attempted and what they changed; the verifier's diagnosis |
+| **Documentation gate** | what the documentation now says, compared with what was built |
+| **Merge gate** | the whole feature end to end — every gate's decision and by whom; open risks carried forward; what left the machine; what merging will do |
+
+### 8.6 What the brief must never do
+
+- **Pre-select a move** or make one option easier to take without reading than another.
+- **Hide disagreement** — a judge's objection is never summarised away.
+- **Replace the artifact** — summaries help orient, but the actual work is always one step away.
+- **Overwhelm by default** — depth is available, not imposed.
+- **Change after the decision** — the brief recorded with the move is the one the human saw.
+
+> **Review:** Should KILN ever offer its own recommended move (beyond the judges' verdicts), or would that bias
+> the Decider? Should "request more evidence" be bounded per gate, and should it ever be allowed to reach a
+> cloud model when the factory is `local-only`? Is "hand it over" in scope before the team case?
+
+## 9. Trust and safety in the experience
 
 What the human must be able to rely on, as properties of the experience itself:
 
@@ -311,7 +423,7 @@ What the human must be able to rely on, as properties of the experience itself:
 > **Review:** Do we need explicit roles and permissions (Decider, Operator, Observer) in the first version, or is
 > a single trusted local user enough until teams arrive?
 
-## 9. How it should feel
+## 10. How it should feel
 
 | Quality | Meaning | Not |
 |---|---|---|
@@ -325,7 +437,7 @@ What the human must be able to rely on, as properties of the experience itself:
 > **Review:** How much of the kiln metaphor should reach the experience itself (firing, chamber, heat, workshop)
 > versus staying in the docs? The risk is charm over clarity.
 
-## 10. Language and voice
+## 11. Language and voice
 
 - **Plain words first.** Gates are named by what they decide (§4, and `web-front-door.md` §3.1). Internal terms —
   rows, units, durable tasks, outbox, leases — never reach the human.
@@ -339,7 +451,7 @@ What the human must be able to rely on, as properties of the experience itself:
 > **Review:** Should the experience address the human directly ("waiting for you") or neutrally ("waiting for a
 > decision")? Direct address is warmer for one person and awkward for teams.
 
-## 11. Experience across scales
+## 12. Experience across scales
 
 The same concepts must work from the smallest to the largest setup, without a mode switch:
 
@@ -352,7 +464,7 @@ The same concepts must work from the smallest to the largest setup, without a mo
 
 > **Review:** Is the team case in scope for the first experience concept, or should it be a follow-up doc?
 
-## 12. Anti-goals
+## 13. Anti-goals
 
 The experience deliberately does **not**:
 
@@ -365,32 +477,34 @@ The experience deliberately does **not**:
 
 > **Review:** Anything here you would *want* — for example, any form of approval-speed metric for teams?
 
-## 13. Open questions
+## 14. Open questions
 
 Collected for review; each needs a decision before the interaction design phase.
 
-1. Primary persona and the solo-versus-team balance (§2, §8, §11).
+1. Primary persona and the solo-versus-team balance (§2, §9, §12).
 2. User-facing vocabulary: Factory, Feature, Step (§4).
 3. Whether waiting gates ever escalate, and whether interruptions are configurable per gate (§6).
 4. Onboarding and the very first factory as its own core experience (§7).
-5. Several Deciders collaborating on one gate: supported, deferred, or out of scope (§7, §11).
-6. How much of the kiln metaphor reaches the experience (§9).
-7. Direct versus neutral voice (§10).
-8. Whether the Pi-integrated terminal experience (r9) remains a supported secondary surface, and how this concept
+5. Several Deciders collaborating on one gate: supported, deferred, or out of scope (§7, §8.4, §12).
+6. How much of the kiln metaphor reaches the experience (§10).
+7. Direct versus neutral voice (§11).
+8. Whether KILN offers its own recommended move at a gate, and the limits on requesting more evidence (§8).
+9. Whether the Pi-integrated terminal experience (r9) remains a supported secondary surface, and how this concept
    applies to it.
-9. Accessibility and language commitments to make at the concept level (for example: everything readable without
+10. Accessibility and language commitments to make at the concept level (for example: everything readable without
    colour; all text localisable).
 
-## 14. Decision log
+## 15. Decision log
 
 | # | Date | Decision | Section | Decided by |
 |---|---|---|---|---|
 | 1 | 2026-10-16 | The user experience is a local web front door; Pi powers the agents (from `web-front-door.md`) | §1 | human |
-| 2 | 2026-10-16 | The pre-lane gate is called the **Roadmap gate**; the nine feature gates have plain names | §4, §10 | human |
+| 2 | 2026-10-16 | The pre-lane gate is called the **Roadmap gate**; the nine feature gates have plain names | §4, §11 | human |
 | 3 | 2026-10-16 | Gate 5 is called the **Implementation gate** | §4 | human |
-| 4 | | *(your decisions from this review)* | | |
+| 4 | 2026-10-16 | Every gate is presented with a **gate brief**: rich, self-contained context, the options and their consequences, and the other actions available; a move can only be made where the full brief is available | §8 | human |
+| 5 | | *(your decisions from this review)* | | |
 
-## 15. One sentence
+## 16. One sentence
 
 The KILN experience lets one human run a calm, trustworthy software workshop: it asks for their attention only
 when a decision is truly theirs, gives them the evidence to make it well, never decides in their place, and always

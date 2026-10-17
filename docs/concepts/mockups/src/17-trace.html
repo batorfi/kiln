@@ -1,0 +1,65 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Trace</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.gantt{position:relative;margin-top:6px}
+.axis{display:grid;grid-template-columns:260px 1fr;font-size:11px;color:var(--faint);margin-bottom:6px}
+.ticks{position:relative;height:16px}.ticks span{position:absolute;transform:translateX(-50%)}
+.tr{display:grid;grid-template-columns:260px 1fr;align-items:center;min-height:26px;border-top:1px solid var(--line-2)}
+.tr .nm{font-size:12px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:10px}
+.tr .lane{position:relative;height:26px}
+.sp{position:absolute;top:6px;height:14px;border-radius:4px;font-size:10px;color:#fff;padding:0 5px;line-height:14px;white-space:nowrap;overflow:hidden}
+.sp.step{background:#57534E}.sp.gate{background:#A8A29E}.sp.model{background:var(--s1)}.sp.tool{background:var(--s2)}
+.sp.wait{background:repeating-linear-gradient(45deg,#FDE7C2 0 6px,#FBD79A 6px 12px);color:var(--wait);font-weight:600}
+.sp.swap{background:#fff;border:1.5px dashed var(--wait);color:var(--wait);top:5px}
+.ind1 .nm{padding-left:16px}.ind2 .nm{padding-left:32px}.ind3 .nm{padding-left:48px}
+.mk{position:absolute;top:2px;width:2px;height:22px;background:var(--ink)}
+.detail td{font-size:12px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a class="on">Record</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Machine</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a class="on"><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>Machine</b> · 128 GB unified memory
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Record · <b>billing-service</b> · Feature b2 · trace · today 09:40 – 11:05</div><h1>One trace per feature: the Verification gate, end to end</h1>
+    <div class="sub" style="margin-top:4px">Every span links to the events it produced. Durations and counts only — never prompt or answer content.</div></div>
+    <div class="row"><span class="pill">Zoom: Verification</span><span class="pill">Export to local OpenTelemetry · off</span></div></div>
+  <div class="card">
+    <div class="legend"><span><i style="background:#57534E"></i>step</span><span><i style="background:#A8A29E"></i>gate</span><span><i style="background:var(--s1)"></i>model request</span><span><i style="background:var(--s2)"></i>tool call</span><span><i style="background:#FBD79A"></i>waiting on a human</span><span><i style="background:#fff;border:1.5px dashed var(--wait)"></i>model swap</span></div>
+    <div class="axis"><span></span><div class="ticks"><span style="left:0%">09:40</span><span style="left:20%">09:57</span><span style="left:40%">10:14</span><span style="left:60%">10:31</span><span style="left:80%">10:48</span><span style="left:100%">11:05</span></div></div>
+    <div class="gantt">
+      <div class="tr"><span class="nm"><b>Verification gate</b></span><div class="lane"><div class="sp gate" style="left:0%;width:97%">gate · verification · 1h 22m</div></div></div>
+      <div class="tr ind1"><span class="nm">Verifier · cloud · round 1</span><div class="lane"><div class="sp step" style="left:0%;width:16%">verifier · 13 min</div></div></div>
+      <div class="tr ind2"><span class="nm">model requests (4)</span><div class="lane"><div class="sp model" style="left:0.5%;width:2.5%"></div><div class="sp model" style="left:5%;width:2%"></div><div class="sp model" style="left:9%;width:2.4%"></div><div class="sp model" style="left:13%;width:2.5%"></div></div></div>
+      <div class="tr ind2"><span class="nm">tool calls · npm test (2)</span><div class="lane"><div class="sp tool" style="left:3%;width:1.8%"></div><div class="sp tool" style="left:11.5%;width:1.4%"></div></div></div>
+      <div class="tr ind1"><span class="nm"><span class="pill bad" style="font-size:10.5px">reject · FR-5</span> → automatic fix round 1</span><div class="lane"><div class="sp swap" style="left:16%;width:3.5%">swap</div><div class="sp step" style="left:19.5%;width:24%">worker · local · 20 min</div></div></div>
+      <div class="tr ind2"><span class="nm">model requests (7)</span><div class="lane"><div class="sp model" style="left:20%;width:2.4%"></div><div class="sp model" style="left:23.5%;width:3%"></div><div class="sp model" style="left:28%;width:2.6%"></div><div class="sp model" style="left:31.5%;width:2%"></div><div class="sp model" style="left:35%;width:2.6%"></div><div class="sp model" style="left:38.5%;width:2%"></div><div class="sp model" style="left:41.2%;width:2%"></div></div></div>
+      <div class="tr ind2"><span class="nm">tool calls · edit, npm test (5)</span><div class="lane"><div class="sp tool" style="left:22.6%;width:.8%"></div><div class="sp tool" style="left:26.8%;width:1%"></div><div class="sp tool" style="left:30.8%;width:.6%"></div><div class="sp tool" style="left:34%;width:.9%"></div><div class="sp tool" style="left:37.8%;width:.6%"></div></div></div>
+      <div class="tr ind1"><span class="nm">Verifier · cloud · re-check</span><div class="lane"><div class="sp step" style="left:44%;width:12%">re-check · 7/7 passed</div></div></div>
+      <div class="tr ind1"><span class="nm">Waiting for a decision</span><div class="lane"><div class="sp wait" style="left:56%;width:39%">gate.wait · 37 min · delegation ended by the reject</div></div></div>
+      <div class="tr ind1"><span class="nm">Move: <b>approve</b> by Zsolt Bátorfi</span><div class="lane"><div class="mk" style="left:95%"></div></div></div>
+    </div></div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
+    <div class="card"><div class="card-h"><h2>Where the 82 minutes went</h2></div>
+      <div class="kv2"><span>Judging (cloud)</span><span>23 min · 2 rounds</span><span>Fixing (local)</span><span>20 min · 7 model requests · 5 tool calls</span><span>Model swap</span><span>3 min · cloud → local, then back</span><span>Waiting on you</span><span>37 min · 45% of this gate</span></div></div>
+    <div class="card"><div class="card-h"><h2>Selected span</h2><span class="pill">swap · 09:53</span></div>
+      <table class="detail"><tr><td class="muted">Span</td><td>lane.swap · from cloud verifier to local worker</td></tr><tr><td class="muted">Duration</td><td>2 min 51 s — loading qwen3-coder:30b (it had been unloaded overnight)</td></tr><tr><td class="muted">Caused by</td><td>event #48,211 <span class="mono">mitigation.round_started</span> (1 of 2)</td></tr><tr><td class="muted">Produced</td><td>events #48,212 <span class="mono">lane.swap_started</span>, #48,219 <span class="mono">lane.swapped</span></td></tr></table></div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

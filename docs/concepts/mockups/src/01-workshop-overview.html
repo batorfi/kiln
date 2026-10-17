@@ -1,0 +1,91 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Workshop overview</title><link rel="stylesheet" href="kiln-mock.css">
+<style>
+.need{display:grid;grid-template-columns:4px 1fr auto;gap:14px;align-items:stretch;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.need .stripe{border-radius:3px}
+.need h3{font-size:14px}
+.need .q{font-size:13px;color:var(--ink-2);margin-top:2px}
+.need .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.need .side-r{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:8px;min-width:150px}
+.fcard .hd{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.fcard .feat{font-size:12.5px;color:var(--ink-2);margin:8px 0 12px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:12px;margin-top:12px}
+.kv span:nth-child(odd){color:var(--muted)}
+.feed .li{font-size:12.5px}
+.feed time{font-size:11.5px;color:var(--faint);min-width:44px}
+</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a class="on">Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Record</a><a>Insights</a><a>Models &amp; policy</a><a>Machine</a><a>Health</a><a>People</a></div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a></div>
+  <div class="machine"><b>Machine</b> · 128 GB unified memory
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div>
+    <div style="margin-top:6px">Resident: qwen3-coder:30b · gemma4:27b <span style="color:#FDBA74">· pinned judge</span></div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Workshop</div><h1>Good morning, Zsolt — 3 decisions are waiting for you</h1>
+    <div class="sub" style="margin-top:4px">3 factories are stopped on you · 1 factory is working · nothing is wrong</div></div>
+    <div class="row"><span class="pill local">● Local by default</span><span class="pill">Last activity 2 min ago</span></div></div>
+
+  <section class="grid" style="grid-template-columns:1.55fr 1fr">
+    <div class="card">
+      <div class="card-h"><div><div class="kicker">Needs you now</div><h2 style="margin-top:2px">Gates waiting for a decision</h2></div><span class="sub">ordered: judged gates first, then oldest</span></div>
+      <div class="grid" style="gap:10px">
+        <div class="need"><div class="stripe" style="background:var(--bad)"></div>
+          <div><div class="row"><h3>Code review gate</h3><span class="pill">kiln-v1 · r10 Role agents &amp; model tiers</span></div>
+            <div class="q">Is the code right, measured against the specification?</div>
+            <div class="meta"><span class="pill bad">Code reviewer objects · 2 major findings</span><span class="pill">Judged gate</span><span class="pill">Moves: approve · restart</span></div></div>
+          <div class="side-r"><span class="pill wait">Waiting 15 h 47 min</span><span class="btn primary">Open gate brief</span></div></div>
+        <div class="need"><div class="stripe" style="background:var(--deleg)"></div>
+          <div><div class="row"><h3>Verification gate</h3><span class="pill">docs-site · d4 Search across versions</span></div>
+            <div class="q">Does it actually work as specified?</div>
+            <div class="meta"><span class="pill deleg">Delegated tail stopped · verifier rejected</span><span class="pill bad">Failed after 2 automatic fix rounds</span><span class="pill">Moves: approve · reject</span></div></div>
+          <div class="side-r"><span class="pill wait">Waiting 7 h 02 min</span><span class="btn">Open gate brief</span></div></div>
+        <div class="need"><div class="stripe" style="background:var(--wait)"></div>
+          <div><div class="row"><h3>Roadmap gate</h3><span class="pill">handbook · new factory — first roadmap</span></div>
+            <div class="q">Which features do we build, in what order?</div>
+            <div class="meta"><span class="pill">Director proposes 4 features</span><span class="pill local">local-only proposed</span><span class="pill">Moves: approve · revise · reject · edit rows</span></div></div>
+          <div class="side-r"><span class="pill wait">Waiting 10 h 04 min</span><span class="btn">Open gate brief</span></div></div>
+      </div>
+    </div>
+    <div class="card feed">
+      <div class="card-h"><div><div class="kicker">Worth knowing</div><h2 style="margin-top:2px">While you were away</h2></div><span class="sub">since 18:40 yesterday</span></div>
+      <div class="list">
+        <div class="li"><time>03:12</time><div><b>Recovered after a crash.</b> Machine restarted; 1 step resumed, 2 gates kept waiting. <span class="muted">Nothing was approved by the restart.</span></div></div>
+        <div class="li"><time>02:51</time><div><b>docs-site · delegation stopped.</b> The verifier rejected d4; 2 automatic fix rounds did not pass.</div></div>
+        <div class="li"><time>01:30</time><div><b>billing-service · b2 passed 3 gates under your delegation</b> (Work plan → Code review). No objections.</div></div>
+        <div class="li"><time>23:05</time><div><b>Overlap detected.</b> billing-service and kiln-v1 both change <span class="mono">shared/config.ts</span>. Shown at the next gate of each.</div></div>
+        <div class="li"><time>22:47</time><div><b>Blocked by policy.</b> A research step tried to send source to a cloud model; kiln-v1 is local-only.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="row" style="margin-bottom:10px"><h2>Factories</h2><span class="sub">each is its own roadmap, lane and record · <b>handbook</b> has not started — it is waiting for its first roadmap approval</span></div>
+    <div class="grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="card fcard"><div class="hd"><span class="dot wait"></span><h2>kiln-v1</h2><span class="grow"></span><span class="pill local">local-only</span></div>
+        <div class="feat">r10 · Role agents and model tiers — <b>waiting for you</b> at Code review</div>
+        <div class="rail sm"><div class="g done"><div class="c"></div><div class="l">Concept</div></div><div class="g done"><div class="c"></div><div class="l">Design</div></div><div class="g done"><div class="c"></div><div class="l">Spec</div></div><div class="g done"><div class="c"></div><div class="l">Plan</div></div><div class="g done"><div class="c"></div><div class="l">Impl.</div></div><div class="g now"><div class="c"></div><div class="l">Review</div></div><div class="g"><div class="c"></div><div class="l">Verify</div></div><div class="g"><div class="c"></div><div class="l">Docs</div></div><div class="g"><div class="c"></div><div class="l">Merge</div></div></div>
+        <div class="kv"><span>Roadmap</span><span>4 of 7 features merged</span><span>Lane</span><span>idle — waiting on a human</span><span>Today</span><span>2 swaps · 3 h 40 m machine time</span></div></div>
+      <div class="card fcard"><div class="hd"><span class="dot run"></span><h2>billing-service</h2><span class="grow"></span><span class="pill cloud">hybrid</span></div>
+        <div class="feat">b2 · Proration on plan change — <b>verifier running</b></div>
+        <div class="rail sm"><div class="g skip"><div class="c"></div><div class="l">Concept</div></div><div class="g skip"><div class="c"></div><div class="l">Design</div></div><div class="g done"><div class="c"></div><div class="l">Spec</div></div><div class="g auto"><div class="c"></div><div class="l">Plan</div></div><div class="g auto"><div class="c"></div><div class="l">Impl.</div></div><div class="g auto"><div class="c"></div><div class="l">Review</div></div><div class="g run"><div class="c"></div><div class="l">Verify</div></div><div class="g"><div class="c"></div><div class="l">Docs</div></div><div class="g"><div class="c"></div><div class="l">Merge</div></div></div>
+        <div class="kv"><span>Roadmap</span><span>1 of 3 features merged</span><span>Lane</span><span>verifier · cloud judge · held</span><span>Spend</span><span>$4.12 of $25 row budget</span></div></div>
+      <div class="card fcard"><div class="hd"><span class="dot wait"></span><h2>docs-site</h2><span class="grow"></span><span class="pill local">local-only</span></div>
+        <div class="feat">d4 · Search across versions — <b>waiting for you</b> at Verification</div>
+        <div class="rail sm"><div class="g done"><div class="c"></div><div class="l">Concept</div></div><div class="g skip"><div class="c"></div><div class="l">Design</div></div><div class="g done"><div class="c"></div><div class="l">Spec</div></div><div class="g auto"><div class="c"></div><div class="l">Plan</div></div><div class="g auto"><div class="c"></div><div class="l">Impl.</div></div><div class="g auto"><div class="c"></div><div class="l">Review</div></div><div class="g now"><div class="c"></div><div class="l">Verify</div></div><div class="g"><div class="c"></div><div class="l">Docs</div></div><div class="g"><div class="c"></div><div class="l">Merge</div></div></div>
+        <div class="kv"><span>Roadmap</span><span>3 of 5 features merged</span><span>Lane</span><span>idle — waiting on a human</span><span>Today</span><span>1 swap · 1 h 55 m machine time</span></div></div>
+    </div>
+    <div class="row sub" style="margin-top:10px;gap:16px"><span class="row" style="gap:6px"><span class="dot" style="background:var(--ink-2)"></span>decided by a human</span><span class="row" style="gap:6px"><span class="dot" style="background:var(--deleg)"></span>passed under delegation</span><span class="row" style="gap:6px"><span class="dot" style="background:var(--wait)"></span>waiting for you</span><span class="row" style="gap:6px"><span class="dot" style="border:2px solid var(--ok);background:#fff"></span>working</span><span class="row" style="gap:6px"><span class="dot" style="border:1.5px dashed var(--faint)"></span>skipped by triage</span></div>
+  </section>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

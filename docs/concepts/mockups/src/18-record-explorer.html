@@ -1,0 +1,88 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Record explorer</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.ev td{font-size:12px;white-space:nowrap}.ev tr.sel td{background:var(--ember-soft)}
+.ev td.t{font-family:var(--mono);font-size:11.5px}
+.chain{display:flex;flex-direction:column;gap:0}
+.cn{display:grid;grid-template-columns:18px 1fr;gap:10px;font-size:12.5px;padding:6px 0;position:relative}
+.cn .d{width:12px;height:12px;border-radius:50%;background:var(--surface);border:2px solid var(--ink-2);margin-top:3px;z-index:1}
+.cn.sel .d{background:var(--ember);border-color:var(--ember)}
+.cn::before{content:"";position:absolute;left:5px;top:18px;bottom:-6px;width:2px;background:var(--line)}
+.cn:last-child::before{display:none}
+.json{background:#1F1B17;color:#E9E2D9;border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:11.5px;line-height:1.6;white-space:pre}
+.json .k{color:#FDBA74}.json .s{color:#86EFAC}.json .c{color:#8C8279}
+.scrub{position:relative;height:42px;margin-top:6px}
+.scrub .tl{position:absolute;left:0;right:0;top:18px;height:4px;border-radius:3px;background:var(--line)}
+.scrub .tk{position:absolute;top:12px;width:2px;height:16px;background:var(--faint)}
+.scrub .tk.g{background:var(--wait);height:16px}
+.scrub .hd{position:absolute;top:6px;width:14px;height:28px;border-radius:5px;background:var(--ember);transform:translateX(-50%);box-shadow:0 0 0 3px var(--ember-soft)}
+.scrub .lb{position:absolute;top:36px;font-size:10.5px;color:var(--faint);transform:translateX(-50%)}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a class="on">Record</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Machine</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>Machine</b> · 128 GB unified memory
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Workshop · Record · all factories</div><h1>The record: every event, in order, with who caused it and why</h1>
+    <div class="sub" style="margin-top:4px">Everything KILN shows is built from this stream. Any view can be rebuilt, at any moment in the past.</div></div>
+    <div class="row"><span class="pill ok">✓ factory-log projection valid</span><span class="pill ok">✓ rebuild matches live</span></div></div>
+  <div class="card"><div class="card-h"><h2>Time travel</h2><span class="sub">drag to see the whole workshop as it was · showing <b>today 03:12:41</b> — the moment of the crash</span></div>
+    <div class="scrub"><div class="tl"></div>
+      <div class="tk" style="left:6%"></div><div class="tk g" style="left:14%"></div><div class="tk" style="left:22%"></div><div class="tk" style="left:31%"></div><div class="tk g" style="left:40%"></div><div class="tk" style="left:47%"></div><div class="tk" style="left:58%"></div><div class="tk g" style="left:66%"></div><div class="tk" style="left:79%"></div><div class="tk" style="left:90%"></div>
+      <div class="hd" style="left:58%"></div>
+      <span class="lb" style="left:2%">18:40</span><span class="lb" style="left:28%">22:00</span><span class="lb" style="left:58%">03:12 crash</span><span class="lb" style="left:85%">08:00</span><span class="lb" style="left:98%">now</span></div>
+    <div class="sub" style="margin-top:14px">Orange ticks are gate decisions. At this moment: 4 factories · 1 step in flight (billing-service worker) · 2 gates waiting · lane of billing-service held by qwen3-coder:30b.</div></div>
+  <div class="grid" style="grid-template-columns:1.35fr 1fr;align-items:start">
+    <div class="card"><div class="card-h"><h2>Events</h2><span class="sub">filter: billing-service · b2 · since 09:40</span></div>
+      <table class="ev"><tr><th>#</th><th>Time</th><th>Type</th><th>Subject</th><th>Actor</th></tr>
+        <tr><td class="t">48,190</td><td class="t">09:41:02</td><td class="mono">unit.started</td><td>b2 · verifier</td><td>director</td></tr>
+        <tr><td class="t">48,191</td><td class="t">09:41:02</td><td class="mono">model.request.started</td><td>b2 · verifier</td><td>role:verifier@cloud</td></tr>
+        <tr><td class="t">48,204</td><td class="t">09:53:40</td><td class="mono">unit.settled</td><td>b2 · verifier</td><td>role:verifier@cloud</td></tr>
+        <tr><td class="t">48,205</td><td class="t">09:53:40</td><td class="mono">gate.vetoed</td><td>b2 · Verification</td><td>role:verifier@cloud</td></tr>
+        <tr class="sel"><td class="t">48,206</td><td class="t">09:53:40</td><td class="mono">delegation.interdicted</td><td>b2</td><td>system</td></tr>
+        <tr><td class="t">48,211</td><td class="t">09:53:41</td><td class="mono">mitigation.round_started</td><td>b2 · round 1 of 2</td><td>director</td></tr>
+        <tr><td class="t">48,212</td><td class="t">09:53:41</td><td class="mono">lane.swap_started</td><td>billing-service lane</td><td>director</td></tr>
+        <tr><td class="t">48,219</td><td class="t">09:56:32</td><td class="mono">lane.swapped</td><td>cloud → qwen3-coder:30b</td><td>director</td></tr>
+        <tr><td class="t">48,302</td><td class="t">10:28:04</td><td class="mono">gate.opened</td><td>b2 · Verification</td><td>director</td></tr>
+        <tr><td class="t">48,388</td><td class="t">11:02:15</td><td class="mono">move.committed</td><td>b2 · Verification · approve</td><td>human:zsolt</td></tr></table></div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Why did this happen?</h2><span class="sub">causation chain</span></div>
+        <div class="chain">
+          <div class="cn"><span class="d"></span><div><b>move.committed</b> · Specification · approve + delegation armed<div class="sub">human:zsolt · Oct 16 18:22</div></div></div>
+          <div class="cn"><span class="d"></span><div><b>delegation.armed</b> · Work plan → Documentation<div class="sub">human:zsolt</div></div></div>
+          <div class="cn"><span class="d"></span><div><b>gate.vetoed</b> · verifier rejected FR-5<div class="sub">role:verifier@cloud · 09:53:40</div></div></div>
+          <div class="cn sel"><span class="d"></span><div><b>delegation.interdicted</b><div class="sub">system · the remaining gates now wait for a human</div></div></div></div></div>
+      <div class="card"><div class="card-h"><h2>Event #48,206</h2><span class="pill">schema kiln.delegation.interdicted/1</span></div>
+<div class="json">{
+  <span class="k">"seq"</span>: 48206,
+  <span class="k">"type"</span>: <span class="s">"kiln.delegation.interdicted"</span>,
+  <span class="k">"time"</span>: <span class="s">"2026-10-17T09:53:40Z"</span>,
+  <span class="k">"subject"</span>: <span class="s">"billing-service/row:b2"</span>,
+  <span class="k">"actor"</span>: <span class="s">"system"</span>,
+  <span class="k">"correlation"</span>: <span class="s">"run:b2-2026-10-10"</span>,
+  <span class="k">"causation"</span>: <span class="s">"evt:48205"</span>,
+  <span class="k">"trace"</span>: <span class="s">"00-4bf9…-01"</span>,
+  <span class="k">"privacy"</span>: <span class="s">"internal"</span>,
+  <span class="k">"data"</span>: { <span class="k">"by"</span>: <span class="s">"gate.vetoed"</span>, <span class="k">"remaining"</span>: [<span class="s">"verification"</span>,<span class="s">"documentation"</span>] }
+}  <span class="c">// never prompt or answer content</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

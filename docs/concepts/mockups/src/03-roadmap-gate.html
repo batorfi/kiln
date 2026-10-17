@@ -1,0 +1,100 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Gate brief · Roadmap gate</title><link rel="stylesheet" href="kiln-mock.css">
+<style>
+.part{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.part .num{width:20px;height:20px;border-radius:6px;background:var(--ember-soft);color:var(--ember);border:1px solid var(--ember-line);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.part .ask{color:var(--muted);font-size:12px}
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 22px}
+.hero .q{font-size:20px;font-weight:650;letter-spacing:-.01em;margin:6px 0 4px}
+.rm td{font-size:12.5px;vertical-align:middle}
+.rm tr.add td{background:#F3FBF5}
+.rm tr.moved td{background:#FFF9EC}
+.tag{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:5px;padding:1px 6px}
+.tag.add{background:var(--ok-soft);color:var(--ok)}.tag.mv{background:var(--wait-soft);color:var(--wait)}
+.st{font-size:11.5px;font-weight:600}
+.dag{display:flex;align-items:center;gap:0;flex-wrap:nowrap;margin-top:6px}
+.node{border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:12px;background:var(--surface);white-space:nowrap}
+.node.m{background:var(--surface-2);color:var(--muted)}
+.node.n{border-color:var(--wait);box-shadow:0 0 0 3px var(--wait-soft)}
+.node.a{border-color:var(--ok);background:var(--ok-soft)}
+.edge{width:26px;height:2px;background:#D8CFC5;position:relative}
+.edge::after{content:"";position:absolute;right:-1px;top:-3px;border:4px solid transparent;border-left-color:#D8CFC5}
+.pol{display:grid;grid-template-columns:150px 1fr;gap:8px 14px;font-size:12.5px}
+.pol>span:nth-child(odd){color:var(--muted)}
+.opt{border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+.opt h3{font-size:13.5px;display:flex;align-items:center;gap:8px}
+.opt p{font-size:12.5px;color:var(--ink-2);margin-top:4px}
+</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a class="on">Needs you <span class="n">3</span></a><a>Factories <span class="s">4</span></a><a>Record</a><a>Insights</a><a>Models &amp; policy</a><a>Machine</a><a>Health</a><a>People</a></div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a class="on"><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a></div>
+  <div class="machine"><b>Roadmap gate</b><div style="margin-top:6px">Never automatic, never delegated. Re-opens after every merged feature.</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0"><b>docs-site</b> · after feature d4 “Search across versions” was merged</div><span class="grow"></span><span class="pill">Re-opened by the director</span><span class="pill wait">Waiting 12 min</span></div>
+    <div class="kicker" style="margin-top:12px">Roadmap gate · program level</div>
+    <div class="q">Which features do we build, in what order?</div>
+    <div class="sub">The director proposes one new feature and one change of order. Nothing starts until you decide. Approving starts the next feature only — never more than one.</div>
+  </div>
+
+  <div class="grid" style="grid-template-columns:1fr 420px;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="part"><span class="num">3</span><h2>The proposed roadmap</h2><span class="ask">What changed since your last approval</span><span class="grow"></span><span class="pill">compare with Oct 12 version</span></div>
+        <table class="rm"><tr><th style="width:50px">#</th><th>Feature</th><th>Depends on</th><th>Status</th><th>Change</th></tr>
+          <tr><td class="mono">d1</td><td>Site skeleton and theme</td><td>—</td><td><span class="st" style="color:var(--ok)">merged</span></td><td></td></tr>
+          <tr><td class="mono">d2</td><td>Docs from markdown with front-matter</td><td>d1</td><td><span class="st" style="color:var(--ok)">merged</span></td><td></td></tr>
+          <tr><td class="mono">d3</td><td>Versioned URLs</td><td>d2</td><td><span class="st" style="color:var(--ok)">merged</span></td><td></td></tr>
+          <tr><td class="mono">d4</td><td>Search across versions</td><td>d3</td><td><span class="st" style="color:var(--ok)">merged</span></td><td></td></tr>
+          <tr class="moved"><td class="mono">d6</td><td><b>Broken-link checker in CI</b></td><td>d3</td><td><span class="st" style="color:var(--wait)">next if approved</span></td><td><span class="tag mv">moved up</span></td></tr>
+          <tr><td class="mono">d5</td><td>API reference per version</td><td>d3</td><td><span class="st muted">queued</span></td><td></td></tr>
+          <tr class="add"><td class="mono">d7</td><td><b>Redirects for renamed pages</b></td><td>d3, d6</td><td><span class="st muted">queued</span></td><td><span class="tag add">new</span></td></tr></table>
+        <div class="kicker" style="margin-top:14px">Dependencies</div>
+        <div class="dag"><span class="node m">d1</span><span class="edge"></span><span class="node m">d2</span><span class="edge"></span><span class="node m">d3</span><span class="edge"></span><span class="node m">d4</span><span class="edge"></span><span class="node n">d6 · link checker</span><span class="edge"></span><span class="node a">d7 · redirects</span><span class="edge"></span><span class="node">d5 · API reference</span></div></div>
+
+      <div class="card"><div class="part"><span class="num">5</span><h2>Why the director proposes this</h2><span class="ask">The evidence</span></div>
+        <div class="list">
+          <div class="li"><span class="pill info">from the record</span><div style="font-size:12.5px">The Verification gates of d3 and d4 found <b>37 broken internal links</b> between them; each took an extra fix round. A checker would have caught them at Code review.</div></div>
+          <div class="li"><span class="pill info">from the record</span><div style="font-size:12.5px">14 pages were renamed in d3. Without redirects, external links to them now fail.</div></div>
+          <div class="li"><span class="pill">estimate</span><div style="font-size:12.5px">d6 is small: triage expects it to skip the Concept and Design gates · about 2 h machine time on local models.</div></div>
+        </div></div>
+
+      <div class="card"><div class="part"><span class="num">6</span><h2>Risks and open issues</h2><span class="ask">What should worry me?</span></div>
+        <div class="list">
+          <div class="li"><span class="pill wait">order</span><div style="font-size:12.5px">Moving d6 ahead delays d5 (API reference) by about half a day; nothing already started is affected.</div></div>
+          <div class="li"><span class="pill wait">scope</span><div style="font-size:12.5px">d7 assumes rename history can be read from git; if not, it may need its own Concept round.</div></div></div></div>
+    </div>
+
+    <div class="grid">
+      <div class="card"><div class="part"><span class="num">2</span><h2>How this factory runs</h2><span class="ask">Decided here, with the roadmap</span></div>
+        <div class="pol">
+          <span>Profile</span><span><span class="pill local">local-only</span> <span class="muted">unchanged</span></span>
+          <span>Models</span><span>work: qwen3-coder:30b · judges: gemma4:27b (pinned)</span>
+          <span>What may leave</span><span><b>Nothing.</b> No model or tool may reach beyond this machine.</span>
+          <span>Budget</span><span>machine time · no spend (no cloud models)</span>
+          <span>Deciders</span><span>Zsolt Bátorfi</span>
+          <span>Delegation</span><span>never carried over between features</span></div>
+        <div class="sub" style="margin-top:10px">Changing any of these is part of this decision, and applies from the next step.</div></div>
+
+      <div class="card"><div class="part"><span class="num">9</span><h2>The options</h2><span class="ask">What happens then?</span></div>
+        <div class="grid" style="gap:9px">
+          <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Approve</h3><p>The roadmap is admitted as shown. <b>d6 starts next</b> with triage; you will be asked again after d6 merges.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--info)"></span>Edit rows</h3><p>Change, add, drop or re-order features yourself, then approve your version.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--wait)"></span>Revise <span class="pill" style="font-weight:500">note required</span></h3><p>The director reworks its proposal from your note; the gate returns.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Reject</h3><p>Keep the roadmap as last approved (Oct 12): d5 starts next; nothing new is admitted.</p></div>
+          <div class="note-box">Your note…</div>
+          <div class="sub" style="text-align:center">Recorded as decided by <b>Zsolt Bátorfi</b> · cannot be delegated</div></div></div>
+
+      <div class="card"><div class="part"><span class="num">10</span><h2>Other actions</h2><span class="ask">None of these decides the gate</span></div>
+        <div style="font-size:12.5px;line-height:1.9">Ask the director why d6 should come before d5<br>See the verification rounds of d3 and d4 in the record<br>Leave it waiting · pause the factory</div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

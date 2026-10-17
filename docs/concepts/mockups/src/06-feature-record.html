@@ -1,0 +1,76 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Feature record</title><link rel="stylesheet" href="kiln-mock.css">
+<style>
+.gl{display:grid;grid-template-columns:150px 1fr;gap:0}
+.gate{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line-2)}
+.gate:first-child{border-top:0}
+.gate .mk{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;margin-top:1px}
+.gate .mk.h{background:var(--ink-2)}.gate .mk.a{background:var(--deleg)}.gate .mk.s{background:#fff;border:2px dashed var(--faint)}
+.gate h3{font-size:13.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gate .d{font-size:12.5px;color:var(--ink-2);margin-top:3px}
+.gate .m{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.eg td{font-size:12px;vertical-align:top}
+.stat{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat div{background:var(--surface-2);border:1px solid var(--line-2);border-radius:9px;padding:10px 12px}
+.stat b{display:block;font-size:18px;font-weight:650;letter-spacing:-.01em}
+.stat span{font-size:11.5px;color:var(--muted)}
+</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a><a>Factories <span class="s">4</span></a><a class="on">Record</a><a>Insights</a><a>Models &amp; policy</a><a>Machine</a><a>Health</a><a>People</a></div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a></div>
+  <div class="machine"><b>Machine</b> · 128 GB unified memory
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Record · <b>billing-service</b> · Feature b1</div><h1>Invoice numbering per tax region — merged Oct 12</h1>
+    <div class="sub" style="margin-top:4px">Rebuilt from the record alone. Every gate, every decider, every step and everything that left the machine.</div></div>
+    <div class="row"><span class="pill ok">Merged · approved by Zsolt Bátorfi</span><span class="pill cloud">hybrid</span><span class="pill">See as it was at any moment</span></div></div>
+
+  <div class="card"><div class="stat">
+    <div><b>2 d 4 h</b><span>from roadmap admission to merge</span></div>
+    <div><b>6 h 50 min</b><span>machine time · 3 swaps</span></div>
+    <div><b>$9.80</b><span>cloud spend of $25 budget</span></div>
+    <div><b>2 h 15 min</b><span>waiting on humans, across 7 gates</span></div></div></div>
+
+  <div class="grid" style="grid-template-columns:1fr 520px;align-items:start">
+    <div class="card"><div class="card-h"><h2>Gates</h2><span class="sub">who decided, on what evidence</span></div>
+      <div>
+        <div class="gate"><span class="mk h">✓</span><div><h3>Roadmap gate <span class="pill">Approve · Zsolt Bátorfi · Oct 10</span></h3><div class="d">Admitted b1 as the first feature · profile <b>hybrid</b>: judges may use cloud models and read specifications and diffs; source never leaves for work roles.</div></div></div>
+        <div class="gate"><span class="mk s"></span><div><h3>Concept · Design <span class="pill">skipped by triage</span></h3><div class="d">Triage judged the feature small and well-scoped; skipping recorded with its reasoning.</div></div></div>
+        <div class="gate"><span class="mk h">✓</span><div><h3>Specification gate <span class="pill">Revise → Approve · Zsolt Bátorfi</span></h3><div class="d">Round 1 sent back: “numbering must never reuse a number after a cancelled invoice.” Round 2 approved.</div><div class="m"><span class="pill">2 rounds</span><span class="pill deleg">delegation armed: Work plan → Documentation</span></div></div></div>
+        <div class="gate"><span class="mk a">✓</span><div><h3>Work plan · Implementation <span class="pill deleg">passed under delegation</span></h3><div class="d">No objections. Recorded as approved under the delegation of Oct 10, 16:05 — not as a human decision.</div></div></div>
+        <div class="gate"><span class="mk h">✓</span><div><h3>Code review gate <span class="pill">Approve · Zsolt Bátorfi</span></h3><div class="d">The code reviewer (cloud) objected: a race when two invoices are created in the same millisecond. <b>Delegation ended</b>; you approved after a restart round fixed it.</div><div class="m"><span class="pill bad">objection</span><span class="pill">restart → round 2</span><span class="pill">gate brief as seen: kept</span></div></div></div>
+        <div class="gate"><span class="mk h">✓</span><div><h3>Verification gate <span class="pill">Approve · Zsolt Bátorfi</span></h3><div class="d">Passed on the first round · 7 of 7 requirements verified.</div></div></div>
+        <div class="gate"><span class="mk h">✓</span><div><h3>Documentation · Merge <span class="pill">Approve · Zsolt Bátorfi · Oct 12</span></h3><div class="d">Delegation no longer active after the objection, so both were decided by you.</div></div></div>
+      </div></div>
+
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>What left the machine</h2><span class="pill cloud">5 requests · 214 KB</span></div>
+        <table class="eg"><tr><th>When</th><th>Role · model</th><th>Carried</th><th>Rule</th></tr>
+          <tr><td>Oct 11 09:12</td><td>Code reviewer · claude-opus-5-5</td><td>spec, diff (6 files)</td><td class="mono">judges-may-read-diff</td></tr>
+          <tr><td>Oct 11 11:40</td><td>Code reviewer · claude-opus-5-5</td><td>spec, diff (7 files)</td><td class="mono">judges-may-read-diff</td></tr>
+          <tr><td>Oct 11 15:02</td><td>Verifier · claude-opus-5-5</td><td>spec, diff, test output</td><td class="mono">judges-may-read-diff</td></tr>
+          <tr><td>Oct 12 08:30</td><td>Verifier · claude-opus-5-5</td><td>spec, test output</td><td class="mono">judges-may-read-diff</td></tr>
+          <tr><td>Oct 12 10:05</td><td>Merge summary · claude-opus-5-5</td><td>pull request text</td><td class="mono">summaries-may-leave</td></tr></table>
+        <div class="row" style="margin-top:10px;gap:8px"><span class="pill ok">secrets scan clean · 5 of 5</span><span class="pill">blocked: 1</span><span class="sub">a worker tried to send <span class="mono">src/</span> — refused by policy, Oct 11 10:20</span></div></div>
+
+      <div class="card"><div class="card-h"><h2>Steps</h2><span class="sub">by role and where they ran</span></div>
+        <table class="eg"><tr><th>Role</th><th>Model</th><th>Where</th><th>Steps</th><th>Time</th></tr>
+          <tr><td>Spec writer</td><td>qwen3-coder:30b</td><td><span class="pill local">local</span></td><td>2</td><td>48 min</td></tr>
+          <tr><td>Worker</td><td>qwen3-coder:30b</td><td><span class="pill local">local</span></td><td>5</td><td>3 h 55 min</td></tr>
+          <tr><td>Code reviewer</td><td>claude-opus-5-5</td><td><span class="pill cloud">cloud</span></td><td>2</td><td>21 min</td></tr>
+          <tr><td>Verifier</td><td>claude-opus-5-5</td><td><span class="pill cloud">cloud</span></td><td>2</td><td>26 min</td></tr>
+          <tr><td>Techwriter · PR writer</td><td>gemma4:27b</td><td><span class="pill local">local</span></td><td>2</td><td>1 h 20 min</td></tr></table>
+        <div class="sub" style="margin-top:8px">Judges ran on a different model family than the author, as this factory's policy requires.</div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

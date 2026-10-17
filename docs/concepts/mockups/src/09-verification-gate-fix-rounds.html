@@ -1,0 +1,75 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Verification gate · fix rounds exhausted</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.rounds{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.rounds>div{border:1px solid var(--line);border-radius:10px;padding:12px 13px;background:var(--surface-2);font-size:12.5px}
+.rounds>div.last{border-color:var(--bad-line);background:var(--bad-soft)}
+.rounds h3{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.vr td{font-size:12.5px}.banner{display:flex;align-items:center;gap:12px;border:1px solid var(--deleg-line);background:var(--deleg-soft);border-radius:10px;padding:11px 14px;font-size:12.5px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a class="on">Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Record</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Machine</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a class="on"><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>Machine</b> · 128 GB unified memory
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0"><b>docs-site</b> · Feature d4 · Search across versions</div><span class="grow"></span><span class="pill">After 2 automatic fix rounds</span><span class="pill wait">Waiting 7 h 02 min</span><span class="pill local">local-only</span></div>
+    <div class="row" style="margin-top:12px;gap:24px;align-items:center">
+      <div style="min-width:440px"><div class="kicker">Verification gate · judged gate · 7 of 9</div><div class="q">Does it actually work as specified?</div>
+        <div class="sub">The verifier found a failure and the factory tried to fix it twice on its own. Both rounds failed, so it stopped for you.</div></div>
+      <div class="grow"><div class="rail"><div class="g done"><div class="c">✓</div><div class="l">Concept</div></div><div class="g skip"><div class="c"></div><div class="l">Design</div></div><div class="g done"><div class="c">✓</div><div class="l">Spec</div></div><div class="g auto"><div class="c">✓</div><div class="l">Plan</div></div><div class="g auto"><div class="c">✓</div><div class="l">Impl.</div></div><div class="g auto"><div class="c">✓</div><div class="l">Code review</div></div><div class="g now"><div class="c"></div><div class="l">Verify</div></div><div class="g"><div class="c"></div><div class="l">Docs</div></div><div class="g"><div class="c"></div><div class="l">Merge</div></div></div></div></div>
+  </div>
+  <div class="banner"><span class="pill deleg">Your delegation ended here</span><div>You armed the unattended tail at the Specification gate (Oct 16, 15:40). It carried Work plan, Implementation and Code review. <b>The verifier's rejection ended it</b> — this gate, and every gate after it, now waits for you.</div></div>
+  <div class="grid" style="grid-template-columns:1fr 430px;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="part"><span class="num">5</span><h2>The evidence</h2><span class="ask">Requirement by requirement</span><span class="grow"></span><span class="pill bad">Verifier: reject</span></div>
+        <table class="vr"><tr><th>Requirement</th><th>Result</th><th>Note</th></tr>
+          <tr><td>FR-1 · Search returns results from the selected version</td><td><span class="check">✓ passed</span></td><td></td></tr>
+          <tr><td>FR-2 · A version switch keeps the query</td><td><span class="check">✓ passed</span></td><td></td></tr>
+          <tr><td>FR-3 · Results show which version they come from</td><td><span class="check">✓ passed</span></td><td></td></tr>
+          <tr><td>FR-4 · Index builds in under 60 s for 5 versions</td><td><span class="cross">✕ failed</span></td><td>94 s on this machine · 3 of 3 runs</td></tr>
+          <tr><td>FR-5 · Works offline in the built site</td><td><span class="check">✓ passed</span></td><td></td></tr></table>
+        <div class="sub" style="margin-top:8px">Verifier · gemma4:27b (strongest local, pinned) · lane held through both fix rounds, so the same judge saw every attempt.</div></div>
+      <div class="card"><div class="part"><span class="num">8</span><h2>The automatic fix rounds</h2><span class="ask">What the factory already tried</span></div>
+        <div class="rounds">
+          <div><h3><span class="pill bad">1st verdict</span></h3>FR-4 failed: 131 s. <span class="muted">Diagnosis: the index is rebuilt from scratch for every version.</span></div>
+          <div><h3><span class="pill">Fix round 1</span></h3>Worker reused the shared vocabulary between versions → <b>108 s</b>. Still failing.</div>
+          <div class="last"><h3><span class="pill bad">Fix round 2 · last</span></h3>Worker parallelised parsing → <b>94 s</b>. Still failing. <b>Cap reached (2 rounds).</b></div></div>
+        <div class="sub" style="margin-top:8px">Verifier's diagnosis now: “The 60 s target may not be reachable without changing the index format — a design decision, not a fix.”</div></div>
+      <div class="card"><div class="part"><span class="num">6</span><h2>Risks and open issues</h2><span class="ask">What should worry me?</span></div>
+        <div class="list"><div class="li"><span class="pill wait">yardstick</span><div style="font-size:12.5px">FR-4's 60 s target was set at the Specification gate without a measurement. It may be the requirement, not the code, that is wrong.</div></div>
+          <div class="li"><span class="pill">machine</span><div style="font-size:12.5px">The runs happened while billing-service was also generating; build times may be ~10% slower than on an idle machine.</div></div></div></div>
+    </div>
+    <div class="grid">
+      <div class="card options-card"><div class="part"><span class="num">9</span><h2>The options</h2><span class="ask">What happens then?</span></div>
+        <div class="grid" style="gap:9px">
+          <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Approve</h3><ul><li>You accept d4 as it is, with FR-4 recorded as <b>failed and accepted by you</b>.</li><li>Documentation starts next; both later gates wait for you.</li></ul></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Reject <span class="pill" style="font-weight:500">note required</span></h3><ul><li>No more automatic rounds — the work returns to Implementation with your note and the diagnosis.</li><li>If the target itself is wrong, say so: the note can ask for the specification to be revised.</li></ul></div>
+          <div class="notav"><b>Not available here:</b> <i>revise</i> — the verifier proves, it does not edit. Another automatic round is not offered: the cap of 2 is reached.</div>
+          <div class="note-box">Your note…</div>
+          <div class="row"><span class="btn bad grow">Reject with note</span><span class="btn ok grow">Approve</span></div></div></div>
+      <div class="card"><div class="part"><span class="num">10</span><h2>Other actions</h2><span class="ask">None of these decides the gate</span></div>
+        <div class="act"><span class="ic">+</span><div><b>Request more evidence</b><div class="sub">Re-run FR-4 on an idle machine (queued for when billing-service pauses)</div></div></div>
+        <div class="act"><span class="ic">?</span><div><b>Ask the director</b><div class="sub">“What would changing the index format involve?”</div></div></div>
+        <div class="act"><span class="ic">≡</span><div><b>Read deeper</b><div class="sub">verifier transcript · both fix rounds' diffs · timing runs</div></div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

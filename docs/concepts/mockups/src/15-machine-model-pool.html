@@ -1,0 +1,62 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Machine & model pool</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.mem{display:flex;height:34px;border-radius:9px;overflow:hidden;border:1px solid var(--line);gap:2px;background:var(--surface)}
+.mem div{display:flex;align-items:center;padding:0 10px;font-size:11.5px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden}
+.lease td{font-size:12.5px;vertical-align:middle}.q td{font-size:12.5px}
+.stat4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat4>div{background:var(--surface-2);border:1px solid var(--line-2);border-radius:9px;padding:10px 12px}
+.stat4 b{display:block;font-size:18px;font-weight:650}.stat4 span{font-size:11.5px;color:var(--muted)}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Record</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a class="on">Machine</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>Machine</b> · 128 GB unified memory
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Workshop · Machine</div><h1>One machine, four factories, one shared pool of models</h1>
+    <div class="sub" style="margin-top:4px">Each factory still does one step at a time. The workshop decides which models stay loaded and who uses them.</div></div>
+    <span class="pill">studio-m5 · 128 GB unified memory</span></div>
+
+  <div class="card"><div class="card-h"><h2>Memory</h2><span class="sub">budget 104 GB · the rest is left for macOS, tools and the browser · a 3rd model would fit only after an unload</span></div>
+    <div class="mem"><div style="width:30%;background:#9A3412">qwen3-coder:30b · 19 GB + 3 slots 12 GB</div><div style="width:24%;background:#57534E">gemma4:27b · pinned judge · 17 GB + 8 GB</div><div style="width:24%;background:#A8A29E">runtime and caches · 25 GB</div><div style="flex:1;background:#F1EDE8;color:var(--muted);font-weight:500">free in budget · 23 GB</div></div>
+    <div class="stat4" style="margin-top:14px"><div><b>81 / 104 GB</b><span>in use / budget</span></div><div><b>2 resident</b><span>1 pinned for judges</span></div><div><b>1 / 3</b><span>concurrent generations / cap</span></div><div><b>4 swaps</b><span>today · 5 min 12 s loading</span></div></div></div>
+
+  <div class="grid" style="grid-template-columns:1.2fr 1fr;align-items:start">
+    <div class="card"><div class="card-h"><h2>Leases</h2><span class="sub">who holds which model right now</span></div>
+      <table class="lease"><tr><th>Factory</th><th>Step</th><th>Model</th><th>Lease</th></tr>
+        <tr><td><span class="dot run"></span> billing-service</td><td>Verifier</td><td class="mono">claude-opus-5-5</td><td><span class="pill cloud">cloud · no lease needed</span></td></tr>
+        <tr><td><span class="dot wait"></span> kiln-v1</td><td class="muted">waiting at Code review</td><td>—</td><td class="muted">none — waiting holds no model</td></tr>
+        <tr><td><span class="dot wait"></span> docs-site</td><td class="muted">waiting at Verification</td><td>—</td><td class="muted">none</td></tr>
+        <tr><td><span class="dot wait"></span> handbook</td><td class="muted">waiting at Roadmap gate</td><td>—</td><td class="muted">none</td></tr></table>
+      <div class="sub" style="margin-top:10px">Three factories are waiting on you, so the machine is mostly idle — this is the time a fourth factory could use.</div>
+      <hr><h3 style="margin-bottom:6px">Pinned</h3><div style="font-size:12.5px"><span class="mono">gemma4:27b</span> stays loaded for every local factory's judges, so judging never pays a load and never waits for another factory's work model to be unloaded.</div></div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Up next across the workshop</h2><span class="sub">affinity first, then priority</span></div>
+        <table class="q"><tr><th>When free</th><th>Factory · step</th><th>Model</th></tr>
+          <tr><td>after verifier</td><td>billing-service · Techwriter</td><td class="mono">gemma4:27b <span class="pill local">resident</span></td></tr>
+          <tr><td>on your decision</td><td>kiln-v1 · Verifier (if approved)</td><td class="mono">gemma4:27b <span class="pill local">resident</span></td></tr>
+          <tr><td>on your decision</td><td>docs-site · Worker (if rejected)</td><td class="mono">qwen3-coder:30b <span class="pill local">resident</span></td></tr></table>
+        <div class="sub" style="margin-top:8px">No swap needed for anything queued. A unit whose model would exceed the budget waits as <i>queued</i> — it never fails.</div></div>
+      <div class="card"><div class="card-h"><h2>Sharing, measured</h2><span class="sub">last 7 days</span></div>
+        <div class="kv2"><span>Tokens / s, alone</span><span>qwen3-coder: 41 · gemma4: 38</span><span>Tokens / s, shared</span><span>qwen3-coder: 29 (−29%) when 2 factories generate</span><span>Concurrency cap</span><span>3 · set from these measurements</span><span>Fair share</span><span>kiln-v1 40% · billing 30% · docs 30% — received 38 / 33 / 29</span><span>Recovered</span><span>11 h of machine time used while another factory waited on you</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

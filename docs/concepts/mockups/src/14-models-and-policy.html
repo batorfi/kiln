@@ -1,0 +1,74 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Models & policy</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.cat td{font-size:12.5px;vertical-align:middle}.mx td,.mx th{text-align:center;font-size:12px}.mx td:first-child,.mx th:first-child{text-align:left}
+.prof{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.prof>div{border:1px solid var(--line);border-radius:10px;padding:12px 13px;font-size:12.5px}
+.prof>div.on{border-color:var(--ink-2);box-shadow:0 0 0 2px var(--line-2)}
+.rule{display:grid;grid-template-columns:22px 1fr auto;gap:10px;padding:8px 0;border-top:1px solid var(--line-2);font-size:12.5px;align-items:start}
+.rule:first-child{border-top:0}.rule .i{font-weight:700}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Record</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Machine</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a class="on"><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>Machine</b> · 128 GB unified memory
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Workshop · Models &amp; policy · <b>billing-service</b></div><h1>Where models run, what may leave, what may be spent</h1>
+    <div class="sub" style="margin-top:4px">Set per factory at the Roadmap gate. Changes are recorded decisions and apply from the next step.</div></div>
+    <div class="row"><span class="pill">Operator view</span><span class="pill cloud">billing-service · hybrid</span></div></div>
+
+  <div class="card"><div class="card-h"><h2>Profile</h2><span class="sub">billing-service · approved by Zsolt Bátorfi · Oct 10</span></div>
+    <div class="prof"><div><b>local-only</b> <span class="muted">· default</span><div class="sub" style="margin-top:4px">no egress at all — provable by the network scan</div></div>
+      <div class="on"><b>hybrid</b> <span class="pill cloud" style="margin-left:4px">active</span><div class="sub" style="margin-top:4px">local by default; named roles may use named private or cloud models</div></div>
+      <div><b>remote-first</b><div class="sub" style="margin-top:4px">private or cloud for most roles; local only where policy requires</div></div></div></div>
+
+  <div class="grid" style="grid-template-columns:1.25fr 1fr;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Model catalog</h2><span class="sub">versions pinned · the network allowlist is derived from here</span></div>
+        <table class="cat"><tr><th>Model</th><th>Family</th><th>Where</th><th>Cost</th><th>Data handling</th></tr>
+          <tr><td class="mono">qwen3-coder:30b</td><td>Qwen</td><td><span class="pill local">local</span></td><td>19 GB · load 38 s</td><td class="muted">stays on machine</td></tr>
+          <tr><td class="mono">gemma4:27b</td><td>Gemma</td><td><span class="pill local">local</span></td><td>17 GB · load 34 s</td><td class="muted">stays on machine</td></tr>
+          <tr><td class="mono">llama-4-70b</td><td>Llama</td><td><span class="pill">private</span></td><td>team GPU host · $0</td><td>our infrastructure · 10.0.4.20</td></tr>
+          <tr><td class="mono">claude-opus-5-5</td><td>Claude</td><td><span class="pill cloud">cloud</span></td><td>per token · cached</td><td>no training · 30-day retention · EU</td></tr></table>
+        <div class="sub" style="margin-top:8px">Credentials live in the macOS keychain — never in the record, the browser or any log.</div></div>
+      <div class="card"><div class="card-h"><h2>Roles → models</h2><span class="sub">billing-service · judges must be a different family from the author</span></div>
+        <table class="mx"><tr><th>Role</th><th>Model</th><th>Where</th><th>Fallback</th></tr>
+          <tr><td>Researcher · Spec writer · Worker</td><td class="mono">qwen3-coder:30b</td><td><span class="pill local">local</span></td><td class="muted">none</td></tr>
+          <tr><td>Architecture critic · Code reviewer · Verifier</td><td class="mono">claude-opus-5-5</td><td><span class="pill cloud">cloud</span></td><td>asks you <span class="muted">(never silent)</span></td></tr>
+          <tr><td>Techwriter · PR writer</td><td class="mono">gemma4:27b</td><td><span class="pill local">local</span></td><td class="mono">qwen3-coder:30b</td></tr></table>
+        <div class="row" style="margin-top:10px;gap:8px"><span class="pill ok">✓ cross-family judging satisfied</span><span class="pill ok">✓ judges on the strongest model available</span></div></div>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>What may leave the machine</h2><span class="sub">checked before every request</span></div>
+        <div class="rule"><span class="i check">✓</span><div><b>judges-may-read-diff</b><div class="sub">specification, plan, diff and test output → cloud judges</div></div><span class="pill cloud">cloud</span></div>
+        <div class="rule"><span class="i check">✓</span><div><b>summaries-may-leave</b><div class="sub">pull request text → cloud</div></div><span class="pill cloud">cloud</span></div>
+        <div class="rule"><span class="i check">✓</span><div><b>source-to-private</b><div class="sub">source code → team GPU host only</div></div><span class="pill">private</span></div>
+        <div class="rule"><span class="i cross">✕</span><div><b>never</b><div class="sub"><span class="mono">.env*</span> · <span class="mono">secrets/</span> · customer data fixtures · other factories' files</div></div><span class="pill bad">blocked</span></div>
+        <div class="rule"><span class="i">⌕</span><div><b>Before sending</b><div class="sub">secret and key scan · redaction of emails and account ids · a violation blocks the request — never a trimmed send</div></div><span></span></div></div>
+      <div class="card"><div class="card-h"><h2>Budgets</h2></div>
+        <div class="kv2"><span>Per feature</span><span>$25 cloud spend · pause when reached</span><span>Per factory · month</span><span>$150 · $31.40 used</span><span>Machine time</span><span>no limit · counted</span></div>
+        <div class="sub" style="margin-top:8px">Reaching a budget pauses the lane and asks you. It never skips a gate or swaps to a cheaper judge.</div></div>
+      <div class="card"><div class="card-h"><h2>Allowed network destinations</h2></div>
+        <div class="mono" style="font-size:12px;line-height:1.9">127.0.0.1:11434 <span class="muted">· Ollama</span><br>10.0.4.20:8000 <span class="muted">· team GPU host</span><br>api.anthropic.com:443 <span class="muted">· cloud judges</span></div>
+        <div class="sub" style="margin-top:6px">Anything else is refused — and shows up in Health.</div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

@@ -1,0 +1,25 @@
+#!/bin/sh
+# Renders every mockup to a 2x PNG next to this folder. Usage: sh render.sh
+cd "$(dirname "$0")"
+CH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+render() { "$CH" --headless=new --disable-gpu --hide-scrollbars --force-device-scale-factor=2 --window-size="$2" --screenshot="../$1.png" "file://$PWD/$1.html" 2>/dev/null; }
+render 01-workshop-overview        1600,1080
+render 02-gate-brief-code-review   1600,1900
+render 03-roadmap-gate             1600,1250
+render 04-factory-live             1600,1230
+render 05-coming-back              1600,1100
+render 06-feature-record           1600,1260
+render 07-specification-gate-delegation 1600,1300
+render 08-implementation-gate-split     1600,1120
+render 09-verification-gate-fix-rounds  1600,1220
+render 10-merge-gate                    1600,1060
+render 11-stepping-in                   1600,1110
+render 12-policy-stops                  1600,980
+render 13-director-conversation         1600,1180
+render 14-models-and-policy             1600,1180
+render 15-machine-model-pool            1600,1000
+render 16-insights                      1600,1080
+render 17-trace                         1600,1000
+render 18-record-explorer               1600,1110
+render 19-health                        1600,960
+render 20-people-and-permissions        1600,980

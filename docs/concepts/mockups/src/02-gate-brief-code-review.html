@@ -1,0 +1,145 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Gate brief · Code review</title><link rel="stylesheet" href="kiln-mock.css">
+<style>
+.part{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.part .num{width:20px;height:20px;border-radius:6px;background:var(--ember-soft);color:var(--ember);border:1px solid var(--ember-line);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.part h2{font-size:13.5px}
+.part .ask{color:var(--muted);font-size:12px;margin-left:2px}
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 22px}
+.hero .q{font-size:20px;font-weight:650;letter-spacing:-.01em;margin:6px 0 4px}
+.commit{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.commit div{background:var(--surface-2);border:1px solid var(--line-2);border-radius:8px;padding:10px 12px;font-size:12.5px}
+.commit b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:4px}
+.opt{border:1px solid var(--line);border-radius:10px;padding:13px 14px;background:var(--surface)}
+.opt h3{font-size:14px;display:flex;align-items:center;gap:8px}
+.opt ul{margin:8px 0 0 16px;color:var(--ink-2);font-size:12.5px}
+.opt li{margin:3px 0}
+.notav{font-size:12px;color:var(--muted);background:var(--surface-2);border:1px dashed var(--line);border-radius:8px;padding:9px 11px}
+.act{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+.act:first-child{border-top:0}
+.act .ic{width:22px;height:22px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted)}
+.find{display:grid;grid-template-columns:auto 1fr auto;gap:10px;padding:10px 0;border-top:1px solid var(--line-2);align-items:start}
+.find:first-of-type{border-top:0}
+.trace td{font-size:12px}
+.prov td{font-size:12px;padding:6px 8px}
+.hist .li{font-size:12.5px}
+</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a class="on">Needs you <span class="n">3</span></a><a>Factories <span class="s">4</span></a><a>Record</a><a>Insights</a><a>Models &amp; policy</a><a>Machine</a><a>Health</a><a>People</a></div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a></div>
+  <div class="machine"><b>This gate brief</b><div style="margin-top:6px;line-height:1.9">1 Orientation<br>2 The decision<br>3 The work<br>4 The yardstick<br>5 The evidence<br>6 Risks &amp; open issues<br>7 Provenance<br>8 History<br>9 The options<br>10 Other actions</div></div>
+</aside>
+<main class="main">
+  <!-- 1 Orientation -->
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0"><b>kiln-v1</b> · Feature r10 · Role agents and model tiers</div><span class="grow"></span>
+      <span class="pill">Round 2 — returned after <b style="margin-left:3px">restart</b></span><span class="pill wait">Waiting 15 h 47 min</span><span class="pill local">local-only</span></div>
+    <div class="row" style="margin-top:12px;align-items:flex-start;gap:24px">
+      <div style="min-width:420px"><div class="kicker">Code review gate · judged gate · 6 of 9</div>
+        <div class="q">Is the code right, measured against the specification?</div>
+        <div class="sub">An independent code reviewer checked the changes. You decide whether they are right — or rebuild from the starting point.</div></div>
+      <div class="grow" style="padding-top:8px"><div class="rail">
+        <div class="g done"><div class="c">✓</div><div class="l">Concept</div></div><div class="g done"><div class="c">✓</div><div class="l">Design</div></div><div class="g done"><div class="c">✓</div><div class="l">Spec</div></div><div class="g done"><div class="c">✓</div><div class="l">Plan</div></div><div class="g done"><div class="c">✓</div><div class="l">Impl.</div></div><div class="g now"><div class="c"></div><div class="l">Code review</div></div><div class="g"><div class="c"></div><div class="l">Verify</div></div><div class="g"><div class="c"></div><div class="l">Docs</div></div><div class="g"><div class="c"></div><div class="l">Merge</div></div></div>
+        <div class="sub" style="margin-top:8px;text-align:right">Decided so far: 5 gates, all by you · no delegation on this feature</div></div>
+    </div>
+  </div>
+
+  <div class="grid" style="grid-template-columns:1fr 430px;align-items:start">
+    <div class="grid">
+      <!-- 2 Decision -->
+      <div class="card"><div class="part"><span class="num">2</span><h2>The decision</h2><span class="ask">What am I deciding?</span></div>
+        <div class="commit">
+          <div><b>Approving commits to</b>this diff as the code that goes to Verification; the reviewer's open findings are carried forward as accepted.</div>
+          <div><b>It does not commit to</b>shipping. Verification and the Merge gate still follow; nothing merges from here.</div>
+          <div><b>At stake if wrong</b>A tier map that routes a judge to a weaker model would quietly weaken every later review.</div></div></div>
+
+      <!-- 3 Work -->
+      <div class="card"><div class="part"><span class="num">3</span><h2>The work</h2><span class="ask">What was produced?</span><span class="grow"></span><span class="pill">12 files · +486 −73</span><span class="pill">open full diff</span></div>
+        <p style="font-size:13px;color:var(--ink-2)">Adds the role catalog (<span class="mono">agents/*.md</span>, 11 roles) and a tier map that binds each role to a model, with judges always on the strongest model. Model swaps unload the previous model before loading the next.</p>
+        <div class="card" style="margin-top:12px;background:var(--info-soft);border-color:var(--info-line);padding:11px 14px">
+          <div class="row"><h3 style="color:var(--info)">Since round 1</h3><span class="sub">your note: “the tier map must refuse to bind a judge to anything but the strongest model — fail closed”</span></div>
+          <div style="font-size:12.5px;margin-top:6px;color:var(--ink-2)">Addressed in <span class="mono">src/tiers.ts</span>: binding a judge to a non-strongest model now throws <span class="mono">TierPolicyError</span>; 4 new tests. <span class="muted">Reviewer confirms this part is resolved.</span></div></div>
+        <div class="code" style="margin-top:12px"><span class="c">src/tiers.ts</span>
+<span class="k">export function</span> bindRole(role: Role, model: ModelRef): Binding {
+<span class="d">-  return { role, model };</span>
+<span class="a">+  if (role.lineOfDefense &amp;&amp; model.id !== strongest().id)</span>
+<span class="a">+    throw new TierPolicyError(`judge ${role.name} must run on the strongest model`);</span>
+<span class="a">+  return { role, model, boundAt: clock.now() };</span>
+}</div></div>
+
+      <!-- 4 Yardstick -->
+      <div class="card"><div class="part"><span class="num">4</span><h2>The yardstick</h2><span class="ask">What is it measured against?</span><span class="grow"></span><span class="pill">Specification · approved by you, Oct 14</span></div>
+        <table class="trace"><tr><th>Requirement</th><th>Covered by</th><th>Evidence</th><th>Reviewer</th></tr>
+          <tr><td>FR-1 · Every role has an agent definition</td><td class="mono">agents/*.md (11)</td><td>schema check ✓</td><td><span class="check">✓</span></td></tr>
+          <tr><td>FR-2 · Judges always on the strongest model</td><td class="mono">src/tiers.ts</td><td>4 tests ✓</td><td><span class="check">✓</span></td></tr>
+          <tr><td>FR-3 · Swap unloads before load</td><td class="mono">src/lane.ts</td><td>2 tests ✓</td><td><span class="cross">✕</span> finding 1</td></tr>
+          <tr><td>FR-4 · Tier map is the only place models are named</td><td class="mono">src/roles.ts, src/walk.ts</td><td>—</td><td><span class="cross">✕</span> finding 2</td></tr>
+          <tr><td>NFR-1 · No network beyond loopback</td><td>network scan</td><td>scan ✓</td><td><span class="check">✓</span></td></tr></table></div>
+
+      <!-- 5 Evidence -->
+      <div class="card"><div class="part"><span class="num">5</span><h2>The evidence</h2><span class="ask">Is it right?</span><span class="grow"></span><span class="pill bad">Code reviewer: restart recommended</span></div>
+        <div class="sub" style="margin-bottom:6px">Code reviewer · gemma4:27b (strongest local, pinned) · ran 14 min · read 12 files, ran the test suite</div>
+        <div class="find"><span class="sev major">major</span><div><b>Swap can unload a model while a held judge still needs it.</b><div class="sub">src/lane.ts:88 — the unload path does not check the hold flag; a Design gate judge could lose its model between work and verdict.</div></div><span class="pill">FR-3</span></div>
+        <div class="find"><span class="sev major">major</span><div><b>Model names still hard-coded outside the tier map.</b><div class="sub">src/walk.ts:41 and src/roles.ts:17 name “gemma4:12b” directly.</div></div><span class="pill">FR-4</span></div>
+        <div class="find"><span class="sev minor">minor</span><div><b>TierPolicyError message omits the model that was refused.</b></div><span class="pill">—</span></div>
+        <hr><div class="row" style="gap:18px;font-size:12.5px"><span><b>Tests</b> 241 passed · 0 failed · 12 skipped (live model unavailable — see risks)</span><span><b>Network scan</b> clean</span><span><b>Lint</b> clean</span></div></div>
+
+      <!-- 6 Risks -->
+      <div class="card"><div class="part"><span class="num">6</span><h2>Risks and open issues</h2><span class="ask">What should worry me?</span></div>
+        <div class="list">
+          <div class="li"><span class="pill wait">assumption</span><div style="font-size:12.5px">The worker assumed “strongest” means largest parameter count. The specification does not define it.</div></div>
+          <div class="li"><span class="pill wait">overlap</span><div style="font-size:12.5px">billing-service also changes <span class="mono">shared/config.ts</span>; the two will meet at their Merge gates.</div></div>
+          <div class="li"><span class="pill">gap</span><div style="font-size:12.5px">12 live-model tests were skipped: Ollama was busy serving another factory at the time. <b>Evidence missing</b>, not passed.</div></div>
+        </div></div>
+    </div>
+
+    <!-- right column -->
+    <div class="grid">
+      <!-- 9 Options -->
+      <div class="card" style="border-color:#D9CFC4;box-shadow:0 1px 0 rgba(0,0,0,.02),0 8px 24px rgba(60,40,20,.06)">
+        <div class="part"><span class="num">9</span><h2>The options</h2><span class="ask">What happens then?</span></div>
+        <div class="grid" style="gap:10px">
+          <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Approve</h3>
+            <ul><li>Verification starts next, on the same pinned judge model — no swap.</li><li>Findings 1–2 are recorded as <b>accepted by you</b> and shown at Verification and Merge.</li><li>About 25 min of machine time.</li></ul></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Restart <span class="pill" style="font-weight:500">note required</span></h3>
+            <ul><li>Implementation is rebuilt from the restorable commit confirmed at the Implementation gate.</li><li>Your note and all findings become the worker's instructions.</li><li>This gate returns as round 3 · about 1 h 30 min, 1 swap.</li></ul></div>
+          <div class="notav"><b>Not available here:</b> <i>revise</i> — the reviewer judges and never edits, so the only way to change the code is to restart. <i>Reject</i> is not a move at this gate.</div>
+          <div class="note-box">Your note — becomes the next step's instruction…</div>
+          <div class="row"><span class="btn bad grow">Restart with note</span><span class="btn ok grow">Approve</span></div>
+          <div class="sub" style="text-align:center">You decide as <b>Zsolt Bátorfi</b> · recorded with this brief as you see it</div>
+        </div></div>
+
+      <!-- 10 Other actions -->
+      <div class="card"><div class="part"><span class="num">10</span><h2>Other actions</h2><span class="ask">None of these decides the gate</span></div>
+        <div class="act"><span class="ic">?</span><div><b>Ask about the work</b><div class="sub">“Why does the unload path skip the hold flag?” — answered as a recorded step; the gate keeps waiting.</div></div></div>
+        <div class="act"><span class="ic">+</span><div><b>Request more evidence</b><div class="sub">A second reviewer from another model family (not available: this factory is local-only and has one family).</div></div></div>
+        <div class="act"><span class="ic">≡</span><div><b>Read deeper</b><div class="sub">Full diff · reviewer transcript · worker transcripts · the record for this feature</div></div></div>
+        <div class="act"><span class="ic">→</span><div><b>Hand over</b><div class="sub">to another decider of kiln-v1, with a note</div></div></div>
+        <div class="act"><span class="ic">⏸</span><div><b>Leave it waiting</b> <span class="sub">· or pause the factory</span></div></div></div>
+
+      <!-- 7 Provenance -->
+      <div class="card"><div class="part"><span class="num">7</span><h2>Provenance</h2><span class="ask">Who did this, and how?</span></div>
+        <table class="prov"><tr><th>Step</th><th>Role · model</th><th>Where</th><th>Time</th></tr>
+          <tr><td>1</td><td>Worker · qwen3-coder:30b</td><td><span class="pill local">local</span></td><td>52 min</td></tr>
+          <tr><td>2</td><td>Worker · qwen3-coder:30b</td><td><span class="pill local">local</span></td><td>38 min</td></tr>
+          <tr><td>3</td><td>Code reviewer · gemma4:27b</td><td><span class="pill local">local</span></td><td>14 min</td></tr></table>
+        <div class="sub" style="margin-top:8px">Interventions: you steered step 2 once (“keep the old API”); you approved 1 risky action (delete <span class="mono">legacy/tiers.json</span>). · 1 swap · nothing left the machine.</div></div>
+
+      <!-- 8 History -->
+      <div class="card hist"><div class="part"><span class="num">8</span><h2>History</h2><span class="ask">How did we get here?</span></div>
+        <div class="list">
+          <div class="li"><span class="faint" style="min-width:52px">Oct 16</span><div><b>Round 1 · Restart</b> by you — “fail closed on judge binding”</div></div>
+          <div class="li"><span class="faint" style="min-width:52px">Oct 15</span><div><b>Implementation gate · Approve</b> by you</div></div>
+          <div class="li"><span class="faint" style="min-width:52px">Oct 14</span><div><b>Specification gate · Approve</b> by you · unattended tail <i>not</i> armed</div></div>
+          <div class="li"><span class="faint" style="min-width:52px">Oct 13</span><div><b>Design gate · Approve</b> by you · critic raised 1 objection, answered</div></div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>
