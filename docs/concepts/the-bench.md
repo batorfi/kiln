@@ -1,4 +1,4 @@
-> Status: concept (proposal, 2026-10-18) — **not admitted**
+> Status: concept (proposal, rev 2, 2026-10-18) — **not admitted**
 > Type: concept
 >
 > Scope note: this doc describes **the bench** — where engineers research, synthesise, prototype and come to
@@ -6,13 +6,14 @@
 > knowledge without extra effort. It introduces three capabilities: the **notebook**, **research steps** and
 > **spikes**. It is a concept, not a design or a spec.
 >
-> Decision taken by the human (2026-10-18): adopt the notebook, research steps and spikes as described here.
+> Decisions taken by the human (2026-10-18): adopt the notebook, research steps and spikes as described here; connect the
+> bench to making and updating roadmaps through a candidate list, evidence and readiness at the Roadmap gate (§8).
 >
 > Companion docs:
 >   - Knowledge:                 `factory-wiki.md` (the tiers the bench promotes into)
 >   - Teams:                     `team-space.md`
 >   - The design:                `web-front-door.md` (§17 summarises this concept)
->   - The user experience:       `user-experience.md` (and `mockups/40`–`43`)
+>   - The user experience:       `user-experience.md` (and `mockups/40`–`45`)
 >   - The PRD:                   `../prd/kiln-prd.md`
 
 # KILN — the bench
@@ -189,7 +190,74 @@ The bench makes knowledge carry two labels everywhere it travels — in pages, g
 - **Focus.** While someone works on the bench, gates keep waiting — nothing is ever decided for them; only judged gates and
   policy stops interrupt, other notifications are batched, and a coming-back summary is ready when they surface.
 
-## 8. In a team
+## 8. The bench and the roadmap
+
+A factory's roadmap changes in exactly one place — **the Roadmap gate**, decided by a human. The bench never edits it.
+What the bench gives the roadmap is what it otherwise lacks: **candidates** (features worth building), **evidence** (is it
+worth it, how big, how risky) and **corrections** (findings that change features already on it).
+
+### 8.1 From idea to roadmap
+
+| Stage | Lives | Moves on when |
+|---|---|---|
+| **Idea** | a note in the notebook | its author makes it a candidate, or the keeper suggests it |
+| **Candidate** | the factory's **candidate list** | someone attaches evidence, or the director proposes it |
+| **Evidenced** | the candidate, with research results and spike reports attached | the director includes it in a proposal |
+| **Proposed** | the director's Roadmap-gate proposal | a human admits it |
+| **Admitted** | the factory's roadmap | it runs through its gates |
+| **Claimed** *(team)* | the team roadmap and a claim | its factory adopts it at its own Roadmap gate |
+
+**The candidate list** is new: a light, unordered tray of possible features per factory — not the roadmap, no gates, no
+order. *Propose as a candidate* works from a note, a research result or a spike report, and keeps the links. The director
+reads the list when it drafts a proposal; Curators and the factory's deciders can edit, merge or close candidates. In a team,
+*propose to the team roadmap* sends a candidate with its evidence to the quorum.
+
+### 8.2 What each capability contributes
+
+- **Notebook — ideas.** Notes become candidates by choice; the keeper may suggest candidates from patterns (*the same
+  workaround noted three times*); factory learnings and judge findings arrive as prompts — the loop from shipped features
+  back to the next roadmap.
+- **Research steps — sizing and prior art.** *What would this touch? Has it been solved? Which dependencies?* When the
+  director cannot size a candidate, its proposal **says so and offers a research step**; a person confirms or declines.
+  The director never starts research itself.
+- **Spikes — de-risking.** For *can this work at all?* or *how big is it really?* A spike's answer shapes the candidate:
+  *yes* → admit with measured evidence; *no* → close it, with the reason recorded so no one spikes it again; *partly* →
+  reshape it (split it, or add the condition found). Spike measurements later inform the **Work plan gate**.
+
+### 8.3 At the Roadmap gate
+
+The Roadmap gate brief gains an **evidence view** per proposed feature:
+
+- the evidence behind it, each item labelled by origin and maturity (`§6`);
+- its **unproven assumptions**;
+- a **readiness** indication — *ready* (validated evidence), *thin* (exploratory only), *unknown* (no evidence) — as
+  information only; it never decides;
+- **other actions**: *research this* and *spike this before admitting*, each starting a bench item linked to the gate.
+
+The gate's moves are unchanged. *Admit only after a spike* is expressed by editing the rows — leave it out for now, or
+place it later — and revisiting it next time.
+
+### 8.4 Keeping the roadmap current
+
+The Roadmap gate re-opens after every merged feature; its brief gains **What we learned since the last approval**: spike
+reports and research concluded since then, learnings from the feature just merged, and **corrections** — bench findings
+that contradict an assumption of a queued feature. The director drafts its amendment from these, citing each; the human
+decides.
+
+Between Roadmap gates, a bench finding that undermines a queued feature is shown as *worth knowing* and flagged for the
+next Roadmap gate. It never pauses the current feature and never edits the roadmap.
+
+### 8.5 Rules
+
+- Nothing on the bench changes a roadmap — only the Roadmap gate, by a human (or the team roadmap's quorum).
+- A private note may make a candidate exist; only **promoted or shared** evidence is cited in a brief.
+- The director **suggests** research and spikes; it never starts them, schedules them, or re-orders anything by itself.
+- Research and spike time spent per candidate is visible, so de-risking stays proportionate.
+
+**New events:** `bench.candidate_proposed`, `bench.candidate_evidenced`, `bench.candidate_closed`,
+`bench.research_suggested`, `roadmap.correction_flagged`.
+
+## 9. In a team
 
 - **Research claims** — a lightweight, advisory *who is researching what* in the team space (`team-space.md`), shared by
   choice, so two people do not spend a day on the same comparison.
@@ -197,7 +265,7 @@ The bench makes knowledge carry two labels everywhere it travels — in pages, g
   notebook is never exposed.
 - **Handing on a spike** — a spike can be shared with a teammate to continue, explicitly and recorded.
 
-## 9. How it fits KILN's rules
+## 10. How it fits KILN's rules
 
 | KILN rule | On the bench |
 |---|---|
@@ -213,14 +281,14 @@ The bench makes knowledge carry two labels everywhere it travels — in pages, g
 `bench.spike_started`, `bench.spike_extended`, `bench.spike_concluded`, `bench.spike_abandoned`,
 `bench.spike_proposed_as_feature`, `bench.shared`. Events carry no note content.
 
-## 10. Open questions
+## 11. Open questions
 
 1. Should research and spike capacity be reserved per person on a shared host, or first come, first served below feature
    work?
 2. Should the keeper's suggestions in the notebook be switchable off per person?
 3. How long are archived spike branches kept?
 
-## 11. One sentence
+## 12. One sentence
 
 The bench gives engineers a place beside the kiln to think, research and prototype — a private notebook, research the
 factory does for them, and ungated spikes that end in measured reports — so the knowledge made between gates becomes

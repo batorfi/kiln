@@ -46,3 +46,8 @@ render 40-notebook                       1600,1000
 render 41-research-step                  1600,960
 render 42-spike                          1600,1040
 render 43-spike-report                   1600,1080
+render 44-candidate-list                 1600,1060
+render 45-roadmap-gate-evidence          1600,1040
+render 46-needs-you                      1600,1160
+render 47-director-at-work               1600,980
+render 48-ask-the-director               1600,1120

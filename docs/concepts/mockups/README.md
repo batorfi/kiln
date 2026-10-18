@@ -5,13 +5,21 @@
 > layout, control and colour here is open; what they are meant to show is the *content and the guarantees* the
 > UX concept asks for.
 
-All forty-three share one scenario: one person (Zsolt) runs a **workshop** on a 128 GB Mac Studio-class machine (host
+All forty-eight share one scenario: one person (Zsolt) runs a **workshop** on a 128 GB Mac Studio-class machine (host
 `studio-m5`, joined by a team server, a cloud machine and a spare server in 33–35) with four
 factories — `kiln-v1` and `docs-site` (local-only), `billing-service` (hybrid, cloud judges) and `handbook` (new,
 waiting for its first roadmap). Most mockups show the same morning after an overnight crash; those marked
 *as it was* show an earlier moment from the record, and two show a later moment or a set of examples.
 
 ## The mockups
+
+### Working with KILN — the director and Needs you
+
+| # | Mockup | Illustrates |
+|---|---|---|
+| 46 | [Needs you](46-needs-you.png) *(Oct 24, 08:55)* | everything waiting on one person in three sections — waiting on you (a Roadmap gate, a policy stop, a team vote, a question from a step), suggestions, worth knowing — each with what it blocks; nothing decides itself |
+| 47 | [The director at work](47-director-at-work.png) | the deterministic core (what it does next, and why, by rule), the planner's labelled draft checked by rules, and what only the person does |
+| 48 | [Ask the director](48-ask-the-director.png) | answers *from the record* (instant, no model, cited) versus *needs a step* (offered, confirmed, labelled a draft); the director declining to approve a gate |
 
 ### The workshop
 
@@ -30,7 +38,7 @@ waiting for its first roadmap). Most mockups show the same morning after an over
 | 34 | [Where a factory runs](34-placing-a-factory.png) | moving billing-service: each host checked for policy, model and capacity fit, with cost — the cloud host ruled out by billing's own policy; what moving does and never does |
 | 35 | [Moving and sleeping](35-moving-and-sleeping.png) | the move in five steps with the Merge gate still waiting; the host asleep while it waits; a decision recorded as *applying on wake*; what sleeping saved |
 
-### The bench — notebook, research steps, spikes
+### The bench — notebook, research steps, spikes, and the roadmap
 
 | # | Mockup | Illustrates |
 |---|---|---|
@@ -38,6 +46,8 @@ waiting for its first roadmap). Most mockups show the same morning after an over
 | 41 | [A research step](41-research-step.png) | the plan shown first (sources, no web for a local-only factory, read-only, estimate); the step running on idle lane time; a labelled draft that says what it could not determine |
 | 42 | [A spike](42-spike.png) | an ungated, time-boxed experiment in a `spike/` branch: the agent and Anna working, steering, a risky action approved, live measurements, the no-merge guard |
 | 43 | [The spike report](43-spike-report.png) | the answer and spike-measured results replacing unverified figures; promote, share or hand on; propose as a feature whose Design brief starts from the report |
+| 44 | [The candidate list](44-candidate-list.png) *(Oct 24, Zsolt's workshop)* | candidates from a spike, a team roadmap, a notebook and a knowledge gap, each with stage, labelled evidence and readiness; one closed by evidence; the director suggesting — not starting — research |
+| 45 | [Roadmap gate with evidence](45-roadmap-gate-evidence.png) | evidence and readiness per proposed feature, an unproven assumption, *research this* / *spike this*; what we learned since the last approval; a correction to a queued feature |
 
 ### Teams — personal workshops and a team space
 
@@ -139,6 +149,7 @@ and where it is illustrated:
 | Durable work: crash, resume, nothing approved by a restart | 05 · 18 · 19 |
 | Several factories, one workshop, one place for what needs you | 01 · 05 · 15 |
 | Model pool, leases, pinned judge, memory budget, scheduler | 15 · 01 |
+| Director: deterministic core, planner drafts, asking the director; Needs you sections and ordering | 46 · 47 · 48 · 01 · 05 |
 | Hosts, placement by people, fit checks, moves with handover, sleeping hosts, decisions applying on wake | 33 · 34 · 35 · 01 · 03 |
 | Local, private and cloud models; profiles; per-role routing; cross-family judging | 14 · 04 · 06 · 16 |
 | Egress policy, checks before sending, audit of what left | 14 · 04 · 06 · 10 · 12 |
@@ -151,6 +162,7 @@ and where it is illustrated:
 | Factory-log as a validated projection | 18 · 19 |
 | People, roles (including Curators), hand-over, identity on every decision | 20 · 02 · 03 |
 | Bench: notebook and promotion, research steps, spikes and spike reports, origin and maturity labels | 40 · 41 · 42 · 43 |
+| Bench and the roadmap: candidate list, evidence and readiness at the Roadmap gate, what we learned, corrections | 44 · 45 |
 | Team space: team roadmap by quorum, claims and protected paths, overlap, requests, mirrored reviews, merge queue, publishing | 36 · 37 · 38 · 39 |
 | Loopback-only session security | 20 |
 

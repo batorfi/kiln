@@ -1,0 +1,69 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — The director at work</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.lay{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.col{border-radius:12px;padding:14px 16px;border:1px solid var(--line);background:var(--surface)}
+.col.det{border-top:4px solid var(--ink-2)}.col.llm{border-top:4px solid var(--deleg)}.col.hum{border-top:4px solid var(--ok)}
+.col h2{font-size:14.5px}.col .tag{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+.q2{display:grid;grid-template-columns:22px 1fr;gap:10px;padding:9px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+.q2:first-of-type{border-top:0}
+.q2 .n{width:20px;height:20px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);font-size:11px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.q2.now .n{background:var(--ok);color:#fff;border-color:var(--ok)}
+.why{font-size:11.5px;color:var(--muted);margin-top:2px}
+.draft{border:1px dashed var(--deleg-line);background:var(--deleg-soft);border-radius:9px;padding:10px 12px;font-size:12.5px;margin-top:8px}
+.chk{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.never li{margin:4px 0}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Zsolt's workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a class="on">Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb"><b>kiln-v1</b> · the director · Oct 24, 09:20</div><h1>How the director works — rules where it acts, drafts where it needs judgment</h1>
+    <div class="sub" style="margin-top:4px">The director is deterministic code. When it needs content it asks the planner — an LLM role that runs as a visible step — and labels the result a draft. People decide.</div></div>
+    <span class="pill ok">Event backbone · Concept step running</span></div>
+  <div class="grid" style="grid-template-columns:repeat(3,1fr);align-items:start">
+    <div class="col det"><div class="tag" style="color:var(--ink-2)">Deterministic · rules</div><h2 style="margin:4px 0 8px">What it is doing, and why</h2>
+      <div class="q2 now"><span class="n">▶</span><div><b>Concept step</b> · concept writer · qwen3-coder:30b<div class="why">next because Event backbone was admitted at 09:05; Concept is its first gate</div></div></div>
+      <div class="q2"><span class="n">2</span><div><b>Concept gate</b> — waits for you<div class="why">a gate opens when its step settles; it holds no model</div></div></div>
+      <div class="q2"><span class="n">3</span><div><b>Design step</b> · architecture designer · qwen3-coder:30b<div class="why">same model as now → no swap (affinity)</div></div></div>
+      <div class="q2"><span class="n">4</span><div><b>Architecture critic</b> · gemma4:27b · lane held<div class="why">judges bind only to the strongest model; pinned → no load</div></div></div>
+      <div class="q2"><span class="n">5</span><div><b>Design gate</b> — waits for you</div></div>
+      <div class="kv2" style="grid-template-columns:110px 1fr;margin-top:10px"><span>Same inputs</span><span>same order, every time</span><span>Uses a model?</span><span>no — this is code</span></div></div>
+    <div class="col llm"><div class="tag" style="color:var(--deleg)">LLM · the planner</div><h2 style="margin:4px 0 8px">What it drafted</h2>
+      <div style="font-size:12.5px">The roadmap proposal you approved at 09:05 — drafted at 08:46 as a <b>step</b> on the lane.</div>
+      <div class="draft"><b>Draft · planner · qwen3-coder:30b · 2 min</b><div style="margin-top:4px">“Event backbone first: the exporter's traces link to events (team knowledge: Event backbone design). Pin judges last: sized at 4 tasks, no dependants.”</div>
+        <div class="chk"><span class="pill ok">✓ dependencies resolve</span><span class="pill ok">✓ claims & protected paths</span><span class="pill ok">✓ policy & placement</span></div>
+        <div class="sub" style="margin-top:6px">checked by the director's rules before you saw it — a failing draft is sent back, never shown</div></div>
+      <div class="kv2" style="grid-template-columns:110px 1fr;margin-top:10px"><span>Also drafts</span><span>work plans · splits · reasons per row · answers that need synthesis</span><span>Never</span><span>changes code · settles a gate · starts other roles</span></div></div>
+    <div class="col hum"><div class="tag" style="color:var(--ok)">You · decisions</div><h2 style="margin:4px 0 8px">What only you do</h2>
+      <div class="list">
+        <div class="li" style="font-size:12.5px"><span class="pill ok">09:05</span><div>Approved the roadmap at the Roadmap gate</div></div>
+        <div class="li" style="font-size:12.5px"><span class="pill">08:40</span><div>Confirmed the director's research suggestion</div></div>
+        <div class="li" style="font-size:12.5px"><span class="pill">next</span><div>Decide the Concept gate when it opens</div></div></div>
+      <div class="card" style="margin-top:10px;background:var(--surface-2)"><b style="font-size:12.5px">The director never</b><ul class="never" style="margin:6px 0 0 16px;font-size:12.5px;color:var(--ink-2)"><li>decides a gate</li><li>starts research or a spike on its own</li><li>reorders the roadmap</li><li>acts on a teammate's workshop</li></ul></div>
+      <div class="row" style="margin-top:10px;gap:6px"><span class="btn grow">Pause after this step</span><span class="btn primary grow">Ask the director</span></div></div>
+  </div>
+  <div class="card"><div class="row" style="gap:18px;font-size:12.5px;flex-wrap:wrap"><b>In one line</b><span class="muted">mechanics are deterministic · drafts come from the planner and are labelled · decisions belong to people</span><span class="grow"></span><span class="mono" style="font-size:11.5px;color:var(--muted)">director.proposal_drafted · director.proposal_checked · move.committed</span></div></div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

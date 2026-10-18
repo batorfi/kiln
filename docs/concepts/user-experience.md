@@ -1,4 +1,4 @@
-> Status: concept draft for review (rev 9, 2026-10-18) — **not admitted**
+> Status: concept draft for review (rev 10, 2026-10-18) — **not admitted**
 > Type: concept
 >
 > Scope note: this doc describes the **KILN user experience at the conceptual level** — who uses KILN, what they
@@ -19,7 +19,8 @@
 >   - Factories anywhere:                `factories-anywhere.md`
 >   - Teams and the team space:          `team-space.md`
 >   - The bench:                         `the-bench.md`
->   - Illustrative mockups:              `mockups/` — forty-three high-resolution illustrations covering every capability below. They
+>   - The director and Needs you:        `the-director.md`
+>   - Illustrative mockups:              `mockups/` — forty-eight high-resolution illustrations covering every capability below. They
 >     are discussion aids, not design decisions; this doc governs where they differ.
 
 # KILN — the user experience, as a concept
@@ -406,6 +407,18 @@ proposals.
 - concluding it produces a **spike report** with measured results, which can be promoted, shared, or proposed as a feature
   whose gates then start from that evidence.
 
+### 7.21 Growing the roadmap from the bench
+
+*Purpose:* turn what people learn into a better-founded roadmap — without the bench ever changing it.
+*Guarantees:*
+- any note, research result or spike report can become a **candidate**, with its links kept; the candidate list is visible
+  to the factory's deciders and Curators, and is never the roadmap itself;
+- the Roadmap gate shows **evidence and readiness** for every proposed feature, and offers *research this* or *spike this*
+  without forcing either;
+- after each merged feature, the Roadmap gate shows **what was learned since the last approval** and which queued features
+  it affects;
+- the director suggests research when it cannot size something; it never starts it.
+
 ## 8. The gate brief: rich context at every gate
 
 A gate is the moment KILN hands a decision to a human. The quality of that decision depends on what the human
@@ -492,7 +505,7 @@ The structure is fixed; the emphasis follows the gate's question.
 
 | Gate | The brief puts first |
 |---|---|
-| **Roadmap gate** | the features, their order and dependencies; what changed since the last approval; **the wiki context behind the proposal, with citations**; what the next feature needs from the human; the factory's profile, egress policy, budget — and **where it runs**, with the fit of each candidate host |
+| **Roadmap gate** | the features, their order and dependencies; what changed since the last approval; **the wiki context behind the proposal, with citations**; **evidence and readiness per proposed feature** (ready · thin · unknown), unproven assumptions, and **what was learned since the last approval** from the bench; what the next feature needs from the human; the factory's profile, egress policy, budget — and **where it runs**, with the fit of each candidate host |
 | **Concept gate** | the problem, the premises and the scope; the research it rests on; what is explicitly out of scope |
 | **Design gate** | the proposed structure and its alternatives; the architecture critic's objections and how the design answers them |
 | **Specification gate** | what "done" means, requirement by requirement; how each will be verified; that this is where the unattended tail can be armed, and what arming it would cover |
@@ -625,7 +638,8 @@ Collected for review; each needs a decision before the interaction design phase.
 | 10 | 2026-10-17 | Factories can **run anywhere** — on any host — placed by people at the Roadmap gate, movable, sleeping while they wait | §4, §7.16 | human |
 | 11 | 2026-10-17 | Teams work in **personal workshops joined by a team space** (git repository first; team roadmap by quorum; advisory claims; required reviews mirrored in the code host; coordination publishing by default; personal keys plus identity provider) | §4, §7.17 | human |
 | 12 | 2026-10-18 | The **bench** — notebook, research steps and spikes — is adopted | §4, §7.18–7.20 | human |
-| 13 | | *(your decisions from this review)* | | |
+| 13 | 2026-10-18 | The bench feeds roadmaps through a **candidate list**, evidence and **readiness** at the Roadmap gate, and *what we learned since the last approval* | §7.21, §8.5 | human |
+| 14 | | *(your decisions from this review)* | | |
 
 ## 16. One sentence
 

@@ -47,6 +47,8 @@
 >   - Factories anywhere:              `factories-anywhere.md`
 >   - Teams and the team space:        `team-space.md`
 >   - The bench:                       `the-bench.md`
+>   - The record (in depth):           `the-record.md`
+>   - The director and Needs you:      `the-director.md`
 
 # KILN — the web front door, on durable agents and durable gates
 
@@ -330,6 +332,8 @@ of the commit itself.
 
 ## 6. Events and observability
 
+*The record is described in depth in `the-record.md`; this section is its summary.*
+
 Rev 3 kept the factory-log as one exported file. That is an audit trail, not observability: it answers
 "what was decided" but not "where is the time going", "which gate keeps bouncing", "why is this unit slow",
 or "what was the factory doing at 03:12 when the server died". This section replaces the single file with an
@@ -405,7 +409,7 @@ publish (an invalid event is a bug and fails the commit, not the consumer).
 | **Wiki** | `wiki.ingest_started` · `wiki.ingest_completed` (pages changed) · `wiki.page_edited` (by whom, where) · `wiki.reverted` · `wiki.query_answered` · `wiki.answer_filed` · `wiki.lint_finding` · `wiki.finding_resolved` · `wiki.schema_changed` · `wiki.digest_proposed` · `wiki.conformance_failed` · `wiki.workshop_updated` · `wiki.digest_added` · `wiki.learning_recorded` · `wiki.page_drifted` |
 | **Host** | `host.joined` · `host.revoked` · `host.online` · `host.offline` · `host.suspended` · `host.resumed` · `factory.placed` · `factory.move_requested` · `factory.moved` (from, to) · `factory.move_failed` · `move.applying_on_wake` |
 | **Team** | `team.subscribed` · `team.published` · `team.claim_made` · `team.claim_refined` · `team.claim_released` · `team.claim_expired` · `team.overlap_detected` · `team.request_sent` · `team.request_received` · `team.response_signed` · `team.roadmap_vote` · `team.roadmap_changed` · `team.rules_changed` · `team.member_joined` · `team.key_revoked` |
-| **Bench** | `bench.note_captured` · `bench.note_promoted` · `bench.research_requested` · `bench.research_completed` · `bench.spike_started` · `bench.spike_extended` · `bench.spike_concluded` · `bench.spike_abandoned` · `bench.spike_proposed_as_feature` · `bench.shared` — never note content |
+| **Bench** | `bench.note_captured` · `bench.note_promoted` · `bench.research_requested` · `bench.research_completed` · `bench.spike_started` · `bench.spike_extended` · `bench.spike_concluded` · `bench.spike_abandoned` · `bench.spike_proposed_as_feature` · `bench.shared` · `bench.candidate_proposed` · `bench.candidate_evidenced` · `bench.candidate_closed` · `bench.research_suggested` · `roadmap.correction_flagged` — never note content |
 | **System** | `server.started` · `server.recovered` (resumed tasks, waiting gates) · `store.migrated` · `dependency.upgraded` |
 
 The catalog is a contract: adding a type is MINOR, changing a payload's meaning is a new schema version, and
@@ -541,6 +545,8 @@ Pi Durable opens two more ways into running work. Neither is a gate, and both ar
   as its own record kind, never as a move, and can never settle a gate task.
 
 ## 9. Working with the orchestrator
+
+*The director, the planner, asking the director and Needs you are described in depth in `the-director.md`.*
 
 The director *is* the row and roadmap tasks — deterministic code, durable by construction. The human
 interacts with it through **commands**: start an admitted row, arm the unattended tail, pause after the
@@ -989,6 +995,10 @@ there into knowledge. This section records how it fits the design.
 - **Labels.** Knowledge carries an **origin** (external · factory-produced · human research · research step ·
   spike-measured) and a **maturity** (exploratory · validated · decided) into pages, briefs and director citations.
 - **Gates.** Bench items can be linked to the gate they are for; only promoted knowledge is cited in a brief.
+- **Roadmaps.** A per-factory **candidate list** (unordered, not the roadmap) collects candidates from notes, research and
+  spike reports; the director drafts proposals from it, suggests research where it cannot size a candidate, and never
+  starts or schedules bench work. The Roadmap gate brief shows evidence and readiness per proposed feature and *what we
+  learned since the last approval*; findings that undermine a queued feature are flagged for the next Roadmap gate.
 - **Record.** New events in the *Bench* group (§6.4); no note content is ever in an event.
 
 ## 18. Living with an experimental substrate

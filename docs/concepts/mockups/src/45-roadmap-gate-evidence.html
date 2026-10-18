@@ -1,0 +1,72 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Roadmap gate with evidence</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.row3{display:grid;grid-template-columns:30px 1fr 92px;gap:12px;padding:12px 0;border-top:1px solid var(--line-2);align-items:start}
+.row3:first-of-type{border-top:0}
+.row3 .n{font-family:var(--mono);color:var(--muted);font-size:12px;padding-top:2px}
+.row3 h3{font-size:13.5px}.row3 .d{font-size:12px;color:var(--ink-2);margin-top:4px}
+.ev2{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.as{font-size:12px;color:var(--wait);margin-top:5px}
+.rd{font-size:11.5px;font-weight:650;border-radius:6px;padding:2px 8px;display:inline-block;text-align:center}
+.rd.ready{background:var(--ok-soft);color:var(--ok)}.rd.thin{background:var(--wait-soft);color:var(--wait)}.rd.unk{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.lr .li{font-size:12.5px}
+.corr{border:1.5px solid var(--wait-line);background:var(--wait-soft);border-radius:10px;padding:11px 13px;font-size:12.5px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Zsolt's workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a class="on">Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0"><b>kiln-v1</b> · Roadmap gate · Oct 24, 09:05 · after r11 “Director and commands” merged</div><span class="grow"></span><span class="pill wait">Waiting 18 min</span><span class="pill local">local-only</span></div>
+    <div class="kicker" style="margin-top:12px">Roadmap gate · with evidence per feature</div>
+    <div class="q">Which features do we build, in what order?</div>
+    <div class="sub">The director proposes three features, drawn from the candidate list. Each shows how well-founded it is — and what we learned since you last approved the roadmap.</div>
+  </div>
+  <div class="grid" style="grid-template-columns:1.2fr 1fr;align-items:start">
+    <div class="card"><div class="part"><span class="num">3</span><h2>The proposal, with its evidence</h2><span class="ask">readiness is information, never a decision</span></div>
+      <div class="row3"><span class="n">1</span><div><h3>Event backbone</h3><div class="d">Unblocks the exporter (traces link to events). <span class="mono">contracts/events/</span> is free since Oct 23.</div>
+        <div class="ev2"><span class="pill">external · design §6</span><span class="pill wait">exploratory · size estimated</span><span class="pill ok">validated · correction applied (see right)</span></div>
+        <div class="as">⚠ unproven: the outbox adds &lt; 5 ms per commit</div></div><span class="rd thin">thin</span></div>
+      <div class="row3"><span class="n">2</span><div><h3>Observability — the opt-in loopback OTLP exporter</h3><div class="d">Team roadmap · adopting it makes a claim. Its Design gate will start from Anna's spike report.</div>
+        <div class="ev2"><span class="pill ok">spike-measured · Anna, Oct 22</span><span class="pill">research step</span></div>
+        <div class="as">condition found by the spike: cover two endpoint overrides in the network check</div></div><span class="rd ready">ready</span></div>
+      <div class="row3"><span class="n">3</span><div><h3>Pin judges explicitly in the model pool</h3><div class="d">From your notebook and the r10 learning. Research ran at 08:40: it touches <span class="mono">src/lane.ts</span> and the pool, ~4 tasks.</div>
+        <div class="ev2"><span class="pill">human research · Zsolt</span><span class="pill">research step · 08:40</span></div></div><span class="rd thin">thin</span></div>
+      <hr><div class="row" style="gap:8px"><span class="btn">Research this…</span><span class="btn">Spike this before admitting…</span><span class="grow"></span><span class="sub">either starts a bench item linked to this gate</span></div></div>
+    <div class="grid">
+      <div class="card lr"><div class="part"><span class="num">8</span><h2>What we learned since your last approval</h2><span class="ask">Oct 21</span></div>
+        <div class="li"><span class="pill ok">spike</span><div>Anna's spike: exporter-only works without a build step; two off-machine overrides <span class="muted">· shared to the team space</span></div></div>
+        <div class="li"><span class="pill ember">learning</span><div>From r11: “the director's proposals need a reason per row” — now applied in this brief</div></div>
+        <div class="li"><span class="pill">research</span><div>Pool research (08:40): pinning touches 2 files — sizes candidate 3</div></div></div>
+      <div class="corr"><b style="color:var(--wait)">Correction to a queued feature</b> — a research step on Oct 23 found that event schemas need a <b>version field from the first event</b>, or replays break later. The director has added it to <b>Event backbone</b>'s scope.<div class="sub" style="margin-top:4px">Flagged for this gate on Oct 23 · never changed the roadmap by itself</div></div>
+      <div class="card options-card"><div class="part"><span class="num">9</span><h2>The options</h2></div>
+        <div class="grid" style="gap:8px">
+          <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Approve</h3><p>Admit all three in this order; Event backbone starts next and its claim is made.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--info)"></span>Edit rows</h3><p>For example, hold “Pin judges” until research or a spike makes it ready.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--wait)"></span>Revise <span class="pill" style="font-weight:500">note required</span></h3><p>The director reworks the proposal.</p></div>
+          <div class="row"><span class="btn grow">Edit rows</span><span class="btn ok grow">Approve</span></div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

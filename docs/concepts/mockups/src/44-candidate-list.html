@@ -1,0 +1,81 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Candidate list</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.cand{display:grid;grid-template-columns:1fr 150px 210px;gap:14px;padding:13px 0;border-top:1px solid var(--line-2);align-items:start}
+.cand:first-of-type{border-top:0}
+.cand h3{font-size:13.5px}.cand .d{font-size:12.5px;color:var(--ink-2);margin-top:3px}
+.ev2{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.stage{display:flex;gap:3px;margin-top:2px}.stage i{flex:1;height:6px;border-radius:3px;background:var(--line)}
+.stage i.on{background:var(--ember)}
+.rd{font-size:11.5px;font-weight:650;border-radius:6px;padding:2px 8px;display:inline-block}
+.rd.ready{background:var(--ok-soft);color:var(--ok)}.rd.thin{background:var(--wait-soft);color:var(--wait)}.rd.unk{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.sug{border:1.5px solid var(--info-line);background:var(--info-soft);border-radius:10px;padding:12px 14px;font-size:12.5px}
+.closed{opacity:.6}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Zsolt's workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a class="on">Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb"><b>kiln-v1</b> · candidate list · Oct 24, 08:30</div><h1>Candidates — ideas waiting to earn a place on the roadmap</h1>
+    <div class="sub" style="margin-top:4px">Not the roadmap: no order, no gates. The director reads this when it drafts a proposal; only the Roadmap gate admits anything.</div></div>
+    <div class="row"><span class="pill">5 open · 1 closed</span><span class="btn">Propose a candidate</span></div></div>
+  <div class="grid" style="grid-template-columns:1fr 360px;align-items:start">
+    <div class="card"><div class="card-h"><h2>Candidates</h2><span class="sub">stage · evidence · readiness</span></div>
+      <div class="cand"><div><h3>Observability — the opt-in loopback OTLP exporter</h3><div class="d">From Anna's spike report · on the team roadmap since Oct 23 (quorum: Zsolt, Bence)</div>
+        <div class="ev2"><span class="pill ok">spike-measured · 14 packages, no build step</span><span class="pill">research step · options</span><span class="pill">human research · Anna</span></div></div>
+        <div><div class="sub">evidenced</div><div class="stage"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div></div>
+        <div><span class="rd ready">ready</span><div class="sub" style="margin-top:4px">one condition: cover two endpoint overrides</div></div></div>
+      <div class="cand"><div><h3>Event backbone</h3><div class="d">Team roadmap · free since Anna's claim on <span class="mono">contracts/events/</span> ended Oct 23</div>
+        <div class="ev2"><span class="pill">external · design doc §6</span><span class="pill wait">exploratory · size estimated</span></div></div>
+        <div><div class="sub">evidenced</div><div class="stage"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div></div>
+        <div><span class="rd thin">thin</span><div class="sub" style="margin-top:4px">no measurement of the outbox cost yet</div></div></div>
+      <div class="cand"><div><h3>Pin judges explicitly in the model pool</h3><div class="d">From Zsolt's notebook · prompted by the learning “keep_alive is not residency”</div>
+        <div class="ev2"><span class="pill">human research · 3 notes</span><span class="pill">learning · r10</span></div></div>
+        <div><div class="sub">candidate</div><div class="stage"><i class="on"></i><i class="on"></i><i></i><i></i></div></div>
+        <div><span class="rd unk">unknown</span><div class="sub" style="margin-top:4px">the director cannot size it</div></div></div>
+      <div class="cand"><div><h3>Health: report steps queued longer than N minutes</h3><div class="d">From a knowledge gap — “not in the wiki” in an answer on Oct 17</div>
+        <div class="ev2"><span class="pill">factory-produced · query gap</span></div></div>
+        <div><div class="sub">candidate</div><div class="stage"><i class="on"></i><i class="on"></i><i></i><i></i></div></div>
+        <div><span class="rd unk">unknown</span></div></div>
+      <div class="cand"><div><h3>Wiki lint as a step</h3><div class="d">Team roadmap · proposed by Bence, signed Oct 21</div>
+        <div class="ev2"><span class="pill">external · factory-wiki §8.3</span></div></div>
+        <div><div class="sub">evidenced</div><div class="stage"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div></div>
+        <div><span class="rd thin">thin</span></div></div>
+      <div class="cand closed"><div><h3>Hand-written OTLP exporter (fallback)</h3><div class="d">Closed Oct 22 — Anna's spike showed the exporter package works without a build step; reason kept so nobody spikes it again</div></div>
+        <div><div class="sub">closed</div></div><div><span class="rd unk">closed · by evidence</span></div></div>
+    </div>
+    <div class="grid">
+      <div class="sug"><div class="row"><span class="pill info">Director suggests</span></div>
+        <div style="margin-top:8px">I can't size <b>Pin judges explicitly in the model pool</b> — I don't know which code it touches. A research step could find out: <i>“list every place the pool loads, unloads or keeps a model”</i>.</div>
+        <div class="kv2" style="grid-template-columns:90px 1fr;margin-top:8px"><span>Would read</span><span>codebase · knowledge</span><span>Estimate</span><span>~20 min · local · read-only</span></div>
+        <div class="row" style="margin-top:10px;gap:8px"><span class="btn grow">Not now</span><span class="btn primary grow">Run the research</span></div>
+        <div class="sub" style="margin-top:6px">The director suggests; it never starts research itself.</div></div>
+      <div class="card"><div class="card-h"><h2>Readiness</h2><span class="sub">information, never a decision</span></div>
+        <div class="kv2" style="grid-template-columns:80px 1fr"><span><span class="rd ready">ready</span></span><span>validated evidence — measured, checked or decided</span><span><span class="rd thin">thin</span></span><span>exploratory evidence only</span><span><span class="rd unk">unknown</span></span><span>no evidence yet</span></div></div>
+      <div class="card"><div class="card-h"><h2>Spent de-risking</h2><span class="sub">so it stays proportionate</span></div>
+        <div class="kv2" style="grid-template-columns:150px 1fr"><span>Exporter</span><span>1 research step · 1 spike · 2 h 07 min (Anna)</span><span>All candidates</span><span>3 h 40 min this week</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

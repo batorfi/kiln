@@ -199,7 +199,9 @@ the place for it. A private **notebook** holds the messy thinking; the knowledge
 contradictions and offers to promote what has matured. **Research steps** hand the legwork to the factory, on spare
 capacity, while the engineer decides gates, and land as labelled drafts in the notebook. **Spikes** are explicitly ungated
 experiments in real code, time-boxed, that end in a **spike report** with measured results — and can become a roadmap
-feature that is then built properly through the gates. Nothing on the bench decides anything; spike code can never reach
+feature that is then built properly through the gates. What the bench produces becomes **candidates and evidence** for
+the roadmap: every proposal at the Roadmap gate shows how well-founded it is, and after each feature the roadmap is
+revisited with what was learned. Nothing on the bench decides anything; spike code can never reach
 `main`; and only knowledge someone promotes is ever cited at a gate. (`the-bench.md`)
 
 ## 7. What KILN is not

@@ -16,6 +16,8 @@
 >   - `docs/concepts/factories-anywhere.md` — hosts
 >   - `docs/concepts/team-space.md` — teams: personal workshops and a team space
 >   - `docs/concepts/the-bench.md` — the bench: notebook, research steps, spikes
+>   - `docs/concepts/the-record.md` — the record in depth
+>   - `docs/concepts/the-director.md` — the director, the planner and Needs you
 >   - `docs/concepts/concept.md`, `gates-why-how-what.md` — the original concept and gate rationale
 >   - the existing codebase under `kiln/` (r1–r9, ~5,900 lines of source, 98 test files)
 
@@ -148,6 +150,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | DIR-2 | It proposes roadmaps (citing knowledge), plans units, orders them by affinity, applies moves, runs fix rounds, drafts record digests. It never decides a gate. | Must |
 | DIR-3 | Commands — start a row, arm delegation, pause after step, abort step, accept/reject a proposal, move a factory — are idempotent commits. | Must |
 | DIR-4 | A conversational interface to the director answers from the record with citations; talking never moves a gate. | Should |
+| DIR-5 | The **planner** is an LLM role run as a step; its drafts (roadmap proposals, work plans, splits, synthesis answers) are labelled, checked by deterministic rules before display, and decided by people. | Must |
+| DIR-6 | **Needs you**: one inbox per person across factories, workshop and team space, in three sections — waiting on you, suggestions, worth knowing — each item with its headline and what it blocks; ordered by stakes, blocking others, then waiting time; never decides or expires anything. | Must |
 
 ### 6.5 Event backbone and record
 
@@ -268,6 +272,9 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | BENCH-7 | **Origin and maturity labels** on all knowledge, carried into briefs and director citations; lint ages exploratory knowledge faster. | Should |
 | BENCH-8 | **Links to gates**, gate-time research suggestions, and focus mode (only judged gates and policy stops interrupt). | Should |
 | BENCH-9 | **In a team**: research claims, sharing bench output by choice, handing a spike to a teammate. | Should |
+| BENCH-10 | **Candidate list** per factory: candidates from notes, research and spike reports, links kept; editable by deciders and Curators; proposable to the team roadmap with evidence. | Should |
+| BENCH-11 | **Roadmap-gate evidence view**: evidence and readiness (ready · thin · unknown) per proposed feature, unproven assumptions, *research this* / *spike this* actions; *what we learned since the last approval*; corrections flagged between gates. | Should |
+| BENCH-12 | **Director suggests, never starts** research or spikes; proposals state when a candidate cannot be sized. | Should |
 
 ## 7. Non-functional requirements
 
@@ -408,7 +415,7 @@ Each milestone is a candidate roadmap row with its own gates. Every milestone en
 | **M10** | **Models beyond the machine** | catalog, profiles, routing, egress policy, budgets, fallback, policy stops | M3, M5 | MOD-1…5, HITL-3 |
 | **M11** | **Factories anywhere** | host runtime and channel, placement, moves, sleeping hosts, network failure | M8 | HOST-2…7, WEB-2 (network) |
 | **M12** | **Team space** | team-space repository, signed acts and keys, team roadmap by quorum, claims and overlap, requests and mirrored reviews, team-aware Merge gate, team knowledge | M7, M8 | TEAM-1…9 |
-| **M13** | **The bench** | notebook and capture, keeper suggestions, promotion; research steps; spikes, spike reports, propose as feature; origin and maturity labels | M3, M7 | BENCH-1…9 |
+| **M13** | **The bench** | notebook and capture, keeper suggestions, promotion; research steps; spikes, spike reports, propose as feature; origin and maturity labels; candidate list and roadmap evidence | M3, M7 | BENCH-1…12 |
 | **M14** | **`kiln-v1` release** | installer, newcomer docs, demo mode from committed replays | M1–M7 (+ chosen Shoulds) | §3.1 goals |
 
 **`kiln-v1`** = M0–M8 plus the *Must* items of M9; M10–M13 can follow as `kiln-v1.x` without changing
