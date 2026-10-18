@@ -109,6 +109,8 @@ below becomes a subsystem KILN must design, build and prove on its own.
 | **Factories anywhere** | each factory's store lives on its host, owned by that host's process; a **move** closes the store, transfers it, and the new host reopens and resumes it — Pi Durable's one-owner rule is the handover protocol (`factories-anywhere.md` §6) |
 | **Sleeping hosts** | a host whose factories all wait at gates can stop entirely: waiting gate tasks run no code, so resuming the store on wake continues exactly where it stopped |
 | **Wiki ingest, query, lint** | ordinary unit tasks and conversations on the factory's lane, at lower priority than feature work; a half-done ingest is never committed |
+| **Research steps** | unit tasks of kind *research*, read-only tools, scheduled below feature work on the lane; results written to the notebook |
+| **Spikes** | agent-assisted spike work runs as unit tasks in the spike's worktree at research priority; the spike's time box is a recorded limit that stops it and asks — it never settles anything |
 | **Ingest summary and revert** | the ingest commits as its step settles; a revert is a recorded command that adds a reverting commit |
 | **Implementation digests** | written by a durable step triggered when a gate settles, derived only from that gate's committed events — so a digest can be regenerated and never disagrees with the record |
 | **Workshop wiki** | its own store and steps, run by the workshop supervisor on spare capacity; included read-only in each factory vault |

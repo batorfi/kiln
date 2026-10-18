@@ -1,4 +1,4 @@
-> Status: concept (proposal, rev 4, 2026-10-17) — **not admitted**
+> Status: concept (proposal, rev 5, 2026-10-18) — **not admitted**
 > Type: concept
 >
 > Scope note: this doc introduces **KILN's wikis**: a dedicated, LLM-maintained knowledge base for every factory, and
@@ -200,6 +200,14 @@ becomes another's.
 names (including collisions with `workshop/`), forbidden characters, missing or malformed front-matter, links into
 `raw/` that do not resolve, plugin-only syntax, and embeds whose files are missing. A wiki that fails conformance is
 reported in Health, like a factory-log that fails validation.
+
+## 6a. The notebook and origin labels
+
+Beneath the knowledge tiers sits each person's **notebook** (`the-bench.md`): a private, unruled vault where thinking
+matures, and from which notes are **promoted** by ingest into a tier the author chooses. With the bench, every page also
+carries an **origin** (external · factory-produced · human research · research step · spike-measured) and a **maturity**
+(exploratory · validated · decided) in its front-matter; lint ages exploratory pages faster, and gate briefs show both
+labels with every citation.
 
 ## 7. Team knowledge
 

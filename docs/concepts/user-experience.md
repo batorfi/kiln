@@ -1,4 +1,4 @@
-> Status: concept draft for review (rev 8, 2026-10-17) — **not admitted**
+> Status: concept draft for review (rev 9, 2026-10-18) — **not admitted**
 > Type: concept
 >
 > Scope note: this doc describes the **KILN user experience at the conceptual level** — who uses KILN, what they
@@ -18,7 +18,8 @@
 >   - The factory wiki:                  `factory-wiki.md`
 >   - Factories anywhere:                `factories-anywhere.md`
 >   - Teams and the team space:          `team-space.md`
->   - Illustrative mockups:              `mockups/` — thirty-nine high-resolution illustrations covering every capability below. They
+>   - The bench:                         `the-bench.md`
+>   - Illustrative mockups:              `mockups/` — forty-three high-resolution illustrations covering every capability below. They
 >     are discussion aids, not design decisions; this doc governs where they differ.
 
 # KILN — the user experience, as a concept
@@ -94,6 +95,9 @@ The experience stands or falls on a small, stable set of ideas the human can hol
 |---|---|---|
 | **Workshop** | the home of all factories; owns the people, the policies, and the single place where every waiting decision is visible | workshop |
 | **Team space** | where a team's personal workshops meet: team roadmap, claims, team knowledge, published progress, requests | team space (`team-space.md`) |
+| **Bench** | a person's own place for research, notes and prototypes, beside their factories | bench (`the-bench.md`) |
+| **Notebook** | a private, messy vault where thinking matures into knowledge by promotion | notebook |
+| **Spike** | an ungated, time-boxed experiment in real code that ends in a measured report | spike |
 | **Claim** | *this feature is being built by this factory, touching these files* — visible to the whole team | claim |
 | **Host** | a machine a factory runs on — this machine, a team server, a cloud machine, a container — with its own models; online, sleeping or offline | host (`factories-anywhere.md`) |
 | **Factory** | one independent line of work with its own roadmap, its own record and its own deciders | flow |
@@ -376,6 +380,32 @@ proposals.
 - what a workshop publishes is visible to its owner before it goes, and defaults to *coordination*;
 - the team roadmap changes only by its quorum, visibly.
 
+### 7.18 Thinking at the bench
+
+*Purpose:* research, read, sketch and prototype while factories work — and keep what was learned.
+*Guarantees:*
+- capture into the **notebook** is one deliberate act from wherever the person is — browser, editor, terminal, a KILN
+  screen, voice — and nothing is ever captured without it;
+- the notebook stays **private** and unruled; the keeper may link, flag contradictions and suggest promotion, never rewrite;
+- **promoting** a note is a short, guided conversation that ends in pages the author chose to write, in the tier they chose.
+
+### 7.19 Handing research to the factory
+
+*Purpose:* let the factory do the legwork of research while the person decides.
+*Guarantees:*
+- a **research step** shows its plan — sources, model, estimate, egress — before it runs, and can be cancelled;
+- it never delays a feature step or a judge, and never changes code;
+- its result arrives in the notebook with sources, confidence and what it could not find, labelled by origin and maturity.
+
+### 7.20 Trying it in a spike
+
+*Purpose:* prototype safely in real code and learn from it.
+*Guarantees:*
+- a **spike** starts with a question and a time box, in its own branch, and is labelled *ungated* everywhere;
+- it can never reach `main` and never passes a gate; at its time box it stops and asks;
+- concluding it produces a **spike report** with measured results, which can be promoted, shared, or proposed as a feature
+  whose gates then start from that evidence.
+
 ## 8. The gate brief: rich context at every gate
 
 A gate is the moment KILN hands a decision to a human. The quality of that decision depends on what the human
@@ -542,6 +572,7 @@ The same concepts must work from the smallest to the largest setup, without a mo
 | **One person, one factory, local only** | the workshop is nearly invisible; everything is about one roadmap | gates, moves, the record |
 | **One person, several factories** | "what needs me" spans factories; capacity becomes visible | each factory's rules and identity |
 | **A team sharing a workshop** | who may decide which factory; whose decision it was | the meaning of every move |
+| **Engineers at the bench** | notebook, research steps and spikes beside the factories; promoted knowledge with origin labels | the gates decide; bench output is context |
 | **Personal workshops with a team space** | the team roadmap, claims and overlap, teammates' requests, published progress | each workshop's gates and rules are its own |
 | **Factories on several hosts** | where each factory runs, host health and sleep, moves between hosts | the gates, the record, one place to decide |
 | **Hybrid or cloud models** | where models run and what left becomes part of orientation and of gate evidence | the human decides; policy is enforced |
@@ -593,7 +624,8 @@ Collected for review; each needs a decision before the interaction design phase.
 | 9 | 2026-10-17 | Factories write **implementation knowledge** into their wikis as they build — feature stories, overviews, explainers, how-tos, reference, learnings | §7.15 | human |
 | 10 | 2026-10-17 | Factories can **run anywhere** — on any host — placed by people at the Roadmap gate, movable, sleeping while they wait | §4, §7.16 | human |
 | 11 | 2026-10-17 | Teams work in **personal workshops joined by a team space** (git repository first; team roadmap by quorum; advisory claims; required reviews mirrored in the code host; coordination publishing by default; personal keys plus identity provider) | §4, §7.17 | human |
-| 12 | | *(your decisions from this review)* | | |
+| 12 | 2026-10-18 | The **bench** — notebook, research steps and spikes — is adopted | §4, §7.18–7.20 | human |
+| 13 | | *(your decisions from this review)* | | |
 
 ## 16. One sentence
 

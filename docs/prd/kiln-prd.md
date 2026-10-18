@@ -1,4 +1,4 @@
-> Status: product requirements — draft for review (rev 2, 2026-10-17) — **not admitted**
+> Status: product requirements — draft for review (rev 3, 2026-10-18) — **not admitted**
 > Type: PRD (high level)
 >
 > Scope note: this document defines **the new KILN codebase** — what it must do, how it is organised, and which of the
@@ -15,6 +15,7 @@
 >   - `docs/concepts/factory-wiki.md` — knowledge (rev 4)
 >   - `docs/concepts/factories-anywhere.md` — hosts
 >   - `docs/concepts/team-space.md` — teams: personal workshops and a team space
+>   - `docs/concepts/the-bench.md` — the bench: notebook, research steps, spikes
 >   - `docs/concepts/concept.md`, `gates-why-how-what.md` — the original concept and gate rationale
 >   - the existing codebase under `kiln/` (r1–r9, ~5,900 lines of source, 98 test files)
 
@@ -79,6 +80,7 @@ old code that still expresses a rule we keep** (§10).
 | **Decider** (primary) | understand the work, decide well, never be bypassed | gate briefs (§6.8), moves, delegation, stepping in |
 | **Operator** | set up hosts, models, policies, budgets | §6.10, §6.12, §6.13 |
 | **Curator** | keep a factory's knowledge current and traceable | §6.11 |
+| **Engineer at the bench** | research, prototype and understand the code while factories run, and keep what they learn | §6.15 |
 | **Observer** | see where things stand | read access to everything live |
 | **Auditor** | reconstruct what happened, and on what evidence | the record, briefs *as seen*, time travel |
 | **Evaluator** | judge models and policies by outcomes | insights, model and locality comparisons |
@@ -99,6 +101,7 @@ old code that still expresses a rule we keep** (§10).
 | **P10** | **Knowledge is context, never authority** — every claim traceable to a source; no page settles a gate. | knowledge module (§6.11) |
 | **P11** | **A factory is portable** — moving it never changes a decision. | hosts (§6.12) |
 | **P12** | **Workshops are sovereign** — no act from a team space or another workshop settles a gate; every act between workshops is signed by a person. | team space (§6.14) |
+| **P13** | **Ungated means ungated** — bench output never settles a gate; spike code never reaches `main`; only promoted knowledge is cited in a brief; capture is always explicit. | bench (§6.15) |
 
 ## 6. Capabilities
 
@@ -252,6 +255,20 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | TEAM-8 | **Identity**: personal signing keys, registered and revoked through the team's identity provider where one exists; shared workshops join as one member. | Should |
 | TEAM-9 | **Shared hosts** serving several member workshops with isolated leases, stores and secrets. | Should |
 
+### 6.15 The bench
+
+| ID | Requirement | |
+|---|---|---|
+| BENCH-1 | **Notebook**: a private, unruled vault per person under the vault contract; explicit capture from clipper, editor, terminal, KILN surfaces and local voice transcription. | Should |
+| BENCH-2 | **Keeper suggestions** in the notebook — links, contradictions, maturity — never rewriting; used only for the owner's questions. | Should |
+| BENCH-3 | **Promotion** of notes by ingest into the workshop, factory or team tier, linked back to the notes. | Should |
+| BENCH-4 | **Research steps**: plan shown first; read-only tools; below feature work, never on a held judge's lane; results in the notebook with sources and labels; per-person caps. | Should |
+| BENCH-5 | **Spikes**: worktree on a `spike/` branch, question and time box, engineer and/or agent, risky actions held; **no pull request to `main` from a spike branch**; archived on conclusion. | Should |
+| BENCH-6 | **Spike report** with spike-measured results; *propose as a feature* seeds a roadmap entry and its Concept or Design brief. | Should |
+| BENCH-7 | **Origin and maturity labels** on all knowledge, carried into briefs and director citations; lint ages exploratory knowledge faster. | Should |
+| BENCH-8 | **Links to gates**, gate-time research suggestions, and focus mode (only judged gates and policy stops interrupt). | Should |
+| BENCH-9 | **In a team**: research claims, sharing bench output by choice, handing a spike to a teammate. | Should |
+
 ## 7. Non-functional requirements
 
 | Area | Requirement |
@@ -303,6 +320,7 @@ kiln/
     workshop/      registry, people & roles, policies, placement, gate inbox
     host/          host runtime, host channel, moves, sleep
     team/          team-space repository: subscribe/publish, signatures, claims, requests, team rules
+    bench/         notebook, capture, promotion, research steps, spikes and spike reports
     server/        HTTP, auth, read models, push, intake
     web/           the front door (prebuilt assets)
     cli/           kiln serve · kiln host · kiln check · kiln replay
@@ -390,9 +408,10 @@ Each milestone is a candidate roadmap row with its own gates. Every milestone en
 | **M10** | **Models beyond the machine** | catalog, profiles, routing, egress policy, budgets, fallback, policy stops | M3, M5 | MOD-1…5, HITL-3 |
 | **M11** | **Factories anywhere** | host runtime and channel, placement, moves, sleeping hosts, network failure | M8 | HOST-2…7, WEB-2 (network) |
 | **M12** | **Team space** | team-space repository, signed acts and keys, team roadmap by quorum, claims and overlap, requests and mirrored reviews, team-aware Merge gate, team knowledge | M7, M8 | TEAM-1…9 |
-| **M13** | **`kiln-v1` release** | installer, newcomer docs, demo mode from committed replays | M1–M7 (+ chosen Shoulds) | §3.1 goals |
+| **M13** | **The bench** | notebook and capture, keeper suggestions, promotion; research steps; spikes, spike reports, propose as feature; origin and maturity labels | M3, M7 | BENCH-1…9 |
+| **M14** | **`kiln-v1` release** | installer, newcomer docs, demo mode from committed replays | M1–M7 (+ chosen Shoulds) | §3.1 goals |
 
-**`kiln-v1`** = M0–M8 plus the *Must* items of M9; M10, M11 and M12 can follow as `kiln-v1.x` without changing
+**`kiln-v1`** = M0–M8 plus the *Must* items of M9; M10–M13 can follow as `kiln-v1.x` without changing
 anything built before them, because the single-machine, local-only, single-person workshop is their degenerate case.
 
 ## 12. Success measures
@@ -433,6 +452,7 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 8. Hosts in several workshops; how workspaces move; workshop failover; container forms — M11.
 9. Egress policy language and model-family identity — M10.
 10. Exact quorum rules, exclusive-claim expiry, publishing levels beyond coordination — M12.
+11. Research and spike capacity on shared hosts; switching off keeper suggestions; archived spike retention — M13.
 
 ## 15. Constitution amendments required
 
@@ -455,6 +475,9 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 | Host | host | a machine factories run on |
 | Team space | team space | the shared git repository where a team's personal workshops meet |
 | Claim | claim | a factory's signed note of which team feature it builds and which code it touches |
+| Bench | bench | a person's place for notes, research steps and spikes |
+| Notebook | notebook | a private vault where notes mature into knowledge by promotion |
+| Spike | spike | an ungated, time-boxed experiment that ends in a measured report |
 | Factory | flow | one roadmap, one lane, one record |
 | Feature | row | one roadmap item, walked through nine gates |
 | Step | unit | one piece of work by one role |

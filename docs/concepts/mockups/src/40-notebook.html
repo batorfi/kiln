@@ -1,0 +1,64 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Notebook</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.nlist .n{padding:10px 12px;border-top:1px solid var(--line-2);font-size:12.5px;cursor:default}
+.nlist .n:first-child{border-top:0}.nlist .n.on{background:var(--ember-soft);border-radius:8px}
+.nlist .n b{display:block;font-size:13px}.nlist .n .src{font-size:11px;color:var(--muted);margin-top:3px}
+.paper{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px 26px;font-size:13.5px;line-height:1.7;color:var(--ink-2)}
+.paper h2{font-size:18px;color:var(--ink);margin-bottom:6px}
+.clip{border-left:3px solid var(--line);padding:6px 12px;margin:10px 0;background:var(--surface-2);font-size:12.5px;border-radius:0 6px 6px 0}
+.wl{color:var(--deleg);border-bottom:1px solid var(--deleg-line)}
+.sg{border:1px solid var(--line);border-radius:10px;padding:11px 13px;background:var(--surface);font-size:12.5px}
+.sg.c{border-color:var(--wait-line);background:var(--wait-soft)}
+.sg.m{border:1.5px solid var(--ember);background:var(--ember-soft)}
+.cap{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.cap span{border:1px solid var(--line);border-radius:9px;padding:8px;text-align:center;font-size:11.5px;background:var(--surface)}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Anna's workshop · anna-mbp</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">1</span></a>
+    <a>Factories <span class="s">1</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a class="on">Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-ui</span><span class="s">waiting</span></a>
+  </div>
+  <div class="machine"><b>anna-mbp</b> · this host · 64 GB<div style="margin-top:6px">gemma4:27b · qwen3-coder:30b</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Bench · notebook · Oct 22, 09:10</div><h1>Anna's notebook — private, messy, and slowly becoming knowledge</h1>
+    <div class="sub" style="margin-top:4px">Nothing here is shared, cited or decided. The keeper links notes to what is known and says when something looks ready to promote.</div></div>
+    <div class="row"><span class="pill">private · only you</span><span class="pill">notebook/ · also in Obsidian</span><span class="btn primary">New note</span></div></div>
+  <div class="card" style="padding:12px 14px"><div class="row"><b style="font-size:12.5px">Capture — always on purpose</b><span class="grow"></span><span class="sub">nothing is captured unless you send it</span></div>
+    <div class="cap" style="margin-top:8px"><span>🔖 browser clipper</span><span>✎ from the editor · with file, lines, commit</span><span>⌘ <span class="mono">kiln note "…"</span></span><span>⇢ "note this" on any KILN screen</span><span>🎙 voice · transcribed on this machine</span></div></div>
+  <div class="grid" style="grid-template-columns:300px 1fr 340px;align-items:start">
+    <div class="card nlist" style="padding:8px"><div class="card-h" style="padding:6px 6px 0"><h2>Notes</h2><span class="sub">23</span></div>
+      <div class="n on"><b>exporter — what does "loopback only" really need?</b>Oct 22 · 3 clips · 1 code selection<div class="src">tagged: observability</div></div>
+      <div class="n"><b>OTel SDK pulls auto-instrumentation</b>Oct 21 · from a docs page</div>
+      <div class="n"><b>exporter-only: ~12 packages?</b>Oct 20 · own count, unverified</div>
+      <div class="n"><b>Research: OTLP exporter options</b>Oct 22 · <span class="pill" style="font-size:10.5px">research step</span><div class="src">landed 08:52 — see Research</div></div>
+      <div class="n"><b>gate brief: findings density</b>Oct 19 · idea</div>
+      <div class="n"><b>voice · "why does the lane throw…"</b>Oct 18 · 0:42</div></div>
+    <div class="paper"><div class="crumb" style="margin-bottom:6px">notebook / observability</div><h2>exporter — what does "loopback only" really need?</h2>
+      <p>For the future exporter row. The policy says the optional exporter may only target <span class="mono">127.0.0.1</span> (<a class="wl">Egress policy</a>). Does the exporter package default to a remote endpoint?</p>
+      <div class="clip">📎 clipped · OTLP exporter README · "If no URL is configured, the exporter sends to <span class="mono">http://localhost:4318</span>…" <span class="muted">— saved locally Oct 22</span></div>
+      <div class="clip">📎 from the editor · <span class="mono">validate/_netscan.ts</span> lines 41–58 at <span class="mono">d41e7aa</span> — the allowlist check we'd have to extend</div>
+      <p>Two things to check: (1) does any env var override it to a remote host? (2) does it phone home for anything else? Not sure about the SDK — <i>#todo measure, don't guess</i>.</p></div>
+    <div class="grid">
+      <div class="sg"><b>Linked</b> · the keeper found related knowledge<div class="sub" style="margin-top:4px"><a class="wl">Egress policy</a> · <a class="wl">Local by default, open by choice</a> · <a class="wl">Observability exporter — dependency options</a> (exploratory)</div></div>
+      <div class="sg c"><b style="color:var(--wait)">Contradiction</b> · your Oct 20 note counts ~12 packages; the research step you ran this morning counted <b>14</b>.<div class="sub" style="margin-top:4px">Neither was measured in code. A spike would settle it.</div></div>
+      <div class="sg m"><b style="color:var(--ember)">Looks ready to promote?</b><div style="margin-top:4px">4 notes and 1 research result on the exporter, a contradiction, and an open question you marked <i>measure, don't guess</i>.</div>
+        <div class="row" style="margin-top:9px;gap:6px"><span class="btn">Promote…</span><span class="btn primary">Start a spike</span></div></div>
+      <div class="card"><div class="kv2" style="grid-template-columns:96px 1fr"><span>Shared</span><span>nothing</span><span>Cited</span><span>never — only promoted knowledge is cited at gates</span><span>Keeper</span><span>suggests only · never rewrites a note</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

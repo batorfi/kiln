@@ -1,4 +1,4 @@
-> Status: exploratory concept (proposal, rev 13, 2026-10-17) — **not admitted**
+> Status: exploratory concept (proposal, rev 14, 2026-10-18) — **not admitted**
 > Type: concept
 >
 > Scope note: this doc describes a *scenario* — KILN with a locally hosted webapp as its front door, its
@@ -29,6 +29,7 @@
 >     anyone can edit sits alongside the factory wikis.
 >   - **Factories can run anywhere** (rev 12, §15; full concept in `factories-anywhere.md`): one workshop, many hosts.
 >   - **Teams work in personal workshops joined by a team space** (rev 13, §16; full concept in `team-space.md`).
+>   - **The bench** — notebook, research steps and spikes (rev 14, §17; full concept in `the-bench.md`).
 >
 > Pi facts below come from Earendil's published material and the `@earendil-works/pi-durable` README
 > (1.3.0). API names are quoted as published and are expected to move; the concept depends on the
@@ -45,6 +46,7 @@
 >   - The factory wiki:                `factory-wiki.md`
 >   - Factories anywhere:              `factories-anywhere.md`
 >   - Teams and the team space:        `team-space.md`
+>   - The bench:                       `the-bench.md`
 
 # KILN — the web front door, on durable agents and durable gates
 
@@ -403,6 +405,7 @@ publish (an invalid event is a bug and fails the commit, not the consumer).
 | **Wiki** | `wiki.ingest_started` · `wiki.ingest_completed` (pages changed) · `wiki.page_edited` (by whom, where) · `wiki.reverted` · `wiki.query_answered` · `wiki.answer_filed` · `wiki.lint_finding` · `wiki.finding_resolved` · `wiki.schema_changed` · `wiki.digest_proposed` · `wiki.conformance_failed` · `wiki.workshop_updated` · `wiki.digest_added` · `wiki.learning_recorded` · `wiki.page_drifted` |
 | **Host** | `host.joined` · `host.revoked` · `host.online` · `host.offline` · `host.suspended` · `host.resumed` · `factory.placed` · `factory.move_requested` · `factory.moved` (from, to) · `factory.move_failed` · `move.applying_on_wake` |
 | **Team** | `team.subscribed` · `team.published` · `team.claim_made` · `team.claim_refined` · `team.claim_released` · `team.claim_expired` · `team.overlap_detected` · `team.request_sent` · `team.request_received` · `team.response_signed` · `team.roadmap_vote` · `team.roadmap_changed` · `team.rules_changed` · `team.member_joined` · `team.key_revoked` |
+| **Bench** | `bench.note_captured` · `bench.note_promoted` · `bench.research_requested` · `bench.research_completed` · `bench.spike_started` · `bench.spike_extended` · `bench.spike_concluded` · `bench.spike_abandoned` · `bench.spike_proposed_as_feature` · `bench.shared` — never note content |
 | **System** | `server.started` · `server.recovered` (resumed tasks, waiting gates) · `store.migrated` · `dependency.upgraded` |
 
 The catalog is a contract: adding a type is MINOR, changing a payload's meaning is a new schema version, and
@@ -967,7 +970,28 @@ This section records how that fits the design.
 - **Shared hosts.** A host may serve several member workshops, each with its own leases, stores and secrets.
 - **Record.** New events in the *Team* group (§6.4).
 
-## 17. Living with an experimental substrate
+## 17. The bench: notebook, research steps and spikes
+
+`the-bench.md` gives engineers a place in their workshop for the work they do between gates, and turns what they make
+there into knowledge. This section records how it fits the design.
+
+- **Notebook.** A private vault folder per person (`notebook/`), under the same Obsidian vault contract as all knowledge
+  but with no schema and no lint findings. Capture is always explicit: clipper, editor, terminal, KILN surfaces, local voice
+  transcription. The keeper links, flags contradictions and suggests promotion, at the lowest priority, and never rewrites
+  notes; it uses a notebook only for its owner's questions. **Promotion** is an ingest into a tier the author chooses.
+- **Research steps.** Durable steps of kind *research* with **read-only tools**, run below feature work and between
+  feature steps, never on a held judge's lane; a plan (sources, role, model, estimate, egress) is shown before they run;
+  results land in the notebook labelled by origin and maturity. Workshop policy can cap research time and spend.
+- **Spikes.** An isolated worktree on a `spike/` branch with a question and a time box; the engineer and/or an agent work
+  in it at research priority; risky actions stay held. KILN refuses pull requests from `spike/` branches to `main`. Concluding
+  a spike produces a **spike report** with spike-measured results; *propose as a feature* drafts a roadmap entry whose
+  Concept or Design brief starts from the report. Spike code never carries over; branches are archived.
+- **Labels.** Knowledge carries an **origin** (external · factory-produced · human research · research step ·
+  spike-measured) and a **maturity** (exploratory · validated · decided) into pages, briefs and director citations.
+- **Gates.** Bench items can be linked to the gate they are for; only promoted knowledge is cited in a brief.
+- **Record.** New events in the *Bench* group (§6.4); no note content is ever in an event.
+
+## 18. Living with an experimental substrate
 
 KILN accepts Pi Durable's experimental status and evolves with it. To keep that cheap:
 
@@ -979,7 +1003,7 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 - **Contribute back.** Where KILN needs something the library lacks (for example, a first-class "complete a
   waiting task from outside"), the preferred path is upstream, not a local workaround.
 
-## 18. Security posture
+## 19. Security posture
 
 - bind to `127.0.0.1` only — unless the workshop is deliberately shared over a network (§15), in which case it uses
   TLS and the team's identity provider;
@@ -997,7 +1021,7 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 - provider credentials live in the OS keychain only; every outbound request is checked against the flow's
   egress policy and allowlist before it leaves (§13.4).
 
-## 19. Open design questions
+## 20. Open design questions
 
 - **Workspace isolation**: shared repo or per-row worktrees, and which task owns cleanup.
 - **Model residency**: loading and evicting the resident Ollama model stays KILN's job
@@ -1014,6 +1038,8 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 - **Model-family identity**: how the catalog records families so cross-family judging can be enforced.
 - **Telemetry retention**: how long spans and fine-grained metrics are kept locally before ageing out
   (domain events are never aged out).
+- **Bench**: reserving research and spike capacity per person on shared hosts; switching off keeper suggestions;
+  how long archived spikes are kept (`the-bench.md` §10).
 - **Teams**: exact quorum rules per team; how exclusive claims expire; publishing levels beyond coordination
   (`team-space.md`).
 - **Factories anywhere**: hosts in more than one workshop (answered for team spaces: yes, `team-space.md` §13); how workspaces move; workshop failover; which container
@@ -1028,7 +1054,7 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 - **Positioning**: from "a factory *for Pi*" to "a factory *built on* Pi's durable substrate, with its own
   surface".
 
-## 20. Roadmap consequences (sketch, for a Roadmap gate conversation)
+## 21. Roadmap consequences (sketch, for a Roadmap gate conversation)
 
 Not a decision — the shape the Roadmap gate would be asked to consider:
 
@@ -1049,6 +1075,9 @@ Not a decision — the shape the Roadmap gate would be asked to consider:
 - **Models beyond the machine** — model catalog, profiles, per-role routing, egress policy and checks,
   budgets, fallback rules, egress audit. Can follow the local-only rows: `local-only` is the default and needs
   none of it.
+- **The bench** — notebook vault and capture, keeper suggestions and promotion, research steps (read-only, low
+  priority, plan first), spikes (worktree, time box, no-merge guard, spike report, propose as feature), origin and
+  maturity labels. Can follow the knowledge row.
 - **Team space** — the team-space repository, subscribe/publish, signed acts and member keys, claims and overlap,
   decision requests, merge-gate conditions mirrored to the code host, team knowledge. Can follow the workshop and
   knowledge rows.
@@ -1064,7 +1093,7 @@ Not a decision — the shape the Roadmap gate would be asked to consider:
   are idempotent commits.
 - **r4 (cut `kiln-v1`)** — gated on the above.
 
-## 21. One sentence
+## 22. One sentence
 
 KILN keeps its kiln — one lane, held heat, a human at every gate — and makes every part of the firing
 durable: workers that survive a crash, gates that wait as long as the human needs, a director that resumes

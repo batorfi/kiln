@@ -240,6 +240,12 @@ Members may share hosts — a team GPU server — while keeping their workshops 
 - a host's owner decides which workshops may use it; every placement is still each workshop's own decision;
 - isolation holds: a host keeps each workshop's stores, workspaces and secrets apart.
 
+## 13a. Research and spikes in a team
+
+With the bench (`the-bench.md`), members can share **research claims** — a lightweight, advisory *who is researching what*
+— so two people do not spend a day on the same comparison; share a note, research result or spike report to the team
+space by choice; and hand a spike to a teammate to continue, explicitly. A member's private notebook is never exposed.
+
 ## 14. Identity and mixed teams
 
 - **Every act is signed by a person.** Claims, publications, requests, responses, delegations and team-roadmap votes are

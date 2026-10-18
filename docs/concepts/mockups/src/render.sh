@@ -42,3 +42,7 @@ render 36-team-space                     1600,1180
 render 37-adopting-a-team-feature        1600,1080
 render 38-teammate-review                1600,1040
 render 39-merge-gate-in-a-team           1600,1140
+render 40-notebook                       1600,1000
+render 41-research-step                  1600,960
+render 42-spike                          1600,1040
+render 43-spike-report                   1600,1080

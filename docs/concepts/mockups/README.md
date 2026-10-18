@@ -5,7 +5,7 @@
 > layout, control and colour here is open; what they are meant to show is the *content and the guarantees* the
 > UX concept asks for.
 
-All thirty-nine share one scenario: one person (Zsolt) runs a **workshop** on a 128 GB Mac Studio-class machine (host
+All forty-three share one scenario: one person (Zsolt) runs a **workshop** on a 128 GB Mac Studio-class machine (host
 `studio-m5`, joined by a team server, a cloud machine and a spare server in 33–35) with four
 factories — `kiln-v1` and `docs-site` (local-only), `billing-service` (hybrid, cloud judges) and `handbook` (new,
 waiting for its first roadmap). Most mockups show the same morning after an overnight crash; those marked
@@ -29,6 +29,15 @@ waiting for its first roadmap). Most mockups show the same morning after an over
 | 33 | [Hosts](33-hosts.png) *(this afternoon)* | one workshop and four hosts — local, team server, cloud VM, offline spare — with their models, capacity, cost, state and factories; host events; how hosts are kept safe |
 | 34 | [Where a factory runs](34-placing-a-factory.png) | moving billing-service: each host checked for policy, model and capacity fit, with cost — the cloud host ruled out by billing's own policy; what moving does and never does |
 | 35 | [Moving and sleeping](35-moving-and-sleeping.png) | the move in five steps with the Merge gate still waiting; the host asleep while it waits; a decision recorded as *applying on wake*; what sleeping saved |
+
+### The bench — notebook, research steps, spikes
+
+| # | Mockup | Illustrates |
+|---|---|---|
+| 40 | [The notebook](40-notebook.png) *(Oct 22, Anna's workshop)* | a private, messy notebook with deliberate capture; the keeper linking a note to knowledge, flagging a contradiction and suggesting promotion — or a spike |
+| 41 | [A research step](41-research-step.png) | the plan shown first (sources, no web for a local-only factory, read-only, estimate); the step running on idle lane time; a labelled draft that says what it could not determine |
+| 42 | [A spike](42-spike.png) | an ungated, time-boxed experiment in a `spike/` branch: the agent and Anna working, steering, a risky action approved, live measurements, the no-merge guard |
+| 43 | [The spike report](43-spike-report.png) | the answer and spike-measured results replacing unverified figures; promote, share or hand on; propose as a feature whose Design brief starts from the report |
 
 ### Teams — personal workshops and a team space
 
@@ -141,6 +150,7 @@ and where it is illustrated:
 | Health without decisions | 19 |
 | Factory-log as a validated projection | 18 · 19 |
 | People, roles (including Curators), hand-over, identity on every decision | 20 · 02 · 03 |
+| Bench: notebook and promotion, research steps, spikes and spike reports, origin and maturity labels | 40 · 41 · 42 · 43 |
 | Team space: team roadmap by quorum, claims and protected paths, overlap, requests, mirrored reviews, merge queue, publishing | 36 · 37 · 38 · 39 |
 | Loopback-only session security | 20 |
 

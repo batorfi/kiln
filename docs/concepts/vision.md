@@ -1,15 +1,18 @@
-> Status: vision (proposal, rev 4, 2026-10-17) — **not admitted**
+> Status: vision (proposal, rev 6, 2026-10-18) — **not admitted**
 > Type: vision
 >
 > Scope note: this is the *why* and the *where to* of KILN, written for anyone deciding whether KILN is worth
 > building, using or contributing to. It describes what KILN aims to be, not how it is built. The design
 > behind it lives in `web-front-door.md`; the original concept in `concept.md`. Where this vision departs from
-> the constitution (Principles III, VII and IX), it needs a Roadmap gate decision and constitution amendments
+> the constitution (Principles III, VI, VII, VIII and IX), it needs a Roadmap gate decision and constitution amendments
 > before it governs anything.
 >
 > Companion docs:
 >   - The design behind this vision:   `web-front-door.md`
 >   - The factory wiki:                `factory-wiki.md`
+>   - Factories anywhere:              `factories-anywhere.md`
+>   - Teams and the team space:        `team-space.md`
+>   - The bench:                       `the-bench.md`
 >   - The original concept:            `concept.md`
 >   - Human gates — why & how & what:  `gates-why-how-what.md`
 
@@ -17,13 +20,16 @@
 
 ## 1. The vision in one paragraph
 
-**KILN is a software factory that runs on your own machine, where AI agents do the work and a human makes
-every decision that matters.** You give it a roadmap; it walks each feature through ten clear gates — from
-"is this worth building?" to "do we ship it?" — on local models by default — and on private or cloud models only where you choose. Every piece of work
-survives a crash, every decision is recorded with who made it and why, and the whole process is visible,
-live, in a browser on your own machine. Each factory keeps a wiki — written by an LLM, curated by engineers — on top
-of a workshop wiki everyone shares, remembering everything it has learned and gives every roadmap its context. On a large enough machine, several of these factories run side by
-side, sharing models and keeping the human's attention, not the hardware, as the only real limit.
+**KILN is a software factory you run yourself, where AI agents do the work and a human makes every decision that
+matters.** You give it a roadmap; it walks each feature through ten clear gates — from *is this worth building?* to
+*do we ship it?* — on local models by default, and on private or cloud models only where you choose. Every piece of
+work survives a crash, every decision is recorded with who made it and why, and the whole process is visible, live, in
+a browser. Each factory keeps a knowledge base — written by an LLM, curated by engineers — that remembers what it has
+learned and explains how its code was built — and engineers get a **bench** where their own research, notes and
+prototypes turn into that knowledge too. Factories run on your machine or anywhere you place them. And a team can
+build one product together while **each engineer keeps their own workshop**: they meet in a shared **team space** that
+shows who is building what, carries team knowledge and reviews between teammates — and never decides anything for
+anyone.
 
 ## 2. Why KILN exists
 
@@ -37,10 +43,13 @@ face the same three problems:
   a finished pile of changes they never shaped.
 - **Ownership.** Cloud agents send your code, your prompts and your intent to someone else's servers, and bill
   you per token. For many teams and many codebases, that is not acceptable — or not affordable at scale.
+- **Collaboration.** When every engineer drives their own agents, teams lose sight of who is building what. Work
+  collides at merge time, knowledge stays in one person's sessions, and nobody can tell how a change was made.
 
 KILN's answer is a factory with a **human at every gate**, **independent judges** that never review their own
-work, and a substrate that is **local by default** — with every model call that leaves the machine chosen,
-checked and recorded by a human's policy.
+work, a substrate that is **local by default** — with every model call that leaves the machine chosen,
+checked and recorded by a human's policy — and a **team space** where engineers who each run their own factory see
+each other's work, share what they learn and review each other's changes.
 
 ## 3. What we believe
 
@@ -57,6 +66,9 @@ checked and recorded by a human's policy.
    actor. Any moment of a run can be reconstructed later.
 6. **Calm, sequential work beats noisy parallelism.** Inside one feature, work happens one step at a time, in
    an order chosen to keep the right model loaded. Parallelism happens between factories, never inside one.
+7. **Your workshop is yours; the team works in the open.** Each engineer's gates are decided only in their own
+   workshop. Teams coordinate by making work visible, sharing knowledge and asking each other — never by deciding for
+   each other.
 
 ## 4. The process, in plain words
 
@@ -85,7 +97,7 @@ judge agrees. Any objection from a judge stops the line and hands it back to the
 
 ## 5. The human's role
 
-KILN is designed around what the humans actually do, which is four things:
+KILN is designed around what the humans actually do, which is six things:
 
 - **Shape the program.** Agree with the factory's director on the roadmap: which features, in what order,
   with what dependencies. Revisit it between features.
@@ -95,6 +107,11 @@ KILN is designed around what the humans actually do, which is four things:
   sources that go into the factory's wiki, talk them through with the LLM, edit and correct pages, and keep the wiki
   healthy; everyone can improve the workshop wiki, so the
   director and every gate work from context that is current and traceable.
+- **Think at the bench.** Research, read the code, sketch and prototype while the factory works — in a private notebook,
+  with research the factory does for them, and in ungated spikes — and promote what holds up into knowledge.
+- **Work with the team.** Pick features from the team roadmap, see who else is touching the same code, ask a
+  teammate for an opinion or a review, answer theirs, and share how your features were built — all signed, all
+  recorded, none of it able to move someone else's gate.
 - **Watch the kiln.** See where every feature stands, what the agents are doing right now, which model is
   loaded, and where time is going — and step in when something looks wrong: steer a working agent, approve a
   risky action, pause, or abort.
@@ -175,12 +192,24 @@ impossible to miss; a teammate's review can be required before merging to `main`
 features can bring their story into team knowledge. The team space coordinates — it never decides: no one's gate can be
 moved from outside their workshop, and every act in it is signed by a person. (`team-space.md`)
 
+### 6.9 The bench: where engineers think while factories work
+
+Engineers spend most of their time between gates — researching, reading code, synthesising, prototyping. The **bench** is
+the place for it. A private **notebook** holds the messy thinking; the knowledge keeper links it to what is known, flags
+contradictions and offers to promote what has matured. **Research steps** hand the legwork to the factory, on spare
+capacity, while the engineer decides gates, and land as labelled drafts in the notebook. **Spikes** are explicitly ungated
+experiments in real code, time-boxed, that end in a **spike report** with measured results — and can become a roadmap
+feature that is then built properly through the gates. Nothing on the bench decides anything; spike code can never reach
+`main`; and only knowledge someone promotes is ever cited at a gate. (`the-bench.md`)
+
 ## 7. What KILN is not
 
 - **Not an autopilot.** It never ships anything a human has not approved, directly or by explicit delegation.
 - **Not a hosted service.** There is no KILN account and no KILN backend. You run it — on your laptop, your servers,
   or machines in your own cloud account; cloud models and cloud machines are options you configure, never a
   dependency.
+- **Not a central control plane.** A team space coordinates personal workshops; it holds no one's gates, needs no
+  server, and cannot approve anything.
 - **Not a swarm.** It does not run dozens of agents at once on one feature; it runs the right agent, on the
   right model, at the right time.
 - **Not a dashboard bolted onto an agent.** The process, the gates and the record come first; the web front
@@ -218,6 +247,7 @@ The path is a sequence of horizons, each admitted at the Roadmap gate in its own
 | **Roles and the director** | the full set of role agents on their model tiers; a director that turns an approved specification into gated work | planned (r10, r11), reshaped by this vision |
 | **The workshop** | several factories on one machine, sharing a model pool, with one place to decide | this vision |
 | **The factory wiki** | an LLM-maintained, Curator-curated wiki per factory that gives roadmaps and gates their context | this vision |
+| **The bench** | a private notebook that matures into knowledge, research steps on spare capacity, ungated spikes with measured reports that can become features | this vision |
 | **The team space** | personal workshops on one codebase: team roadmap by quorum, claims and overlap, team knowledge, teammate reviews mirrored in the code host | this vision |
 | **Factories anywhere** | one workshop, factories on any host — laptop, team server, cloud VM, container — placed by people, moved without losing a step, sleeping while they wait | this vision |
 | **Models beyond the machine** | private and cloud models when configured: per-role routing, egress policy, budgets, an audit of what left the machine | this vision |
@@ -243,6 +273,8 @@ KILN builds on Pi's durable substrate while it is still experimental, and evolve
   code is the way it is — and start from any file to find the pages that explain it.
 - **Roadmaps are better informed over time.** The director's proposals cite the wiki, and the wiki keeps growing
   from every feature, incident and decision — while every cited claim still traces back to its source.
+- **Thinking leaves a trace.** What engineers learn while researching and prototyping becomes knowledge with its origin
+  attached — and features proposed from spikes arrive at their gates with measured evidence.
 - **Teammates never collide by surprise.** Overlapping work is visible from the moment it is planned, and every merge to
   `main` shows who reviewed it and how it was built.
 - **Hardware is never the ceiling.** A team adds a server or a rented machine and its factories run there — same
@@ -257,8 +289,9 @@ Adopting it needs deliberate, recorded human decisions:
 - **Constitution amendments**: local by default with egress only by configured, recorded choice
   (Principle VIII); one lane *per factory* with a machine-wide model budget (Principle III); the
   event stream as the primary record (Principle VII); a local web front door in place of "no dashboard, no
-  server" (Principle IX); the Roadmap gate's new name (Principle VI); and a new rule that knowledge is
-  context, never authority.
+  server" (Principle IX); the Roadmap gate's new name (Principle VI); and new rules that knowledge is
+  context, never authority, that a factory is portable, and that **workshops are sovereign** — no act from a team
+  space or another workshop settles a gate.
 - **A Roadmap gate amendment** that admits the new horizons and decides the future of the Pi-integrated UI.
 - **Acceptance of new dependencies** — Pi's durable substrate and its companions — already approved in
   principle.
@@ -266,5 +299,6 @@ Adopting it needs deliberate, recorded human decisions:
 ## 12. One sentence
 
 KILN is a calm, local-by-default, accountable software factory: agents do the work, independent judges check it, a human
-decides at every gate, a wiki remembers what every factory has learned — and every firing is durable, visible and
-explainable, on your own machine.
+decides at every gate, knowledge remembers what every factory and every engineer has learned, and teammates each keep
+their own workshop
+while building one product in the open — every firing durable, visible and explainable, wherever it runs.

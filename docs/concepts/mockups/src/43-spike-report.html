@@ -1,0 +1,70 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Spike report</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.rep{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px 28px;font-size:13px;line-height:1.65;color:var(--ink-2)}
+.rep h2{font-size:21px;color:var(--ink)}.rep h3{font-size:14px;color:var(--ink);margin:16px 0 6px}
+.ans{display:flex;align-items:center;gap:12px;background:var(--ok-soft);border:1px solid var(--ok-line);border-radius:10px;padding:11px 14px;margin:10px 0;font-size:13px}
+.ans b.big{font-size:18px;color:var(--ok)}
+.meas td{font-size:12.5px}
+.excerpt{background:#1F1B17;color:#E9E2D9;border-radius:8px;font-family:var(--mono);font-size:11.5px;line-height:1.6;padding:9px 12px;white-space:pre}
+.next .opt h3{font-size:13.5px}
+.feat{border:1.5px solid var(--ember-line);background:var(--ember-soft);border-radius:12px;padding:14px 16px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Anna's workshop · anna-mbp</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">1</span></a>
+    <a>Factories <span class="s">1</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a class="on">Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot run"></span>kiln-ui</span><span class="s">working</span></a>
+  </div>
+  <div class="machine"><b>anna-mbp</b> · this host · 64 GB<div style="margin-top:6px">gemma4:27b · qwen3-coder:30b</div></div>
+</aside>
+<main class="main">
+  <div class="grid" style="grid-template-columns:1fr 400px;align-items:start">
+    <div class="rep">
+      <div class="crumb" style="margin-bottom:8px">Bench · spike report · <span class="mono">spike/otel-exporter-only</span> · concluded Oct 22, 11:14</div>
+      <div class="row" style="gap:6px;margin-bottom:8px"><span class="pill wait">ungated experiment</span><span class="pill ok">spike-measured</span><span class="pill">in your notebook</span></div>
+      <h2>Exporter-only, loopback-only, no build step</h2>
+      <div class="ans"><b class="big">Partly — yes, with one condition</b><span>It runs without a build step and exports only to 127.0.0.1 by default; two environment variables can redirect it off-machine and must be covered by the network check.</span></div>
+      <h3>Measured</h3>
+      <table class="meas"><tr><th>What</th><th>Result</th><th>Replaces</th></tr>
+        <tr><td>Transitive packages</td><td><b>14</b></td><td>notes: ~12 (unverified) · research: 14 (reasoned)</td></tr>
+        <tr><td>Install size</td><td>7.9 MB</td><td>—</td></tr>
+        <tr><td>Runs without a build step</td><td>yes · Node 22.18 type stripping</td><td>research: “likely”</td></tr>
+        <tr><td>Default endpoint</td><td><span class="mono">127.0.0.1:4318</span></td><td>—</td></tr>
+        <tr><td>Off-machine overrides</td><td><span class="mono">OTEL_EXPORTER_OTLP_ENDPOINT</span>, <span class="mono">…_TRACES_ENDPOINT</span></td><td>research found one; spike found two</td></tr>
+        <tr><td>Startup cost</td><td>+41 ms median (5 runs)</td><td>—</td></tr></table>
+      <h3>What was tried</h3>
+      <div class="excerpt">// spike/exporter.ts @ 9be04c2 — throwaway, not for main
+const exporter = new OTLPTraceExporter({ url: "http://127.0.0.1:4318/v1/traces" });
+// one span per gate event, flushed on settle</div>
+      <h3>Failed or open</h3>
+      <p>Did not test the full SDK (out of the time box). Unknown: behaviour behind a corporate proxy (<span class="mono">HTTPS_PROXY</span>). The network check would need an env-var rule like the one for <span class="mono">OLLAMA_HOST</span>.</p>
+      <p class="muted" style="font-size:12px">Drafted by the keeper from the spike's events, commits and measurements · edited by Anna · 61 + 28 min of machine time.</p>
+    </div>
+    <div class="grid">
+      <div class="card next options-card"><div class="card-h"><h2>What happens to it</h2><span class="sub">your choice</span></div>
+        <div class="grid" style="gap:8px">
+          <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Promote</h3><p>Ingest into kiln-ui's knowledge as a <i>spike-measured</i> source; the comparison page's unverified figures get corrected.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--info)"></span>Share to the team space</h3><p>Others see the answer and the measurements; your notebook stays private.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--deleg)"></span>Hand to a teammate</h3><p>Bence could continue it on gpu-01 with the full SDK.</p></div></div></div>
+      <div class="feat"><div class="row"><span class="pill ember">Propose as a feature</span></div>
+        <h3 style="margin:8px 0 4px;font-size:14.5px">Observability — the opt-in loopback OTLP exporter</h3>
+        <div style="font-size:12.5px;color:var(--ink-2)">Drafts a team-roadmap entry (it changes when a quorum signs). When a factory adopts it, its <b>Design gate brief starts with this report as evidence</b>, labelled spike-measured.</div>
+        <div class="kv2" style="grid-template-columns:100px 1fr;margin-top:8px"><span>Carries over</span><span>the report, the measurements, the open questions</span><span>Does not</span><span>the spike's code — linked for reference only; the feature is built through the gates</span></div>
+        <div class="row" style="margin-top:10px"><span class="btn primary">Propose to the team roadmap</span></div></div>
+      <div class="card"><div class="kv2" style="grid-template-columns:100px 1fr"><span>Branch</span><span><span class="mono">spike/otel-exporter-only</span> · archived, never merged</span><span>Recorded</span><span><span class="mono">bench.spike_concluded</span></span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

@@ -1,0 +1,68 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Spike</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.ungated{display:flex;align-items:center;gap:12px;background:repeating-linear-gradient(135deg,#FFF8EC 0 12px,#FDEFD6 12px 24px);border:1.5px solid var(--wait-line);border-radius:12px;padding:12px 16px;font-size:12.5px}
+.tb{height:10px;border-radius:6px;background:var(--line-2);overflow:hidden;margin:6px 0 4px}.tb i{display:block;height:100%;background:var(--wait)}
+.term{background:#14110F;color:#D6CFC6;font-family:var(--mono);font-size:11.5px;line-height:1.65;padding:12px 14px;border-radius:10px;white-space:pre}
+.term .ok{color:#86EFAC}.term .bad{color:#FCA5A5}.term .dim{color:#7A7068}.term .k{color:#FDBA74}
+.ev{display:grid;grid-template-columns:52px 22px 1fr;gap:8px;padding:8px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+.ev:first-child{border-top:0}.ev time{font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+.ev .ic{width:20px;height:20px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);font-size:10px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.ev.you .ic{background:var(--info-soft);border-color:var(--info-line);color:var(--info)}
+.meas td{font-size:12.5px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Anna's workshop · anna-mbp</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">1</span></a>
+    <a>Factories <span class="s">1</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a class="on">Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot run"></span>kiln-ui</span><span class="s">working</span></a>
+  </div>
+  <div class="machine"><b>anna-mbp</b> · this host · 64 GB<div style="margin-top:6px">gemma4:27b · qwen3-coder:30b</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Bench · spike · <span class="mono">spike/otel-exporter-only</span> · Oct 22, 10:46</div><h1>Spike: does exporter-only work, loopback-only, without a build step?</h1>
+    <div class="sub" style="margin-top:4px">Anna and an agent try it in real code, in a throwaway branch. Whatever happens, the result is a measured report — never merged code.</div></div>
+    <div class="row"><span class="pill wait">running · 61 of 90 min</span></div></div>
+  <div class="ungated"><span class="pill wait">ungated</span><div><b>This is an experiment.</b> It passes no gates, uses no judges, and can never reach <span class="mono">main</span> — KILN refuses pull requests from <span class="mono">spike/</span> branches, and the team's branch protection backs it up.</div></div>
+  <div class="grid" style="grid-template-columns:1.15fr 1fr;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Working in the spike</h2><span class="sub">Anna + agent · qwen3-coder:30b · local</span></div>
+        <div class="ev"><time>09:45</time><span class="ic">◆</span><div><b>Started</b> from <span class="mono">main@d41e7aa</span> · question and 90-minute time box set by Anna</div></div>
+        <div class="ev"><time>09:58</time><span class="ic">$</span><div><b>Agent installed</b> the exporter-only package in the spike worktree <span class="muted">· risky action approved by Anna (adds dependencies)</span></div></div>
+        <div class="ev"><time>10:12</time><span class="ic">✎</span><div>Agent wired a 40-line throwaway server that emits one span per gate event</div></div>
+        <div class="ev you"><time>10:20</time><span class="ic">↳</span><div><b>Anna steered:</b> “run it under plain node with type stripping — no tsc, no bundler”</div></div>
+        <div class="ev"><time>10:31</time><span class="ic">$</span><div>Ran it 5 times against a local collector · measured install size and startup</div></div>
+        <div class="ev"><time>10:44</time><span class="ic">!</span><div><b>Found:</b> with <span class="mono">OTEL_EXPORTER_OTLP_ENDPOINT</span> unset it still reads <span class="mono">OTEL_EXPORTER_OTLP_TRACES_ENDPOINT</span> — a second override the network check must cover</div></div>
+        <div class="term" style="margin-top:10px"><span class="dim">$ node --experimental-strip-types spike/exporter.ts   # Node 22.18, no build step</span>
+<span class="ok">✓</span> exported 9 spans to <span class="k">http://127.0.0.1:4318/v1/traces</span>
+<span class="ok">✓</span> no outbound connection other than 127.0.0.1   <span class="dim">(network check, spike mode)</span>
+<span class="dim">$ du -sh node_modules</span>   <span class="k">7.9M</span>   <span class="dim">· 14 packages</span>
+<span class="bad">!</span> OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://… would send off-machine</div></div>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Time box</h2><span class="sub">it stops and asks at 90 min</span></div>
+        <div class="tb"><i style="width:68%"></i></div><div class="sub">61 min used · 29 left · then: extend (recorded), conclude, or abandon</div></div>
+      <div class="card"><div class="card-h"><h2>Measured so far</h2><span class="pill ok">spike-measured</span></div>
+        <table class="meas"><tr><td class="muted">Packages</td><td><b>14</b> transitive <span class="muted">(notes said ~12; research said 14)</span></td></tr>
+          <tr><td class="muted">Install size</td><td>7.9 MB</td></tr>
+          <tr><td class="muted">No build step</td><td><span class="check">✓</span> runs under Node 22.18 type stripping</td></tr>
+          <tr><td class="muted">Loopback only</td><td><span class="check">✓</span> by default · <span class="cross">✕</span> two env overrides must be checked</td></tr>
+          <tr><td class="muted">Startup</td><td>+41 ms (median of 5)</td></tr></table></div>
+      <div class="card"><div class="card-h"><h2>About this spike</h2></div>
+        <div class="kv2" style="grid-template-columns:110px 1fr"><span>Branch</span><span class="mono">spike/otel-exporter-only</span><span>Priority</span><span>below feature work · paused 8 min for kiln-ui's fix step</span><span>Safety</span><span>risky actions held · egress policy applies</span><span>Shared</span><span>research claim visible to the team: “Anna is spiking exporter options”</span></div></div>
+      <div class="row" style="gap:8px"><span class="btn grow">Extend 30 min</span><span class="btn grow">Abandon</span><span class="btn primary grow">Conclude and write the report</span></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>
