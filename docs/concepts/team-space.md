@@ -211,6 +211,8 @@ The team can set rules every member workshop honours for work on the shared code
 - **Shared role instructions and tier expectations** — the team's `agents/*.md`, so judges apply the same standards in
   every workshop.
 - **Protected paths**, where claims are exclusive (§7).
+- **Required gates and shared flows** — gates every member workshop's flows include for matching features, and flows the
+  team shares; changed by the quorum (`extensible-flow.md` §8).
 - **Claim expiry** and **publishing minimums** (for example, gate outcomes for adopted features are always published).
 
 Rules live in the team space, change by the team's own decision, and are recorded. A workshop that would break a floor is

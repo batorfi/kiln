@@ -1,0 +1,58 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Do added gates earn their place?</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.gi td{font-size:12.5px;vertical-align:middle}
+.cell{display:flex;align-items:center;gap:8px}.gbar{height:10px;border-radius:0 4px 4px 0;background:var(--s1)}
+.ins{border-left:3px solid var(--line);padding:8px 12px;font-size:12.5px;margin-top:8px;background:var(--surface-2);border-radius:0 8px 8px 0}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Zsolt's workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a class="on">Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Insights · added gates · last 30 days · all factories</div><h1>Do the gates we added earn their place?</h1>
+    <div class="sub" style="margin-top:4px">Evidence from the record for the people who own each gate. KILN never removes, weakens or changes a gate because of these numbers.</div></div>
+    <div class="row"><span class="pill">Last 30 days</span><span class="pill">Table view</span></div></div>
+  <div class="card"><div class="card-h"><h2>Added gates</h2><span class="sub">bars: confirmed problems caught · each column has its own scale</span></div>
+    <table class="gi"><tr><th>Gate</th><th>Runs</th><th>Confirmed problems caught</th><th>Approved despite objection</th><th>Machine time / run</th><th>Your time / run</th></tr>
+      <tr><td><b>Threat model</b> <span class="pill" style="font-size:10.5px">team</span></td><td>6</td><td><div class="cell"><div class="gbar" style="width:120px"></div>4</div></td><td>1 · accepted residual risk</td><td>22 min</td><td>14 min</td></tr>
+      <tr><td><b>Security review</b> <span class="pill bad" style="font-size:10.5px">required</span></td><td>9</td><td><div class="cell"><div class="gbar" style="width:150px"></div>5</div></td><td>0</td><td>18 min</td><td>11 min</td></tr>
+      <tr><td><b>Accessibility review</b> <span class="pill" style="font-size:10.5px">team</span></td><td>4</td><td><div class="cell"><div class="gbar" style="width:90px"></div>3</div></td><td>1</td><td>11 min</td><td>8 min</td></tr>
+      <tr><td><b>Licence check</b> <span class="pill" style="font-size:10.5px">team</span></td><td>7</td><td><div class="cell"><div class="gbar" style="width:4px"></div>0</div></td><td>—</td><td>2 min</td><td>1 min</td></tr>
+      <tr><td><b>Product sign-off</b> <span class="pill" style="font-size:10.5px">workshop</span></td><td>2</td><td><div class="cell"><div class="gbar" style="width:30px"></div>1 · revised spec</div></td><td>—</td><td>—</td><td>20 min · Anna</td></tr></table>
+    <div class="axis-note">“Confirmed” means the finding led to a change, or was confirmed later in the record. Small numbers — read as evidence, not a verdict.</div></div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
+    <div class="card"><div class="card-h"><h2>What the record suggests</h2><span class="sub">for the gate owners to judge</span></div>
+      <div class="ins"><b>Licence check</b> caught nothing in 7 runs — but costs 3 minutes in total. Cheap insurance; nothing suggests removing it.</div>
+      <div class="ins"><b>Threat model</b> found 4 real issues; the one approved despite objection (proxy path) was later fixed in Code review.</div>
+      <div class="ins"><b>Accessibility review</b> was overruled once on a colour-only finding that a user later reported. Worth a look by its owner.</div></div>
+    <div class="card"><div class="card-h"><h2>Where problems were caught</h2><span class="sub">all gates · confirmed problems</span></div>
+      <div class="hbar"><span>Built-in judged gates</span><div class="track"><div class="fill" style="width:88%"></div></div><span class="v">21</span></div>
+      <div class="hbar"><span>Added gates</span><div class="track"><div class="fill" style="width:54%"></div></div><span class="v">13</span></div>
+      <div class="hbar"><span>After merge</span><div class="track"><div class="fill" style="width:8%"></div></div><span class="v">2</span></div>
+      <div class="axis-note">Added gates catch problems the built-in gates did not look for — that is what they were added for.</div></div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

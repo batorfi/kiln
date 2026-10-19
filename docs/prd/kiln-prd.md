@@ -1,4 +1,4 @@
-> Status: product requirements — draft for review (rev 3, 2026-10-18) — **not admitted**
+> Status: product requirements — draft for review (rev 4, 2026-10-18) — **not admitted**
 > Type: PRD (high level)
 >
 > Scope note: this document defines **the new KILN codebase** — what it must do, how it is organised, and which of the
@@ -7,19 +7,22 @@
 > doc governs; where they disagree on *scope*, this PRD governs. Adopting it needs the Roadmap-gate decision and the
 > constitution amendments listed in §15.
 >
-> Sources:
->   - `docs/concepts/vision.md` — why and where to
->   - `docs/concepts/web-front-door.md` — the design (rev 12)
->   - `docs/concepts/user-experience.md` — the experience (rev 7) and `docs/concepts/mockups/` (35 mockups)
->   - `docs/concepts/pi-durable.md` — the durable substrate
->   - `docs/concepts/factory-wiki.md` — knowledge (rev 4)
->   - `docs/concepts/factories-anywhere.md` — hosts
->   - `docs/concepts/team-space.md` — teams: personal workshops and a team space
->   - `docs/concepts/the-bench.md` — the bench: notebook, research steps, spikes
->   - `docs/concepts/the-record.md` — the record in depth
->   - `docs/concepts/the-director.md` — the director, the planner and Needs you
->   - `docs/concepts/concept.md`, `gates-why-how-what.md` — the original concept and gate rationale
->   - the existing codebase under `kiln/` (r1–r9, ~5,900 lines of source, 98 test files)
+> Sources (concept docs govern intent):
+>   - [Vision](../concepts/vision.md) (rev 6) — why and where to
+>   - [The web front door — the design](../concepts/web-front-door.md) (rev 14) — the overall design; the map of all concepts
+>   - [User experience](../concepts/user-experience.md) (rev 10) and [the mockups](../concepts/mockups/README.md) (51 illustrations)
+>   - [KILN on Pi Durable](../concepts/pi-durable.md) — the durable substrate
+>   - [The record](../concepts/the-record.md) — the event stream in depth
+>   - [The director and Needs you](../concepts/the-director.md) — deterministic core, planner drafts, the inbox
+>   - [Knowledge — factory and workshop wikis](../concepts/factory-wiki.md) (rev 5)
+>   - [The bench](../concepts/the-bench.md) (rev 2) — notebook, research steps, spikes, the roadmap connection
+>   - [Factories anywhere](../concepts/factories-anywhere.md) — hosts, placement, moves, sleeping hosts
+>   - [The team space](../concepts/team-space.md) (rev 2) — personal workshops on one codebase
+>   - [Configuration](../concepts/configuration.md) — hosts, providers, models and agents
+>   - [An extensible flow](../concepts/extensible-flow.md) — the default flow and gates teams add
+>   - [Insights](../concepts/insights.md) — measures, definitions, honest numbers
+>   - [The original concept](../concepts/concept.md) and [the gates — why, how, what](../concepts/gates-why-how-what.md)
+>   - the existing codebase under [`kiln/`](../../kiln/) (r1–r9, ~5,900 lines of source, 98 test files)
 
 # KILN — product requirements for the new codebase
 
@@ -77,6 +80,8 @@ old code that still expresses a rule we keep** (§10).
 
 ## 4. Users
 
+*Concept: [UX §2 who uses KILN](../concepts/user-experience.md).*
+
 | Persona | Primary needs | Key requirements |
 |---|---|---|
 | **Decider** (primary) | understand the work, decide well, never be bypassed | gate briefs (§6.8), moves, delegation, stepping in |
@@ -88,6 +93,8 @@ old code that still expresses a rule we keep** (§10).
 | **Evaluator** | judge models and policies by outcomes | insights, model and locality comparisons |
 
 ## 5. Product principles (requirements on every module)
+
+*Concepts: [vision §3 what we believe](../concepts/vision.md) · [constitution](../../.specify/memory/constitution.md).*
 
 | ID | Principle | Enforced by |
 |---|---|---|
@@ -104,6 +111,7 @@ old code that still expresses a rule we keep** (§10).
 | **P11** | **A factory is portable** — moving it never changes a decision. | hosts (§6.12) |
 | **P12** | **Workshops are sovereign** — no act from a team space or another workshop settles a gate; every act between workshops is signed by a person. | team space (§6.14) |
 | **P13** | **Ungated means ungated** — bench output never settles a gate; spike code never reaches `main`; only promoted knowledge is cited in a brief; capture is always explicit. | bench (§6.15) |
+| **P14** | **Every gate keeps the gate contract** — whoever defines a gate, it is a durable task, settled only by a committed move from the closed set of move kinds, with a full brief and an independent judge where it judges work; the Roadmap gate is first, the Merge gate last, and no built-in gate can be removed. | flow (§6.17) |
 
 ## 6. Capabilities
 
@@ -112,15 +120,19 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 ### 6.1 Gate rail and moves
 
+*Concepts: [gates — why, how, what](../concepts/gates-why-how-what.md) · [design §3.1 the default flow](../concepts/web-front-door.md) · [an extensible flow](../concepts/extensible-flow.md) · [UX §8 the gate brief](../concepts/user-experience.md)*
+
 | ID | Requirement | |
 |---|---|---|
-| GATE-1 | Ten gates with plain names and one question each: **Roadmap gate**, Concept, Design, Specification, Work plan, **Implementation**, Code review, Verification, Documentation, **Merge**. Internal ids stay stable (`gate0`, `1-concept` … `9-pr`). | Must |
+| GATE-1 | The **default flow**: ten gates with plain names and one question each: **Roadmap gate**, Concept, Design, Specification, Work plan, **Implementation**, Code review, Verification, Documentation, **Merge**. Internal ids stay stable (`gate0`, `1-concept` … `9-pr`). | Must |
 | GATE-2 | Each gate offers only its own moves (the existing move vocabulary), including the special cases: Implementation `approve · split+revise`; Code review `approve · restart`; Verification `approve · reject` with **2** automatic fix rounds; Merge `approve · reject`. | Must |
 | GATE-3 | Triage may skip Concept and Design for small features, recorded with its reasoning. | Must |
 | GATE-4 | The **unattended tail** may be armed only at the Specification gate, for Work plan → Documentation; merge excluded unless explicitly delegated; any judge's objection ends it. Auto-crossed gates are recorded as delegated, never as human. | Must |
 | GATE-5 | Corrective moves carry a note that becomes the next step's instruction. | Must |
 
 ### 6.2 Durable core
+
+*Concepts: [KILN on Pi Durable](../concepts/pi-durable.md) · [design §5 the factory as a durable task graph](../concepts/web-front-door.md)*
 
 | ID | Requirement | |
 |---|---|---|
@@ -133,6 +145,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 ### 6.3 Workers and roles
 
+*Concepts: [design §7 workers as durable conversations](../concepts/web-front-door.md) · [configuration §6 agents](../concepts/configuration.md)*
+
 | ID | Requirement | |
 |---|---|---|
 | WORK-1 | Each step is a durable **conversation** with its role's instructions (`agents/*.md`), its tier's model and only its permitted tools. | Must |
@@ -143,6 +157,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | WORK-6 | Workspace per factory (repository or worktree); overlap between factories detected and surfaced. | Must / Should |
 
 ### 6.4 Director and commands
+
+*Concepts: [the director and Needs you](../concepts/the-director.md) · [design §9 working with the orchestrator](../concepts/web-front-door.md)*
 
 | ID | Requirement | |
 |---|---|---|
@@ -155,6 +171,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 ### 6.5 Event backbone and record
 
+*Concepts: [the record](../concepts/the-record.md) · [design §6 events and observability](../concepts/web-front-door.md)*
+
 | ID | Requirement | |
 |---|---|---|
 | EVT-1 | **Transactional outbox**: every state change commits its domain events in the same commit; one writer per factory gives one total order. | Must |
@@ -166,6 +184,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 ### 6.6 Lane, model pool and scheduling
 
+*Concepts: [design §5.4 the single lane, §12 many kilns on one machine](../concepts/web-front-door.md) · [factories anywhere](../concepts/factories-anywhere.md)*
+
 | ID | Requirement | |
 |---|---|---|
 | LANE-1 | **Lane task** per factory: at most one running generation; holds resident model, hold flag (Design, Code review, Verification), swap count; survives restarts. | Must |
@@ -174,6 +194,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | LANE-4 | Host scheduler: affinity across factories, admission control (queue, never fail), concurrency cap, fair share, no mid-generation preemption. | Should |
 
 ### 6.7 Web front door
+
+*Concepts: [user experience](../concepts/user-experience.md) · [mockups](../concepts/mockups/README.md) · [design §4 the shape, §19 security](../concepts/web-front-door.md)*
 
 | ID | Requirement | |
 |---|---|---|
@@ -185,6 +207,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 ### 6.8 The gate brief
 
+*Concepts: [UX §8 the gate brief](../concepts/user-experience.md) · mockups [02](../concepts/mockups/02-gate-brief-code-review.png), [03](../concepts/mockups/03-roadmap-gate.png), [07](../concepts/mockups/07-specification-gate-delegation.png)–[10](../concepts/mockups/10-merge-gate.png)*
+
 | ID | Requirement | |
 |---|---|---|
 | BRIEF-1 | Every gate is presented with a **ten-part brief**: orientation, the decision, the work, the yardstick, the evidence, risks and open issues, provenance, history, options with consequences (and the moves not available, and why), other actions. | Must |
@@ -195,6 +219,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 ### 6.9 Human in the loop beyond gates
 
+*Concepts: [design §8 human in the loop beyond gates](../concepts/web-front-door.md) · [UX §7.5 stepping in](../concepts/user-experience.md) · [the director §5 Needs you](../concepts/the-director.md)*
+
 | ID | Requirement | |
 |---|---|---|
 | HITL-1 | **Steering** of work steps (never judges), recorded under the person's name. | Must |
@@ -203,6 +229,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | HITL-4 | **Hand-over** of a waiting decision to another permitted Decider. | Should |
 
 ### 6.10 Models beyond the machine
+
+*Concepts: [design §13 models beyond the machine](../concepts/web-front-door.md) · [configuration §5 providers and models](../concepts/configuration.md)*
 
 | ID | Requirement | |
 |---|---|---|
@@ -214,6 +242,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 ### 6.11 Knowledge
 
+*Concepts: [knowledge — factory and workshop wikis](../concepts/factory-wiki.md)*
+
 | ID | Requirement | |
 |---|---|---|
 | KNOW-1 | A **factory wiki** per factory and a **workshop wiki**, following Karpathy's LLM Wiki: immutable `raw/`, keeper-written `pages/`, `AGENTS.md` schema, `index.md`; `log.md` projected from events. | Must (factory) / Should (workshop) |
@@ -224,6 +254,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | KNOW-6 | Workshop wiki included read-only in each factory vault (`workshop/`). | Should |
 
 ### 6.12 Workshop and hosts
+
+*Concepts: [factories anywhere](../concepts/factories-anywhere.md) · [design §12 many kilns on one machine](../concepts/web-front-door.md) · [configuration §4 hosts](../concepts/configuration.md)*
 
 | ID | Requirement | |
 |---|---|---|
@@ -237,15 +269,19 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 ### 6.13 Observability, people and security
 
+*Concepts: [the record](../concepts/the-record.md) · [insights](../concepts/insights.md) · [design §6 events and observability](../concepts/web-front-door.md) · [UX §2 personas](../concepts/user-experience.md)*
+
 | ID | Requirement | |
 |---|---|---|
 | OBS-1 | **Metrics** derived from events (human loop, quality, cost, throughput, model behaviour). | Must (core) |
 | OBS-2 | **Traces**: one per feature (row → gate → unit → model request → tool call), linked to events; opt-in OTLP export to an allowed collector. | Should |
 | OBS-3 | **Health watcher**: signals only — stuck steps, lagging views, slow loads, overlap, host offline, vault conformance. | Should |
-| OBS-4 | **Insights**: evidence for people, never automatic change. | Should |
+| OBS-4 | **Insights**: evidence for people, never automatic change — measure families and definitions per `insights.md`; counts and sample sizes always shown; traceable to events; personal figures private to the person, no rankings of people; shown in context (briefs, Roadmap gate, candidates, configuration); **few-cases rule** (< 5 list cases · 5–19 rate with count · 20+ trends); **targets** only on system behaviour, never on human decision time, people or volume, with no automatic consequences; **team comparison** opt-in, system measures only, ≥ 3 contributing workshops, ranges not rankings. | Should |
 | PPL-1 | **People and roles** per factory: Decider, Operator, Curator, Observer, Auditor; identity on every decision. | Must (single user) / Should (team) |
 
 ### 6.14 Teams and the team space
+
+*Concepts: [the team space](../concepts/team-space.md)*
 
 | ID | Requirement | |
 |---|---|---|
@@ -261,6 +297,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 ### 6.15 The bench
 
+*Concepts: [the bench](../concepts/the-bench.md)*
+
 | ID | Requirement | |
 |---|---|---|
 | BENCH-1 | **Notebook**: a private, unruled vault per person under the vault contract; explicit capture from clipper, editor, terminal, KILN surfaces and local voice transcription. | Should |
@@ -275,6 +313,37 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | BENCH-10 | **Candidate list** per factory: candidates from notes, research and spike reports, links kept; editable by deciders and Curators; proposable to the team roadmap with evidence. | Should |
 | BENCH-11 | **Roadmap-gate evidence view**: evidence and readiness (ready · thin · unknown) per proposed feature, unproven assumptions, *research this* / *spike this* actions; *what we learned since the last approval*; corrections flagged between gates. | Should |
 | BENCH-12 | **Director suggests, never starts** research or spikes; proposals state when a candidate cannot be sized. | Should |
+
+### 6.16 Configuration
+
+*Concepts: [configuration](../concepts/configuration.md)*
+
+| ID | Requirement | |
+|---|---|---|
+| CFG-1 | **Configuration as files** (`kiln.config/`): workshop, hosts, providers, model catalog, `agents/*.md`, `tiers.yaml`, policies, per-factory settings; the front door edits the same files; secrets only by reference. | Must |
+| CFG-2 | **Layering**: team floor → workshop → factory, each stricter only. | Must (workshop/factory) / Should (team) |
+| CFG-3 | **`kiln check config`**: all-or-nothing validation before apply — bindings, judge rules, capabilities, pins, allowlists, floors, no secrets; never vacuous. | Must |
+| CFG-4 | **Applies from the next step**; host changes affect new leases only. | Must |
+| CFG-5 | **Hosts**: join with Operator approval, `kiln host measure`, capacity, pins, sleep, `serves`, revoke. | Should |
+| CFG-6 | **Providers and models**: provider entries via `pi-ai`; catalog with pinned versions and families; **`kiln check model`** measures capabilities and re-checks on version change. | Must (local) / Should (remote) |
+| CFG-7 | **Agents**: role files with kind, line of defense, tools, replay, gate, version; version recorded per step; **try on a past feature** as an ungated replay; judge and team-shared role changes need an Operator and, if shared, the team quorum. | Must (roles, versions) / Should (try-runs) |
+| CFG-8 | **History**: every change recorded with who, before and after; config events in the workshop record. | Must |
+
+### 6.17 An extensible flow
+
+*Concepts: [an extensible flow](../concepts/extensible-flow.md) · [configuration](../concepts/configuration.md)*
+
+| ID | Requirement | |
+|---|---|---|
+| FLOW-1 | **Gates as data**: the director executes a feature's flow from definitions, not a constant rail; the default flow ships as data. | Must |
+| FLOW-2 | **Anchors and invariants**: Roadmap gate first, Merge gate last, all built-in gates present in order; added gates only between built-in ones; skipping only as triage does today; nothing after Merge. | Must |
+| FLOW-3 | **Move kinds**: a closed set (approve · revise · reject · restart · split+revise · mitigate) with team labels and rules (required note, `returns_to`, rounds); events record kind and label. | Must |
+| FLOW-4 | **Gate definitions** (`gates/<id>.md`): question, phase and placement, artifact, author, judges, moves, delegable, hold lane, `applies_when`, deciders, brief emphasis, version. | Should |
+| FLOW-5 | **Flows** (`flows/<name>.yaml`): extend the standard flow and add gates; factory default; team-required gates by path or label. | Should |
+| FLOW-6 | **Per-feature flow**: proposed with reasons and decided at the Roadmap gate; pinned with gate versions at admission; gates may be added in flight by decision, never removed. | Should |
+| FLOW-7 | **`kiln check flow`**: all-or-nothing validation of anchors, placement, roles and judges, move kinds, `returns_to`, restart and mitigate prerequisites, arming points, required gates, cycles. | Must (default flow) / Should (added gates) |
+| FLOW-8 | **Try a gate on a past feature**: ungated replay showing the brief a decider would have seen. | Should |
+| FLOW-9 | Changes by an **Operator**; team-shared gates and flows by the **team quorum**. | Should |
 
 ## 7. Non-functional requirements
 
@@ -293,6 +362,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | **Testability** | Every principle in §5 has a named, falsifiable check (the existing `*-ready` pattern); checks never pass vacuously. |
 
 ## 8. Architecture
+
+*Concepts: [design §4 the shape](../concepts/web-front-door.md) · [KILN on Pi Durable](../concepts/pi-durable.md) · [the record](../concepts/the-record.md).*
 
 ### 8.1 Shape
 
@@ -330,7 +401,7 @@ kiln/
     bench/         notebook, capture, promotion, research steps, spikes and spike reports
     server/        HTTP, auth, read models, push, intake
     web/           the front door (prebuilt assets)
-    cli/           kiln serve · kiln host · kiln check · kiln replay
+    cli/           kiln serve · kiln host (join, measure) · kiln check (config, model) · kiln agents try · kiln replay
   agents/          role instructions (*.md)
   checks/          readiness probes and network checks (the *-ready pattern)
   fixtures/        committed event streams and replays
@@ -342,6 +413,8 @@ kiln/
 management API; only `server` and `host` open network listeners.
 
 ## 9. Data and storage
+
+*Concepts: [the record §9 the record and the durable store](../concepts/the-record.md) · [factories anywhere §9 where data lives](../concepts/factories-anywhere.md) · [configuration §3](../concepts/configuration.md).*
 
 | Store | What | Where |
 |---|---|---|
@@ -357,6 +430,8 @@ management API; only `server` and `host` open network listeners.
 
 ## 10. What we keep from the existing code
 
+*Concepts: [the record §17 from today's code](../concepts/the-record.md) · [the existing codebase](../../kiln/).*
+
 The rule: **keep code that expresses a rule we still hold; adapt code whose rule holds but whose mechanism changes;
 retire code tied to the Pi-extension host or the terminal UI.** Existing tests travel with the code they test.
 
@@ -364,7 +439,7 @@ retire code tied to the Pi-extension host or the terminal UI.** Existing tests t
 
 | Existing | Becomes | Why |
 |---|---|---|
-| `contracts/move-vocabulary.ts`, `contracts/gate-rail.md` | `packages/contracts` (gate names added; ids unchanged) | the gate rail and move sets are unchanged (GATE-1/2) |
+| `contracts/move-vocabulary.ts`, `contracts/gate-rail.md` | `packages/contracts` — the **standard flow as data** plus the closed set of move kinds; gate names added; built-in ids unchanged | the default rail and move sets are unchanged; they become the first flow definition (GATE-1/2, FLOW-1/3) |
 | `src/roles.ts` | `packages/contracts` tier policy | strongest-model guard for judges (WORK-2) |
 | `src/scheduler.ts` | `packages/lane` affinity scheduler | "swap only on a genuine tier change" is unchanged (LANE-2) |
 | `src/clock.ts` | `packages/record` | deterministic time for replays |
@@ -398,22 +473,24 @@ retire code tied to the Pi-extension host or the terminal UI.** Existing tests t
 
 ## 11. Phasing — candidate roadmap
 
+*Concepts: [design §21 roadmap consequences](../concepts/web-front-door.md) · [current roadmap](../../specs/ROADMAP.md).*
+
 Each milestone is a candidate roadmap row with its own gates. Every milestone ends usable and checked.
 
 | # | Milestone | Delivers | Depends on | Key requirements |
 |---|---|---|---|---|
 | **M0** | **Foundations reset** | new layout; legacy frozen; contracts, schemas, validators, scheduler, roles and network check ported with their tests green | — | GATE-1/2, WORK-2, LANE-2, EVT-5 (validators) |
-| **M1** | **Durable core, headless** | Pi Durable seam; roadmap/row/unit/gate/lane tasks; the gate contract; a scripted feature walks ten gates from the CLI, survives kill-and-resume | M0 | CORE-1…6, LANE-1, GATE-3/4/5 |
+| **M1** | **Durable core, headless** | Pi Durable seam; roadmap/row/unit/gate/lane tasks; the gate contract; a scripted feature walks ten gates from the CLI, survives kill-and-resume; **gates as data** with the default flow | M0 | CORE-1…6, LANE-1, GATE-3/4/5, FLOW-1/2/3, FLOW-7 (default) |
 | **M2** | **Record** | outbox, envelope, catalog, backbone, cursors; factory-log projection byte-identical on rebuild; old walks replayed as event streams | M1 | EVT-1…5 |
-| **M3** | **Real workers** | conversations on local models via `pi-ai`; tier map; tool sets; replay discipline; residency manager; model pool (one host) | M1, M2 | WORK-1…5, LANE-3 |
+| **M3** | **Real workers** | conversations on local models via `pi-ai`; tier map; tool sets; replay discipline; residency manager; model pool (one host); `kiln.config/` with roles, tier map and `kiln check config` / `kiln check model` | M1, M2 | WORK-1…5, LANE-3, CFG-1, CFG-3, CFG-4, CFG-6 (local), CFG-7 (roles), CFG-8 |
 | **M4** | **Front door, read-only** | server, session security, read models, live push; overview, factory live, record views | M2 | WEB-1/2/4, OBS-1 (basic) |
 | **M5** | **Gates on the web** | full gate brief, moves, delegation, steering, risky-action approvals | M3, M4 | BRIEF-1…4, HITL-1/2, WEB-3/5 |
 | **M6** | **Director** | deterministic planning, affinity ordering, fix rounds, director conversation | M3 | DIR-1…4 |
 | **M7** | **Knowledge** | factory wiki (ingest/query/lint, vault contract), knowledge in briefs; then workshop wiki and implementation knowledge | M5, M6 | KNOW-1…6, BRIEF-5 |
-| **M8** | **Workshop** | several factories, gate inbox, host scheduler, people and roles | M5 | HOST-1, LANE-4, PPL-1 |
+| **M8** | **Workshop** | several factories, gate inbox, host scheduler, people and roles; Agents screen and role try-runs; **added gates and flows**, per-feature flow choice, gate try-runs | M5 | HOST-1, LANE-4, PPL-1, CFG-2, CFG-7 (try-runs), FLOW-4…9 |
 | **M9** | **Observability** | metrics, traces, health, insights, time travel | M2, M4 | OBS-1…4, EVT-6 |
-| **M10** | **Models beyond the machine** | catalog, profiles, routing, egress policy, budgets, fallback, policy stops | M3, M5 | MOD-1…5, HITL-3 |
-| **M11** | **Factories anywhere** | host runtime and channel, placement, moves, sleeping hosts, network failure | M8 | HOST-2…7, WEB-2 (network) |
+| **M10** | **Models beyond the machine** | catalog, profiles, routing, egress policy, budgets, fallback, policy stops | M3, M5 | MOD-1…5, HITL-3, CFG-6 (remote) |
+| **M11** | **Factories anywhere** | host runtime and channel, placement, moves, sleeping hosts, network failure | M8 | HOST-2…7, WEB-2 (network), CFG-5 |
 | **M12** | **Team space** | team-space repository, signed acts and keys, team roadmap by quorum, claims and overlap, requests and mirrored reviews, team-aware Merge gate, team knowledge | M7, M8 | TEAM-1…9 |
 | **M13** | **The bench** | notebook and capture, keeper suggestions, promotion; research steps; spikes, spike reports, propose as feature; origin and maturity labels; candidate list and roadmap evidence | M3, M7 | BENCH-1…12 |
 | **M14** | **`kiln-v1` release** | installer, newcomer docs, demo mode from committed replays | M1–M7 (+ chosen Shoulds) | §3.1 goals |
@@ -422,6 +499,8 @@ Each milestone is a candidate roadmap row with its own gates. Every milestone en
 anything built before them, because the single-machine, local-only, single-person workshop is their degenerate case.
 
 ## 12. Success measures
+
+*Concept: [vision §10 how we will know it works](../concepts/vision.md).*
 
 From the vision, made measurable:
 
@@ -460,8 +539,11 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 9. Egress policy language and model-family identity — M10.
 10. Exact quorum rules, exclusive-claim expiry, publishing levels beyond coordination — M12.
 11. Research and spike capacity on shared hosts; switching off keeper suggestions; archived spike retention — M13.
+12. Added gates as delegation arming points; `applies_when` on the diff; post-merge gates when they come into scope — M8.
 
 ## 15. Constitution amendments required
+
+*Concepts: [design §11 constitution impact](../concepts/web-front-door.md) · [constitution](../../.specify/memory/constitution.md).*
 
 | Principle | Change |
 |---|---|
@@ -471,10 +553,13 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 | VII Everything recorded | the ordered event stream is the primary record; the factory-log is a projection (MAJOR) |
 | VIII Local-first | local by default; egress, remote models and hosts only by configured, recorded, policy-checked choice; authenticated, encrypted connections beyond loopback (MAJOR) |
 | IX No dashboard | a web front door that is never a source of truth; real authentication when shared over a network (MAJOR) |
+| *Gate rail* | a **default flow** with fixed anchors (Roadmap gate first, Merge gate last, built-in gates kept), extensible by recorded decision; every gate keeps the gate contract (MINOR) |
 | *new* | knowledge is context, never authority (MINOR) · a factory is portable — moving it never changes a decision (MINOR) · workshops are sovereign — no act from a team space or another workshop settles a gate (MINOR) |
 | *dependency stance* | runtime dependencies allowed, pinned, recorded |
 
 ## 16. Glossary
+
+*Concept: [UX §4 the mental model](../concepts/user-experience.md).*
 
 | User-facing | Internal | Meaning |
 |---|---|---|
@@ -489,6 +574,8 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 | Feature | row | one roadmap item, walked through nine gates |
 | Step | unit | one piece of work by one role |
 | Gate | gate task | a stop that waits for a human move |
+| Flow | flow | the gates a feature passes: the default ten plus any the team added |
+| Move kind | move kind | the fixed meaning behind a move — approve, revise, reject, restart, split+revise, mitigate |
 | Move | move | a human decision at a gate |
 | Gate brief | brief | the full context presented with a gate |
 | Record | event stream | everything that happened, in order |

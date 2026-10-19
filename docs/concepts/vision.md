@@ -91,6 +91,10 @@ The first four gates settle *what to build* before any code exists. The next thr
 last two *describe it and ship it*. The Roadmap gate sits above all of them and is the only gate that is never
 automatic.
 
+These ten gates are the **default flow**. Teams can add gates that match how they build software — a threat model, a
+security or accessibility review, a performance budget, a product sign-off — between the built-in ones; every added gate
+keeps the same guarantees, and no built-in gate can be removed (`extensible-flow.md`).
+
 For simple features the human can shorten the path: triage skips the Concept and Design gates, and after
 approving the specification the human can let the remaining gates pass automatically — as long as every
 judge agrees. Any objection from a judge stops the line and hands it back to the human.

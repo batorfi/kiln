@@ -1,0 +1,74 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Threat model gate</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.rl{display:flex;align-items:center;gap:3px;flex-wrap:nowrap;margin-top:10px}
+.rl span{font-size:10.5px;border-radius:6px;padding:4px 6px;border:1px solid var(--line);background:var(--surface-2);white-space:nowrap;color:var(--muted)}
+.rl span.done{background:var(--ink-2);color:#fff;border-color:var(--ink-2)}
+.rl span.now{background:var(--wait);color:#fff;border-color:var(--wait);font-weight:700}
+.rl span.add{border-color:var(--ember);color:var(--ember)}
+.rl i{color:var(--faint);font-style:normal;font-size:10px}
+.ap td{font-size:12.5px}
+.find{display:grid;grid-template-columns:auto 1fr auto;gap:10px;padding:9px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+.find:first-of-type{border-top:0}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Zsolt's workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a class="on">Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0"><b>kiln-v1</b> · Feature · Observability exporter · Oct 26, 10:40</div><span class="grow"></span><span class="pill ember">added gate · threat-model v1 · team</span><span class="pill wait">Waiting 12 min</span></div>
+    <div class="kicker" style="margin-top:12px">Threat model gate · added by the team · joined because the feature touches <span class="mono">validate/_netscan.ts</span></div>
+    <div class="q">Have we identified how this could be attacked, and is the design safe enough?</div>
+    <div class="rl"><span class="done">Roadmap</span><i>›</i><span class="done">Concept</span><i>›</i><span class="done">Design</span><i>›</i><span class="now">Threat model</span><i>›</i><span>Specification</span><i>›</i><span>Work plan</span><i>›</i><span>Implementation</span><i>›</i><span>Code review</span><i>›</i><span>Verification</span><i>›</i><span class="add">Licence check</span><i>›</i><span>Documentation</span><i>›</i><span>Merge</span></div>
+    <div class="sub" style="margin-top:8px">Flow decided at the Roadmap gate on Oct 24: <b>standard</b> + Threat model (joined automatically) + Licence check (added by Zsolt: the feature adds dependencies). Same gate contract as the built-in gates: a full brief, an independent judge, moves from the closed set, nothing settles it but your move.</div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 430px;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="part"><span class="num">3</span><h2>The work — threat-model.md</h2><span class="ask">threat modeller · qwen3-coder:30b · local</span></div>
+        <table class="ap"><tr><th>Asset or boundary</th><th>Attack path</th><th>Mitigation in the design</th></tr>
+          <tr><td>trace data (no content)</td><td>exporter redirected off-machine via env override</td><td>network check covers <span class="mono">OTEL_EXPORTER_OTLP_*</span> — <i>both</i> overrides (from Anna's spike)</td></tr>
+          <tr><td>the collector endpoint</td><td>a local process impersonates the collector</td><td>loopback only; collector is opt-in and named in policy</td></tr>
+          <tr><td>event privacy field</td><td>a <i>sensitive</i> event exported by mistake</td><td>exporter filters by <span class="mono">privacy</span> before sending</td></tr>
+          <tr><td>proxy settings</td><td><span class="mono">HTTPS_PROXY</span> routes loopback traffic out</td><td><b>none yet</b> — open in the spike report</td></tr></table></div>
+      <div class="card"><div class="part"><span class="num">5</span><h2>The evidence</h2><span class="ask">security critic · gemma4:27b · strongest local · lane held</span><span class="grow"></span><span class="pill wait">1 objection</span></div>
+        <div class="find"><span class="sev major">major</span><div><b>Proxy path unmitigated.</b> With <span class="mono">HTTPS_PROXY</span> set, a misconfigured proxy could carry exporter traffic off-machine.<div class="sub">recommendation: bypass proxies for loopback, and make the network check fail on proxy variables for the exporter</div></div><span class="pill">residual risk</span></div>
+        <div class="find"><span class="sev minor">minor</span><div>The privacy filter should be tested with a <i>sensitive</i> event fixture.</div><span class="pill">—</span></div>
+        <div class="sub" style="margin-top:6px">Evidence also cites: Anna's spike report (<i>spike-measured</i>), team knowledge “Egress policy”.</div></div>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="part"><span class="num">2</span><h2>The decision</h2></div>
+        <div class="kv2" style="grid-template-columns:110px 1fr"><span>Approving</span><span>the threat model as the security basis the Specification must honour</span><span>At stake</span><span>exporter traffic leaving the machine against policy</span></div></div>
+      <div class="card options-card"><div class="part"><span class="num">9</span><h2>The options</h2><span class="ask">this gate's moves · team labels</span></div>
+        <div class="grid" style="gap:8px">
+          <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Accept the design <span class="pill" style="font-weight:500">approve</span></h3><p>Proceeds to Specification. The critic's major finding stays open — not recommended.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--wait)"></span>Accept with residual risk <span class="pill" style="font-weight:500">approve · note required</span></h3><p>Proceeds, with the proxy risk recorded as accepted by you and carried to the Merge gate.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--info)"></span>Revise the threat model <span class="pill" style="font-weight:500">revise</span></h3><p>Your note goes to the threat modeller — e.g. add the proxy bypass to the design.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Back to Design <span class="pill" style="font-weight:500">reject → Design</span></h3><p>The design itself changes; this gate returns after it.</p></div>
+          <div class="notav"><b>Not offered:</b> restart, split, mitigate — this gate's definition does not include them. Delegation cannot cross this gate (<i>delegable: false</i>).</div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

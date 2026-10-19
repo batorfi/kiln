@@ -20,7 +20,10 @@
 >   - Teams and the team space:          `team-space.md`
 >   - The bench:                         `the-bench.md`
 >   - The director and Needs you:        `the-director.md`
->   - Illustrative mockups:              `mockups/` — forty-eight high-resolution illustrations covering every capability below. They
+>   - Configuration:                     `configuration.md`
+>   - An extensible flow:                `extensible-flow.md`
+>   - Insights:                          `insights.md`
+>   - Illustrative mockups:              `mockups/` — sixty high-resolution illustrations covering every capability below. They
 >     are discussion aids, not design decisions; this doc governs where they differ.
 
 # KILN — the user experience, as a concept
@@ -306,7 +309,9 @@ proposals.
 *Guarantees:*
 - the human can see where time goes, which gates send work back most, which judges catch real problems, how
   models compare on outcomes, and what waiting on humans costs;
-- insights are presented as **evidence for the human's judgment**, never as automatic changes.
+- insights are presented as **evidence for the human's judgment**, never as automatic changes;
+- every number shows how much data it rests on and opens to the events behind it; personal figures are visible only to
+  that person, and people are never ranked (`insights.md`).
 
 ### 7.13 Keeping the wikis
 
@@ -419,6 +424,29 @@ proposals.
   it affects;
 - the director suggests research when it cannot size something; it never starts it.
 
+### 7.22 Configuring hosts, models and agents
+
+*Purpose:* set KILN up the way a team works — and change it safely.
+*Guarantees:*
+- configuration is plain, versioned files, and the front door edits the same files; secrets are never in them;
+- every change is checked before it applies and names the problem when it fails — applying nothing;
+- changes to how a factory runs apply from its next step; a running step is never altered;
+- no configuration can weaken a judge, approve anything silently or let anything leave without a rule;
+- a role change can be **tried on a past feature** before anyone depends on it; judge and team-shared roles need more than
+  one person's say;
+- every change is in the history with who made it and what it was before.
+
+### 7.23 Adding a gate
+
+*Purpose:* make KILN's flow match the team's SDLC conventions.
+*Guarantees:*
+- an added gate is defined in a file — question, artifact, author, judges, moves from the closed set with the team's own
+  labels — and checked before it can be used;
+- it can be **tried on a past feature** to see the brief a decider would have seen;
+- each feature's flow is proposed with reasons and decided at the Roadmap gate; team-required gates are shown and cannot be
+  dropped; a flow never changes for a feature in flight, though a gate can be added to it by decision;
+- every added gate presents the full gate brief, and nothing about it can weaken the gate contract.
+
 ## 8. The gate brief: rich context at every gate
 
 A gate is the moment KILN hands a decision to a human. The quality of that decision depends on what the human
@@ -500,6 +528,9 @@ of them settles the gate:
 Every one of these actions is recorded, and the brief shows what was done while the gate was open.
 
 ### 8.5 Emphasis per gate
+
+*For built-in gates, as below; for added gates, from the `brief.emphasis` in their definition (`extensible-flow.md` §4). The
+Roadmap gate brief also shows the **flow** proposed for each feature, with reasons and any team-required gates.*
 
 The structure is fixed; the emphasis follows the gate's question.
 

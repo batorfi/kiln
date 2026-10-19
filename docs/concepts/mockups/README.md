@@ -5,7 +5,7 @@
 > layout, control and colour here is open; what they are meant to show is the *content and the guarantees* the
 > UX concept asks for.
 
-All forty-eight share one scenario: one person (Zsolt) runs a **workshop** on a 128 GB Mac Studio-class machine (host
+All sixty share one scenario: one person (Zsolt) runs a **workshop** on a 128 GB Mac Studio-class machine (host
 `studio-m5`, joined by a team server, a cloud machine and a spare server in 33–35) with four
 factories — `kiln-v1` and `docs-site` (local-only), `billing-service` (hybrid, cloud judges) and `handbook` (new,
 waiting for its first roadmap). Most mockups show the same morning after an overnight crash; those marked
@@ -58,6 +58,22 @@ waiting for its first roadmap). Most mockups show the same morning after an over
 | 38 | [A teammate's review](38-teammate-review.png) | seen from Anna's own workshop: what Zsolt's policy shared, the review mirrored with the pull request, signing with her personal key — not her gate |
 | 39 | [Merge gate in a team](39-merge-gate-in-a-team.png) | the team's merge conditions (review met, checks, provenance, the code host's merge queue), base drift and re-verification, what will be published |
 
+### An extensible flow
+
+*Concept: `../extensible-flow.md`.*
+
+| # | Mockup | Illustrates |
+|---|---|---|
+| 52 | [Flows](52-flows.png) *(Oct 26)* | the standard flow and two team flows — fixed anchors, built-in gates, added gates, a team-required gate, triage-skippable gates; the added gates, when they join automatically, and the closed set of move kinds |
+| 53 | [An added gate's brief](53-threat-model-gate.png) | a team's Threat model gate in the full brief: its artifact, an independent security critic's objection, moves with the team's labels (*Accept with residual risk* = approve + note), what it does not offer |
+| 54 | [Roadmap gate choosing flows](54-roadmap-gate-flows.png) | a flow proposed per feature with reasons — standard, standard + a gate joined by path, security-sensitive with a team-required gate — and what each adds |
+| 55 | [Adding a gate](55-adding-a-gate.png) | defining an Accessibility review gate, `kiln check flow` refusing a judge who is the author, the fix, a try-run on a past feature that would have caught a real issue, proposing it to the team |
+| 56 | [Gate library](56-gate-library.png) *(Oct 27)* | every gate a flow can use — built-in, team and workshop gates with placement, judges, moves, when they join, which flows use them, how often they ran; a draft not yet in any flow |
+| 57 | [Flow builder](57-flow-builder.png) | dragging a gate into a flow: anchors and built-in gates locked, only valid gaps accept it, a live `kiln check flow`, the YAML it would write — and a warning that a team flow can only use team gates |
+| 58 | [A gate added in flight](58-gate-added-in-flight.png) | a Work plan that touches `src/auth/` adds the team-required Security review (shown, not declinable) and suggests a Licence check (your choice); nothing is ever removed |
+| 59 | [Changing a gate's version](59-gate-version-change.png) | Security review v2 → v3: the diff, try-runs on past features, features pinned to v2 unaffected, and the team quorum vote |
+| 60 | [Do added gates earn their place?](60-gate-insights.png) | per added gate: runs, confirmed problems caught, approvals despite objection, machine and human time — evidence for owners, never automatic change |
+
 ### Gate briefs — one for each kind of gate
 
 | # | Mockup | Illustrates |
@@ -102,8 +118,13 @@ waiting for its first roadmap). Most mockups show the same morning after an over
 
 ### Configuration
 
+*Configuration concept: `../configuration.md`.*
+
 | # | Mockup | Illustrates |
 |---|---|---|
+| 49 | [Agents](49-agents.png) *(Oct 25)* | roles with kind, model binding, version and source (shared team roles); a new security-reviewer judge; its rule checks, including a refused weaker binding |
+| 50 | [Trying a role change](50-trying-a-role-change.png) | code-reviewer v4 replayed on r10's past review as an ungated try-run: findings both / v4 only / v3 only, the instruction diff, and proposing it to the team quorum |
+| 51 | [Configuration history](51-configuration-history.png) | every config change with who, before and after; a failed check that applied nothing; `kiln check config`; when changes apply |
 | 14 | [Models and policy](14-models-and-policy.png) | profiles; the model catalog with locality, family and data handling; roles → models with cross-family judging; egress rules; budgets; the network allowlist |
 
 ### Understanding and improving
@@ -157,9 +178,12 @@ and where it is illustrated:
 | Events, causation, schema-versioned envelope | 18 · 17 |
 | Time travel and replay | 18 · 06 · 07 · 08 · 11 |
 | Tracing | 17 |
-| Metrics and insights | 16 · 15 |
+| Metrics and insights (`../insights.md`) | 16 · 15 · 60 |
 | Health without decisions | 19 |
 | Factory-log as a validated projection | 18 · 19 |
+| Extensible flow: gate definitions, flows, per-feature flow choice, team-required gates, `kiln check flow`, try a gate | 52 · 53 · 54 · 55 · 56 · 57 |
+| Flow changes over time: gates added in flight, gate versions and pins, whether added gates earn their place | 58 · 59 · 60 |
+| Configuration: files, layering, agents and versions, try-runs, checks, history | 49 · 50 · 51 · 14 · 33 |
 | People, roles (including Curators), hand-over, identity on every decision | 20 · 02 · 03 |
 | Bench: notebook and promotion, research steps, spikes and spike reports, origin and maturity labels | 40 · 41 · 42 · 43 |
 | Bench and the roadmap: candidate list, evidence and readiness at the Roadmap gate, what we learned, corrections | 44 · 45 |

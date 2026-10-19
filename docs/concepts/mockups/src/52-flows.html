@@ -1,0 +1,74 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Flows</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.flow{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.flow h2{font-size:14.5px;display:flex;align-items:center;gap:8px}
+.chain{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-top:10px}
+.g{font-size:11.5px;border-radius:8px;padding:6px 9px;border:1px solid var(--line);background:var(--surface-2);white-space:nowrap}
+.g.anc{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:650}
+.g.add{background:var(--ember-soft);border-color:var(--ember);color:var(--ember);font-weight:650}
+.g.req{background:var(--bad-soft);border-color:var(--bad-line);color:var(--bad);font-weight:650}
+.g.skp{border-style:dashed;color:var(--faint)}
+.ar{color:var(--faint);font-size:11px}
+.gl td{font-size:12.5px;vertical-align:middle}
+.lg{display:flex;gap:12px;font-size:11.5px;color:var(--ink-2);flex-wrap:wrap}
+.lg span{display:inline-flex;align-items:center;gap:5px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Zsolt's workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a class="on">Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Flows · Oct 26, 09:00</div><h1>Flows — the default ten gates, and the gates this team added</h1>
+    <div class="sub" style="margin-top:4px">Every flow extends the standard one: the Roadmap gate first, Merge last, the built-in gates kept. Teams add gates in between; each feature runs the flow decided at its Roadmap gate.</div></div>
+    <div class="row"><span class="pill ok">✓ kiln check flow passing</span><span class="btn">New gate</span></div></div>
+  <div class="lg"><span><i class="g anc" style="padding:2px 7px">·</i>fixed anchor</span><span><i class="g" style="padding:2px 7px">·</i>built-in</span><span><i class="g add" style="padding:2px 7px">·</i>added by the team</span><span><i class="g req" style="padding:2px 7px">·</i>required by the team floor</span><span><i class="g skp" style="padding:2px 7px">·</i>may be skipped by triage</span></div>
+  <div class="grid" style="grid-template-columns:1.4fr 1fr;align-items:start">
+    <div>
+      <div class="flow"><h2>standard <span class="pill">shipped · default for kiln-v1, docs-site</span></h2>
+        <div class="chain"><span class="g anc">Roadmap</span><span class="ar">→</span><span class="g skp">Concept</span><span class="ar">→</span><span class="g skp">Design</span><span class="ar">→</span><span class="g">Specification</span><span class="ar">→</span><span class="g">Work plan</span><span class="ar">→</span><span class="g">Implementation</span><span class="ar">→</span><span class="g">Code review</span><span class="ar">→</span><span class="g">Verification</span><span class="ar">→</span><span class="g">Documentation</span><span class="ar">→</span><span class="g anc">Merge</span></div></div>
+      <div class="flow"><h2>security-sensitive <span class="pill">team · shared</span> <span class="pill">default for billing-service</span></h2>
+        <div class="chain"><span class="g anc">Roadmap</span><span class="ar">→</span><span class="g">Concept</span><span class="ar">→</span><span class="g">Design</span><span class="ar">→</span><span class="g add">Threat model</span><span class="ar">→</span><span class="g">Specification</span><span class="ar">→</span><span class="g">Work plan</span><span class="ar">→</span><span class="g">Implementation</span><span class="ar">→</span><span class="g">Code review</span><span class="ar">→</span><span class="g req">Security review</span><span class="ar">→</span><span class="g">Verification</span><span class="ar">→</span><span class="g add">Licence check</span><span class="ar">→</span><span class="g">Documentation</span><span class="ar">→</span><span class="g anc">Merge</span></div>
+        <div class="sub" style="margin-top:8px">Concept and Design cannot be skipped in this flow.</div></div>
+      <div class="flow"><h2>ui <span class="pill">team · shared</span> <span class="pill">default for kiln-ui</span></h2>
+        <div class="chain"><span class="g anc">Roadmap</span><span class="ar">→</span><span class="g skp">Concept</span><span class="ar">→</span><span class="g skp">Design</span><span class="ar">→</span><span class="g">Specification</span><span class="ar">→</span><span class="g">Work plan</span><span class="ar">→</span><span class="g">Implementation</span><span class="ar">→</span><span class="g">Code review</span><span class="ar">→</span><span class="g add">Accessibility review</span><span class="ar">→</span><span class="g">Verification</span><span class="ar">→</span><span class="g">Documentation</span><span class="ar">→</span><span class="g anc">Merge</span></div></div>
+      <div class="card"><div class="kv2" style="grid-template-columns:150px 1fr"><span>Cannot change</span><span>Roadmap gate first · Merge gate last · built-in gates kept, in order · nothing after Merge</span><span>Flows can</span><span>add gates between built-in ones · join gates automatically by path or label</span><span>Per feature</span><span>proposed with reasons, decided at the Roadmap gate, pinned until merge</span></div></div>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Added gates</h2><span class="sub">gates/*.md</span></div>
+        <table class="gl"><tr><th>Gate</th><th>Placed</th><th>Judge</th><th></th></tr>
+          <tr><td><b>Threat model</b></td><td>after Design</td><td>security critic</td><td><span class="pill">team</span></td></tr>
+          <tr><td><b>Security review</b></td><td>after Code review</td><td>security reviewer</td><td><span class="pill bad" style="font-size:10.5px">required: src/auth/**, src/payments/**</span></td></tr>
+          <tr><td><b>Accessibility review</b></td><td>after Code review</td><td>a11y reviewer</td><td><span class="pill">team</span></td></tr>
+          <tr><td><b>Licence check</b></td><td>before Documentation</td><td>— deterministic scan + you</td><td><span class="pill">team</span></td></tr>
+          <tr><td><b>Product sign-off</b></td><td>after Specification</td><td>— human-only · named: Anna</td><td><span class="pill">workshop</span></td></tr></table></div>
+      <div class="card"><div class="card-h"><h2>Joins automatically when</h2></div>
+        <div class="kv2" style="grid-template-columns:150px 1fr"><span>Threat model</span><span>paths <span class="mono">src/auth/**</span>, <span class="mono">validate/_netscan.ts</span> · label <i>security-sensitive</i></span><span>Security review</span><span>required by the team for <span class="mono">src/auth/**</span>, <span class="mono">src/payments/**</span></span><span>Accessibility review</span><span>paths <span class="mono">web/**</span></span></div></div>
+      <div class="card"><div class="card-h"><h2>Move kinds</h2><span class="sub">a closed set — labels are yours</span></div>
+        <div style="font-size:12.5px;line-height:1.85">approve · revise · reject · restart · split+revise · mitigate<br><span class="muted">e.g. Threat model's “Accept with residual risk” is an <b>approve</b> with a required note</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

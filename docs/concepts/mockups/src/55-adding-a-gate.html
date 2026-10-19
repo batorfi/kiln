@@ -1,0 +1,77 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Adding a gate</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.fm{background:#1F1B17;color:#E9E2D9;font-family:var(--mono);font-size:11.5px;line-height:1.6;padding:11px 13px;border-radius:9px;white-space:pre}
+.fm .k{color:#9CDCFE}.fm .v{color:#CE9178}.fm .d{color:#6A9955}.fm .x{background:rgba(239,68,68,.22)}
+.ck{display:grid;grid-template-columns:20px 1fr;gap:8px;padding:6px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+.ck:first-child{border-top:0}
+.fail{background:var(--bad-soft);border:1px solid var(--bad-line);border-radius:8px;padding:9px 11px;font-size:12.5px;color:#7F1D1D}
+.tr .li{font-size:12.5px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Anna's workshop · anna-mbp</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">1</span></a>
+    <a>Factories <span class="s">1</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a class="on">Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot run"></span>kiln-ui</span><span class="s">working</span></a>
+  </div>
+  <div class="machine"><b>anna-mbp</b> · this host · 64 GB<div style="margin-top:6px">gemma4:27b · qwen3-coder:30b</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Flows · new gate · <span class="mono">gates/accessibility-review.md</span> · Oct 25, 15:20</div><h1>Adding an Accessibility review gate</h1>
+    <div class="sub" style="margin-top:4px">Anna defines the gate, KILN checks it against the rules every gate keeps, and she tries it on a past feature before anyone depends on it.</div></div>
+    <span class="pill">team-shared once the quorum signs</span></div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>The definition</h2><span class="sub">first draft</span></div>
+<div class="fm"><span class="d">---</span>
+<span class="k">id</span>: <span class="v">accessibility-review</span>
+<span class="k">name</span>: <span class="v">Accessibility review gate</span>
+<span class="k">question</span>: <span class="v">Can everyone use what we built?</span>
+<span class="k">phase</span>: <span class="v">build-and-prove</span>
+<span class="k">after</span>: <span class="v">code-review</span>
+<span class="x"><span class="k">author</span>: <span class="v">worker</span></span>
+<span class="x"><span class="k">judges</span>: <span class="v">[worker]</span></span>
+<span class="k">moves</span>: <span class="v">{ approve, restart }</span>
+<span class="k">delegable</span>: <span class="v">true</span>
+<span class="k">applies_when</span>: <span class="v">{ paths: ["web/**"] }</span>
+<span class="k">brief</span>: <span class="v">{ emphasis: [contrast, keyboard, screen reader, motion] }</span>
+<span class="d">---</span></div></div>
+      <div class="fail"><b>kiln check flow — refused, nothing applied</b><br>✕ judges: <span class="mono">worker</span> is the gate's author — a gate's judge must be a different role (no model approves its own work)<br>✕ judges: <span class="mono">worker</span> is not a line-of-defense role on the strongest model</div>
+      <div class="card"><div class="card-h"><h2>Fixed</h2><span class="sub">15:24</span></div>
+<div class="fm"><span class="k">author</span>: <span class="v">—            </span><span class="d"># reviews the existing diff</span>
+<span class="k">judges</span>: <span class="v">[a11y-reviewer]</span>  <span class="d"># new judge role · strongest model</span></div></div>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>kiln check flow</h2><span class="pill ok">✓ passing · 15:24</span></div>
+        <div class="ck"><span class="check">✓</span><span>placed between built-in gates (after Code review, before Verification)</span></div>
+        <div class="ck"><span class="check">✓</span><span>judge <span class="mono">a11y-reviewer</span>: line of defense · bound to the strongest model · not the author</span></div>
+        <div class="ck"><span class="check">✓</span><span>moves from the closed set: approve · restart (restart has a restorable point: Implementation)</span></div>
+        <div class="ck"><span class="check">✓</span><span>delegable — crossed only on a clean path; any objection ends delegation</span></div>
+        <div class="ck"><span class="check">✓</span><span>anchors untouched · built-in gates kept · nothing after Merge</span></div></div>
+      <div class="card tr"><div class="card-h"><h2>Tried on a past feature</h2><span class="pill">ungated replay · 9 min</span></div>
+        <div style="font-size:12.5px;margin-bottom:6px">On kiln-ui's <b>“Gate brief on the web”</b> (merged Oct 24) — the brief a decider would have seen:</div>
+        <div class="li"><span class="sev major">major</span><div>Move buttons rely on colour alone to show approve vs reject</div></div>
+        <div class="li"><span class="sev minor">minor</span><div>Waiting time is not announced to screen readers</div></div>
+        <div class="sub" style="margin-top:6px">Both were real: the first was fixed after merge in a follow-up. The gate would have caught it before.</div></div>
+      <div class="card options-card"><div class="card-h"><h2>Next</h2></div>
+        <div class="grid" style="gap:8px">
+          <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Propose to the team</h3><p>Add it to the shared <i>ui</i> flow; applies when the quorum signs, from each feature's next Roadmap gate.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--info)"></span>Use in my workshop only</h3><p>Operator change in Anna's workshop; recorded.</p></div>
+          <div class="row"><span class="btn grow">My workshop only</span><span class="btn primary grow">Propose to the team</span></div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

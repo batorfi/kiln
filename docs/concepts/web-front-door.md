@@ -49,6 +49,9 @@
 >   - The bench:                       `the-bench.md`
 >   - The record (in depth):           `the-record.md`
 >   - The director and Needs you:      `the-director.md`
+>   - Configuration:                   `configuration.md`
+>   - An extensible flow:              `extensible-flow.md`
+>   - Insights:                        `insights.md`
 
 # KILN — the web front door, on durable agents and durable gates
 
@@ -106,7 +109,10 @@ long-running agentic applications. The primitives KILN uses:
 - **The factory-log's schema and validators** — the log becomes one projection of the event stream (§6),
   not a primary record; what it says does not change.
 
-### 3.1 The gates, by name
+### 3.1 The gates, by name — the default flow
+
+*These ten gates are the **default flow**. Teams may add gates of their own between the built-in ones; the Roadmap gate
+stays first, the Merge gate last, and no built-in gate can be removed — see `extensible-flow.md`.*
 
 Every gate has a **name a human understands without the manual**, and each name answers one question.
 Numbers stay only as the *order* along a row (Gates 1–9) and as the identifiers in existing code; in prose,
@@ -410,6 +416,8 @@ publish (an invalid event is a bug and fails the commit, not the consumer).
 | **Host** | `host.joined` · `host.revoked` · `host.online` · `host.offline` · `host.suspended` · `host.resumed` · `factory.placed` · `factory.move_requested` · `factory.moved` (from, to) · `factory.move_failed` · `move.applying_on_wake` |
 | **Team** | `team.subscribed` · `team.published` · `team.claim_made` · `team.claim_refined` · `team.claim_released` · `team.claim_expired` · `team.overlap_detected` · `team.request_sent` · `team.request_received` · `team.response_signed` · `team.roadmap_vote` · `team.roadmap_changed` · `team.rules_changed` · `team.member_joined` · `team.key_revoked` |
 | **Bench** | `bench.note_captured` · `bench.note_promoted` · `bench.research_requested` · `bench.research_completed` · `bench.spike_started` · `bench.spike_extended` · `bench.spike_concluded` · `bench.spike_abandoned` · `bench.spike_proposed_as_feature` · `bench.shared` · `bench.candidate_proposed` · `bench.candidate_evidenced` · `bench.candidate_closed` · `bench.research_suggested` · `roadmap.correction_flagged` — never note content |
+| **Configuration** | `config.changed` (file, who, before, after) · `config.check_failed` · `host.measured` · `model.checked` · `agent.version_changed` · `agent.try_run` |
+| **Flow** | `flow.changed` · `gate.defined` · `flow.check_failed` · `flow.chosen` (per feature, with reasons) · `flow.gate_added_in_flight` · `gate.try_run` — gate events carry flow and gate versions |
 | **System** | `server.started` · `server.recovered` (resumed tasks, waiting gates) · `store.migrated` · `dependency.upgraded` |
 
 The catalog is a contract: adding a type is MINOR, changing a payload's meaning is a new schema version, and
@@ -445,6 +453,8 @@ result. The factory-log's byte-identical rebuild check from rev 3 becomes the ge
 projections.
 
 ### 6.6 Metrics: the questions KILN should be able to answer
+
+*Insights — measures, definitions, and the rules that keep them honest — are detailed in `insights.md`.*
 
 Derived from domain events (not from scraping logs), labelled by row, gate, role, model and tier:
 

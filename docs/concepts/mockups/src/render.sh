@@ -51,3 +51,15 @@ render 45-roadmap-gate-evidence          1600,1040
 render 46-needs-you                      1600,1160
 render 47-director-at-work               1600,980
 render 48-ask-the-director               1600,1120
+render 49-agents                         1600,1000
+render 50-trying-a-role-change           1600,1000
+render 51-configuration-history          1600,1120
+render 52-flows                          1600,1080
+render 53-threat-model-gate              1600,1060
+render 54-roadmap-gate-flows             1600,1040
+render 55-adding-a-gate                  1600,1120
+render 56-gate-library                   1600,1000
+render 57-flow-builder                   1600,900
+render 58-gate-added-in-flight           1600,1020
+render 59-gate-version-change            1600,960
+render 60-gate-insights                  1600,900

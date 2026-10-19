@@ -1,0 +1,66 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Trying a role change</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.ungated{display:flex;align-items:center;gap:12px;background:repeating-linear-gradient(135deg,#FFF8EC 0 12px,#FDEFD6 12px 24px);border:1.5px solid var(--wait-line);border-radius:12px;padding:11px 16px;font-size:12.5px}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.f{display:grid;grid-template-columns:auto 1fr auto;gap:10px;padding:9px 0;border-top:1px solid var(--line-2);font-size:12.5px;align-items:start}
+.f:first-of-type{border-top:0}
+.diffk{font-size:10.5px;font-weight:700;border-radius:5px;padding:1px 6px}
+.diffk.add{background:var(--ok-soft);color:var(--ok)}.diffk.lost{background:var(--bad-soft);color:var(--bad)}.diffk.same{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.code2{background:#1F1B17;color:#E9E2D9;border-radius:8px;font-family:var(--mono);font-size:11.5px;line-height:1.6;padding:9px 12px;white-space:pre}
+.code2 .a{color:#86EFAC}.code2 .d{color:#FCA5A5}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Zsolt's workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a class="on">Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Agents · code reviewer · try v4 · Oct 25, 10:30</div><h1>Would the new code-reviewer instructions have reviewed r10 better?</h1>
+    <div class="sub" style="margin-top:4px">v4 replayed against r10's committed Code review round 2 — the same diff, the same specification, the same model. Nothing changes and nothing is decided.</div></div>
+    <span class="pill ok">replay finished · 11 min · local</span></div>
+  <div class="ungated"><span class="pill wait">ungated · replay</span><div>A try-run is an experiment on the past. It cannot touch r10's record, its gates or any running factory.</div></div>
+  <div class="grid" style="grid-template-columns:1.25fr 1fr;align-items:start">
+    <div class="card"><div class="card-h"><h2>Findings, v3 (what happened) versus v4 (the replay)</h2><span class="sub">r10 · Code review · round 2 · diff at d3c11b0</span></div>
+      <div class="f"><span class="diffk same">both</span><div><b>major</b> — swap can unload a model while a held judge still needs it <span class="mono">src/lane.ts:88</span></div><span class="pill">FR-3</span></div>
+      <div class="f"><span class="diffk same">both</span><div><b>major</b> — model names hard-coded outside the tier map <span class="mono">src/walk.ts:41</span></div><span class="pill">FR-4</span></div>
+      <div class="f"><span class="diffk add">v4 only</span><div><b>major</b> — <span class="mono">OLLAMA_HOST</span> read without the loopback check in the new <span class="mono">bindRole</span> path <span class="mono">src/tiers.ts:63</span><div class="sub">v4's new instruction: “check every new environment read against the egress policy”</div></div><span class="pill">NFR-1</span></div>
+      <div class="f"><span class="diffk lost">v3 only</span><div><b>minor</b> — TierPolicyError message omits the refused model<div class="sub">v4 groups message wording under “style — not reported”</div></div><span class="pill">—</span></div>
+      <hr><div class="kv2" style="grid-template-columns:150px 1fr"><span>Was v4's extra finding real?</span><span>yes — the same class of issue Anna's spike found on Oct 22 (env overrides). v3 missed it and r10 merged with it; a follow-up candidate is now on kiln-v1's list</span><span>Time · cost</span><span>v3 14 min · v4 16 min · both local, no spend</span></div></div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>What changed in the instructions</h2><span class="sub">v3 → v4</span></div>
+<div class="code2"><span class="a">+ Check every new environment-variable read against</span>
+<span class="a">+ the egress policy; report as major if unchecked.</span>
+<span class="d">- Report wording issues in error messages as minor.</span>
+<span class="a">+ Report wording issues only if they hide information.</span></div></div>
+      <div class="card options-card"><div class="card-h"><h2>Use v4?</h2><span class="sub">a judge change — high stakes</span></div>
+        <div class="grid" style="gap:8px">
+          <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Propose v4 to the team</h3><p>The code reviewer is a <b>shared team role</b>: v4 applies to every member workshop when the quorum signs. This replay is attached as evidence.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--info)"></span>Try on more features</h3><p>Replay against b2 and d4 too, before proposing.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Discard v4</h3><p>v3 stays; the replay stays in the record.</p></div>
+          <div class="row"><span class="btn grow">Try on b2, d4</span><span class="btn primary grow">Propose to the team</span></div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

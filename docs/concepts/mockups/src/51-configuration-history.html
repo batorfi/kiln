@@ -1,0 +1,73 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Configuration history</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.ch{display:grid;grid-template-columns:62px 26px 1fr 170px;gap:10px;padding:11px 0;border-top:1px solid var(--line-2);font-size:12.5px;align-items:start}
+.ch:first-of-type{border-top:0}
+.ch time{font-family:var(--mono);font-size:11.5px;color:var(--faint)}
+.av{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
+.dif{background:#1F1B17;color:#E9E2D9;border-radius:7px;font-family:var(--mono);font-size:11.5px;line-height:1.6;padding:7px 11px;white-space:pre;margin-top:6px}
+.dif .a{color:#86EFAC}.dif .d{color:#FCA5A5}.dif .c{color:#8C8279}
+.fail{background:var(--bad-soft);border:1px solid var(--bad-line);border-radius:8px;padding:7px 10px;margin-top:6px;font-size:12px;color:#7F1D1D}
+.ckrun .ck{display:grid;grid-template-columns:20px 1fr;gap:8px;padding:6px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+.ckrun .ck:first-child{border-top:0}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Zsolt's workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a class="on">Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Models &amp; policy · configuration history · <span class="mono">kiln.config/</span></div><h1>Every configuration change — who, what, before and after</h1>
+    <div class="sub" style="margin-top:4px">Changes from the files and from these screens land here alike. Each was checked before it applied; a failed check applied nothing.</div></div>
+    <div class="row"><span class="pill">git · kiln.config</span><span class="btn">Run kiln check config</span></div></div>
+  <div class="grid" style="grid-template-columns:1.35fr 1fr;align-items:start">
+    <div class="card"><div class="card-h"><h2>History</h2><span class="sub">newest first</span></div>
+      <div class="ch"><time>10:21</time><span class="av" style="background:#9A3412">ZB</span><div><b>agents/code-reviewer.md</b> — v4 drafted, not applied<div class="sub">a shared team role: applies when the team quorum signs</div></div><span class="pill wait">pending team</span></div>
+      <div class="ch"><time>10:04</time><span class="av" style="background:#9A3412">ZB</span><div><b>agents/security-reviewer.md</b> — new role, v1 · bound as judge
+        <div class="dif"><span class="c">tiers.yaml</span>
+<span class="a">+ security-reviewer: strongest</span></div></div><span class="pill ok">✓ applied · next step</span></div>
+      <div class="ch"><time>10:02</time><span class="av" style="background:#9A3412">ZB</span><div><b>tiers.yaml</b> — tried binding security-reviewer to qwen3-coder:30b
+        <div class="fail"><b>Refused by kiln check config:</b> security-reviewer is a judge (line of defense); judges bind only to the strongest model available — gemma4:27b. Nothing applied.</div></div><span class="pill bad">✕ check failed</span></div>
+      <div class="ch"><time>Oct 24</time><span class="av" style="background:#6D28D9">BN</span><div><b>hosts/gpu-01.yaml</b> — pinned gemma4:27b
+        <div class="dif"><span class="d">- pin: []</span>
+<span class="a">+ pin: [gemma4:27b]</span>     <span class="c"># fits: 17 GB of 180 GB</span></div></div><span class="pill ok">✓ applied</span></div>
+      <div class="ch"><time>Oct 23</time><span class="av" style="background:#9A3412">ZB</span><div><b>models.yaml</b> — claude-opus-5-5 version re-checked<div class="sub">provider published a new snapshot · <span class="mono">kiln check model</span> passed · treated as a new model</div></div><span class="pill ok">✓ applied</span></div>
+      <div class="ch"><time>Oct 24</time><span class="av" style="background:#9A3412">ZB</span><div><b>factories/billing-service.yaml</b> — row budget 25 → 40 USD<div class="sub">decided at the policy stop in Needs you, with reason “large diff in b3”</div></div><span class="pill ok">✓ applied · next step</span></div>
+      <div class="ch"><time>Oct 20</time><span class="av" style="background:#1D4ED8">AK</span><div><b>policies/tools.yaml</b> — “add dependency” now a risky action<div class="sub">stricter than the team floor — allowed</div></div><span class="pill ok">✓ applied</span></div></div>
+    <div class="grid">
+      <div class="card ckrun"><div class="card-h"><h2>kiln check config</h2><span class="pill ok">✓ passing · 10:04</span></div>
+        <div class="ck"><span class="check">✓</span><span>every role bound to a reachable, checked model</span></div>
+        <div class="ck"><span class="check">✓</span><span>judges on the strongest model · no judge fallbacks · cross-family where required</span></div>
+        <div class="ck"><span class="check">✓</span><span>no subagent tools · write and shell never replay-safe</span></div>
+        <div class="ck"><span class="check">✓</span><span>host pins fit budgets · host models in the catalog</span></div>
+        <div class="ck"><span class="check">✓</span><span>endpoints on each factory's allowlist · local-only reaches only loopback</span></div>
+        <div class="ck"><span class="check">✓</span><span>factories at least as strict as workshop and team floors</span></div>
+        <div class="ck"><span class="check">✓</span><span>no secret material in any file</span></div></div>
+      <div class="card"><div class="card-h"><h2>Applies when</h2></div>
+        <div class="kv2" style="grid-template-columns:140px 1fr"><span>Factory settings</span><span>from that factory's next step</span><span>Roles</span><span>from that role's next step</span><span>Hosts</span><span>new leases at once; never a running step</span><span>Team-shared</span><span>when the quorum signs</span></div></div>
+      <div class="card"><div class="kv2" style="grid-template-columns:100px 1fr"><span>Recorded</span><span><span class="mono">config.changed</span> · <span class="mono">config.check_failed</span> · <span class="mono">agent.version_changed</span> · <span class="mono">model.checked</span></span><span>Secrets</span><span>never here — files name them; the keychain holds them</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

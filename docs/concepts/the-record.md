@@ -134,6 +134,9 @@ Each event type has a versioned JSON schema in `contracts/events/`.
 | **Team** | `team.subscribed` · `team.published` · `team.claim_made` · `team.overlap_detected` · `team.response_signed` · `team.roadmap_vote` |
 | **System** | `server.started` · `server.recovered` · `store.migrated` · `dependency.upgraded` |
 
+Gate events carry the **flow key** and the **flow and gate versions** the feature was admitted with, and moves record
+their **kind** as well as the team's label (`extensible-flow.md`), so validators check moves against the pinned flow.
+
 The full lists live with the concepts that introduce them (`web-front-door.md` §6.4 and later sections). Adding an event
 type is a MINOR change; changing a payload's meaning is a new schema version; removing a type needs the care of removing a
 field from a public format.

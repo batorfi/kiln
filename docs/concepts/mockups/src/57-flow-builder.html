@@ -1,0 +1,84 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Flow builder</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.lane{display:flex;align-items:stretch;gap:0;overflow:hidden;padding:12px 0}
+.slot{display:flex;flex-direction:column;align-items:center;gap:6px}
+.gt{font-size:12px;border-radius:9px;padding:9px 11px;border:1px solid var(--line);background:var(--surface);white-space:nowrap;min-width:92px;text-align:center}
+.gt.anc{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:650}
+.gt.add{background:var(--ember-soft);border:1.5px solid var(--ember);color:var(--ember);font-weight:650}
+.gt.drag{background:#fff;border:2px dashed var(--ember);color:var(--ember);box-shadow:0 10px 24px rgba(194,65,12,.18);transform:translateY(-6px)}
+.lock{font-size:10px;color:var(--faint)}
+.gap{width:22px;display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:11px}
+.gap.drop{width:70px;border:2px dashed var(--ok-line);border-radius:9px;background:var(--ok-soft);color:var(--ok);font-size:10.5px;font-weight:650;margin:0 4px}
+.gap.no{width:40px;border:2px dashed var(--bad-line);border-radius:9px;background:var(--bad-soft);color:var(--bad);font-size:10.5px;font-weight:650;margin:0 4px}
+.ck{display:grid;grid-template-columns:20px 1fr;gap:8px;padding:6px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+.ck:first-child{border-top:0}
+.pal .li{font-size:12.5px;align-items:center}
+.yml{background:#1F1B17;color:#E9E2D9;font-family:var(--mono);font-size:11.5px;line-height:1.6;padding:10px 12px;border-radius:9px;white-space:pre}
+.yml .k{color:#9CDCFE}.yml .v{color:#CE9178}.yml .c{color:#6A9955}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Zsolt's workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a class="on">Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Flows · <b>ui</b> · edit · Oct 27, 10:15</div><h1>Flow builder — placing Performance budget into the ui flow</h1>
+    <div class="sub" style="margin-top:4px">Anchors and built-in gates are locked. An added gate can only be dropped into a gap between built-in gates — the builder shows where it may go, and writes <span class="mono">flows/ui.yaml</span>.</div></div>
+    <div class="row"><span class="pill">team · shared · change needs the quorum</span></div></div>
+  <div class="card"><div class="lane">
+    <div class="slot"><div class="gt anc">Roadmap</div><span class="lock">🔒 anchor</span></div><div class="gap no">✕</div>
+    <div class="slot"><div class="gt">Concept</div><span class="lock">🔒</span></div><div class="gap">›</div>
+    <div class="slot"><div class="gt">Design</div><span class="lock">🔒</span></div><div class="gap">›</div>
+    <div class="slot"><div class="gt">Specification</div><span class="lock">🔒</span></div><div class="gap">›</div>
+    <div class="slot"><div class="gt">Work plan</div><span class="lock">🔒</span></div><div class="gap">›</div>
+    <div class="slot"><div class="gt">Implementation</div><span class="lock">🔒</span></div><div class="gap">›</div>
+    <div class="slot"><div class="gt">Code review</div><span class="lock">🔒</span></div><div class="gap">›</div>
+    <div class="slot"><div class="gt add">Accessibility</div><span class="lock">added · team</span></div><div class="gap">›</div>
+    <div class="slot"><div class="gt">Verification</div><span class="lock">🔒</span></div><div class="gap drop">drop here</div>
+    <div class="slot"><div class="gt drag">Performance budget</div><span class="lock" style="color:var(--ember)">dragging</span></div>
+    <div class="slot"><div class="gt">Documentation</div><span class="lock">🔒</span></div><div class="gap no">✕</div>
+    <div class="slot"><div class="gt anc">Merge</div><span class="lock">🔒 anchor</span></div></div>
+    <div class="sub">Allowed gaps for <b>Performance budget</b> (uses <i>mitigate</i>, so it needs Verification evidence before it): only after Verification. Before Roadmap and after Merge are never allowed.</div></div>
+  <div class="grid" style="grid-template-columns:1fr 1fr 1fr;align-items:start">
+    <div class="card pal"><div class="card-h"><h2>Gate palette</h2><span class="sub">from the library</span></div>
+      <div class="li"><span class="pill ember">draft</span><span><b>Performance budget</b> · workshop</span></div>
+      <div class="li"><span class="pill">team</span><span>Licence check</span></div>
+      <div class="li"><span class="pill">workshop</span><span>Product sign-off</span></div>
+      <div class="li"><span class="pill">team</span><span>Threat model</span></div>
+      <div class="sub" style="margin-top:6px">Built-in gates aren't in the palette: they are always in the flow.</div></div>
+    <div class="card"><div class="card-h"><h2>kiln check flow · live</h2><span class="pill ok">✓ would pass</span></div>
+      <div class="ck"><span class="check">✓</span><span>anchors and built-in gates in order</span></div>
+      <div class="ck"><span class="check">✓</span><span>mitigate has verification evidence before it</span></div>
+      <div class="ck"><span class="check">✓</span><span>benchmark role exists; reads only, runs benchmarks</span></div>
+      <div class="ck"><span class="wt" style="color:var(--wait);font-weight:700">!</span><span>Performance budget is a <b>workshop draft</b> — a team flow can only use team gates. Propose the gate to the team first.</span></div></div>
+    <div class="card"><div class="card-h"><h2>flows/ui.yaml</h2><span class="sub">what would be written</span></div>
+<div class="yml"><span class="k">extends</span>: <span class="v">standard</span>
+<span class="k">add</span>:
+  - <span class="v">accessibility-review</span>   <span class="c"># after code-review</span>
+  - <span class="v">performance-budget</span>     <span class="c"># after verification</span></div>
+      <div class="row" style="margin-top:10px;gap:6px"><span class="btn grow">Propose gate first</span><span class="btn primary grow">Propose flow change</span></div></div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>
