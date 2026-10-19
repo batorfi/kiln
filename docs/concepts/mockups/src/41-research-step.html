@@ -1,0 +1,57 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Research step</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.plan .kv2{grid-template-columns:120px 1fr}
+.res{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 22px;font-size:13px;line-height:1.65;color:var(--ink-2)}
+.res h2{font-size:16px;color:var(--ink);margin-bottom:6px}
+.res table td,.res table th{font-size:12px}
+.lane{display:flex;height:22px;border-radius:6px;overflow:hidden;gap:2px;margin-top:6px}
+.lane i{display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-style:normal}
+.miss{border:1px dashed var(--line);border-radius:8px;padding:9px 11px;background:var(--surface-2);font-size:12px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Anna's workshop · anna-mbp</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">1</span></a>
+    <a>Factories <span class="s">1</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a class="on">Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-ui</span><span class="s">waiting</span></a>
+  </div>
+  <div class="machine"><b>anna-mbp</b> · this host · 64 GB<div style="margin-top:6px">gemma4:27b · qwen3-coder:30b</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Bench · research · Oct 22</div><h1>Research the factory did while Anna decided a gate</h1>
+    <div class="sub" style="margin-top:4px">A research step shows its plan before it runs, waits behind feature work, never changes code, and lands as a labelled draft in the notebook.</div></div>
+    <div class="row"><span class="pill ok">completed 08:52 · 38 min</span></div></div>
+  <div class="grid" style="grid-template-columns:380px 1fr;align-items:start">
+    <div class="grid">
+      <div class="card plan"><div class="card-h"><div><div class="kicker">The plan · confirmed 08:09</div><h2 style="margin-top:2px">“List OTLP exporter packages, their dependencies, licences, and whether they run without a build step.”</h2></div></div>
+        <div class="kv2"><span>Reads</span><span>codebase at <span class="mono">d41e7aa</span> · knowledge · 3 clipped pages from your notebook</span><span>Web</span><span><b>none</b> — kiln-ui is local-only</span><span>Role · model</span><span>researcher · qwen3-coder:30b (already loaded)</span><span>Tools</span><span>read-only — cannot change code</span><span>Estimate</span><span>30–45 min of machine time</span><span>Egress</span><span>nothing leaves the machine</span></div></div>
+      <div class="card"><div class="card-h"><h2>On the lane</h2><span class="sub">kiln-ui · this morning</span></div>
+        <div class="lane"><i style="width:14%;background:#57534E">step</i><i style="width:46%;background:var(--s1)">research</i><i style="width:20%;background:#57534E">step</i><i style="flex:1;background:#E7E2DC;color:var(--muted)">idle</i></div>
+        <div class="sub" style="margin-top:8px">Ran while Anna decided the Code review gate. When the reviewer's fix step arrived at 08:31, research paused at its next boundary and resumed after — it never delayed a feature step.</div></div>
+      <div class="card"><div class="kv2" style="grid-template-columns:120px 1fr"><span>Today</span><span>1 h 05 min of 3 h research cap</span><span>Recorded</span><span><span class="mono">bench.research_requested</span> · <span class="mono">bench.research_completed</span></span></div></div>
+    </div>
+    <div class="res"><div class="row" style="margin-bottom:8px"><span class="pill">research step</span><span class="pill wait">exploratory</span><span class="pill">in your notebook</span></div>
+      <h2>OTLP exporter options — what the code and the clipped docs say</h2>
+      <table><tr><th>Option</th><th>Packages</th><th>Licence</th><th>No build step?</th><th>Source</th></tr>
+        <tr><td>OTel SDK (full)</td><td>~40 transitive</td><td>Apache-2.0</td><td>unclear</td><td>clipped SDK docs</td></tr>
+        <tr><td>Exporter only</td><td><b>14</b> transitive</td><td>Apache-2.0</td><td>likely</td><td>clipped README · lockfile reasoning</td></tr>
+        <tr><td>Hand-written OTLP/HTTP</td><td>0</td><td>—</td><td>yes</td><td>codebase: no HTTP client today</td></tr></table>
+      <p style="margin-top:10px">Default endpoint is <span class="mono">localhost:4318</span>, but the env var <span class="mono">OTEL_EXPORTER_OTLP_ENDPOINT</span> overrides it — the network check would need to cover that, as <span class="mono">_netscan.ts</span> already does for <span class="mono">OLLAMA_HOST</span>.</p>
+      <div class="miss"><b>Could not determine:</b> whether the exporter runs under Node's type stripping without a build step, and its exact install size — both need running code. <i>Suggested: a spike.</i></div>
+      <div class="row" style="margin-top:12px;gap:8px"><span class="btn">Ask a follow-up</span><span class="btn">Link to a gate…</span><span class="btn">Promote…</span><span class="btn primary">Start a spike from this</span></div></div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

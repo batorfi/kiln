@@ -1,0 +1,69 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Wiki lint</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.f{display:grid;grid-template-columns:130px 1fr 230px;gap:16px;padding:14px 0;border-top:1px solid var(--line-2);align-items:start}
+.f:first-child{border-top:0}.f h3{font-size:13.5px}.f .d{font-size:12.5px;color:var(--ink-2);margin-top:3px}
+.f .acts{display:flex;flex-direction:column;gap:6px}
+.f .acts .btn{padding:6px 10px;font-size:12px}
+.kind{display:inline-flex;font-size:11.5px;font-weight:650;border-radius:6px;padding:2px 8px}
+.k1{background:var(--bad-soft);color:var(--bad)}.k2{background:var(--wait-soft);color:var(--wait)}.k3{background:var(--info-soft);color:var(--info)}.k4{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+.mini td{font-size:12.5px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a class="on">Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Wiki · <b>kiln-v1</b> · lint · today 08:02</div><h1>Lint: where the wiki is wrong, stale or thin</h1>
+    <div class="sub" style="margin-top:4px">A lint pass finds problems; it never edits. Each finding is yours to fix, dismiss with a reason, or answer with a new source.</div></div>
+    <div class="row"><span class="pill">lint · gemma4:27b · strongest local</span><span class="pill">212 pages · 64 sources checked</span></div></div>
+  <div class="grid" style="grid-template-columns:1fr 360px;align-items:start">
+    <div class="card"><div class="card-h"><h2>5 findings</h2><span class="sub">most consequential first</span></div>
+      <div class="f"><span class="kind k1">Contradiction</span><div><h3>“Model residency” vs “Ollama”</h3><div class="d">“Model residency” says <span class="mono">keep_alive</span> guarantees residency; “Ollama” (from the Ollama FAQ) says the server may evict under memory pressure. <b>Cited by the open r10 Code review gate.</b></div><div class="sub" style="margin-top:4px">An ingest at 09:31 has since corrected “Model residency” — re-run lint to close this.</div></div>
+        <div class="acts"><span class="btn primary">See today's ingest summary</span><span class="btn">Queue a fix for the keeper</span></div></div>
+      <div class="f"><span class="kind k2">Stale</span><div><h3>“Pi version support” — 34 days unreviewed</h3><div class="d">Says Pi 0.85.1 is the measured version. Newer sources (Pi 1.0 notes) mention 1.3.0. Review interval is 30 days.</div></div>
+        <div class="acts"><span class="btn">Queue a refresh</span><span class="btn ghost">Dismiss with reason…</span></div></div>
+      <div class="f"><span class="kind k2">Only factory-produced sources</span><div><h3>“Overlay lifecycle” cites only record digests</h3><div class="d">Every claim on this page comes from KILN's own records (r8, r9). No external source confirms Pi's overlay behaviour.</div></div>
+        <div class="acts"><span class="btn">Request a source…</span><span class="btn ghost">Accept as is, with reason…</span></div></div>
+      <div class="f"><span class="kind k3">Missing concept</span><div><h3>“Lease” is mentioned on 7 pages but has no page</h3><div class="d">The keeper proposes a concept page drawn from 3 existing sources.</div></div>
+        <div class="acts"><span class="btn">Queue the new page</span><span class="btn ghost">Dismiss…</span></div></div>
+      <div class="f"><span class="kind k4">Orphan</span><div><h3>“Terminal keymap” has no inbound links</h3><div class="d">Last cited by r9. If the terminal surface is retired, the page may be archived.</div></div>
+        <div class="acts"><span class="btn">Link it from “Pi integration”</span><span class="btn ghost">Archive…</span></div></div>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Health over time</h2></div>
+        <table class="mini"><tr><th>Pass</th><th>Findings</th><th>Resolved</th></tr>
+          <tr><td>today</td><td>5</td><td>—</td></tr><tr><td>Oct 10</td><td>8</td><td>8 · 2 dismissed</td></tr><tr><td>Oct 3</td><td>12</td><td>11 · 1 still open</td></tr></table></div>
+      <div class="card"><div class="card-h"><h2>Vault conformance</h2><span class="pill ok">✓ 0 problems</span></div>
+        <div style="font-size:12.5px;line-height:1.85">wikilinks resolve · names unique across the vault · no forbidden characters · front-matter valid · links into <span class="mono">raw/</span> resolve · no plugin-only syntax · embeds present</div>
+        <div class="sub" style="margin-top:6px">So the wiki always opens cleanly in Obsidian, Zed or any editor.</div></div>
+      <div class="card"><div class="card-h"><h2>What lint checks</h2></div>
+        <div style="font-size:12.5px;line-height:1.85">contradictions between pages · claims superseded by newer sources · pages past their review interval · pages resting only on factory-produced sources · concepts without a page · orphan pages · missing cross-references · gaps a new source could fill</div></div>
+      <div class="card"><div class="card-h"><h2>Why a different model</h2></div>
+        <div style="font-size:12.5px;color:var(--ink-2)">The keeper writes on <span class="mono">qwen3-coder:30b</span>; lint runs on the strongest model, <span class="mono">gemma4:27b</span>, from another family — so the keeper never grades its own pages.</div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

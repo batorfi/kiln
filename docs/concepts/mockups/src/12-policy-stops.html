@@ -1,0 +1,73 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Decisions that are not gates</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.stop{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.stop h2{font-size:15px}.stop .why{font-size:12.5px;color:var(--ink-2)}
+.stop .opts{display:flex;flex-direction:column;gap:8px}
+.stop .rule{font-size:12px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:8px;padding:9px 11px}
+.stripe-top{height:4px;border-radius:3px;margin:-4px 0 4px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a class="on">Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Workshop · Needs you</div><h1>When policy stops the factory, it asks — it never works around</h1>
+    <div class="sub" style="margin-top:4px">Three kinds of stop that are not gates. Each pauses only what it must, explains which rule fired, and offers choices that are recorded as yours.</div></div>
+    <span class="pill">3 examples from the workshop</span></div>
+  <div class="grid" style="grid-template-columns:repeat(3,1fr);align-items:start">
+    <div class="stop"><div class="stripe-top" style="background:var(--bad)"></div>
+      <div class="row"><span class="pill bad">Blocked by policy</span><span class="sub">kiln-v1 · yesterday 22:47</span></div>
+      <h2>A research step tried to send source code to a cloud model</h2>
+      <div class="why">The researcher wanted to ask <span class="mono">claude-opus-5-5</span> about Pi's durable API and attached <span class="mono">src/lane.ts</span> (6 KB). The request was <b>stopped before it left</b> — nothing was sent.</div>
+      <div class="rule"><b>Rule:</b> profile <span class="pill local">local-only</span> — no model or tool may reach beyond this machine.<br><b>Step now:</b> continued without the answer; flagged “source unavailable” in its output.</div>
+      <div class="opts">
+        <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Keep it blocked</h3><p>Nothing changes. The flag stays visible at the next gate as missing evidence.</p></div>
+        <div class="opt"><h3><span class="dot" style="background:var(--info)"></span>Change the factory's profile…</h3><p>Opens kiln-v1's models &amp; policy. A profile change is a recorded decision and applies from the next step — never to this one.</p></div></div>
+      <div class="sub">There is no “allow just this once” in a local-only factory: the profile is the promise.</div></div>
+
+    <div class="stop"><div class="stripe-top" style="background:var(--wait)"></div>
+      <div class="row"><span class="pill wait">Budget reached</span><span class="sub">billing-service · b3 · example</span></div>
+      <h2>Feature b3 has used its whole cloud budget</h2>
+      <div class="why">$25.00 of $25.00 spent — mostly by 4 Code review rounds on a large diff. <b>The lane is paused</b> before the next cloud request. No gate was skipped, no model was swapped for a cheaper one.</div>
+      <div class="rule"><b>Rule:</b> row budget $25 · set at the Roadmap gate, Oct 10.<br><b>Waiting:</b> Code review round 5 (cloud reviewer).</div>
+      <div class="opts">
+        <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Raise this feature's budget</h3><p>Choose a new limit; the lane resumes. Recorded with your reason.</p></div>
+        <div class="opt"><h3><span class="dot" style="background:var(--wait)"></span>Leave it paused</h3><p>Nothing runs. Revisit later — waiting costs nothing.</p></div>
+        <div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Stop the feature</h3><p>b3 returns to the Roadmap gate with its record intact.</p></div></div></div>
+
+    <div class="stop"><div class="stripe-top" style="background:var(--deleg)"></div>
+      <div class="row"><span class="pill deleg">Judge unavailable</span><span class="sub">billing-service · example</span></div>
+      <h2>The cloud verifier's provider is not responding</h2>
+      <div class="why">3 retries over 9 minutes failed (provider outage). KILN <b>will not silently use a weaker judge</b>: verification is waiting. Work roles could fall back by policy — judges never do on their own.</div>
+      <div class="rule"><b>Rule:</b> judges on the strongest model, from a different family than the author.<br><b>Possible fallback:</b> <span class="mono">gemma4:27b</span> (local, strongest local) — same family as the author? <b>No</b> ✓</div>
+      <div class="opts">
+        <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Wait for the provider</h3><p>Retries continue in the background; you are told when it answers.</p></div>
+        <div class="opt"><h3><span class="dot" style="background:var(--wait)"></span>Use the local judge for this verification</h3><p>Recorded as a <b>judge downgrade you consented to</b>, shown at the Verification gate and in the record.</p></div>
+        <div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Pause the factory</h3><p>Nothing runs until you resume it.</p></div></div></div>
+  </div>
+  <div class="card"><div class="row" style="gap:20px;font-size:12.5px"><b>The same rules for every stop</b><span class="muted">explain which rule fired</span><span class="muted">·</span><span class="muted">pause only what must pause</span><span class="muted">·</span><span class="muted">never send a trimmed request, never downgrade quietly</span><span class="muted">·</span><span class="muted">never settle a gate</span></div></div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

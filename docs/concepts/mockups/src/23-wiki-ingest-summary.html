@@ -1,0 +1,85 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Wiki ingest summary</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.src{border:1px solid var(--line);border-radius:10px;background:var(--surface-2);padding:12px 14px;font-size:12.5px}
+.pages td{font-size:12.5px;vertical-align:top}
+.diff{background:#1F1B17;color:#E9E2D9;border-radius:8px;padding:10px 12px;font-family:var(--mono);font-size:11.5px;line-height:1.65;white-space:pre-wrap}
+.diff .a{color:#86EFAC}.diff .d{color:#FCA5A5}.diff .c{color:#8C8279}
+.contra{border:1.5px solid var(--bad-line);background:var(--bad-soft);border-radius:10px;padding:12px 14px}
+.take li{margin:4px 0}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a class="on">Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0">Wiki · <b>kiln-v1</b> · ingest summary · today 09:31</div><span class="grow"></span><span class="pill ok">✓ committed · 8 pages</span><span class="pill local">keeper on qwen3-coder:30b · local</span></div>
+    <div class="kicker" style="margin-top:12px">Ingest · one source, written directly — as in Karpathy's pattern</div>
+    <div class="q">What the wiki keeper learned from this source, and what it changed</div>
+    <div class="sub">Started by Anna Kovács at 09:12 — “focus on what this means for judge hold and residency”. They talked the takeaways through; the keeper then wrote the pages and committed them as one change you can adjust or revert.</div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 420px;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>The source</h2><span class="pill">raw/ · immutable</span></div>
+        <div class="src"><b class="mono">incident-2026-10-14-eviction.md</b> · 2.1 KB · added by Anna Kovács · from the team's incident tracker
+          <div class="sub" style="margin-top:6px">“During docs-site's d3 Design gate the critic's model was unloaded by Ollama under memory pressure, despite <span class="mono">keep_alive: 30m</span>. The critic restarted on a cold load; its verdict took 6 minutes longer…”</div></div>
+        <div class="kicker" style="margin-top:14px">The takeaways, as discussed</div>
+        <ul class="take" style="margin:6px 0 0 18px;font-size:12.5px;color:var(--ink-2)">
+          <li><span class="mono">keep_alive</span> is a request, not a guarantee: Ollama may still evict under memory pressure.</li>
+          <li>A judge can therefore lose its model between work and verdict unless KILN itself pins it.</li>
+          <li>This is the same failure the code reviewer raised for r10 (finding 1).</li></ul>
+        <div class="card" style="margin-top:12px;background:var(--info-soft);border-color:var(--info-line);padding:10px 14px;font-size:12.5px"><b style="color:var(--info)">Anna, during the ingest:</b> “Don't add a new concept page for eviction — fold it into Model residency and Judge hold.” <span class="muted">· the keeper did</span></div></div>
+      <div class="card"><div class="card-h"><h2>What changed</h2><span class="sub">8 pages · 1 new · one commit</span></div>
+        <table class="pages"><tr><th>Page</th><th>Change</th><th></th></tr>
+          <tr><td><b>Model eviction mid-judgment</b></td><td>new incident page, cites the source</td><td><span class="pill ok">new</span></td></tr>
+          <tr><td><b>Ollama</b> <span class="pill" style="font-size:10.5px">workshop wiki</span></td><td>not changed here — a workshop page; the keeper suggested the same correction there (Anna made it at 09:44)</td><td><span class="pill">suggested</span></td></tr>
+          <tr><td><b>Model residency</b></td><td>corrected the keep_alive claim — see contradiction</td><td><span class="pill ok">resolved</span></td></tr>
+          <tr><td><b>Judge hold</b></td><td>adds the incident as evidence; links finding 1 of r10</td><td><span class="pill">+4</span></td></tr>
+          <tr><td><b>Model pool</b></td><td>“pinning is KILN's job, not Ollama's”</td><td><span class="pill">+3</span></td></tr>
+          <tr><td>Incidents · index.md · 2 source summaries · overview</td><td>links and catalog entries</td><td><span class="pill">+11</span></td></tr></table>
+        <div class="kicker" style="margin-top:12px">Change to “Model residency”</div>
+        <div class="diff"><span class="d">− Setting keep_alive to 30m keeps a model resident between units.</span>
+<span class="a">+ keep_alive asks Ollama to keep a model loaded, but Ollama can still evict it under</span>
+<span class="a">+ memory pressure [[Model eviction mid-judgment]]. Residency is guaranteed only when</span>
+<span class="a">+ KILN pins the model in its pool [[Model pool]] [[Judge hold]].</span>
+<span class="c">  sources: raw/ollama-faq.md · raw/incident-2026-10-14-eviction.md</span></div></div>
+    </div>
+    <div class="grid">
+      <div class="contra" style="border-color:var(--ok-line);background:var(--ok-soft)"><div class="row"><span class="pill ok">Contradiction resolved</span></div>
+        <h3 style="margin-top:8px">“Model residency” said keep_alive guarantees residency</h3>
+        <div style="font-size:12.5px;margin-top:6px;color:var(--ink-2)">The new source shows it does not under memory pressure; the keeper corrected the page. Because the page is <b>cited by the open r10 Code review gate</b>, that brief now marks it as <i>changed since the gate opened</i>.</div></div>
+      <div class="card options-card"><div class="card-h"><h2>If something is off</h2><span class="sub">no approval step — everything stays changeable</span></div>
+        <div class="grid" style="gap:8px">
+          <div class="opt"><h3><span class="dot" style="background:var(--info)"></span>Edit a page</h3><p>Change any of the 8 pages yourself — here, in Obsidian or in Zed. Your edit is recorded under your name and linted.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--wait)"></span>Ask the keeper for a change</h3><p>Continue the same conversation — “the Model pool page overstates this”. The keeper adds a follow-up commit.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Revert this ingest</h3><p>All 8 page changes are undone in one commit. The source stays in <span class="mono">raw/</span>.</p></div>
+          <div class="sub" style="text-align:center">Open to Curators of kiln-v1 · lint re-checks this ingest on gemma4:27b</div></div></div>
+      <div class="card"><div class="card-h"><h2>Provenance</h2></div>
+        <div class="kv2"><span>Step</span><span>wiki keeper · 6 min · ran while kiln-v1 waited on you</span><span>Commit</span><span class="mono">4be19c0 · “ingest: incident-2026-10-14-eviction”</span><span>Read</span><span>the source · index.md · 14 pages</span><span>Left the machine</span><span>nothing</span><span>Source kind</span><span>external · incident tracker</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

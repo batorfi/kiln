@@ -29,6 +29,7 @@
     "live-ready": "node validate/live-ready.ts",
     "ollama-ready": "node validate/ollama-ready.ts",
     "pi-ready": "node validate/pi-ready.ts",
+    "ui-ready": "node validate/ui-ready.ts",
     "dogfood": "node tests/dogfood/run.ts",
     "program-walk": "node tests/dogfood/run-program.ts",
     "live-walk": "node tests/dogfood/run-live.ts",

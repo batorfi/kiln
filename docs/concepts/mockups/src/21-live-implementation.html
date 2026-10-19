@@ -1,0 +1,131 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Live implementation</title><link rel="stylesheet" href="kiln-mock.css">
+<style>
+.live{display:inline-flex;align-items:center;gap:6px;color:var(--ok);font-weight:650;font-size:12px}
+.live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px var(--ok-soft)}
+.brief{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;background:var(--info-soft);border:1px solid var(--info-line);border-radius:10px;padding:12px 16px;font-size:12.5px}
+.brief b.k{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--info)}
+.tasks .t{display:grid;grid-template-columns:22px 1fr auto;gap:10px;padding:9px 0;border-top:1px solid var(--line-2);font-size:12.5px;align-items:start}
+.tasks .t:first-child{border-top:0}
+.tk{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin-top:1px}
+.tk.done{background:var(--ok);color:#fff}.tk.now{border:2px solid var(--ok);box-shadow:0 0 0 3px var(--ok-soft)}.tk.todo{border:1.5px solid var(--line)}
+.ed{border:1px solid #2E2823;border-radius:10px;overflow:hidden;background:#1F1B17}
+.ed .tabs{display:flex;gap:0;background:#171411;border-bottom:1px solid #2E2823;font-family:var(--mono);font-size:11.5px}
+.ed .tabs span{padding:8px 14px;color:#8C8279;border-right:1px solid #2E2823}
+.ed .tabs span.on{color:#E9E2D9;background:#1F1B17}
+.ed .tabs span i{font-style:normal;color:#FDBA74;margin-left:6px}
+.code2{font-family:var(--mono);font-size:11.8px;line-height:1.7;color:#E9E2D9;padding:10px 0}
+.code2 .ln{display:grid;grid-template-columns:44px 14px 1fr;white-space:pre}
+.code2 .n{color:#5C534B;text-align:right;padding-right:10px}
+.code2 .add{background:rgba(34,197,94,.12)}.code2 .add .m{color:#86EFAC}
+.code2 .del{background:rgba(239,68,68,.12)}.code2 .del .m{color:#FCA5A5}
+.code2 .k{color:#FDBA74}.code2 .s{color:#86EFAC}.code2 .c{color:#8C8279}.code2 .f{color:#93C5FD}
+.cursor{display:inline-block;width:7px;height:14px;background:#F97316;vertical-align:-2px;animation:none}
+.term{background:#14110F;color:#D6CFC6;font-family:var(--mono);font-size:11.5px;line-height:1.65;padding:10px 14px;border-top:1px solid #2E2823;white-space:pre}
+.term .ok{color:#86EFAC}.term .bad{color:#FCA5A5}.term .dim{color:#7A7068}
+.ev{display:grid;grid-template-columns:58px 22px 1fr;gap:8px;padding:8px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+.ev:first-child{border-top:0}.ev time{color:var(--faint);font-size:11.5px;font-family:var(--mono)}
+.ev .ic{width:20px;height:20px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);font-size:10px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.think{color:var(--ink-2);font-style:italic}
+.files td{font-size:12px;padding:5px 8px}.plus{color:var(--ok);font-family:var(--mono)}.minus{color:var(--bad);font-family:var(--mono)}
+.prog{height:8px;border-radius:5px;background:var(--line-2);overflow:hidden;margin:8px 0 4px}.prog i{display:block;height:100%;background:var(--ok)}
+.steer{border:1px solid var(--info-line);background:var(--info-soft);border-radius:10px;padding:12px 14px}
+</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">2</span></a>
+    <a class="on">Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb"><b>kiln-v1</b> · Feature r10 · Role agents and model tiers · today 10:24</div><h1>Implementation, live — round 3, rebuilding after your restart</h1>
+    <div class="sub" style="margin-top:4px">Nothing needs you right now. You will be asked at the Code review gate when this step is done — or sooner, if the worker hits a risky action.</div></div>
+    <div class="row"><span class="live">Working · 19 min</span><span class="pill local">local-only</span></div></div>
+
+  <div class="card"><div class="row" style="gap:28px;align-items:center">
+    <div class="grow"><div class="rail">
+      <div class="g done"><div class="c">✓</div><div class="l">Concept</div></div><div class="g done"><div class="c">✓</div><div class="l">Design</div></div><div class="g done"><div class="c">✓</div><div class="l">Spec</div></div><div class="g done"><div class="c">✓</div><div class="l">Plan</div></div><div class="g run"><div class="c"></div><div class="l">Impl.</div></div><div class="g"><div class="c"></div><div class="l">Code review</div></div><div class="g"><div class="c"></div><div class="l">Verify</div></div><div class="g"><div class="c"></div><div class="l">Docs</div></div><div class="g"><div class="c"></div><div class="l">Merge</div></div></div></div>
+    <div class="brief" style="width:620px"><b class="k">Working from</b><div>Your restart note at 10:05 — <i>“Fix both major findings; the hold flag must be checked inside the lane, not by callers.”</i> — plus the code reviewer's 3 findings, starting from the restorable commit <span class="mono">a9067f1</span>.</div></div>
+  </div></div>
+
+  <div class="grid" style="grid-template-columns:1fr 410px;align-items:start">
+    <div class="grid">
+      <div class="ed">
+        <div class="tabs"><span class="on">src/lane.ts<i>● writing</i></span><span>src/tiers.ts</span><span>src/walk.ts</span><span>tests/lane.test.ts</span></div>
+        <div class="code2">
+<div class="ln"><span class="n">84</span><span class="m"></span><span>  <span class="k">async</span> <span class="f">swapTo</span>(next: ModelRef): Promise&lt;<span class="k">void</span>&gt; {</span></div>
+<div class="ln"><span class="n">85</span><span class="m"></span><span>    <span class="k">if</span> (next.id === <span class="k">this</span>.resident?.id) <span class="k">return</span>;</span></div>
+<div class="ln del"><span class="n">86</span><span class="m">−</span><span>    <span class="k">await this</span>.resident?.<span class="f">unload</span>();</span></div>
+<div class="ln add"><span class="n">86</span><span class="m">+</span><span>    <span class="c">// finding 1: never unload a model a held judge still needs</span></span></div>
+<div class="ln add"><span class="n">87</span><span class="m">+</span><span>    <span class="k">if</span> (<span class="k">this</span>.hold &amp;&amp; <span class="k">this</span>.hold.model.id === <span class="k">this</span>.resident?.id) {</span></div>
+<div class="ln add"><span class="n">88</span><span class="m">+</span><span>      <span class="k">throw new</span> <span class="f">LaneHeldError</span>(<span class="s">`lane held by ${this.hold.gate} until its verdict`</span>);</span></div>
+<div class="ln add"><span class="n">89</span><span class="m">+</span><span>    }</span></div>
+<div class="ln add"><span class="n">90</span><span class="m">+</span><span>    <span class="k">await this</span>.resident?.<span class="f">unload</span>();<span class="cursor"></span></span></div>
+<div class="ln"><span class="n">91</span><span class="m"></span><span>    <span class="k">this</span>.resident = <span class="k">await</span> <span class="f">load</span>(next);</span></div>
+<div class="ln"><span class="n">92</span><span class="m"></span><span>    <span class="k">this</span>.log.<span class="f">swap</span>(next);</span></div>
+<div class="ln"><span class="n">93</span><span class="m"></span><span>  }</span></div>
+        </div>
+        <div class="term"><span class="dim">$ npm test -- lane      ← ran 2 min ago by the worker</span>
+<span class="ok">✓</span> swap unloads before load (4 ms)
+<span class="ok">✓</span> swap is a no-op for the resident model (1 ms)
+<span class="bad">✕</span> held lane refuses to unload its judge model <span class="dim">— expected LaneHeldError, got none</span>
+<span class="dim">  12 passed · 1 failed   (the failing test was written first — the worker is now making it pass)</span></div>
+      </div>
+
+      <div class="card"><div class="card-h"><div><div class="kicker">The worker, as it works</div><h2 style="margin-top:2px">Worker · qwen3-coder:30b <span class="pill local" style="margin-left:6px">local</span></h2></div><span class="sub">what you see is what is recorded</span></div>
+        <div class="ev"><time>10:05:31</time><span class="ic">◆</span><div><b>Started</b> round 3 from <span class="mono">a9067f1</span> with your note and 3 findings.</div></div>
+        <div class="ev"><time>10:09:12</time><span class="ic">✓</span><div><b>Task 1 done</b> — role catalog and tier map restored from round 2, unchanged (reviewer had no findings there).</div></div>
+        <div class="ev"><time>10:16:40</time><span class="ic">✎</span><div class="think">“Your note says the lane itself must check the hold flag. I'll write a failing test for finding 1 first, then change <span class="mono">swapTo</span>.”</div></div>
+        <div class="ev"><time>10:21:58</time><span class="ic">$</span><div><b>Ran</b> <span class="mono">npm test -- lane</span> · 12 passed, 1 failed — as expected.</div></div>
+        <div class="ev"><time>10:24:03</time><span class="ic">✎</span><div><b>Editing</b> <span class="mono">src/lane.ts</span> · lines 86–90</div></div></div>
+    </div>
+
+    <div class="grid">
+      <div class="card tasks"><div class="card-h"><h2>Tasks in this round</h2><span class="sub">from the work plan and the findings</span></div>
+        <div class="t"><span class="tk done">✓</span><div>Restore role catalog and tier map</div><span class="muted">4 min</span></div>
+        <div class="t"><span class="tk now"></span><div><b>Finding 1</b> — lane refuses to unload a held judge's model<div class="sub">test written · implementing</div></div><span class="pill">FR-3</span></div>
+        <div class="t"><span class="tk todo"></span><div><b>Finding 2</b> — move hard-coded model names into the tier map</div><span class="pill">FR-4</span></div>
+        <div class="t"><span class="tk todo"></span><div>Finding 3 (minor) — name the refused model in <span class="mono">TierPolicyError</span></div><span class="pill">—</span></div>
+        <div class="t"><span class="tk todo"></span><div>Run the full test suite and the network scan</div><span class="pill">NFR-1</span></div>
+        <div class="prog"><i style="width:30%"></i></div>
+        <div class="sub">1 of 5 done · about 1 h 05 min left · then the Code review gate opens with these findings mapped to the changes</div></div>
+
+      <div class="card"><div class="card-h"><h2>Changes so far</h2><span class="sub">against <span class="mono">a9067f1</span></span></div>
+        <table class="files"><tr><td class="mono">src/lane.ts</td><td class="plus">+5</td><td class="minus">−1</td><td class="sub">writing now</td></tr>
+          <tr><td class="mono">tests/lane.test.ts</td><td class="plus">+18</td><td class="minus">−0</td><td class="sub">new test</td></tr>
+          <tr><td class="mono">src/tiers.ts</td><td class="plus">+88</td><td class="minus">−12</td><td class="sub">from round 2</td></tr>
+          <tr><td class="mono">agents/*.md (11)</td><td class="plus">+356</td><td class="minus">−0</td><td class="sub">from round 2</td></tr></table></div>
+
+      <div class="card"><div class="steer"><div class="row"><h3 style="color:var(--info)">Steer the worker</h3><span class="sub">reaches it after its current edit</span></div>
+        <div class="note-box" style="margin-top:8px;background:#fff">e.g. “Use the existing LaneError base class.”</div>
+        <div class="sub" style="margin-top:6px">Steering shapes the work and is recorded under your name. It never decides a gate.</div></div>
+        <div class="row" style="margin-top:12px;gap:8px"><span class="btn grow">Pause after this step</span><span class="btn bad grow">Abort step</span></div></div>
+
+      <div class="card"><div class="card-h"><h2>The lane</h2></div>
+        <div class="kv2"><span>Running on</span><span>qwen3-coder:30b · already resident — no load needed</span><span>Next</span><span>code reviewer on gemma4:27b — pinned, so no load</span><span>Risky actions</span><span>none so far · deleting or running unknown commands will ask you first</span><span>Left the machine</span><span>nothing</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

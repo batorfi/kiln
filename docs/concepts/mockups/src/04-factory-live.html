@@ -1,0 +1,92 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Factory · live</title><link rel="stylesheet" href="kiln-mock.css">
+<style>
+.stream{display:flex;flex-direction:column;gap:0;font-size:12.5px}
+.ev{display:grid;grid-template-columns:58px 22px 1fr;gap:8px;padding:9px 0;border-top:1px solid var(--line-2);align-items:start}
+.ev:first-child{border-top:0}
+.ev time{color:var(--faint);font-size:11.5px;font-family:var(--mono)}
+.ev .ic{width:20px;height:20px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);font-size:10px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.ev .out{margin-top:6px;background:#1F1B17;color:#E9E2D9;border-radius:7px;padding:8px 10px;font-family:var(--mono);font-size:11px;line-height:1.55;white-space:pre}
+.think{color:var(--ink-2);font-style:italic}
+.q{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+.q:first-child{border-top:0}
+.swap{display:flex;align-items:center;gap:8px;color:var(--wait);font-size:11.5px;font-weight:600;padding:6px 0}
+.swap::before,.swap::after{content:"";flex:1;border-top:1px dashed var(--wait-line)}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:6px 12px;font-size:12.5px}
+.kv span:nth-child(odd){color:var(--muted)}
+.meter{height:8px;border-radius:5px;background:var(--line-2);overflow:hidden;margin:6px 0 4px}
+.meter i{display:block;height:100%;background:var(--info)}
+.step-in .row{padding:8px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+.step-in .row:first-child{border-top:0}
+.dis{opacity:.55}
+.live{display:inline-flex;align-items:center;gap:6px;color:var(--ok);font-weight:650;font-size:12px}
+.live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px var(--ok-soft)}
+</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a><a>Factories <span class="s">4</span></a><a>Team space</a><a>Record</a><a>Knowledge</a><a>Bench</a><a>Insights</a><a>Models &amp; policy</a><a>Agents</a><a>Flows</a><a>Hosts</a><a>Health</a><a>People</a></div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a class="on"><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a></div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb"><b>billing-service</b> · Feature b2 · Proration on plan change</div><h1>Verifier is checking the feature against the specification</h1>
+    <div class="sub" style="margin-top:4px">Nothing needs you in this factory right now. You will be asked at the Merge gate — or earlier, if a judge objects.</div></div>
+    <div class="row"><span class="live">Working · 6 min</span><span class="pill cloud">hybrid</span></div></div>
+
+  <div class="card"><div class="row" style="align-items:center;gap:28px">
+    <div class="grow"><div class="rail">
+      <div class="g skip"><div class="c"></div><div class="l">Concept</div></div><div class="g skip"><div class="c"></div><div class="l">Design</div></div><div class="g done"><div class="c">✓</div><div class="l">Spec</div></div><div class="g auto"><div class="c">✓</div><div class="l">Plan</div></div><div class="g auto"><div class="c">✓</div><div class="l">Impl.</div></div><div class="g auto"><div class="c">✓</div><div class="l">Code review</div></div><div class="g run"><div class="c"></div><div class="l">Verify</div></div><div class="g"><div class="c"></div><div class="l">Docs</div></div><div class="g"><div class="c"></div><div class="l">Merge</div></div></div></div>
+    <div style="width:440px;padding:12px 14px" class="card"><div class="row"><span class="pill deleg">Delegation armed</span><span class="sub">by you at the Specification gate · Oct 16, 18:22</span></div>
+      <div style="font-size:12.5px;margin-top:8px">Covers <b>Work plan → Documentation</b> · stops at a ready-to-merge pull request (merge <b>not</b> delegated). Any judge's objection ends it and brings it back to you.</div></div>
+  </div></div>
+
+  <div class="grid" style="grid-template-columns:1fr 400px;align-items:start">
+    <div class="card">
+      <div class="card-h"><div><div class="kicker">The running step</div><h2 style="margin-top:2px">Verifier · claude-opus-5-5 <span class="pill cloud" style="margin-left:6px">cloud</span> <span class="pill" style="margin-left:4px">lane held</span></h2></div><span class="sub">what you see is what is recorded</span></div>
+      <div class="stream">
+        <div class="ev"><time>09:41:02</time><span class="ic">◆</span><div><b>Started</b> with the specification (7 requirements), the diff (9 files) and the code reviewer's notes. <span class="muted">Sent under policy rule <span class="mono">judges-may-read-diff</span> · 41 KB · secrets scan clean.</span></div></div>
+        <div class="ev"><time>09:41:40</time><span class="ic">✎</span><div class="think">“FR-5 says proration uses the remaining days of the current period. I'll check the month-end and leap-year cases explicitly.”</div></div>
+        <div class="ev"><time>09:42:15</time><span class="ic">$</span><div><b>Ran</b> <span class="mono">npm test -- proration</span> <span class="muted">· runs locally in the workspace</span>
+          <div class="out">✓ prorates upgrade mid-period (3 ms)
+✓ prorates downgrade with credit (2 ms)
+✓ month-end: Jan 31 → Feb 28 (1 ms)
+✕ leap year: Feb 29 → Mar 29 — expected 30 days, got 29
+  41 passed · 1 failed</div></div></div>
+        <div class="ev"><time>09:44:51</time><span class="ic">✎</span><div class="think">“The failure is in the period-length calculation, not the proration formula. This is a verification failure for FR-5.”</div></div>
+        <div class="ev"><time>09:46:03</time><span class="ic">◷</span><div><b>Preparing verdict…</b> <span class="muted">if it rejects, the factory runs up to 2 automatic fix rounds before asking you.</span></div></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card step-in"><div class="card-h"><h2>Step in</h2><span class="sub">recorded under your name</span></div>
+        <div class="row dis"><b class="grow">Steer this step</b><span class="pill">not available</span></div>
+        <div class="sub" style="margin:-2px 0 6px">Judges are never steered mid-verdict — their independence is not negotiable.</div>
+        <div class="row"><b class="grow">Pause after this step</b><span class="btn">Pause</span></div>
+        <div class="row"><b class="grow">Abort this step</b><span class="btn bad">Abort</span></div>
+        <div class="row"><b class="grow">End the delegation</b><span class="btn">End</span></div>
+        <div class="sub" style="margin-top:6px">None of these decides a gate.</div></div>
+
+      <div class="card"><div class="card-h"><h2>Up next</h2><span class="sub">one step at a time</span></div>
+        <div class="q"><span class="dot run"></span><span class="grow">Verifier · cloud judge</span><span class="muted">running</span></div>
+        <div class="q"><span class="dot idle"></span><span class="grow">Verification gate</span><span class="pill deleg">auto if no objection</span></div>
+        <div class="swap">back to local gemma4:27b · no load — already resident (pinned)</div>
+        <div class="q"><span class="dot idle"></span><span class="grow">Techwriter · documentation</span><span class="pill local">local</span></div>
+        <div class="q"><span class="dot idle"></span><span class="grow">Documentation gate</span><span class="pill deleg">auto if no objection</span></div>
+        <div class="q"><span class="dot idle"></span><span class="grow">Merge gate</span><span class="pill wait">stops for you</span></div></div>
+
+      <div class="card"><div class="card-h"><h2>This feature so far</h2></div>
+        <div class="kv"><span>Machine time</span><span>2 h 06 min · 1 swap</span><span>Cloud spend</span><span>$4.12 of $25 row budget</span></div>
+        <div class="meter"><i style="width:16.5%"></i></div>
+        <div class="kv"><span>Left the machine</span><span>3 requests · 118 KB · all under policy</span><span>Blocked</span><span>0 requests</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

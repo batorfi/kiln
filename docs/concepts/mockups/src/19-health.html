@@ -1,0 +1,63 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Health</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.sig{display:grid;grid-template-columns:110px 1fr auto;gap:14px;padding:12px 0;border-top:1px solid var(--line-2);align-items:start}
+.sig:first-child{border-top:0}.sig h3{font-size:13.5px}.sig .d{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:650;border-radius:6px;padding:2px 8px}
+.st.warn{background:var(--wait-soft);color:var(--wait)}.st.info{background:var(--info-soft);color:var(--info)}.st.ok{background:var(--ok-soft);color:var(--ok)}.st.serious{background:var(--bad-soft);color:var(--bad)}
+.cons td{font-size:12.5px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a class="on">Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Workshop · Health</div><h1>Signals worth knowing — observed, never acted on</h1>
+    <div class="sub" style="margin-top:4px">The health watcher tells you what looks wrong. It never aborts a step, moves the lane or touches a gate.</div></div>
+    <div class="row"><span class="st ok">● All factories running normally</span><span class="pill">4 signals</span></div></div>
+  <div class="grid" style="grid-template-columns:1.3fr 1fr;align-items:start">
+    <div class="card"><div class="card-h"><h2>Signals</h2><span class="sub">newest first</span></div>
+      <div class="sig"><span class="st warn">▲ Warning</span><div><h3>Overlap between two factories</h3><div class="d">billing-service (b2) and kiln-v1 (r10) both change <span class="mono">shared/config.ts</span>. It will be shown in each one's next gate brief. Who goes first is your call.</div></div><span class="sub">since 23:05</span></div>
+      <div class="sig"><span class="st warn">▲ Warning</span><div><h3>Model load much slower than usual</h3><div class="d">qwen3-coder:30b took 2 min 51 s to load at 09:53 (usual: 38 s). It had been unloaded overnight; the disk cache was cold after the restart.</div></div><span class="sub">09:56</span></div>
+      <div class="sig"><span class="st info">● Info</span><div><h3>A gate has waited longer than its reminder interval</h3><div class="d">kiln-v1 · Code review has waited 15 h 47 min (reminder: 8 h). A reminder is information — waiting never decides.</div></div><span class="sub">since 02:00</span></div>
+      <div class="sig"><span class="st info">● Info</span><div><h3>Request to an unlisted destination refused</h3><div class="d">A tool in kiln-v1 tried <span class="mono">pypi.org:443</span>. Not in the allowed destinations; refused and recorded as blocked egress.</div></div><span class="sub">21:58</span></div>
+      <div class="sig"><span class="st ok">✓ Resolved</span><div><h3>Recovered after a crash</h3><div class="d">Machine restart at 03:12. 1 step resumed, 2 gates kept waiting, nothing approved by the restart. All consumers caught up by 03:15.</div></div><span class="sub">03:14</span></div></div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Views built from the record</h2><span class="sub">each catches up on its own</span></div>
+        <table class="cons"><tr><th>View</th><th>Behind by</th><th>State</th></tr>
+          <tr><td>Factory-log projection</td><td>0 events</td><td><span class="st ok">✓ valid</span></td></tr>
+          <tr><td>Live state</td><td>0 events</td><td><span class="st ok">✓</span></td></tr>
+          <tr><td>Metrics</td><td>3 events</td><td><span class="st ok">✓</span></td></tr>
+          <tr><td>Process analytics</td><td>212 events</td><td><span class="st info">● catching up</span></td></tr>
+          <tr><td>Local OpenTelemetry export</td><td>—</td><td class="muted">off</td></tr></table>
+        <div class="sub" style="margin-top:8px">A slow view never slows a factory down.</div></div>
+      <div class="card"><div class="card-h"><h2>Steps and storage</h2></div>
+        <div class="kv2"><span>Stuck steps</span><span>none · longest without progress: 41 s</span><span>Steps resumed twice or more</span><span>none</span><span>Record size</span><span>2.4 GB of 20 GB budget · growing 60 MB/day</span><span>Unsent events</span><span>0 · dispatcher keeping up</span></div></div>
+      <div class="card"><div class="card-h"><h2>What Health will never do</h2></div>
+        <div style="font-size:12.5px;line-height:1.9">abort a step · move or hold the lane · settle, skip or delay a gate · change a policy · send anything off the machine</div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

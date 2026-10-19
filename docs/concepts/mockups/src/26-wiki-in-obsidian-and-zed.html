@@ -1,0 +1,101 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — The wiki in Obsidian and Zed</title><link rel="stylesheet" href="kiln-mock.css">
+<style>
+.win{border-radius:12px;overflow:hidden;border:1px solid #2B2622;box-shadow:0 14px 34px rgba(30,20,10,.16);display:flex;flex-direction:column;min-height:640px}
+.bar2{display:flex;align-items:center;gap:8px;padding:9px 12px;font-size:12px}
+.dots{display:flex;gap:6px}.dots i{width:11px;height:11px;border-radius:50%;display:block}
+.obs{background:#1E1E1E;color:#DCDDDE}.obs .bar2{background:#262626;color:#9AA0A6;border-bottom:1px solid #333}
+.obs .body{display:grid;grid-template-columns:210px 1fr 220px;flex:1}
+.tree{background:#232323;border-right:1px solid #333;padding:10px 8px;font-size:12px;line-height:1.85;color:#A9ADB3}
+.tree .on{background:#3A3A3A;color:#fff;border-radius:4px;padding:0 6px;margin:0 -6px}
+.tree .f{padding-left:12px}.tree .f2{padding-left:24px}
+.note{padding:22px 28px;font-size:13px;line-height:1.65}
+.note h1{font-size:24px;color:#fff;margin-bottom:10px}
+.props{border:1px solid #333;border-radius:8px;padding:8px 10px;margin-bottom:14px;font-size:12px}
+.props .p{display:grid;grid-template-columns:90px 1fr;gap:8px;padding:3px 0;color:#A9ADB3}
+.props .p span:last-child{color:#DCDDDE}
+.wl{color:#A88BFA;text-decoration:none;border-bottom:1px solid rgba(168,139,250,.35)}
+.tag{color:#A88BFA;background:rgba(168,139,250,.12);border-radius:10px;padding:0 7px;font-size:11.5px;margin-right:4px}
+.callout{border-left:3px solid #448AFF;background:rgba(68,138,255,.10);padding:8px 12px;border-radius:4px;margin:10px 0;font-size:12.5px}
+.callout b{color:#7AB0FF}
+.right{border-left:1px solid #333;padding:12px 12px;font-size:12px;color:#A9ADB3;background:#202020}
+.right h4{color:#DCDDDE;font-size:12px;margin:2px 0 8px}
+.graph{height:150px;position:relative;margin-bottom:14px}
+.graph i{position:absolute;width:9px;height:9px;border-radius:50%;background:#7A7A7A}
+.graph i.c{background:#A88BFA;width:12px;height:12px}
+.graph svg{position:absolute;inset:0}
+.zed{background:#1F1F1F;color:#D4D4D4}.zed .bar2{background:#262626;color:#9CA3AF;border-bottom:1px solid #333}
+.zed .body{display:grid;grid-template-columns:200px 1fr;flex:1}
+.zed .tree{background:#222}
+.src2{font-family:var(--mono);font-size:12px;line-height:1.75;padding:12px 0;white-space:pre}
+.src2 .ln{display:grid;grid-template-columns:40px 1fr}
+.src2 .n{color:#5A5A5A;text-align:right;padding-right:12px}
+.src2 .y{color:#9CDCFE}.src2 .v{color:#CE9178}.src2 .h{color:#E5C07B;font-weight:700}.src2 .w{color:#C586C0}.src2 .d{color:#6A9955}
+.statusz{background:#262626;color:#9CA3AF;font-size:11px;padding:5px 12px;border-top:1px solid #333;display:flex;gap:14px}
+.grid>div{min-width:0}.win{min-width:0}.src2{overflow:hidden}
+.cap{font-size:12.5px;color:var(--ink-2);margin-top:10px}
+</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a class="on">Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Wiki · <b>kiln-v1</b> · readable anywhere</div><h1>The same page, outside KILN: an Obsidian vault, plain markdown in Zed</h1>
+    <div class="sub" style="margin-top:4px">The wiki is a folder of markdown files with wikilinks and YAML properties. Open it in Obsidian, Zed or any editor — no KILN, no plugins required.</div></div>
+    <div class="row"><span class="pill ok">✓ vault conformance</span><span class="pill">third-party tools shown stylised — not their actual UI</span></div></div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
+    <div>
+      <div class="win obs">
+        <div class="bar2"><span class="dots"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i></span><span style="margin-left:10px">Obsidian — vault: kiln-v1 wiki</span></div>
+        <div class="body">
+          <div class="tree">▾ kiln-v1 wiki<div class="f">AGENTS.md</div><div class="f">index.md</div><div class="f">log.md</div><div class="f">▾ pages</div><div class="f2">▾ concepts</div><div class="f2" style="padding-left:36px">Judge hold</div><div class="f2" style="padding-left:36px"><span class="on">Model residency</span></div><div class="f2" style="padding-left:36px">Single lane</div><div class="f2">▸ entities</div><div class="f2">▸ incidents</div><div class="f2">▸ sources</div><div class="f">▸ raw</div><div class="f">▸ workshop</div></div>
+          <div class="note"><h1>Model residency</h1>
+            <div class="props"><div class="p"><span>type</span><span>concept</span></div><div class="p"><span>aliases</span><span>Residency</span></div><div class="p"><span>tags</span><span><span class="tag">models</span><span class="tag">lane</span></span></div><div class="p"><span>sources</span><span><a class="wl">ollama-faq</a> · <a class="wl">incident-2026-10-14-eviction</a></span></div><div class="p"><span>reviewed</span><span>2026-10-17</span></div><div class="p"><span>owner</span><span>Anna Kovács</span></div></div>
+            <p><code style="background:#2A2A2A;padding:1px 5px;border-radius:4px">keep_alive</code> asks Ollama to keep a model loaded, but Ollama can still evict it under memory pressure (<a class="wl">Model eviction mid-judgment</a>). Residency is guaranteed only when KILN pins the model in its pool (<a class="wl">Model pool</a>, <a class="wl">Judge hold</a>).</p>
+            <div class="callout"><b>Note</b> — this is why the lane refuses to unload a held judge's model; see <a class="wl">r10 · Role agents and model tiers</a>.</div>
+            <p style="color:#A9ADB3;font-size:12px">Written in the ingest of <a class="wl">incident-2026-10-14-eviction</a>, with Anna Kovács</p></div>
+          <div class="right"><h4>Graph · local</h4>
+            <div class="graph"><svg viewBox="0 0 196 150"><g stroke="#4A4A4A" stroke-width="1"><line x1="98" y1="75" x2="40" y2="30"/><line x1="98" y1="75" x2="140" y2="34"/><line x1="98" y1="75" x2="30" y2="110"/><line x1="98" y1="75" x2="132" y2="118"/><line x1="98" y1="75" x2="98" y2="18"/><line x1="140" y1="34" x2="132" y2="118"/></g></svg>
+              <i class="c" style="left:92px;top:69px"></i><i style="left:35px;top:25px"></i><i style="left:135px;top:29px"></i><i style="left:25px;top:105px"></i><i style="left:127px;top:113px"></i><i style="left:93px;top:13px"></i></div>
+            <h4>Backlinks · 7</h4><div style="line-height:1.85"><a class="wl">Judge hold</a><br><a class="wl">Model pool</a><br><a class="wl">Ollama</a><br><a class="wl">Single lane</a><br><a class="wl">gemma4:27b</a><br><span style="color:#777">+2 more</span></div></div>
+        </div></div>
+      <div class="cap"><b>In Obsidian</b> — properties, wikilinks, backlinks, tags, callouts and the graph work out of the box. No community plugins needed.</div>
+    </div>
+    <div>
+      <div class="win zed">
+        <div class="bar2"><span class="dots"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i></span><span style="margin-left:10px">Zed — wiki/pages/concepts/Model residency.md</span></div>
+        <div class="body">
+          <div class="tree">▾ wiki<div class="f">AGENTS.md</div><div class="f">index.md</div><div class="f">log.md</div><div class="f">▾ pages</div><div class="f2">▾ concepts</div><div class="f2" style="padding-left:36px">Judge hold.md</div><div class="f2" style="padding-left:36px"><span class="on">Model residency.md</span></div><div class="f2" style="padding-left:36px">Single lane.md</div><div class="f2">▸ entities</div><div class="f">▸ raw</div><div class="f">▸ workshop</div><div class="f">.obsidian</div></div>
+          <div class="src2"><div class="ln"><span class="n">1</span><span><span class="d">---</span></span></div><div class="ln"><span class="n">2</span><span><span class="y">type</span>:<span class="v"> concept</span></span></div><div class="ln"><span class="n">3</span><span><span class="y">aliases</span>:<span class="v"> [Residency]</span></span></div><div class="ln"><span class="n">4</span><span><span class="y">tags</span>:<span class="v"> [models, lane]</span></span></div><div class="ln"><span class="n">5</span><span><span class="y">sources</span>:<span class="v"></span></span></div><div class="ln"><span class="n">6</span><span>  - <span class="v">&quot;[[ollama-faq]]&quot;</span></span></div><div class="ln"><span class="n">7</span><span>  - <span class="v">&quot;[[incident-2026-10-14-eviction]]&quot;</span></span></div><div class="ln"><span class="n">8</span><span><span class="y">reviewed</span>:<span class="v"> 2026-10-17</span></span></div><div class="ln"><span class="n">9</span><span><span class="y">owner</span>:<span class="v"> Anna Kovács</span></span></div><div class="ln"><span class="n">10</span><span><span class="d">---</span></span></div><div class="ln"><span class="n">11</span><span></span></div><div class="ln"><span class="n">12</span><span><span class="h"># Model residency</span></span></div><div class="ln"><span class="n">13</span><span></span></div><div class="ln"><span class="n">14</span><span>`keep_alive` asks Ollama to keep a model</span></div><div class="ln"><span class="n">15</span><span>loaded, but Ollama can still evict it under</span></div><div class="ln"><span class="n">16</span><span>memory pressure (<span class="w">[[Model eviction mid-judgment]]</span>).</span></div><div class="ln"><span class="n">17</span><span>Residency is guaranteed only when KILN pins</span></div><div class="ln"><span class="n">18</span><span>the model in its pool (<span class="w">[[Model pool]]</span>,</span></div><div class="ln"><span class="n">19</span><span><span class="w">[[Judge hold]]</span>).</span></div><div class="ln"><span class="n">20</span><span></span></div><div class="ln"><span class="n">21</span><span>&gt; [!note]</span></div><div class="ln"><span class="n">22</span><span>&gt; This is why the lane refuses to unload a</span></div><div class="ln"><span class="n">23</span><span>&gt; held judge&#x27;s model; see</span></div><div class="ln"><span class="n">24</span><span>&gt; <span class="w">[[r10 · Role agents and model tiers]]</span>.</span></div></div>
+        </div>
+        <div class="statusz"><span>Markdown</span><span>UTF-8 · LF</span><span>markdown language server: 6 links · 0 broken</span></div></div>
+      <div class="cap"><b>In Zed</b> — the same file as plain markdown: readable front-matter, link text that names the target file, and link navigation where a markdown language server that understands wikilinks is installed.</div>
+    </div>
+  </div>
+  <div class="card"><div class="row" style="gap:22px;font-size:12.5px;flex-wrap:wrap"><b>The contract</b><span class="muted">file name = page title · unique across the vault</span><span class="muted">· <span class="mono">[[wikilinks]]</span> and <span class="mono">![[embeds]]</span></span><span class="muted">· YAML properties</span><span class="muted">· no plugin-only syntax</span><span class="muted">· <span class="mono">raw/</span> never changes</span><span class="muted">· checked on every lint pass</span></div></div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

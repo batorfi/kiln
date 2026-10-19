@@ -1,0 +1,70 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Implementation gate · split</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+.split>div{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--surface-2)}
+.split h3{font-size:13.5px;margin-bottom:4px}.size td{font-size:12.5px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a class="on">Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot idle"></span>kiln-v1</span></a>
+    <a><span class="fac"><span class="dot idle"></span>billing-service</span></a>
+    <a><span class="fac"><span class="dot idle"></span>docs-site</span></a>
+    <a><span class="fac"><span class="dot idle"></span>handbook</span></a>
+  </div>
+  <div class="machine"><b>Viewing Oct 15, 10:05</b><div style="margin-top:6px">A moment from the record, shown as it was.</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0"><b>kiln-v1</b> · Feature r10 · Role agents and model tiers · Oct 15, 10:05</div><span class="grow"></span><span class="pill wait">Waiting 22 min</span><span class="pill local">local-only</span></div>
+    <div class="row" style="margin-top:12px;gap:24px;align-items:center">
+      <div style="min-width:470px"><div class="kicker">Implementation gate · 5 of 9 · control gate</div><div class="q">Do we start building — from a safe point — and is this still one feature?</div>
+        <div class="sub">Nothing is judged here yet. You confirm the starting point, and get the one chance to split the work in two.</div></div>
+      <div class="grow"><div class="rail"><div class="g done"><div class="c">✓</div><div class="l">Concept</div></div><div class="g done"><div class="c">✓</div><div class="l">Design</div></div><div class="g done"><div class="c">✓</div><div class="l">Spec</div></div><div class="g done"><div class="c">✓</div><div class="l">Plan</div></div><div class="g now"><div class="c"></div><div class="l">Impl.</div></div><div class="g"><div class="c"></div><div class="l">Code review</div></div><div class="g"><div class="c"></div><div class="l">Verify</div></div><div class="g"><div class="c"></div><div class="l">Docs</div></div><div class="g"><div class="c"></div><div class="l">Merge</div></div></div></div></div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 430px;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="part"><span class="num">3</span><h2>The starting point</h2><span class="ask">Is it safe to build from?</span></div>
+        <div class="kv2"><span>Restorable commit</span><span class="mono">a9067f1 · roadmap: close r8 at the Gate-0 seam</span><span>Working tree</span><span><span class="check">✓</span> clean · branch <span class="mono">r10-roles-tiers</span></span><span>Tests at this commit</span><span><span class="check">✓</span> 233 passed · 12 skipped (no live model)</span><span>If anything goes wrong</span><span>Code review's <i>restart</i> rebuilds from exactly here</span></div></div>
+      <div class="card"><div class="part"><span class="num">5</span><h2>The size of the work ahead</h2><span class="ask">From the approved work plan</span><span class="grow"></span><span class="pill wait">Director: larger than usual</span></div>
+        <table class="size"><tr><th>Part</th><th>Tasks</th><th>Est. machine time</th><th>Touches</th></tr>
+          <tr><td>A · Role catalog — 11 agent definitions</td><td>6</td><td>1 h 40 min</td><td class="mono">agents/</td></tr>
+          <tr><td>B · Tier map and model binding</td><td>5</td><td>1 h 30 min</td><td class="mono">src/tiers.ts, src/roles.ts</td></tr>
+          <tr><td>C · Unload-on-swap in the lane</td><td>4</td><td>1 h 10 min</td><td class="mono">src/lane.ts</td></tr></table>
+        <div class="sub" style="margin-top:8px">15 tasks · about 4 h 20 min · 3 swaps expected. Your last 5 features averaged 8 tasks.</div></div>
+      <div class="card"><div class="part"><span class="num">6</span><h2>What a split would look like</h2><span class="ask">Proposed by the director — advice, not a decision</span></div>
+        <div class="split"><div><h3>r10 — Role agents and model tiers</h3><div style="font-size:12.5px">Parts A and B · 11 tasks · keeps this feature's gates</div></div>
+          <div><h3>r10b — Unload-on-swap in the lane</h3><div style="font-size:12.5px">Part C · 4 tasks · its own feature, added to the roadmap after r10, with its own gates from Specification on</div></div></div>
+        <div class="sub" style="margin-top:8px">Why: part C changes the lane, which every other feature depends on; reviewing it on its own keeps the Code review focused.</div></div>
+    </div>
+    <div class="grid">
+      <div class="card options-card"><div class="part"><span class="num">9</span><h2>The options</h2><span class="ask">What happens then?</span></div>
+        <div class="grid" style="gap:9px">
+          <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Approve</h3><ul><li>Building starts from <span class="mono">a9067f1</span> as one feature.</li><li>About 4 h 20 min of machine time, then the Code review gate.</li></ul></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--deleg)"></span>Split and revise <span class="pill" style="font-weight:500">note required</span></h3><ul><li>r10 continues with the parts you keep; the rest becomes a new feature on the roadmap.</li><li>The work plan is revised for the smaller r10 and returns to this gate.</li><li>The new feature waits for the Roadmap gate after r10 merges.</li></ul></div>
+          <div class="notav"><b>Not available here:</b> <i>reject</i> — a feature about to be built is not “done wrong”. To stop it entirely, pause the factory and revisit the roadmap.</div>
+          <div class="note-box">Your note — which parts stay, which become a new feature…</div>
+          <div class="row"><span class="btn grow">Split and revise</span><span class="btn ok grow">Approve</span></div></div></div>
+      <div class="card"><div class="part"><span class="num">10</span><h2>Other actions</h2><span class="ask">None of these decides the gate</span></div>
+        <div class="act"><span class="ic">?</span><div><b>Ask the director</b><div class="sub">“Could part C be done first instead?”</div></div></div>
+        <div class="act"><span class="ic">≡</span><div><b>Read the approved work plan</b></div></div>
+        <div class="act"><span class="ic">⏸</span><div><b>Leave it waiting</b> <span class="sub">· or pause the factory</span></div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

@@ -1,0 +1,82 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — How r10 was built</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.tl{display:flex;flex-direction:column}
+.te{display:grid;grid-template-columns:78px 16px 1fr;gap:10px;padding:8px 0;position:relative;font-size:12.5px}
+.te::before{content:"";position:absolute;left:85px;top:20px;bottom:-8px;width:2px;background:var(--line)}
+.te:last-child::before{display:none}
+.te time{font-size:11.5px;color:var(--faint);font-family:var(--mono);text-align:right;padding-top:1px}
+.te .d{width:12px;height:12px;border-radius:50%;background:var(--ink-2);margin-top:3px;z-index:1}
+.te .d.r{background:var(--bad)}.te .d.n{background:#fff;border:2px solid var(--ok);box-shadow:0 0 0 3px var(--ok-soft)}.te .d.l{background:var(--ember)}
+.te .s{color:var(--muted);font-size:12px;margin-top:2px}
+.pt{display:grid;grid-template-columns:96px 1fr auto;gap:10px;padding:8px 0;border-top:1px solid var(--line-2);font-size:12.5px;align-items:start}
+.pt:first-of-type{border-top:0}
+.ty{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-radius:5px;padding:2px 6px;text-align:center}
+.ty.o{background:var(--info-soft);color:var(--info)}.ty.e{background:var(--deleg-soft);color:var(--deleg)}.ty.h{background:var(--ok-soft);color:var(--ok)}.ty.r{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}.ty.l{background:var(--ember-soft);color:var(--ember)}
+.cm td{font-size:12.5px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a class="on">Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Wiki · <b>kiln-v1</b> · features · r10</div><h1>r10 — How it was built</h1>
+    <div class="sub" style="margin-top:4px">Role agents and model tiers. Written by the wiki keeper from the record and the code, gate by gate, while the feature is being built.</div></div>
+    <div class="row"><span class="pill wait">in progress · at Verification</span><span class="pill">7 digests · 214 record events</span><span class="btn">Open in Obsidian</span></div></div>
+  <div class="card"><div class="rail">
+    <div class="g done"><div class="c">✓</div><div class="l">Concept</div></div><div class="g done"><div class="c">✓</div><div class="l">Design</div></div><div class="g done"><div class="c">✓</div><div class="l">Spec</div></div><div class="g done"><div class="c">✓</div><div class="l">Plan</div></div><div class="g done"><div class="c">✓</div><div class="l">Impl.</div></div><div class="g done"><div class="c">✓</div><div class="l">Code review</div></div><div class="g run"><div class="c"></div><div class="l">Verify</div></div><div class="g"><div class="c"></div><div class="l">Docs</div></div><div class="g"><div class="c"></div><div class="l">Merge</div></div></div></div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
+    <div class="card"><div class="card-h"><h2>The story so far</h2><span class="sub">from the record — including what went wrong</span></div>
+      <div class="tl">
+        <div class="te"><time>Oct 12</time><span class="d"></span><div><b>Admitted at the Roadmap gate</b> by Zsolt<div class="s">“roles and tiers before the director” — <a style="color:var(--info)">r10 decision</a></div></div></div>
+        <div class="te"><time>Oct 13</time><span class="d"></span><div><b>Design approved</b> after one objection<div class="s">critic: “a judge must never share a model with the author it judges” → design adds the tier policy</div></div></div>
+        <div class="te"><time>Oct 15</time><span class="d"></span><div><b>Implementation gate: kept as one feature</b><div class="s">director proposed splitting off unload-on-swap; Zsolt approved without splitting</div></div></div>
+        <div class="te"><time>Oct 16</time><span class="d r"></span><div><b>Code review round 1 · restart</b><div class="s">Zsolt: “fail closed on judge binding” → <a style="color:var(--info)">Why judges fail closed</a></div></div></div>
+        <div class="te"><time>10:05</time><span class="d r"></span><div><b>Code review round 2 · restart</b><div class="s">2 major findings: unload ignored the hold flag; model names hard-coded</div></div></div>
+        <div class="te"><time>10:24</time><span class="d l"></span><div><b>Learning recorded</b> — failing test written first for the lane change<div class="s">from the worker's round 3 · <a style="color:var(--info)">Write the failing test first for lane changes</a></div></div></div>
+        <div class="te"><time>12:10</time><span class="d"></span><div><b>Code review round 3 · approved</b> by Zsolt<div class="s">all 3 findings addressed · commit <span class="mono">7c2e9a1</span></div></div></div>
+        <div class="te"><time>14:02</time><span class="d n"></span><div><b>Verification running</b><div class="s">how-to guides wait for its verdict; reference pages are written at the Merge gate</div></div></div>
+      </div></div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Pages written so far</h2><span class="sub">9 pages · updated 12:31</span></div>
+        <div class="pt"><span class="ty o">overview</span><div><b>Tier map and model binding</b><div class="sub">revised after Code review round 3 · code at 7c2e9a1</div></div><span class="pill ok">current</span></div>
+        <div class="pt"><span class="ty e">explainer</span><div><b>Why the lane refuses to unload a held judge's model</b><div class="sub">finding 1 · your restart note · round 3</div></div><span class="pill ok">current</span></div>
+        <div class="pt"><span class="ty e">explainer</span><div><b>Why judges fail closed</b><div class="sub">round 1 restart · <span class="mono">TierPolicyError</span></div></div><span class="pill ok">current</span></div>
+        <div class="pt"><span class="ty e">explainer</span><div><b>Why model names live only in the tier map</b><div class="sub">finding 2</div></div><span class="pill ok">current</span></div>
+        <div class="pt"><span class="ty h">how-to</span><div><b>Add a role to the tier map</b><div class="sub">3 of 4 steps proven by tests · waits for Verification</div></div><span class="pill wait">in progress</span></div>
+        <div class="pt"><span class="ty r">reference</span><div><b>Tier map configuration</b><div class="sub">written at the Merge gate, from the merge commit</div></div><span class="pill">pending</span></div>
+        <div class="pt"><span class="ty l">learning</span><div><b>keep_alive is not residency</b><div class="sub">from the Oct 14 incident · <b>moved to the workshop wiki</b></div></div><span class="pill ok">workshop</span></div>
+        <div class="pt"><span class="ty l">learning</span><div><b>Write the failing test first for lane changes</b><div class="sub">round 3 · proposed for the workshop wiki</div></div><span class="pill ember">proposed</span></div>
+        <div class="pt"><span class="ty l">learning</span><div><b>Restart notes work best when they name the finding</b><div class="sub">round 2 → 3 took 1 h 24 min; round 1 → 2 took 3 h</div></div><span class="pill ok">current</span></div></div>
+      <div class="card cm"><div class="card-h"><h2>The code it explains</h2><span class="sub">at 7c2e9a1</span></div>
+        <table><tr><th>File</th><th>Changed</th><th>Pages</th></tr>
+          <tr><td class="mono">src/lane.ts</td><td>+5 −1</td><td>2 · overview, explainer</td></tr>
+          <tr><td class="mono">src/tiers.ts</td><td>+94 −12</td><td>4 · overview, 2 explainers, how-to</td></tr>
+          <tr><td class="mono">src/roles.ts · src/walk.ts</td><td>+9 −11</td><td>1 · explainer</td></tr>
+          <tr><td class="mono">agents/*.md (11)</td><td>+356</td><td>1 · how-to</td></tr></table></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

@@ -1,0 +1,94 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Hosts</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.hosts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.host{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:9px}
+.host.sleep{background:repeating-linear-gradient(135deg,#FBFAF8 0 10px,#F6F3EF 10px 20px)}
+.host.off{opacity:.72}
+.host h2{font-size:15px;display:flex;align-items:center;gap:8px}
+.host .kind{font-size:12px;color:var(--muted)}
+.mem{height:8px;border-radius:5px;background:var(--line-2);overflow:hidden;display:flex;gap:2px}
+.mem i{display:block;height:100%}
+.hk{display:grid;grid-template-columns:78px 1fr;gap:4px 10px;font-size:12px}
+.hk span:nth-child(odd){color:var(--muted)}
+.fl{display:flex;flex-wrap:wrap;gap:5px}
+.topo{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px}
+.ev .li{font-size:12.5px}.ev time{font-family:var(--mono);color:var(--faint);font-size:11.5px;min-width:46px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a class="on">Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>billing-service</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Workshop · Hosts · today 14:40</div><h1>Where the factories run</h1>
+    <div class="sub" style="margin-top:4px">One workshop, four hosts. Each host has its own models and scheduler; each factory runs on exactly one host, placed by a person.</div></div>
+    <div class="row"><span class="pill ok">1 online · 2 asleep · 1 offline</span><span class="btn">Join a host</span></div></div>
+
+  <div class="topo"><svg viewBox="0 0 1300 170" style="width:100%" font-family="-apple-system,Inter,sans-serif" font-size="12">
+    <rect x="530" y="12" width="240" height="46" rx="10" fill="#1C1814"/><text x="650" y="32" text-anchor="middle" fill="#fff" font-weight="700">Workshop</text><text x="650" y="48" text-anchor="middle" fill="#C9C0B6">front door · people · policies · gate inbox</text>
+    <g stroke="#C9BFB4" stroke-width="1.6"><line x1="600" y1="58" x2="170" y2="112"/><line x1="630" y1="58" x2="500" y2="112"/><line x1="670" y1="58" x2="820" y2="112"/></g>
+    <line x1="700" y1="58" x2="1140" y2="112" stroke="#C9BFB4" stroke-width="1.6" stroke-dasharray="5 5"/>
+    <rect x="70" y="112" width="200" height="46" rx="10" fill="#F1F5F1" stroke="#D3DED3"/><text x="170" y="132" text-anchor="middle" fill="#1C1814" font-weight="650">studio-m5 · local</text><text x="170" y="148" text-anchor="middle" fill="#756C62">3 factories · online</text>
+    <rect x="400" y="112" width="200" height="46" rx="10" fill="#F3EFFB" stroke="#DCD0F2"/><text x="500" y="132" text-anchor="middle" fill="#1C1814" font-weight="650">gpu-01 · private</text><text x="500" y="148" text-anchor="middle" fill="#756C62">1 factory · sleeping</text>
+    <rect x="720" y="112" width="200" height="46" rx="10" fill="#EEF2F8" stroke="#CCD7E8"/><text x="820" y="132" text-anchor="middle" fill="#1C1814" font-weight="650">cloud-eu-1 · cloud</text><text x="820" y="148" text-anchor="middle" fill="#756C62">0 factories · suspended</text>
+    <rect x="1040" y="112" width="200" height="46" rx="10" fill="#FBFAF8" stroke="#E6E0D8"/><text x="1140" y="132" text-anchor="middle" fill="#A39A90" font-weight="650">build-box-02 · private</text><text x="1140" y="148" text-anchor="middle" fill="#A39A90">offline since 07:12</text>
+    <text x="650" y="96" text-anchor="middle" fill="#A39A90" font-size="11">host channels · mutually authenticated · encrypted · recorded</text>
+  </svg></div>
+
+  <div class="hosts">
+    <div class="host"><h2><span class="dot run"></span>studio-m5</h2><div class="kind">local machine · owned · this host · Zsolt's desk</div>
+      <div class="mem"><i style="width:30%;background:#9A3412"></i><i style="width:24%;background:#57534E"></i><i style="width:24%;background:#A8A29E"></i></div>
+      <div class="hk"><span>Memory</span><span>81 of 104 GB</span><span>Models</span><span>qwen3-coder:30b · gemma4:27b (pinned)</span><span>Cost</span><span>owned · no hourly cost</span></div>
+      <div class="fl"><span class="pill">kiln-v1</span><span class="pill">docs-site</span><span class="pill">handbook</span></div>
+      <div class="sub">Local-only factories can run only here.</div></div>
+    <div class="host sleep"><h2><span class="dot" style="background:#8B5CF6"></span>gpu-01 <span class="pill deleg" style="font-size:11px">sleeping</span></h2><div class="kind">team server · owned · office network</div>
+      <div class="mem"><i style="width:0%"></i></div>
+      <div class="hk"><span>Memory</span><span>— (asleep) · budget 180 GB</span><span>Models</span><span>llama-4-70b · qwen3-coder:30b</span><span>Cost</span><span>owned · sleeps for power when idle</span></div>
+      <div class="fl"><span class="pill">billing-service</span></div>
+      <div class="sub">Moved here at 14:15. Asleep since 14:31 — billing-service waits at its Merge gate.</div></div>
+    <div class="host sleep"><h2><span class="dot idle"></span>cloud-eu-1 <span class="pill" style="font-size:11px">suspended</span></h2><div class="kind">cloud VM · rented · team account · EU region</div>
+      <div class="mem"><i style="width:0%"></i></div>
+      <div class="hk"><span>Memory</span><span>— (suspended) · budget 70 GB</span><span>Models</span><span>qwen3-coder:30b</span><span>Cost</span><span>$2.40 / h running · $0 suspended</span></div>
+      <div class="fl"><span class="muted" style="font-size:12px">no factories</span></div>
+      <div class="sub">Last week: 41 h running, 126 h suspended — $302 saved by sleeping.</div></div>
+    <div class="host off"><h2><span class="dot bad"></span>build-box-02</h2><div class="kind">team server · owned · office network</div>
+      <div class="mem"><i style="width:0%"></i></div>
+      <div class="hk"><span>State</span><span>offline since 07:12 · maintenance</span><span>Models</span><span>gemma4:27b</span><span>Cost</span><span>owned</span></div>
+      <div class="fl"><span class="muted" style="font-size:12px">no factories</span></div>
+      <div class="sub">Nothing depends on it. It will be checked again when it reconnects.</div></div>
+  </div>
+
+  <div class="grid" style="grid-template-columns:1.2fr 1fr;align-items:start">
+    <div class="card ev"><div class="card-h"><h2>Recent host events</h2><span class="sub">from the workshop record</span></div>
+      <div class="li"><time>14:31</time><div><b>gpu-01 asleep</b> · every factory on it is waiting at a gate · will wake on a decision</div></div>
+      <div class="li"><time>14:15</time><div><b>billing-service moved</b> studio-m5 → gpu-01 · requested by Zsolt · waiting Merge gate carried over unchanged</div></div>
+      <div class="li"><time>14:12</time><div><b>Move requested</b> · fit checked: gpu-01 ✓ · cloud-eu-1 ✗ (billing's policy keeps source on private hosts)</div></div>
+      <div class="li"><time>07:12</time><div><b>build-box-02 offline</b> · no factories affected</div></div>
+      <div class="li"><time>Oct 9</time><div><b>cloud-eu-1 joined</b> · approved by Zsolt · identity issued</div></div></div>
+    <div class="card"><div class="card-h"><h2>How hosts are kept safe</h2></div>
+      <div class="kv2" style="grid-template-columns:120px 1fr"><span>Joining</span><span>an Operator approves each host; it receives its own identity, revocable at once</span><span>Channel</span><span>host and workshop authenticate each other; all traffic encrypted; every connection recorded</span><span>Least privilege</span><span>a host knows only its own factories; the workshop holds none of its secrets</span><span>Allowlist</span><span>each host may reach only the workshop, its models, and what its factories' policies allow</span></div></div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

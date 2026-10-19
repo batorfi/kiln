@@ -1,0 +1,74 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Roadmap gate choosing flows</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.fr{display:grid;grid-template-columns:30px 1fr;gap:12px;padding:13px 0;border-top:1px solid var(--line-2)}
+.fr:first-of-type{border-top:0}.fr .n{font-family:var(--mono);color:var(--muted);font-size:12px;padding-top:2px}
+.fr h3{font-size:13.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chain{display:flex;align-items:center;flex-wrap:wrap;gap:3px;margin-top:8px}
+.g{font-size:10.5px;border-radius:6px;padding:3px 7px;border:1px solid var(--line);background:var(--surface-2);white-space:nowrap;color:var(--ink-2)}
+.g.anc{background:var(--ink);color:#fff;border-color:var(--ink)}
+.g.add{background:var(--ember-soft);border-color:var(--ember);color:var(--ember);font-weight:650}
+.g.req{background:var(--bad-soft);border-color:var(--bad-line);color:var(--bad);font-weight:650}
+.g.skp{border-style:dashed;color:var(--faint);text-decoration:line-through}
+.ar{color:var(--faint);font-size:10px}
+.why{font-size:12px;color:var(--ink-2);margin-top:6px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Zsolt's workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a class="on">Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a class="on"><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0"><b>docs-site</b> · Roadmap gate · Oct 26, 14:10 · after d6 merged</div><span class="grow"></span><span class="pill wait">Waiting 9 min</span><span class="pill local">local-only</span></div>
+    <div class="kicker" style="margin-top:12px">Roadmap gate · each feature with its proposed flow</div>
+    <div class="q">Which features do we build, in what order — and through which gates?</div>
+    <div class="sub">The director proposes a flow for every feature, with a reason. You decide the roadmap and the flows together; each feature keeps its flow until it merges.</div>
+  </div>
+  <div class="grid" style="grid-template-columns:1.35fr 1fr;align-items:start">
+    <div class="card"><div class="part"><span class="num">3</span><h2>The proposal, with flows</h2><span class="ask">factory default: standard</span></div>
+      <div class="fr"><span class="n">d7</span><div><h3>Redirects for renamed pages <span class="pill">standard</span></h3>
+        <div class="chain"><span class="g anc">Roadmap</span><span class="ar">›</span><span class="g">Concept</span><span class="ar">›</span><span class="g">Design</span><span class="ar">›</span><span class="g">Spec</span><span class="ar">›</span><span class="g">Plan</span><span class="ar">›</span><span class="g">Impl.</span><span class="ar">›</span><span class="g">Code review</span><span class="ar">›</span><span class="g">Verify</span><span class="ar">›</span><span class="g">Docs</span><span class="ar">›</span><span class="g anc">Merge</span></div>
+        <div class="why">Why: no path or label matches an added gate. Triage keeps Concept and Design — the rename-history assumption is unproven.</div></div></div>
+      <div class="fr"><span class="n">d5</span><div><h3>API reference per version <span class="pill">standard</span> <span class="pill ember">+ Accessibility review</span></h3>
+        <div class="chain"><span class="g anc">Roadmap</span><span class="ar">›</span><span class="g skp">Concept</span><span class="ar">›</span><span class="g skp">Design</span><span class="ar">›</span><span class="g">Spec</span><span class="ar">›</span><span class="g">Plan</span><span class="ar">›</span><span class="g">Impl.</span><span class="ar">›</span><span class="g">Code review</span><span class="ar">›</span><span class="g add">Accessibility</span><span class="ar">›</span><span class="g">Verify</span><span class="ar">›</span><span class="g">Docs</span><span class="ar">›</span><span class="g anc">Merge</span></div>
+        <div class="why">Why: the work plan sketch changes <span class="mono">web/</span> templates → Accessibility review joins automatically. Triage: small and well-scoped, so Concept and Design are skipped.</div></div></div>
+      <div class="fr"><span class="n">d8</span><div><h3>Private docs behind sign-in <span class="pill">security-sensitive</span> <span class="pill bad">team-required gate</span></h3>
+        <div class="chain"><span class="g anc">Roadmap</span><span class="ar">›</span><span class="g">Concept</span><span class="ar">›</span><span class="g">Design</span><span class="ar">›</span><span class="g add">Threat model</span><span class="ar">›</span><span class="g">Spec</span><span class="ar">›</span><span class="g">Plan</span><span class="ar">›</span><span class="g">Impl.</span><span class="ar">›</span><span class="g">Code review</span><span class="ar">›</span><span class="g req">Security review</span><span class="ar">›</span><span class="g">Verify</span><span class="ar">›</span><span class="g add">Licence</span><span class="ar">›</span><span class="g">Docs</span><span class="ar">›</span><span class="g anc">Merge</span></div>
+        <div class="why">Why: it touches <span class="mono">src/auth/**</span> — the team floor <b>requires</b> Security review, and the security-sensitive flow is proposed. Security review cannot be dropped here.</div></div></div>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>What you decide here</h2></div>
+        <div class="kv2" style="grid-template-columns:120px 1fr"><span>Roadmap</span><span>which features, in what order</span><span>Flows</span><span>each feature's flow — you may <b>add</b> gates; you cannot remove built-in or team-required ones</span><span>Pinned</span><span>flow and gate versions fixed at admission; a gate can be added later by decision, never removed</span></div></div>
+      <div class="card"><div class="card-h"><h2>Gate time this would add</h2><span class="sub">from past features</span></div>
+        <div class="kv2" style="grid-template-columns:150px 1fr"><span>Accessibility review</span><span>~25 min machine · ~10 min of your time</span><span>Threat model + Security review</span><span>~1 h 10 min machine · ~35 min of your time</span><span>Licence check</span><span>~2 min · deterministic scan</span></div></div>
+      <div class="card options-card"><div class="part"><span class="num">9</span><h2>The options</h2></div>
+        <div class="grid" style="gap:8px">
+          <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Approve</h3><p>Admit d7, d5, d8 with these flows; d7 starts next.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--info)"></span>Edit rows and flows</h3><p>Re-order, or add a gate to a feature's flow — e.g. Product sign-off on d8.</p></div>
+          <div class="row"><span class="btn grow">Edit</span><span class="btn ok grow">Approve</span></div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

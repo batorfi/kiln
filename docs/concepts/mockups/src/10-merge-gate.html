@@ -1,0 +1,69 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Merge gate</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.e2e td{font-size:12.5px;vertical-align:middle}.carry .li{font-size:12.5px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a class="on">Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot idle"></span>kiln-v1</span></a>
+    <a class="on"><span class="fac"><span class="dot idle"></span>billing-service</span></a>
+    <a><span class="fac"><span class="dot idle"></span>docs-site</span></a>
+    <a><span class="fac"><span class="dot idle"></span>handbook</span></a>
+  </div>
+  <div class="machine"><b>Later today, 14:10</b><div style="margin-top:6px">b2 has reached its last gate.</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0"><b>billing-service</b> · Feature b2 · Proration on plan change · today 14:10</div><span class="grow"></span><span class="pill deleg">Delegation ended at Verification</span><span class="pill wait">Waiting 4 min</span><span class="pill cloud">hybrid</span></div>
+    <div class="row" style="margin-top:12px;gap:24px;align-items:center">
+      <div style="min-width:440px"><div class="kicker">Merge gate · 9 of 9 · the last decision</div><div class="q">Do we ship this feature?</div><div class="sub">Approving merges the pull request. This is the only point where “ship it” is authorised.</div></div>
+      <div class="grow"><div class="rail"><div class="g skip"><div class="c"></div><div class="l">Concept</div></div><div class="g skip"><div class="c"></div><div class="l">Design</div></div><div class="g done"><div class="c">✓</div><div class="l">Spec</div></div><div class="g auto"><div class="c">✓</div><div class="l">Plan</div></div><div class="g auto"><div class="c">✓</div><div class="l">Impl.</div></div><div class="g auto"><div class="c">✓</div><div class="l">Code review</div></div><div class="g done"><div class="c">✓</div><div class="l">Verify</div></div><div class="g done"><div class="c">✓</div><div class="l">Docs</div></div><div class="g now"><div class="c"></div><div class="l">Merge</div></div></div></div></div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 430px;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="part"><span class="num">8</span><h2>The whole feature, end to end</h2><span class="ask">Every gate, who decided, on what</span></div>
+        <table class="e2e"><tr><th>Gate</th><th>Decision</th><th>By</th><th>Evidence</th></tr>
+          <tr><td>Roadmap gate</td><td>approve</td><td>you · Oct 10</td><td>b2 admitted second</td></tr>
+          <tr><td>Concept · Design</td><td class="muted">skipped</td><td>triage</td><td>small, well-scoped</td></tr>
+          <tr><td>Specification</td><td>approve + delegation armed</td><td>you · Oct 16</td><td>7 requirements</td></tr>
+          <tr><td>Work plan · Implementation</td><td><span class="pill deleg">auto</span></td><td>your delegation</td><td>no objections</td></tr>
+          <tr><td>Code review</td><td><span class="pill deleg">auto</span></td><td>your delegation</td><td>cloud reviewer: no findings above minor</td></tr>
+          <tr><td>Verification</td><td>approve</td><td>you · 11:02</td><td>verifier rejected FR-5 (leap year) · fixed in automatic round 1 · passed 7/7</td></tr>
+          <tr><td>Documentation</td><td>approve</td><td>you · 12:40</td><td>docs synthesizer · no gaps found</td></tr></table>
+        <div class="sub" style="margin-top:8px">The verifier's first verdict was a reject, which <b>ended your delegation</b>: Verification, Documentation and this gate all came to you. The merge was never delegated.</div></div>
+      <div class="card"><div class="part"><span class="num">3</span><h2>What merging will do</h2><span class="ask">The work</span><span class="grow"></span><span class="pill">PR #41 · 9 files · +312 −40</span></div>
+        <div class="kv2"><span>Branch</span><span class="mono">b2-proration → main</span><span>Checks</span><span><span class="check">✓</span> 248 tests · lint · network scan</span><span>Conflicts</span><span>none with <span class="mono">main</span> · overlap with kiln-v1 on <span class="mono">shared/config.ts</span> resolved (kiln-v1 not yet merged)</span><span>Release note</span><span>“Plan changes are now prorated by calendar day.”</span></div></div>
+    </div>
+    <div class="grid">
+      <div class="card carry"><div class="part"><span class="num">6</span><h2>Carried forward</h2><span class="ask">Open risks you would ship with</span></div>
+        <div class="list"><div class="li"><span class="pill wait">open question</span><div>Annual plans follow the monthly rule — still not confirmed (from the Specification gate).</div></div>
+          <div class="li"><span class="sev minor">minor</span><div>2 minor review findings passed under delegation at Code review (naming).</div></div></div></div>
+      <div class="card"><div class="part"><h2>Added to the wiki</h2><span class="ask">how it was built — written as the factory worked</span></div>
+        <div class="kv2"><span>Feature story</span><span><b>b2 — How it was built</b> · complete at merge</span><span>Pages</span><span>1 overview · 2 explainers · 1 how-to · 1 reference</span><span>Learnings</span><span>“Leap years break naive period lengths” — moved to the workshop wiki</span></div></div>
+      <div class="card"><div class="part"><span class="num">7</span><h2>Provenance and cost</h2></div>
+        <div class="kv2"><span>Machine time</span><span>4 h 40 min · 2 swaps</span><span>Cloud spend</span><span>$7.95 of $25</span><span>Left the machine</span><span>6 requests · 171 KB · all under policy · 0 blocked</span><span>Judges</span><span>cloud family ≠ author family <span class="check">✓</span></span></div></div>
+      <div class="card options-card"><div class="part"><span class="num">9</span><h2>The options</h2></div>
+        <div class="grid" style="gap:9px">
+          <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Approve — merge</h3><p>PR #41 is merged into <span class="mono">main</span>. The Roadmap gate re-opens for what comes next.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Reject <span class="pill" style="font-weight:500">note required</span></h3><p>Nothing merges. Your note says which earlier gate the feature returns to.</p></div>
+          <div class="notav"><b>Not available here:</b> <i>revise</i> — a merge is a yes or no, not an edit.</div>
+          <div class="row"><span class="btn bad grow">Reject</span><span class="btn ok grow">Approve and merge</span></div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

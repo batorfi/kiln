@@ -1,0 +1,87 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Needs you</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.sec{display:flex;align-items:baseline;gap:10px;margin:2px 0 8px}
+.sec h2{font-size:15px}
+.it{display:grid;grid-template-columns:4px 120px 1fr 190px;gap:14px;align-items:stretch;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);margin-bottom:8px}
+.it .st{border-radius:3px}
+.it .kind{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding-top:2px}
+.it h3{font-size:13.5px}.it .q{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.it .meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.it .r{display:flex;flex-direction:column;align-items:flex-end;gap:6px;justify-content:space-between}
+.blk{font-size:11.5px;color:var(--bad)}
+.sug .it{background:var(--surface-2)}
+.wk .li{font-size:12.5px}
+.filt{display:flex;gap:6px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Zsolt's workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a class="on">Needs you <span class="n">4</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Needs you · Oct 24, 08:55</div><h1>4 things are waiting on you</h1>
+    <div class="sub" style="margin-top:4px">Everything that needs you, from your factories, your workshop and your team space. What blocks comes first; suggestions never interrupt; nothing here decides itself.</div></div>
+    <div class="filt"><span class="pill">All factories</span><span class="pill">All kinds</span><span class="pill">Order: stakes · blocking others · waited</span></div></div>
+  <section>
+    <div class="sec"><h2>Waiting on you</h2><span class="sub">something is stopped until you act</span></div>
+    <div class="it"><div class="st" style="background:var(--wait)"></div><div class="kind">Roadmap gate</div>
+      <div><h3>kiln-v1 — which features next?</h3><div class="q">The director proposes 3 features: Event backbone (thin), Observability exporter (ready), Pin judges (unknown).</div>
+        <div class="meta"><span class="pill">drafted by the planner · reasons cited</span><span class="pill wait">1 correction flagged</span><span class="pill">moves: approve · edit rows · revise · reject</span></div></div>
+      <div class="r"><span class="pill wait">waiting 8 min</span><span class="blk">blocks kiln-v1's next feature</span><span class="btn primary">Open the brief</span></div></div>
+    <div class="it"><div class="st" style="background:var(--bad)"></div><div class="kind">Policy stop</div>
+      <div><h3>billing-service — budget reached on b3</h3><div class="q">$25.00 of $25.00; Code review round 5 waits for the cloud reviewer.</div>
+        <div class="meta"><span class="pill">rule: row budget, set at the Roadmap gate</span><span class="pill">choices: raise · leave paused · stop</span></div></div>
+      <div class="r"><span class="pill wait">waiting 2 h</span><span class="blk">blocks billing-service's lane</span><span class="btn">Open</span></div></div>
+    <div class="it"><div class="st" style="background:var(--info)"></div><div class="kind">Team · vote</div>
+      <div><h3>Anna proposes “Gate brief: findings density view” for the team roadmap</h3><div class="q">1 of 2 signatures · Bence signed · your signature completes the quorum.</div>
+        <div class="meta"><span class="pill">evidence: Anna's notes · 2 reviews</span><span class="pill">choices: sign · comment · decline</span></div></div>
+      <div class="r"><span class="pill wait">waiting 14 h</span><span class="blk">blocks a team roadmap change</span><span class="btn">Open</span></div></div>
+    <div class="it"><div class="st" style="background:var(--deleg)"></div><div class="kind">Question</div>
+      <div><h3>handbook · worker asks</h3><div class="q">“The two onboarding notes disagree on the VPN step — which one is current?”</div>
+        <div class="meta"><span class="pill">from step 3 · h2 Onboarding</span><span class="pill">answering decides nothing</span></div></div>
+      <div class="r"><span class="pill wait">waiting 25 min</span><span class="blk">pauses that step</span><span class="btn">Answer</span></div></div>
+  </section>
+  <div class="grid" style="grid-template-columns:1.2fr 1fr;align-items:start">
+    <section class="sug"><div class="sec"><h2>Suggestions</h2><span class="sub">nothing is stopped — act if you want</span></div>
+      <div class="it"><div class="st" style="background:var(--line)"></div><div class="kind">Director</div>
+        <div><h3>Run research to size “Health: queued-step signal”?</h3><div class="q">“I can't tell which code it touches.” · ~15 min · local · read-only</div></div>
+        <div class="r"><span class="btn">Run it</span><span class="sub">or dismiss</span></div></div>
+      <div class="it"><div class="st" style="background:var(--line)"></div><div class="kind">Team · opinion</div>
+        <div><h3>Anna asks your view on her Design for the gate brief</h3><div class="q">optional · her policy shared the design and the critic's findings</div></div>
+        <div class="r"><span class="btn">Open</span><span class="sub">2 days</span></div></div>
+      <div class="it"><div class="st" style="background:var(--line)"></div><div class="kind">Keeper</div>
+        <div><h3>3 notes on the model pool look ready to promote</h3><div class="q">your notebook · one contradiction to resolve</div></div>
+        <div class="r"><span class="btn">Promote…</span></div></div></section>
+    <section class="wk"><div class="sec"><h2>Worth knowing</h2><span class="sub">no action needed</span></div>
+      <div class="card"><div class="list">
+        <div class="li"><span class="pill wait">correction</span><div>Event schemas need a version field — added to Event backbone's scope, for today's Roadmap gate</div></div>
+        <div class="li"><span class="pill">shared</span><div>Anna shared her exporter spike report to the team space</div></div>
+        <div class="li"><span class="pill">merged</span><div>kiln-v1 r11 “Director and commands” merged at 08:44 · claim released · Roadmap gate re-opened</div></div>
+        <div class="li"><span class="pill">research</span><div>“Pin judges” sized at 08:40 — touches 2 files, ~4 tasks</div></div>
+        <div class="li"><span class="pill ok">recovered</span><div>gpu-01 woke for billing-service at 06:12 and slept again</div></div></div></div>
+      <div class="card"><div class="kv2" style="grid-template-columns:120px 1fr"><span>Notifies</span><span>only <i>waiting on you</i>; focus mode lets only judged gates and policy stops through</span><span>Never</span><span>decides, approves or expires anything</span></div></div></section>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

@@ -1,0 +1,78 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Working with the director</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.chat{display:flex;flex-direction:column;gap:12px}
+.msg{max-width:78%;border-radius:12px;padding:11px 14px;font-size:13px;line-height:1.5}
+.msg.you{align-self:flex-end;background:var(--ink);color:#fff;border-bottom-right-radius:4px}
+.msg.dir{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg .who{font-size:11px;font-weight:650;letter-spacing:.04em;text-transform:uppercase;opacity:.65;margin-bottom:3px}
+.cite{display:inline-flex;align-items:center;gap:4px;font-size:11px;background:var(--info-soft);color:var(--info);border:1px solid var(--info-line);border-radius:6px;padding:0 6px;margin:0 2px}
+.proposal{align-self:flex-start;width:86%;border:1.5px solid var(--ember-line);background:var(--ember-soft);border-radius:12px;padding:14px 16px}
+.proposal table td{font-size:12.5px;background:transparent}
+.composer{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:10px 12px;color:var(--faint);font-size:13px}
+.rulebar{display:flex;align-items:center;gap:10px;background:var(--surface-2);border:1px dashed var(--line);border-radius:10px;padding:9px 12px;font-size:12.5px;color:var(--ink-2)}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a class="on">Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a class="on"><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb"><b>handbook</b> · new factory · before the first Roadmap gate</div><h1>Shaping the roadmap with the director</h1>
+    <div class="sub" style="margin-top:4px">The director proposes and explains; you decide at the Roadmap gate. Nothing said here decides anything.</div></div>
+    <div class="row"><span class="pill wait">Roadmap gate waiting</span><span class="pill local">local-only proposed</span></div></div>
+  <div class="grid" style="grid-template-columns:1fr 380px;align-items:start">
+    <div class="card" style="background:var(--surface-2)">
+      <div class="chat">
+        <div class="msg you"><div class="who">You · 08:12</div>I want an internal engineering handbook: onboarding, on-call, and how we review code. Markdown in a repo, published as a static site.</div>
+        <div class="msg dir"><div class="who">Director</div>I read the existing <span class="mono">docs/</span> folder (41 pages) and the team's two onboarding notes. I propose four features, in this order — onboarding first, because the other sections link into it. <span class="cite">↗ research step 1</span></div>
+        <div class="proposal"><div class="row" style="margin-bottom:8px"><span class="pill ember">Proposal</span><h3>Draft roadmap — 4 features</h3><span class="grow"></span><span class="sub">becomes the Roadmap gate's brief</span></div>
+          <table><tr><th>#</th><th>Feature</th><th>Depends on</th><th>Triage estimate</th></tr>
+            <tr><td class="mono">h1</td><td>Site skeleton reusing docs-site's theme</td><td>—</td><td>small · skips Concept, Design</td></tr>
+            <tr><td class="mono">h2</td><td>Onboarding section from the 2 existing notes</td><td>h1</td><td>medium</td></tr>
+            <tr><td class="mono">h3</td><td>On-call runbooks with a page template</td><td>h1, h2</td><td>medium</td></tr>
+            <tr><td class="mono">h4</td><td>Code review guide drawn from KILN's own gates</td><td>h2</td><td>medium</td></tr></table>
+          <div class="row" style="margin-top:10px"><span class="btn">Ask to change</span><span class="btn">Edit it myself</span><span class="grow"></span><span class="btn primary">Use as the Roadmap gate's proposal</span></div></div>
+        <div class="msg you"><div class="who">You · 08:19</div>Why does code review come last? That's what people ask about most.</div>
+        <div class="msg dir"><div class="who">Director</div>Two reasons, both from the record: the review guide quotes the onboarding glossary (h2) <span class="cite">↗ concept note</span>, and h4 would reuse the gate definitions from kiln-v1, which are still changing in r10 <span class="cite">↗ kiln-v1 · r10</span>. If you want it earlier, I can split h4 so a short version comes right after h1.</div>
+        <div class="msg you"><div class="who">You · 08:21</div>Approve the roadmap then.</div>
+        <div class="msg dir"><div class="who">Director</div>I can't approve it — decisions are yours, made at the gate. <b>The Roadmap gate is waiting with this proposal</b>; it shows the profile, policy and budget you would be approving too.</div>
+        <div class="rulebar"><span class="pill">Rule</span>Talking to the director never moves a gate. Every message here is recorded; work it needs runs as a visible step.</div>
+        <div class="composer"><span class="grow">Ask the director, or propose a change…</span><span class="btn">Send</span></div>
+      </div></div>
+    <div class="grid">
+      <div class="card options-card"><div class="kicker">Waiting for you</div><h2 style="margin:4px 0 6px">Roadmap gate · handbook</h2><div class="sub">Which features do we build, in what order?</div>
+        <div class="kv2" style="margin-top:12px"><span>Proposal</span><span>h1 → h4 as drafted here</span><span>Profile</span><span><span class="pill local">local-only</span></span><span>Budget</span><span>machine time only</span><span>Deciders</span><span>you</span></div>
+        <div class="btn primary" style="width:100%;margin-top:14px">Open the gate brief</div></div>
+      <div class="card"><div class="card-h"><h2>What the director can do</h2></div>
+        <div class="act"><span class="ic">✓</span><div><b>Explain</b> — answer from the record, with citations</div></div>
+        <div class="act"><span class="ic">✓</span><div><b>Propose</b> — roadmaps, splits, re-orders, as proposals you accept or reject</div></div>
+        <div class="act"><span class="ic">✓</span><div><b>Run work</b> — when an answer needs research, as a visible, recorded step on the lane</div></div>
+        <div class="act"><span class="ic" style="color:var(--bad)">✕</span><div><b>Decide</b> — never. Not a gate, not a move, not on your behalf.</div></div></div>
+      <div class="card"><div class="card-h"><h2>Work done for this conversation</h2></div>
+        <div class="kv2"><span>Research step 1</span><span>read 41 pages · local · 6 min</span><span>Proposal step</span><span>director · deterministic · &lt; 1 s</span><span>Left the machine</span><span>nothing</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

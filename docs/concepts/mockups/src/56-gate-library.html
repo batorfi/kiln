@@ -1,0 +1,76 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Gate library</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.gc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 15px;display:flex;flex-direction:column;gap:7px}
+.gc.bi{background:var(--surface-2)}
+.gc h3{font-size:14px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.gc .q{font-size:12.5px;color:var(--ink-2);font-style:italic}
+.gc .m{display:flex;flex-wrap:wrap;gap:5px}
+.gc .ft{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);border-top:1px solid var(--line-2);padding-top:7px;margin-top:auto}
+.tabs{display:flex;gap:6px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Zsolt's workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a class="on">Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Flows · gate library · Oct 27, 09:00</div><h1>Gate library — every gate a flow can use</h1>
+    <div class="sub" style="margin-top:4px">Built-in gates are in every flow and cannot be removed. Added gates come from this workshop or the team space; each has a version, an owner and a record of how it has been used.</div></div>
+    <div class="row"><div class="tabs"><span class="pill">All 16</span><span class="pill">Built-in 10</span><span class="pill">Team 4</span><span class="pill">Workshop 2</span></div><span class="btn primary">New gate</span></div></div>
+  <div class="cards">
+    <div class="gc"><h3>Threat model <span class="pill">team · v1</span></h3><div class="q">Have we identified how this could be attacked, and is the design safe enough?</div>
+      <div class="m"><span class="pill">after Design</span><span class="pill">judge: security critic</span><span class="pill">not delegable</span></div>
+      <div class="m"><span class="pill ember">joins: src/auth/**, validate/_netscan.ts</span></div>
+      <div class="ft"><span>in flows: security-sensitive</span><span>run 6× · 30 days</span></div></div>
+    <div class="gc"><h3>Security review <span class="pill">team · v2</span> <span class="pill bad" style="font-size:10.5px">required</span></h3><div class="q">Is the code safe, measured against the threat model?</div>
+      <div class="m"><span class="pill">after Code review</span><span class="pill">judge: security reviewer</span><span class="pill">approve · restart</span></div>
+      <div class="m"><span class="pill bad">required: src/auth/**, src/payments/**</span></div>
+      <div class="ft"><span>in flows: security-sensitive · required by team floor</span><span>run 9×</span></div></div>
+    <div class="gc"><h3>Accessibility review <span class="pill">team · v1</span></h3><div class="q">Can everyone use what we built?</div>
+      <div class="m"><span class="pill">after Code review</span><span class="pill">judge: a11y reviewer</span><span class="pill">delegable</span></div>
+      <div class="m"><span class="pill ember">joins: web/**</span></div>
+      <div class="ft"><span>in flows: ui</span><span>run 4× · since Oct 25</span></div></div>
+    <div class="gc"><h3>Licence check <span class="pill">team · v1</span></h3><div class="q">Are all new dependencies acceptable to ship?</div>
+      <div class="m"><span class="pill">before Documentation</span><span class="pill">deterministic scan + human</span><span class="pill">approve · reject → Implementation</span></div>
+      <div class="ft"><span>in flows: security-sensitive · added per feature</span><span>run 7×</span></div></div>
+    <div class="gc"><h3>Product sign-off <span class="pill">workshop · v1</span></h3><div class="q">Is this what the product needs?</div>
+      <div class="m"><span class="pill">after Specification</span><span class="pill">human-only · decider: Anna</span><span class="pill">approve · revise</span></div>
+      <div class="ft"><span>added per feature</span><span>run 2×</span></div></div>
+    <div class="gc"><h3>Performance budget <span class="pill">workshop · draft</span></h3><div class="q">Does it stay within its latency and memory budget?</div>
+      <div class="m"><span class="pill">after Verification</span><span class="pill">benchmark role</span><span class="pill">approve · mitigate (2) · reject</span></div>
+      <div class="ft"><span>not in any flow yet · tried on 2 past features</span><span class="muted">draft</span></div></div>
+    <div class="gc bi"><h3>Code review <span class="pill">built-in</span></h3><div class="q">Is the code right, measured against the specification?</div>
+      <div class="m"><span class="pill">judge: code reviewer (team v3)</span><span class="pill">approve · restart</span></div>
+      <div class="ft"><span>in every flow · cannot be removed</span><span>run 31×</span></div></div>
+    <div class="gc bi"><h3>Verification <span class="pill">built-in</span></h3><div class="q">Does it actually work as specified?</div>
+      <div class="m"><span class="pill">judge: verifier</span><span class="pill">approve · reject · mitigate (2)</span></div>
+      <div class="ft"><span>in every flow · cannot be removed</span><span>run 29×</span></div></div>
+    <div class="gc bi"><h3>Merge <span class="pill anc" style="background:var(--ink);color:#fff;border-color:var(--ink)">anchor</span></h3><div class="q">Do we ship this feature?</div>
+      <div class="m"><span class="pill">always last</span><span class="pill">approve · reject</span></div>
+      <div class="ft"><span>in every flow · nothing after it</span><span>run 12×</span></div></div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

@@ -1,0 +1,83 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Insights</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.tile .n{font-size:26px;font-weight:680;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.tile .l{font-size:12px;color:var(--muted)}
+.tile .d{font-size:11.5px;color:var(--ink-2);margin-top:6px}
+.cmp{display:grid;grid-template-columns:170px 1fr;gap:6px 14px;align-items:center;font-size:12px}
+.cmp .pair{display:flex;flex-direction:column;gap:4px}
+.cmp .b{height:11px;border-radius:0 4px 4px 0}
+.cmp .row2{display:grid;grid-template-columns:1fr 64px;gap:8px;align-items:center}
+.cmp .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.split3{display:flex;height:16px;gap:2px;border-radius:5px;overflow:hidden}
+.split3 i{display:block;height:100%}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a class="on">Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Workshop · Insights · last 30 days · all factories</div><h1>Where the time goes, and whether the judges earn their keep</h1>
+    <div class="sub" style="margin-top:4px">Evidence for your judgment — KILN never changes anything on its own because of these numbers.</div></div>
+    <div class="row"><span class="pill">Last 30 days</span><span class="pill">All factories</span><span class="pill">Table view</span></div></div>
+  <div class="tiles">
+    <div class="tile"><div class="l">Features merged</div><div class="n">9</div><div class="d">median lead time 2 d 6 h</div></div>
+    <div class="tile"><div class="l">Problems caught by judges</div><div class="n">23</div><div class="d">at Design, Code review and Verification</div></div>
+    <div class="tile"><div class="l">Problems found after merge</div><div class="n">1</div><div class="d">docs-site d2 · broken link · caught by d3</div></div>
+    <div class="tile"><div class="l">Machine time used while you decided</div><div class="n">31 h</div><div class="d">by other factories — the workshop's payoff</div></div></div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
+    <div class="card"><div class="card-h"><h2>Time a gate waits for a human</h2><span class="sub">median, hours</span></div>
+      <div class="hbar"><span>Roadmap gate</span><div class="track"><div class="fill" style="width:92%"></div></div><span class="v">6.1</span></div>
+      <div class="hbar"><span>Code review</span><div class="track"><div class="fill" style="width:68%"></div></div><span class="v">4.5</span></div>
+      <div class="hbar"><span>Verification</span><div class="track"><div class="fill" style="width:44%"></div></div><span class="v">2.9</span></div>
+      <div class="hbar"><span>Specification</span><div class="track"><div class="fill" style="width:30%"></div></div><span class="v">2.0</span></div>
+      <div class="hbar"><span>Design</span><div class="track"><div class="fill" style="width:24%"></div></div><span class="v">1.6</span></div>
+      <div class="hbar"><span>Merge</span><div class="track"><div class="fill" style="width:9%"></div></div><span class="v">0.6</span></div>
+      <div class="axis-note">Overnight waits included. Waiting never decides — this only shows where your attention is the bottleneck.</div></div>
+    <div class="card"><div class="card-h"><h2>How often work is sent back</h2><span class="sub">share of gate decisions that were revise, reject or restart</span></div>
+      <div class="hbar"><span>Specification</span><div class="track"><div class="fill" style="width:78%"></div></div><span class="v">39%</span></div>
+      <div class="hbar"><span>Code review</span><div class="track"><div class="fill" style="width:62%"></div></div><span class="v">31%</span></div>
+      <div class="hbar"><span>Verification</span><div class="track"><div class="fill" style="width:44%"></div></div><span class="v">22%</span></div>
+      <div class="hbar"><span>Design</span><div class="track"><div class="fill" style="width:36%"></div></div><span class="v">18%</span></div>
+      <div class="hbar"><span>Concept</span><div class="track"><div class="fill" style="width:20%"></div></div><span class="v">10%</span></div>
+      <div class="hbar"><span>Documentation</span><div class="track"><div class="fill" style="width:8%"></div></div><span class="v">4%</span></div>
+      <div class="axis-note">Specification sends back most: a cheap place to bounce — as intended.</div></div>
+    <div class="card"><div class="card-h"><h2>Local and cloud judges, compared</h2><span class="sub">billing-service uses cloud judges; the others use local</span></div>
+      <div class="legend"><span><i style="background:var(--s1)"></i>local judge · gemma4:27b</span><span><i style="background:var(--s2)"></i>cloud judge · claude-opus-5-5</span></div>
+      <div class="cmp">
+        <span>Findings per review</span><div class="pair"><div class="row2"><div class="b" style="width:52%;background:var(--s1)"></div><span class="v">2.1</span></div><div class="row2"><div class="b" style="width:78%;background:var(--s2)"></div><span class="v">3.2</span></div></div>
+        <span>Findings later confirmed</span><div class="pair"><div class="row2"><div class="b" style="width:70%;background:var(--s1)"></div><span class="v">71%</span></div><div class="row2"><div class="b" style="width:86%;background:var(--s2)"></div><span class="v">88%</span></div></div>
+        <span>Minutes per review</span><div class="pair"><div class="row2"><div class="b" style="width:84%;background:var(--s1)"></div><span class="v">14</span></div><div class="row2"><div class="b" style="width:60%;background:var(--s2)"></div><span class="v">10</span></div></div>
+        <span>Cost per review</span><div class="pair"><div class="row2"><div class="b" style="width:2%;background:var(--s1)"></div><span class="v">$0</span></div><div class="row2"><div class="b" style="width:64%;background:var(--s2)"></div><span class="v">$1.40</span></div></div></div>
+      <div class="axis-note">Each row has its own scale. 14 local and 6 cloud reviews — too few to be sure; shown as evidence, not a verdict.</div></div>
+    <div class="card"><div class="card-h"><h2>Machine time, by what it was spent on</h2><span class="sub">all factories · 142 h</span></div>
+      <div class="split3"><i style="width:71%;background:var(--s1)"></i><i style="width:4%;background:var(--s2)"></i><i style="flex:1;background:#D6D3D1"></i></div>
+      <div class="legend" style="margin-top:8px"><span><i style="background:var(--s1)"></i>generating · 101 h (71%)</span><span><i style="background:var(--s2)"></i>loading models · 6 h (4%)</span><span><i style="background:#D6D3D1"></i>idle, waiting on humans · 35 h (25%)</span></div>
+      <hr><div class="kv2"><span>Swaps</span><span>38 · 9.5 min each on average · affinity avoided an estimated 61 more</span><span>Slowest model load</span><span>llama-4-70b on the team host · 3 min 10 s</span><span>Interrupted and resumed</span><span>2 steps after crashes · 0 lost</span></div></div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

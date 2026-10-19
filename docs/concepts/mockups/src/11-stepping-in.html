@@ -1,0 +1,74 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Stepping in</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.ev{display:grid;grid-template-columns:58px 22px 1fr;gap:8px;padding:9px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+.ev:first-child{border-top:0}.ev time{color:var(--faint);font-size:11.5px;font-family:var(--mono)}
+.ev .ic{width:20px;height:20px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);font-size:10px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.ev.you .ic{background:var(--info-soft);border-color:var(--info-line);color:var(--info)}
+.ev.you{background:linear-gradient(90deg,var(--info-soft),transparent 70%)}
+.think{color:var(--ink-2);font-style:italic}
+.ask-card{border:1.5px solid var(--wait);border-radius:12px;background:var(--surface);padding:16px 18px;box-shadow:0 10px 28px rgba(120,60,0,.10)}
+.cmd{background:#1F1B17;color:#E9E2D9;border-radius:8px;padding:10px 12px;font-family:var(--mono);font-size:12px;margin:10px 0}
+.steer{border:1px solid var(--info-line);background:var(--info-soft);border-radius:10px;padding:12px 14px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a class="on">Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot idle"></span>kiln-v1</span></a>
+    <a><span class="fac"><span class="dot idle"></span>billing-service</span></a>
+    <a><span class="fac"><span class="dot idle"></span>docs-site</span></a>
+    <a><span class="fac"><span class="dot idle"></span>handbook</span></a>
+  </div>
+  <div class="machine"><b>Viewing Oct 15, 14:32</b><div style="margin-top:6px">From the record of r10, step 2.</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb"><b>kiln-v1</b> · Feature r10 · Implementation · step 2 of 3 · Oct 15, 14:32</div><h1>The worker is asking before it deletes a file</h1>
+    <div class="sub" style="margin-top:4px">A risky action is held until you answer. The step waits; nothing else in the factory is affected.</div></div>
+    <div class="row"><span class="pill wait">Needs you · not a gate</span><span class="pill local">local-only</span></div></div>
+  <div class="grid" style="grid-template-columns:1fr 470px;align-items:start">
+    <div class="card"><div class="card-h"><div><div class="kicker">The running step</div><h2 style="margin-top:2px">Worker · qwen3-coder:30b <span class="pill local" style="margin-left:6px">local</span></h2></div><span class="sub">what you see is what is recorded</span></div>
+      <div>
+        <div class="ev"><time>14:05:10</time><span class="ic">◆</span><div><b>Started</b> part B of the work plan: tier map and model binding.</div></div>
+        <div class="ev"><time>14:11:42</time><span class="ic">✎</span><div class="think">“I'll replace the old <span class="mono">bindModel(name)</span> API with <span class="mono">bindRole(role, model)</span> and update all callers.”</div></div>
+        <div class="ev you"><time>14:12:30</time><span class="ic">↳</span><div><b>You steered:</b> “Keep the old API as a thin wrapper — two other factories still call it.” <span class="muted">· delivered after its current tool call · recorded</span></div></div>
+        <div class="ev"><time>14:13:02</time><span class="ic">✎</span><div class="think">“Understood: keeping <span class="mono">bindModel</span> as a wrapper around <span class="mono">bindRole</span>.”</div></div>
+        <div class="ev"><time>14:20:51</time><span class="ic">✓</span><div><b>Edited</b> <span class="mono">src/tiers.ts</span> (+88 −12), <span class="mono">src/roles.ts</span> (+14 −9)</div></div>
+        <div class="ev"><time>14:31:58</time><span class="ic">$</span><div><b>Wants to run</b> a command that deletes a tracked file — <b>held for your approval</b>.</div></div>
+      </div>
+      <hr><div class="steer"><div class="row"><h3 style="color:var(--info)">Steer this step</h3><span class="sub">a message to the working agent — reaches it after its current action</span></div>
+        <div class="note-box" style="margin-top:8px;background:#fff">e.g. “Also add a deprecation notice to the wrapper.”</div>
+        <div class="sub" style="margin-top:6px">Steering shapes the work; it never decides a gate. Judges cannot be steered.</div></div></div>
+    <div class="grid">
+      <div class="ask-card"><div class="row"><span class="pill wait">Risky action</span><span class="sub">held 34 s</span></div>
+        <h2 style="margin-top:8px;font-size:16px">Delete <span class="mono">legacy/tiers.json</span>?</h2>
+        <div class="cmd">$ git rm legacy/tiers.json</div>
+        <div class="kv2"><span>Why it is held</span><span>deletes a tracked file — this factory's policy asks first</span><span>The worker's reason</span><span>“Superseded by the tier map in <span class="mono">src/tiers.ts</span>; nothing reads it after this change.”</span><span>Checked by KILN</span><span>2 references found in <span class="mono">docs/</span> — <b>not</b> updated yet</span><span>Reversible?</span><span>yes — the file stays in git history and in the restorable commit</span></div>
+        <hr>
+        <div class="grid" style="gap:8px">
+          <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Allow once</h3><p>The command runs; recorded as approved by you. Asked again next time.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Refuse</h3><p>The worker is told it was refused, and why if you add a note. The step continues.</p></div>
+          <div class="note-box">Optional note to the worker — e.g. “update the two docs references first”</div>
+          <div class="row"><span class="btn bad grow">Refuse</span><span class="btn ok grow">Allow once</span></div>
+          <div class="sub" style="text-align:center">A tool approval is never a gate move. It is recorded as its own kind of decision.</div></div></div>
+      <div class="card"><div class="card-h"><h2>Other ways to step in</h2></div>
+        <div class="act"><span class="ic">⏸</span><div><b>Pause after this step</b><div class="sub">the factory stops cleanly before the next step</div></div></div>
+        <div class="act"><span class="ic">✕</span><div><b>Abort this step</b><div class="sub">the step ends, its work so far is kept in the record; the director decides how to continue</div></div></div>
+        <div class="act"><span class="ic">?</span><div><b>Ask the director</b><div class="sub">questions about the plan, without touching the running step</div></div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

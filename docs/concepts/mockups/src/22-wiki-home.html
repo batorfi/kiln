@@ -1,0 +1,86 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Factory wiki</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.tile .n{font-size:22px;font-weight:680;letter-spacing:-.02em}.tile .l{font-size:11.5px;color:var(--muted)}
+.idx .cat{padding:9px 0;border-top:1px solid var(--line-2)}.idx .cat:first-child{border-top:0}
+.idx h3{display:flex;align-items:center;gap:8px;font-size:13px}.idx .pg{font-size:12.5px;color:var(--ink-2);margin:5px 0 0 0;line-height:1.75}
+.idx .pg a{color:var(--info);text-decoration:none}
+.log .li{font-size:12px}.log time{font-family:var(--mono);color:var(--faint);min-width:84px;font-size:11.5px}
+.layers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.layers>div{border:1px solid var(--line);border-radius:10px;padding:12px 13px;background:var(--surface-2);font-size:12.5px}
+.layers b.k{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.cite .hbar{grid-template-columns:170px 1fr 40px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a class="on">Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Wiki · <b>kiln-v1</b></div><h1>kiln-v1's wiki — what this factory knows, and where it learned it</h1>
+    <div class="sub" style="margin-top:4px">Written directly by the wiki keeper, as in Karpathy's pattern; Curators Zsolt Bátorfi and Anna Kovács choose sources and edit. Context for every roadmap — never a decision.</div></div>
+    <div class="row"><span class="pill ok">✓ valid Obsidian vault</span><span class="pill">includes workshop/</span><span class="btn">Open in Obsidian</span><span class="btn">Open in Zed</span><span class="btn primary">Add a source</span></div></div>
+  <div class="tiles">
+    <div class="tile"><div class="n">64</div><div class="l">sources · 11 factory-produced</div></div>
+    <div class="tile"><div class="n">212</div><div class="l">pages · 38 concepts · 61 entities</div></div>
+    <div class="tile"><div class="n">9</div><div class="l">ingests this week · 1 reverted</div></div>
+    <div class="tile"><div class="n">5</div><div class="l">lint findings open</div></div>
+    <div class="tile"><div class="n">47</div><div class="l">citations in roadmaps and gate briefs · 30 days</div></div></div>
+  <div class="card"><div class="layers">
+    <div><b class="k">Raw sources · raw/</b>design notes, ADRs, incident reports, Pi and Ollama docs, record digests. <b>Added only by Curators. Never changed.</b></div>
+    <div><b class="k">The wiki · pages/</b>overview, concepts, entities, decisions, source summaries, filed answers, <span class="mono">index.md</span> — linked with <span class="mono">[[wikilinks]]</span>. <b>Written by the keeper, edited by Curators.</b></div>
+    <div><b class="k">The schema · AGENTS.md</b>page types, front-matter, what counts as a contradiction, review interval 30 days. <b>Refined by Curators and the keeper.</b></div></div></div>
+  <div class="grid" style="grid-template-columns:1.25fr 1fr;align-items:start">
+    <div class="card idx"><div class="card-h"><h2>index.md</h2><span class="sub">the catalog the keeper reads first · 212 pages</span></div>
+      <div class="cat"><h3>Concepts <span class="pill">38</span></h3><div class="pg"><a>Single lane</a> — one running generation per factory · <a>Model affinity</a> — swap only when a tier demands it · <a>Judge hold</a> — a judge's model stays resident until its verdict · <a>Delegation</a> — the unattended tail and what ends it · …</div></div>
+      <div class="cat"><h3>Entities <span class="pill">61</span></h3><div class="pg"><a>src/lane.ts</a> — the lane implementation · <a>Tier map</a> — roles to models · <a>Roadmap r10</a> · … <span class="muted">· shared entities such as <a>Ollama</a>, <a>Pi Durable</a> and <a>gemma4:27b</a> live in the workshop wiki and are linked from here</span></div></div>
+      <div class="cat"><h3>Decisions <span class="pill">27</span></h3><div class="pg"><a>Gates are durable tasks</a> (Oct 16) · <a>Roadmap gate rename</a> (Oct 16) · <a>Local by default, open by choice</a> (Oct 16) · …</div></div>
+      <div class="cat"><h3>Incidents <span class="pill">9</span></h3><div class="pg"><a>Model evicted mid-judgment</a> (Oct 14) <span class="pill ok" style="font-size:10.5px">new today</span> · <a>Overlay that could never close</a> (r8) · …</div></div>
+      <div class="cat"><h3>Source summaries <span class="pill">64</span></h3><div class="pg">one per source, each linked from every page that cites it</div></div>
+      <div class="cat"><h3>Filed answers <span class="pill">13</span></h3><div class="pg"><a>Why judges hold the lane</a> · <a>What a restart costs</a> · …</div></div></div>
+    <div class="grid">
+      <div class="card log"><div class="card-h"><h2>Recent activity</h2><span class="sub">log.md · generated from the record</span></div>
+        <div class="li"><time>today 09:31</time><div><b>ingest</b> · <span class="mono">incident-2026-10-14-eviction.md</span> → 8 pages · <span class="pill">with Anna</span></div></div>
+        <div class="li"><time>today 08:02</time><div><b>lint</b> · 5 findings · 1 contradiction, 2 stale, 1 orphan, 1 missing concept</div></div>
+        <div class="li"><time>yesterday</time><div><b>query</b> · “Why must judges hold the lane?” → <b>filed</b> by Zsolt</div></div>
+        <div class="li"><time>yesterday</time><div><b>ingest</b> · <span class="mono">digest-r9-real-ui.md</span> <span class="pill">factory-produced</span> → 14 pages · with Zsolt</div></div>
+        <div class="li"><time>Oct 16</time><div><b>edit</b> · “Judge hold” edited in Obsidian by Zsolt · linted ✓</div></div>
+        <div class="li"><time>Oct 15</time><div><b>schema</b> · review interval 45 → 30 days · Anna</div></div></div>
+      <div class="card cite"><div class="card-h"><h2>Most used</h2><span class="sub">cited by roadmaps and gate briefs · 30 days</span></div>
+        <div class="hbar"><span>Model affinity</span><div class="track"><div class="fill" style="width:90%"></div></div><span class="v">11</span></div>
+        <div class="hbar"><span>Judge hold</span><div class="track"><div class="fill" style="width:72%"></div></div><span class="v">9</span></div>
+        <div class="hbar"><span>Model residency</span><div class="track"><div class="fill" style="width:56%"></div></div><span class="v">7</span></div>
+        <div class="hbar"><span>Single lane</span><div class="track"><div class="fill" style="width:48%"></div></div><span class="v">6</span></div>
+        <div class="hbar"><span>Gates are durable tasks</span><div class="track"><div class="fill" style="width:40%"></div></div><span class="v">5</span></div>
+        <div class="axis-note">Where curating effort pays off. 41 pages were not cited at all this month.</div></div>
+      <div class="card"><div class="card-h"><h2>Worth a Curator's look</h2></div>
+        <div class="act"><span class="ic">↺</span><div><b>Today's ingest changed a page cited at an open gate</b><div class="sub">“Model residency” — the r10 Code review brief now marks it as changed</div></div></div>
+        <div class="act"><span class="ic">5</span><div><b>Lint findings</b><div class="sub">1 contradiction affects a page cited at the Code review gate</div></div></div>
+        <div class="act"><span class="ic">1</span><div><b>Record digest proposed</b><div class="sub">from r10's Code review round 2 — accept as a source?</div></div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

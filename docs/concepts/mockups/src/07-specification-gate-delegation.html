@@ -1,0 +1,78 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Specification gate · arming delegation</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.req td{font-size:12.5px}.scope{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:10px}
+.scope div{border:1px solid var(--deleg-line);background:var(--deleg-soft);border-radius:9px;padding:9px 10px;font-size:12px}
+.scope div.stop{background:var(--wait-soft);border-color:var(--wait-line)}
+.scope b{display:block;font-size:12.5px;margin-bottom:2px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a class="on">Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot idle"></span>kiln-v1</span></a>
+    <a class="on"><span class="fac"><span class="dot idle"></span>billing-service</span></a>
+    <a><span class="fac"><span class="dot idle"></span>docs-site</span></a>
+    <a><span class="fac"><span class="dot idle"></span>handbook</span></a>
+  </div>
+  <div class="machine"><b>Viewing Oct 16, 18:20</b><div style="margin-top:6px">A moment from yesterday, shown as it was.</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0"><b>billing-service</b> · Feature b2 · Proration on plan change · Oct 16, 18:20</div><span class="grow"></span><span class="pill">Round 1</span><span class="pill wait">Waiting 9 min</span><span class="pill cloud">hybrid</span></div>
+    <div class="row" style="margin-top:12px;gap:24px;align-items:center">
+      <div style="min-width:440px"><div class="kicker">Specification gate · 3 of 9 · Concept and Design skipped by triage</div><div class="q">What exactly counts as done?</div>
+        <div class="sub">This is the contract the work plan, the code review and the verification will all be measured against.</div></div>
+      <div class="grow"><div class="rail"><div class="g skip"><div class="c"></div><div class="l">Concept</div></div><div class="g skip"><div class="c"></div><div class="l">Design</div></div><div class="g now"><div class="c"></div><div class="l">Spec</div></div><div class="g"><div class="c"></div><div class="l">Plan</div></div><div class="g"><div class="c"></div><div class="l">Impl.</div></div><div class="g"><div class="c"></div><div class="l">Code review</div></div><div class="g"><div class="c"></div><div class="l">Verify</div></div><div class="g"><div class="c"></div><div class="l">Docs</div></div><div class="g"><div class="c"></div><div class="l">Merge</div></div></div></div></div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 440px;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="part"><span class="num">2</span><h2>The decision</h2><span class="ask">What am I deciding?</span></div>
+        <div class="commit"><div><b>Approving commits to</b>these 7 requirements as the definition of done for b2.</div><div><b>It does not commit to</b>any code. Work plan, build and proof follow.</div><div><b>At stake if wrong</b>everything after is measured against this; a gap here becomes a gap in the shipped feature.</div></div></div>
+      <div class="card"><div class="part"><span class="num">3</span><h2>The work — and the yardstick</h2><span class="ask">What was produced, against what</span><span class="grow"></span><span class="pill">spec writer · qwen3-coder:30b · local</span></div>
+        <table class="req"><tr><th>#</th><th>Requirement</th><th>How it will be verified</th></tr>
+          <tr><td class="mono">FR-1</td><td>Upgrades mid-period charge the price difference for the remaining days</td><td>unit tests · 3 cases</td></tr>
+          <tr><td class="mono">FR-2</td><td>Downgrades produce a credit, never a negative invoice</td><td>unit tests · 2 cases</td></tr>
+          <tr><td class="mono">FR-3</td><td>Proration is shown as its own invoice line</td><td>invoice snapshot test</td></tr>
+          <tr><td class="mono">FR-4</td><td>Changes on the last day of a period are not prorated</td><td>unit test</td></tr>
+          <tr><td class="mono">FR-5</td><td>Period length uses calendar days, including leap years</td><td>unit tests · month-end, leap year</td></tr>
+          <tr><td class="mono">FR-6</td><td>All amounts are rounded once, at the invoice total</td><td>property test</td></tr>
+          <tr><td class="mono">NFR-1</td><td>No customer data leaves the machine</td><td>egress audit · policy check</td></tr></table>
+        <div class="sub" style="margin-top:8px">Traced to the roadmap entry for b2 and to the existing pricing module's documentation.</div></div>
+      <div class="card"><div class="part"><span class="num">6</span><h2>Risks and open issues</h2><span class="ask">What should worry me?</span></div>
+        <div class="list"><div class="li"><span class="pill wait">open question</span><div style="font-size:12.5px">Annual plans: the spec writer assumed the same rule as monthly plans. <b>Not confirmed.</b></div></div>
+          <div class="li"><span class="pill">no judge</span><div style="font-size:12.5px">The Specification gate has no independent judge — this brief is the author's work and the record.</div></div></div></div>
+    </div>
+    <div class="grid">
+      <div class="card options-card"><div class="part"><span class="num">9</span><h2>The options</h2><span class="ask">What happens then?</span></div>
+        <div class="grid" style="gap:9px">
+          <div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Approve</h3><p>The director plans the work next. You will be asked at the Work plan gate — unless you arm the unattended tail below.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--wait)"></span>Revise <span class="pill" style="font-weight:500">note required</span></h3><p>The spec writer revises from your note; the gate returns as round 2.</p></div>
+          <div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Reject</h3><p>b2 stops here and returns to the Roadmap gate.</p></div></div></div>
+      <div class="card" style="border-color:var(--deleg-line)"><div class="row" style="margin-bottom:8px"><span class="pill deleg">Optional · only offered here</span><h2>Arm the unattended tail</h2></div>
+        <div style="font-size:12.5px;color:var(--ink-2)">Let the remaining gates pass on their own <b>when every judge agrees</b>. Any objection, failed verification or split stops the line and brings it back to you.</div>
+        <div class="chk"><span class="box on">✓</span><div><b>Work plan, Implementation, Code review, Verification, Documentation</b><div class="sub">passed under your delegation, recorded as such — never as your live approval</div></div></div>
+        <div class="chk"><span class="box off"></span><div><b>Also delegate the merge</b><div class="sub">off: the factory stops at a ready-to-merge pull request for you</div></div></div>
+        <div class="chk"><span class="box on">✓</span><div><b>Stop on any judge objection</b><div class="sub">always on — cannot be turned off</div></div></div>
+        <div class="kicker" style="margin-top:10px">What this would cover</div>
+        <div class="scope"><div><b>Plan</b>auto if clean</div><div><b>Impl.</b>auto if clean</div><div><b>Review</b>auto if no objection</div><div><b>Verify</b>auto if passed</div><div><b>Docs</b>auto if clean</div><div class="stop"><b>Merge</b>stops for you</div></div>
+        <div class="sub" style="margin-top:10px">Applies to b2 only. Never carries over to another feature or factory. You can end it at any time.</div></div>
+      <div class="card"><div class="note-box">Your note (for revise)…</div><div class="row" style="margin-top:10px"><span class="btn grow">Revise</span><span class="btn ok grow">Approve and arm</span></div>
+        <div class="sub" style="text-align:center;margin-top:8px">Recorded as decided by <b>Zsolt Bátorfi</b>, with the delegation scope as shown</div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

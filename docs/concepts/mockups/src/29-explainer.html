@@ -1,0 +1,94 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Explainer</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.doc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:26px 34px;font-size:13.5px;line-height:1.7;color:var(--ink)}
+.doc h1{font-size:24px;margin-bottom:6px}.doc h2{font-size:16px;margin:22px 0 8px}
+.doc p{margin:0 0 10px;color:var(--ink-2)}
+.wl{color:var(--deleg);border-bottom:1px solid var(--deleg-line);text-decoration:none}
+.short{background:var(--surface-2);border-left:3px solid var(--ember);border-radius:0 8px 8px 0;padding:10px 14px;margin:12px 0 4px;font-size:13.5px}
+.excerpt{background:#1F1B17;color:#E9E2D9;border-radius:8px;font-family:var(--mono);font-size:11.8px;line-height:1.7;margin:8px 0 4px;overflow:hidden}
+.excerpt .hd{background:#171411;color:#8C8279;padding:6px 12px;font-size:11px;display:flex;justify-content:space-between}
+.excerpt pre{margin:0;padding:10px 14px;white-space:pre}
+.excerpt .k{color:#FDBA74}.excerpt .c{color:#8C8279}.excerpt .f{color:#93C5FD}.excerpt .s{color:#86EFAC}
+.prov .te{display:grid;grid-template-columns:70px 1fr;gap:10px;font-size:12.5px;padding:6px 0;border-top:1px solid var(--line-2)}
+.prov .te:first-child{border-top:0}.prov time{font-family:var(--mono);color:var(--faint);font-size:11.5px}
+.meta .kv2{grid-template-columns:110px 1fr}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a class="on">Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="grid" style="grid-template-columns:1fr 360px;align-items:start">
+    <div class="doc">
+      <div class="crumb" style="margin-bottom:10px">Wiki · kiln-v1 · features · r10 · explainer</div>
+      <h1>Why the lane refuses to unload a held judge's model</h1>
+      <div class="row" style="gap:6px;margin-bottom:6px"><span class="pill" style="background:var(--deleg-soft);color:var(--deleg);border-color:var(--deleg-line)">explainer</span><span class="pill wait">feature in progress</span><span class="pill ok">✓ claims checked against code at 7c2e9a1</span></div>
+      <div class="short"><b>The short answer.</b> A judge must see the same model from the work it judges to its verdict. Ollama can evict a model under memory pressure, so the lane itself refuses to unload a model while a judge holds it — and the work that needs memory waits instead.</div>
+      <h2>How it works</h2>
+      <p>When a step asks the lane for a different model, the lane first checks whether a judge holds the resident one. If it does, the swap is refused with <code>LaneHeldError</code>, and the model pool keeps the requesting step <i>queued</i> until the judge's verdict releases the hold (<a class="wl">Judge hold</a>, <a class="wl">Model pool</a>).</p>
+      <svg viewBox="0 0 760 150" style="width:100%;margin:6px 0 2px" font-family="-apple-system,Inter,sans-serif" font-size="12">
+        <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#A39A90"/></marker></defs>
+        <rect x="10" y="40" width="150" height="54" rx="9" fill="#FBFAF8" stroke="#E6E0D8"/><text x="85" y="63" text-anchor="middle" fill="#1C1814" font-weight="600">A step asks</text><text x="85" y="80" text-anchor="middle" fill="#756C62">swapTo(next model)</text>
+        <rect x="210" y="40" width="160" height="54" rx="9" fill="#FFF1E8" stroke="#F6C9AE"/><text x="290" y="63" text-anchor="middle" fill="#C2410C" font-weight="600">Lane checks hold</text><text x="290" y="80" text-anchor="middle" fill="#756C62">is the resident model held?</text>
+        <rect x="420" y="6" width="150" height="50" rx="9" fill="#FDEEEE" stroke="#F2C2C2"/><text x="495" y="28" text-anchor="middle" fill="#B91C1C" font-weight="600">held → refuse</text><text x="495" y="44" text-anchor="middle" fill="#756C62">throw LaneHeldError</text>
+        <rect x="420" y="88" width="150" height="50" rx="9" fill="#ECF8F0" stroke="#BFE3CB"/><text x="495" y="110" text-anchor="middle" fill="#15803D" font-weight="600">not held → swap</text><text x="495" y="126" text-anchor="middle" fill="#756C62">unload, then load</text>
+        <rect x="610" y="6" width="140" height="50" rx="9" fill="#FBFAF8" stroke="#E6E0D8"/><text x="680" y="28" text-anchor="middle" fill="#1C1814" font-weight="600">Pool queues the step</text><text x="680" y="44" text-anchor="middle" fill="#756C62">until the verdict</text>
+        <line x1="160" y1="67" x2="206" y2="67" stroke="#A39A90" stroke-width="1.5" marker-end="url(#ar)"/>
+        <line x1="370" y1="58" x2="416" y2="34" stroke="#A39A90" stroke-width="1.5" marker-end="url(#ar)"/>
+        <line x1="370" y1="76" x2="416" y2="108" stroke="#A39A90" stroke-width="1.5" marker-end="url(#ar)"/>
+        <line x1="570" y1="31" x2="606" y2="31" stroke="#A39A90" stroke-width="1.5" marker-end="url(#ar)"/>
+      </svg>
+      <p style="font-size:12px;color:var(--muted)">In words: a swap request reaches the lane; if a judge holds the resident model the lane refuses and the pool queues the step until the verdict; otherwise the lane unloads and loads as before.</p>
+      <div class="excerpt"><div class="hd"><span>src/lane.ts · lines 84–93</span><span>at 7c2e9a1 · r10 round 3</span></div><pre>  <span class="k">async</span> <span class="f">swapTo</span>(next: ModelRef): Promise&lt;<span class="k">void</span>&gt; {
+    <span class="k">if</span> (next.id === <span class="k">this</span>.resident?.id) <span class="k">return</span>;
+    <span class="c">// finding 1: never unload a model a held judge still needs</span>
+    <span class="k">if</span> (<span class="k">this</span>.hold &amp;&amp; <span class="k">this</span>.hold.model.id === <span class="k">this</span>.resident?.id) {
+      <span class="k">throw new</span> <span class="f">LaneHeldError</span>(<span class="s">`lane held by ${this.hold.gate} until its verdict`</span>);
+    }
+    <span class="k">await this</span>.resident?.<span class="f">unload</span>();
+    <span class="k">this</span>.resident = <span class="k">await</span> <span class="f">load</span>(next);</pre></div>
+      <h2>Why not rely on Ollama's keep_alive?</h2>
+      <p><code>keep_alive</code> asks Ollama to keep a model loaded; it does not guarantee it. On Oct 14 a Design-gate critic lost its model this way and restarted on a cold load (<a class="wl">Model eviction mid-judgment</a>, <a class="wl">keep_alive is not residency</a>). The check therefore lives in KILN, where it can be enforced — and, as Zsolt's restart note asked, <b>inside the lane, not in its callers</b>.</p>
+      <h2>Related</h2>
+      <p><a class="wl">Tier map and model binding</a> (overview) · <a class="wl">Add a role to the tier map</a> (how-to) · <a class="wl">r10 — How it was built</a> (feature story)</p>
+    </div>
+    <div class="grid">
+      <div class="card meta"><div class="card-h"><h2>About this page</h2></div>
+        <div class="kv2"><span>Written by</span><span>wiki keeper · from digest of Code review round 3</span><span>Code</span><span class="mono">src/lane.ts@7c2e9a1</span><span>Checked</span><span>lint · gemma4:27b · every claim supported by the cited code ✓</span><span>Drift</span><span>none — code unchanged since 7c2e9a1</span><span>Edited</span><span>not by hand yet · Curators may edit</span></div></div>
+      <div class="card prov"><div class="card-h"><h2>How this came to be</h2><span class="sub">from the record</span></div>
+        <div class="te"><time>Oct 14</time><div>Incident: critic's model evicted mid-judgment <span class="muted">· source</span></div></div>
+        <div class="te"><time>10:05</time><div>Code review round 2 · <b>finding 1</b>: unload ignores the hold flag</div></div>
+        <div class="te"><time>10:05</time><div>Zsolt's restart note: “check the hold flag inside the lane, not by callers”</div></div>
+        <div class="te"><time>10:21</time><div>Worker writes the failing test first <span class="muted">· learning recorded</span></div></div>
+        <div class="te"><time>12:10</time><div>Code review round 3 · <b>approved</b> by Zsolt</div></div>
+        <div class="te"><time>12:31</time><div>This page written from the round-3 digest</div></div></div>
+      <div class="card"><div class="card-h"><h2>Ask about this page</h2></div>
+        <div class="note-box">e.g. “What happens if two judges hold different models?”</div>
+        <div class="sub" style="margin-top:6px">Answered from the wiki and the code, with citations.</div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

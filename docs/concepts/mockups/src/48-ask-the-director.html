@@ -1,0 +1,67 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Ask the director</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.chat{display:flex;flex-direction:column;gap:12px}
+.msg{max-width:84%;border-radius:12px;padding:11px 14px;font-size:13px;line-height:1.55}
+.msg.you{align-self:flex-end;background:var(--ink);color:#fff;border-bottom-right-radius:4px}
+.msg.dir{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg .who{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.65;margin-bottom:3px}
+.how{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:650;border-radius:6px;padding:1px 7px;margin-bottom:6px}
+.how.rec{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}.how.step{background:var(--deleg-soft);color:var(--deleg)}
+.cite{display:inline-flex;font-size:11px;background:var(--info-soft);color:var(--info);border:1px solid var(--info-line);border-radius:6px;padding:0 6px;margin:0 2px}
+.offer{border:1px dashed var(--deleg-line);background:var(--deleg-soft);border-radius:9px;padding:10px 12px;margin-top:8px;font-size:12.5px}
+.composer{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:10px 12px;color:var(--faint);font-size:13px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Zsolt's workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a class="on">Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb"><b>kiln-v1</b> · Ask the director · Oct 24, 09:43</div><h1>Ask the director — answered from the record, or by a step you confirm</h1>
+    <div class="sub" style="margin-top:4px">Every answer says how it was made. Talking never moves a gate.</div></div></div>
+  <div class="grid" style="grid-template-columns:1fr 360px;align-items:start">
+    <div class="card" style="background:var(--surface-2)"><div class="chat">
+      <div class="msg you"><div class="who">You · 09:21</div>Why is Event backbone before the exporter?</div>
+      <div class="msg dir"><span class="how rec">⚙ from the record · no model · 0.2 s</span><div>Two reasons. The exporter depends on Event backbone — its traces link to events <span class="cite">team roadmap · deps</span>. And Event backbone's protected path <span class="mono">contracts/events/</span> has been free since Anna's claim ended on Oct 23 <span class="cite">team.claim_released · 51,204</span>. You approved this order at 09:05 <span class="cite">move.committed · 51,377</span>.</div></div>
+      <div class="msg you"><div class="who">You · 09:22</div>What would it take to make “Pin judges” ready?</div>
+      <div class="msg dir"><span class="how step">✦ needs a step</span><div>That needs synthesis, not a lookup. I can ask the planner to compare the 08:40 research with the open questions and propose the smallest spike.</div>
+        <div class="offer"><b>Explain step</b> · planner · qwen3-coder:30b · reads: the research, the candidate, knowledge · ~3 min · local · queued behind the current Concept step
+          <div class="row" style="margin-top:8px;gap:6px"><span class="btn">Not now</span><span class="btn primary">Run it</span></div></div></div>
+      <div class="msg dir"><span class="how step">✦ planner's draft · 09:41 · 2 min 40 s</span><div>Readiness is <i>thin</i> because nothing measures whether pinning fits the memory budget alongside two work models. Smallest spike: pin gemma4:27b and load both work models on studio-m5, 30 minutes, measure headroom <span class="cite">research · 08:40</span> <span class="cite">Model pool</span>.</div>
+        <div class="row" style="margin-top:8px;gap:6px"><span class="btn">Start that spike…</span><span class="btn">Save to notebook</span></div></div>
+      <div class="msg you"><div class="who">You · 09:43</div>OK, approve the Concept gate when it opens.</div>
+      <div class="msg dir"><span class="how rec">⚙ from the rules</span><div>I can't — gates are decided only by you, at the gate. When the Concept gate opens it will be first in <b>Needs you</b>. If you want the routine gates to pass on their own, you can arm delegation at the <b>Specification gate</b>; judges' objections will still stop it.</div></div>
+      <div class="composer"><span class="grow">Ask about state, order, history — or something that needs thinking…</span><span class="btn">Ask</span></div>
+    </div></div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Two kinds of answer</h2></div>
+        <div class="kv2" style="grid-template-columns:120px 1fr"><span><span class="how rec">⚙ from the record</span></span><span>state, order, history, cause — computed from the queue, the record and the knowledge index; instant; no model; cited</span><span><span class="how step">✦ needs a step</span></span><span>synthesis — offered with a plan first; runs on the lane only if you confirm; labelled a draft</span></div></div>
+      <div class="card"><div class="card-h"><h2>Questions it answers instantly</h2></div>
+        <div style="font-size:12.5px;line-height:1.9">Why this order? · What is it doing now? · What changed since Tuesday? · Who approved this? · Why did delegation end? · What is waiting on me? · Which model ran the review?</div></div>
+      <div class="card"><div class="kv2" style="grid-template-columns:110px 1fr"><span>Recorded</span><span><span class="mono">director.question_answered</span> · from record / by step</span><span>Never</span><span>moves a gate, starts work without your confirm</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

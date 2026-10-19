@@ -80,7 +80,18 @@ With Pi installed:
 ```bash
 npm run pi-ready                           # starts a REAL Pi, hermetically, and loads KILN both ways: READY
 npm run test:pi                            # the Pi tier of the suite; refuses a run that answers zero of its own tests
+npm run ui-ready                           # the sixth probe: the footer, the gate popup and the Gate-0 face, wired over real Pi RPC
 ```
+
+Answering a gate **in Pi** (the footer, the gate popup, the roadmap overlay — row `r9`) needs one explicit environment variable, set
+before you answer anything:
+
+```bash
+export KILN_HUMAN=human@yourname           # required to answer a gate; refused with a named error if unset or malformed
+```
+
+`KILN_HUMAN` is read once per decision and is never guessed from the OS account — a missing or malformed value degrades to the same
+durable `WAIT` an unanswered gate would (never a silently-approved move). See [`specs/008-kiln-pi-ui/spec.md`](./specs/008-kiln-pi-ui/spec.md) (NC1).
 
 With Ollama running and a model installed:
 

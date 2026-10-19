@@ -15,8 +15,34 @@
 import type { FactoryState } from "../src/types.ts";
 import type { LayerCState } from "./factory-state.ts";
 
-/** The §5.1 per-row line: `id (status) short [deps: …] → tail` where the tail is outcome/HERE/waits. */
-function rowLine(row: FactoryState["roadmap"][number], current: string, done: Set<string>): string {
+/**
+ * Column widths for the row set (research D8 — the one declared r1/r2 behaviour change this row makes): computed from the
+ * ACTUAL rows before formatting, replacing the old hand-placed literal spaces, so every row's `[deps: …]` column and every
+ * row's tail start at the SAME character offset regardless of how long any one row's `short`/`status`/`deps` field is.
+ */
+interface ColumnWidths {
+  id: number;
+  status: number;
+  short: number;
+  deps: number;
+}
+
+function computeColumnWidths(rows: readonly FactoryState["roadmap"][number][]): ColumnWidths {
+  let id = 0;
+  let status = 0;
+  let short = 0;
+  let deps = 0;
+  for (const row of rows) {
+    id = Math.max(id, String(row.id).length);
+    status = Math.max(status, `(${row.status})`.length);
+    short = Math.max(short, row.short.length);
+    deps = Math.max(deps, `[deps: ${row.deps.length ? row.deps.join(",") : "—"}]`.length);
+  }
+  return { id, status, short, deps };
+}
+
+/** The §5.1 per-row line: `id (status) short [deps: …] → tail` where the tail is outcome/HERE/waits — column-aligned (D8). */
+function rowLine(row: FactoryState["roadmap"][number], current: string, done: Set<string>, widths: ColumnWidths): string {
   const deps = row.deps.length ? row.deps.join(",") : "—";
   let tail: string;
   if (row.id === current && row.status === "active") {
@@ -30,7 +56,11 @@ function rowLine(row: FactoryState["roadmap"][number], current: string, done: Se
 
    tail = openDeps.length ? `waits ${openDeps.join(",")}` : "eligible"; // closed deps do not "wait"
      }
-  return `   ${String(row.id).padEnd(4)} (${row.status}) ${row.short}      [deps: ${deps}]   ${tail}`;
+  const idCol = String(row.id).padEnd(widths.id);
+  const statusCol = `(${row.status})`.padEnd(widths.status);
+  const shortCol = row.short.padEnd(widths.short);
+  const depsCol = `[deps: ${deps}]`.padEnd(widths.deps);
+  return `   ${idCol} ${statusCol} ${shortCol} ${depsCol} ${tail}`;
 }
 
 /** Render Layer C — the program's roadmap — from the one shared `FactoryState` (a pure, additive read). */
@@ -61,7 +91,8 @@ if (rows.length === 0) {
     lines.push("   (no program rows admitted — Gate 0 is the human gate that admits them, P-VI)");
     } else {
     lines.push("   order: " + rows.map((r) => String(r.id)).join(" → "));
-    for (const row of rows) lines.push(rowLine(row, state.current, done));
+    const widths = computeColumnWidths(rows); // D8: computed from THIS row set, not a fixed guess
+    for (const row of rows) lines.push(rowLine(row, state.current, done, widths));
     }
 
    // ── the program-level footer: a distilled read of r1's cost (NOT re-computed), composes with A/B ──
