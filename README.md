@@ -72,15 +72,15 @@ own — a threat model, a security review — without removing any. → [`the-fl
 
 ### What you do
 
-- **Decide at the gates** — with a ten-part brief: what is being decided, the work, the yardstick, the judges' evidence,
+- **[Decide at the gates](./docs/concepts/user-experience.md)** — with a ten-part brief: what is being decided, the work, the yardstick, the judges' evidence,
   risks, provenance, history, and what each move would do next.
-- **Shape the roadmap** — your goals and constraints first, then the planner's draft; edit, pin and decide together.
-- **Think at the bench** — a private notebook, research steps and throwaway spikes while factories work.
-- **Curate the knowledge** — keep each factory's knowledge base true.
-- **Configure** — hosts, models, roles, flows and policies, as plain files.
-- **Work with the team** — a team roadmap, claims on code, reviews across workshops.
+- **[Shape the roadmap](./docs/concepts/the-director.md)** — your goals and constraints first, then the planner's draft; edit, pin and decide together.
+- **[Think at the bench](./docs/concepts/the-bench.md)** — a private notebook, research steps and throwaway spikes while factories work.
+- **[Curate the knowledge](./docs/concepts/factory-wiki.md)** — keep each factory's knowledge base true.
+- **[Configure](./docs/concepts/configuration.md)** — hosts, models, roles, flows and policies, as plain files.
+- **[Work with the team](./docs/concepts/team-space.md)** — a team roadmap, claims on code, reviews across workshops.
 
-Everything waiting on you is in one place, **Needs you**. Nothing decides itself.
+Everything waiting on you is in one place, **[Needs you](./docs/concepts/the-director.md)**. Nothing decides itself.
 
 <p align="center"><a href="./docs/concepts/infographic/kiln-engineer-at-the-center.png"><img src="./docs/concepts/infographic/kiln-engineer-at-the-center.png" alt="The engineer at the center — six roles, KILN's actors and the team, one real day, and the full agentic lifecycle" width="820"></a><br>
 <sub>The engineer at the center — your roles, your crew and your team, one real day, and one feature's full lifecycle. Click for full size.</sub></p>
@@ -89,14 +89,14 @@ Everything waiting on you is in one place, **Needs you**. Nothing decides itself
 
 | Part | What it does |
 |---|---|
-| **Web front door** | a local, loopback-only web app with a per-launch secret: the live factory, gate briefs, Needs you, the record |
-| **Director** | deterministic orchestration of each feature's flow, with an LLM **planner** whose drafts are checked and labelled — it never decides |
-| **Durable task graph** | built on **Pi Durable**: gates are durable tasks; a move and its gate's completion are one atomic commit |
-| **Workers and judges** | roles defined as files, bound to models; judges always on the strongest model; one generation at a time per factory |
-| **Spec-driven artifacts** | **[GitHub Spec Kit](https://github.com/github/spec-kit)**: the constitution, the specification, plan and tasks of every feature, versioned in the repository |
-| **The record** | every state change as an event with its cause and actor — the source of live views, audits, metrics, traces and health |
-| **Knowledge** | an LLM-written wiki per factory and one per workshop, curated by engineers, readable as an Obsidian vault or in any editor |
-| **Health** | watches KILN's own machinery and says plainly when something looks wrong — and never acts on its own |
+| **[Web front door](./docs/concepts/web-front-door.md)** | a local, loopback-only web app with a per-launch secret: the live factory, gate briefs, Needs you, the record |
+| **[Director](./docs/concepts/the-director.md)** | deterministic orchestration of each feature's flow, with an LLM **planner** whose drafts are checked and labelled — it never decides |
+| **[Durable task graph](./docs/concepts/pi-durable.md)** | built on **Pi Durable**: gates are durable tasks; a move and its gate's completion are one atomic commit |
+| **[Workers and judges](./docs/concepts/configuration.md)** | roles defined as files, bound to models; judges always on the strongest model; one generation at a time per factory |
+| **[Spec-driven artifacts](./docs/concepts/first-run.md)** | **[GitHub Spec Kit](https://github.com/github/spec-kit)**: the constitution, the specification, plan and tasks of every feature, versioned in the repository |
+| **[The record](./docs/concepts/the-record.md)** | every state change as an event with its cause and actor — the source of live views, audits, metrics, traces and health |
+| **[Knowledge](./docs/concepts/factory-wiki.md)** | an LLM-written wiki per factory and one per workshop, curated by engineers, readable as an Obsidian vault or in any editor |
+| **[Health](./docs/concepts/health.md)** | watches KILN's own machinery and says plainly when something looks wrong — and never acts on its own |
 
 <p align="center"><a href="./docs/architecture/visualisations/kiln-platform-architecture.png"><img src="./docs/architecture/visualisations/kiln-platform-architecture.png" alt="KILN platform architecture — five layers, the team space, cross-cutting concerns and 25 numbered connections" width="820"></a><br>
 <sub>The platform architecture — layers, components and connections. Explained in prose in the
@@ -105,8 +105,9 @@ Everything waiting on you is in one place, **Needs you**. Nothing decides itself
 ### Where it runs
 
 On your machine by default — a 128 GB workstation can run several factories, one lane each. Factories can also run on
-team servers or rented machines, placed by people at the Roadmap gate. Models are local through
-[Ollama](https://ollama.com) by default; private or cloud models only where a factory's policy allows.
+team servers or rented machines, placed by people at the Roadmap gate ([factories anywhere](./docs/concepts/factories-anywhere.md)). Models are local through
+[Ollama](https://ollama.com) by default; private or cloud models only where a factory's policy allows
+([models beyond the machine](./docs/concepts/web-front-door.md)).
 
 ### New and existing codebases
 
@@ -129,6 +130,37 @@ team servers or rented machines, placed by people at the Roadmap gate. Models ar
 - **Not a swarm** — the right agent, on the right model, one step at a time.
 - **Not a control plane** — the team space coordinates; it decides no one's gates.
 - **Not a replacement for engineering judgment** — it concentrates that judgment where it matters most.
+
+## The design, document by document
+
+All concept documents live in [`docs/concepts/`](./docs/concepts). Start with the vision; each doc below covers one area.
+
+| Area | Document | What it covers |
+|---|---|---|
+| **Overview** | [Vision](./docs/concepts/vision.md) | why KILN exists, what it believes, the human's role, the pillars, where it is going |
+| | [The web front door](./docs/concepts/web-front-door.md) | the main design: Pi 1.0 and Pi Durable, the factory as a durable task graph, events, many factories, models beyond the machine |
+| | [The user experience](./docs/concepts/user-experience.md) | personas, vocabulary, core experiences, the ten-part gate brief, trust and safety |
+| **The process** | [The flow](./docs/concepts/the-flow.md) | the ten gates in depth, what runs between them, where every move leads |
+| | [An extensible flow](./docs/concepts/extensible-flow.md) | gates teams add to the default flow, with the same guarantees |
+| | [The director and Needs you](./docs/concepts/the-director.md) | deterministic orchestration, the planner, shaping the roadmap together, the one inbox |
+| **Foundations** | [KILN on Pi Durable](./docs/concepts/pi-durable.md) | why durable tasks and conversations are the key enabler |
+| | [The record](./docs/concepts/the-record.md) | events, the envelope, projections, replay and audit |
+| | [Configuration](./docs/concepts/configuration.md) | hosts, providers, models and roles as files, checked and recorded |
+| | [Health](./docs/concepts/health.md) | the watcher that observes and never acts; broken-guarantee signals |
+| | [Insights](./docs/concepts/insights.md) | honest numbers about the work — evidence for people, never automatic change |
+| **Knowledge and thinking** | [The factory wiki](./docs/concepts/factory-wiki.md) | an LLM-written, engineer-curated knowledge base per factory; implementation knowledge |
+| | [The bench](./docs/concepts/the-bench.md) | notebook, research steps and spikes, and how they feed the roadmap |
+| **Scale and teams** | [Factories anywhere](./docs/concepts/factories-anywhere.md) | hosts, placement, moves, sleeping hosts |
+| | [The team space](./docs/concepts/team-space.md) | personal workshops on one codebase: team roadmap, claims, reviews, merging |
+| **Getting started** | [First run](./docs/concepts/first-run.md) | from install to a first Roadmap gate: models, workshop, Spec Kit, constitution, knowledge |
+| | [New codebases](./docs/concepts/greenfield.md) | greenfield: product brief, decisions, walking skeleton, vertical slices |
+| | [Existing codebases](./docs/concepts/brownfield.md) | brownfield: full scan into knowledge, baseline, territory, adoption in stages |
+| **Visuals** | [Mockups](./docs/concepts/mockups/README.md) · [infographics](./docs/concepts/infographic/README.md) | 72 illustrative screens; KILN at a glance; the engineer at the center |
+
+**From the first program** — kept as history and original rationale: [the original concept](./docs/concepts/concept.md) ·
+[the kiln analogy](./docs/concepts/kiln-analogy.md) · [the nine gates — why, how, what](./docs/concepts/gates-why-how-what.md) ·
+[process flow](./docs/concepts/process-flow.md) · [the roadmap (Gate 0)](./docs/concepts/roadmap.md) ·
+[the terminal UI layers](./docs/concepts/ui-layers-deep.md) · [role skills](./docs/concepts/skills/README.md).
 
 ## Where things stand
 
