@@ -26,6 +26,7 @@
 >   - First run:                         `first-run.md`
 >   - The flow, gate by gate:            `the-flow.md`
 >   - In an existing codebase:           `brownfield.md`
+>   - In a new codebase:                 `greenfield.md`
 >   - Health:                            `health.md`
 >   - Illustrative mockups:              `mockups/` — seventy-two high-resolution illustrations covering every capability below. They
 >     are discussion aids, not design decisions; this doc governs where they differ.

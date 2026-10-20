@@ -55,6 +55,7 @@
 >   - First run:                       `first-run.md`
 >   - The flow, gate by gate:          `the-flow.md`
 >   - In an existing codebase:          `brownfield.md`
+>   - In a new codebase:                `greenfield.md`
 >   - Health:                          `health.md`
 
 # KILN — the web front door, on durable agents and durable gates

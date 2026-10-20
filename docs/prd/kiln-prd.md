@@ -24,6 +24,7 @@
 >   - [First run](../concepts/first-run.md) — setup: machine, models, workshop and storage, knowledge, team
 >   - [The flow](../concepts/the-flow.md) — the default flow gate by gate, and where every move leads
 >   - [KILN in an existing codebase](../concepts/brownfield.md) — brownfield adoption: profile, baseline, stages, territory
+>   - [KILN in a new codebase](../concepts/greenfield.md) — greenfield: product brief, decisions, walking skeleton, slices
 >   - [Health](../concepts/health.md) — the watcher, signals, broken guarantees, observe-never-act
 >   - [The original concept](../concepts/concept.md) and [the gates — why, how, what](../concepts/gates-why-how-what.md)
 >   - the existing codebase under [`kiln/`](../../kiln/) (r1–r9, ~5,900 lines of source, 98 test files)
@@ -391,6 +392,22 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | BROWN-11 | **Full scan** of the codebase and repository in seven passes — inventory, structure, repository history, build/CI/tests, understanding, reconciliation, synthesis — written into the factory knowledge base (`raw/scan/<commit>/` facts, `pages/codebase/` pages incl. one per module, open questions and a scan report with coverage); estimated before start, durable and resumable, local by default, deep in the territory and mapped elsewhere; pages cited at the scanned commit, labelled measured or inferred; no per-person rankings. | Must |
 | BROWN-12 | **Keeping the scan true**: incremental re-scan after each merge to main; full re-scan on request or director suggestion; re-scans never overwrite people's edits — conflicts become contradictions. | Should |
 
+### 6.20 New codebases
+
+*Concepts: [KILN in a new codebase](../concepts/greenfield.md) · [first run](../concepts/first-run.md) · [the bench](../concepts/the-bench.md) · [shaping the roadmap](../concepts/the-director.md)*
+
+| ID | Requirement | |
+|---|---|---|
+| GREEN-1 | **Start empty**: create the repository, add Spec Kit (files shown before the first commit), local-only and worktree mode by default. | Must |
+| GREEN-2 | **Product brief**: problem, users, outcomes, non-goals, constraints, quality attributes, success measures — written or drafted with the planner, approved, a knowledge page *from a person*; feeds the roadmap brief. | Must |
+| GREEN-3 | **Constitution written from the brief** with `speckit.constitution`, each principle citing its origin; approved before the first feature; amendments recorded and versioned. | Must |
+| GREEN-4 | **Technology decisions**: open choices listed, evidence from research steps and spikes where the bench is available (M13), decided by a person, recorded as decision pages (and constitution amendments where binding); later Design gates measure against them. | Must |
+| GREEN-5 | **Walking skeleton first**, on a **foundation flow** (standard + `no_triage_skip`): layout, build, tests, CI, formatter/linter, one end-to-end path, quickstart, conventions page; Verification from a clean clone. | Must |
+| GREEN-6 | **Conventions from day one**: written by the skeleton, checked by the code reviewer and CI from feature two; changes are recorded decisions. | Should |
+| GREEN-7 | **Slices and risk**: the planner proposes vertical slices, riskiest assumptions first; tests-first work plans by default. | Should |
+| GREEN-8 | **Growing into brownfield**: director suggestions, decided at a Roadmap gate, to switch on full scan, preserved behaviour and baseline, territories, code map when their triggers are met. | Should |
+| GREEN-9 | **Starting as a team**: brief, constitution and decisions agreed in the team space; skeleton by one workshop; claims after it merges. | Could |
+
 ## 7. Non-functional requirements
 
 | Area | Requirement |
@@ -520,7 +537,7 @@ retire code tied to the Pi-extension host or the terminal UI.** Existing tests t
 
 ## 11. Phasing — candidate roadmap
 
-*Concepts: [design §21 roadmap consequences](../concepts/web-front-door.md) · [current roadmap](../../specs/ROADMAP.md).*
+*Concepts: [design §21 roadmap consequences](../concepts/web-front-door.md) · [the roadmap proposal, r12–r41](../../specs/ROADMAP.md) (cut from these milestones into feature-sized rows).*
 
 Each milestone is a candidate roadmap row with its own gates. Every milestone ends usable and checked.
 
@@ -540,10 +557,11 @@ Each milestone is a candidate roadmap row with its own gates. Every milestone en
 | **M11** | **Factories anywhere** | host runtime and channel, placement, moves, sleeping hosts, network failure | M8 | HOST-2…7, WEB-2 (network), CFG-5 |
 | **M12** | **Team space** | team-space repository, signed acts and keys, team roadmap by quorum, claims and overlap, requests and mirrored reviews, team-aware Merge gate, team knowledge | M7, M8 | TEAM-1…9 |
 | **M13** | **The bench** | notebook and capture, keeper suggestions, promotion; research steps; spikes, spike reports, propose as feature; origin and maturity labels; candidate list and roadmap evidence | M3, M7 | BENCH-1…12 |
-| **M14** | **`kiln-v1` release** | installer, `kiln init` and `kiln doctor` (SETUP-1…11), newcomer docs, demo mode from committed replays | M1–M7 (+ chosen Shoulds) | §3.1 goals |
+| **M14** | **`kiln-v1` release** | installer, `kiln init` and `kiln doctor` (SETUP-1…11), newcomer docs, demo mode from committed replays | M0–M8 and the *Must* items of M9, M15, M16 | §3.1 goals |
 | **M15** | **Existing codebases** | profile, **full scan into the knowledge base**, baseline, territory, team-process fit and base drift (the Musts, built alongside M5–M8); then preserved behaviour, adoption stages and rehearsal, brownfield knowledge | M3, M5, M7 | BROWN-1…12 |
+| **M16** | **New codebases** | start empty, product brief, constitution from the brief, technology decisions, walking skeleton on the foundation flow (the Musts, alongside M5–M8; research and spike evidence for decisions once M13 lands); then conventions enforcement, slices, growing into brownfield, team start | M3, M5, M7 | GREEN-1…9 |
 
-**`kiln-v1`** = M0–M8 plus the *Must* items of M9 and M15; M10–M13 can follow as `kiln-v1.x` without changing
+**`kiln-v1`** = M0–M8 plus the *Must* items of M9, M15 and M16; M10–M13 can follow as `kiln-v1.x` without changing
 anything built before them, because the single-machine, local-only, single-person workshop is their degenerate case.
 
 ## 12. Success measures

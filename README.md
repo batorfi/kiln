@@ -109,29 +109,31 @@ mistyped path can't pass silently.
 | Path | What is in it |
 |---|---|
 | [`kiln/`](./kiln) | The toolchain: `src/` (lane, gate, log writer, scheduler, resident), `ui/` (the three layers), `validate/` (validators and probes), `schemas/` and `contracts/` (the log and roadmap shapes, the gate rail), `tests/`, and `fixtures/` (a committed real run) |
-| [`specs/`](./specs) | One directory per roadmap row — spec, plan, tasks, and the evidence — and [`ROADMAP.md`](./specs/ROADMAP.md), the human-approved program |
+| [`specs/`](./specs) | One directory per roadmap row — spec, plan, tasks, and the evidence — and [`ROADMAP.md`](./specs/ROADMAP.md), the program (admitted by a human at the Roadmap gate) |
 | [`docs/concepts/`](./docs/concepts) | The design: why KILN exists, the gates, the UI layers, the process flow, the role skills |
 | [`.specify/`](./.specify), [`.pi/`](./.pi) | The [Spec Kit](https://github.com/github/spec-kit) scaffolding and Pi prompts the project is built with, and KILN's constitution |
 
 ## How the project is built
 
 KILN is built by the process it describes: **spec-driven**, with [Spec Kit](https://github.com/github/spec-kit) on Pi, under the constitution.
-The whole program is a **roadmap of rows**; each row is one full lane (specify, clarify, plan, tasks, implement, verify), and **a human approves
-the program at Gate 0 and re-admits it at every seam between rows**. The roadmap is data, validated by the project's own validator.
+The whole program is a **roadmap of rows**; each row is one feature through the gates, and **a human admits the program at
+the Roadmap gate and re-admits it between rows**. The roadmap is data, validated by the project's own validator.
 
-| Row | What | Status |
+The first program (r1–r11, KILN as a Pi extension) built the runtime this restart reuses; it is archived with its full
+decision log in [`specs/archive/`](./specs/archive/ROADMAP-2026-09-kiln-on-pi.md). The new program —
+[`specs/ROADMAP.md`](./specs/ROADMAP.md), written from the [PRD](./docs/prd/kiln-prd.md) — is a **proposal awaiting the
+Roadmap gate**:
+
+| Rows | Phase | Status |
 |---|---|---|
-| r1 | The single-lane runtime | done |
-| r2 | The roadmap overlay (UI layer C) | done |
-| r3 | The first full-rail smoke walk | done |
-| r7 | True live local inference — a real Ollama-backed worker | done |
-| **r8** | **The Pi extension foundation — opens with a spike of the Pi extension API** | **next** |
-| r9 | The real UI on Pi — a human answers a gate in Pi | queued |
-| r10 | Role agents, a tier → model mapping, and real model swaps | queued |
-| r11 | The director and commands — the acceptance row: run a lane on a real feature | queued |
-| r4 | Cut the `kiln-v1` release (the repository is already public) | queued |
-| r5 | A URL-runnable installer | queued |
-| r6 | Newcomer docs on GitHub Pages | queued |
+| r12 | Foundations reset | proposed |
+| r13–r15 | Durable core: the gate contract, gates as data, the record | proposed |
+| r16–r18 | Real local workers, configuration as files, the director | proposed |
+| r19–r22 | The web front door: read-only, gates on the web, stepping in, shaping the roadmap | proposed |
+| r23–r27 | Knowledge, several factories, agents and flows, health | proposed |
+| r28–r31 | First run, new codebases, existing codebases with a full scan | proposed |
+| **r32** | **Cut the `kiln-v1` release** | proposed |
+| r33–r41 | `kiln-v1.x`: models beyond the machine, the bench, observability, factories anywhere, team space, the rest | proposed |
 
 Each finished row leaves evidence next to its spec. For an example of how a row is documented and checked, read the
 [overview of r7](./specs/006-kiln-live-inference/overview.md), then its

@@ -1,316 +1,421 @@
-# ROADMAP.md — the `kiln-v1` firing program · **Gate 0: APPROVED**
+# ROADMAP.md — the `kiln-v1` firing program · **Roadmap gate: PENDING (proposal)**
 
-> **Admitted.** This is the **human-approved program** for `kiln-v1`, produced by the
-> **Gate 0** move on **2026-09-13T06:54:20Z** (decided_by `human@batorfi`). It supersedes the
-> director's **draft** at `specs/002-kiln-lane/contracts/draft-roadmap.md` (a pending proposal),
-> which is now recorded as superseded and kept only so r1's spec cross-references resolve.
+> **Proposed, not admitted.** This is a **draft** of the program for the new KILN, written from scratch on 2026-10-20 from
+> the PRD ([`docs/prd/kiln-prd.md`](../docs/prd/kiln-prd.md)) and the concept set in [`docs/concepts/`](../docs/concepts).
+> It admits nothing. Only **human@batorfi**, at the **Roadmap gate** (internal id `gate0`), can admit it — with the moves
+> **approve / revise / reject / edit-rows / add-row / drop-row**. Until then every row is `queued` and the gate is `pending`.
 >
-> **Why a separate artifact.** The draft was written *while r1 was being specified*, when the
-> program was necessarily `pending` (the runtime must not admit its own program — Principle VI).
-> The **admission** is a *later human move*; it lands here as a **distinct, approved** artifact
-> rather than by flipping the draft in place. Gate 0's job at kickoff was to admit *the program*
-> — the rows, their order, their dependencies — and to be the door that re-opens at every
-> inter-row seam.
+> **What it replaces.** The previous approved program — r1–r11, KILN as a Pi extension with a terminal UI — is archived,
+> unchanged, at [`specs/archive/ROADMAP-2026-09-kiln-on-pi.md`](./archive/ROADMAP-2026-09-kiln-on-pi.md), with its full
+> Gate 0 log. Its closed rows (r1, r2, r3, r7, r8) are the code this program reuses (PRD §10). Row ids here **continue from
+> r12**, so every row id stays unique across the repository's history and its `specs/NNN-*` directories; the next Spec Kit
+> feature directory is `specs/009-…`.
 >
-> **Status: APPROVED, Gate 0** · **amended four times** (at the r3 seam, twice at the r7 seam, and at the r8 seam). Decider for the program: **human@batorfi**. Admission at 2026-09-13T06:54:20Z; r1, r2, r3, **r7** & **r8** are **closed** (nominal @PR#1…@PR#5). At the r3 seam Gate 0 inserted **r7**. At the **r7 seam (2026-09-21)** the human **closed r7**, **defined `kiln-v1` as a fully runnable factory (real UI, commands, director, roles)**, and added **r8** before r4 — then, at 04:21:47Z, **split r8 into four rows (r8 the Pi extension foundation · r9 the real UI · r10 roles and tiers · r11 the director and commands)**, and **reworded r4** from *publish to a public repo* (it is already public) to *cut the `kiln-v1` release*, gated on all four. At the **r8 seam (2026-09-22)** the human **closed r8**: KILN now loads into real Pi, both ways, with a seam that refuses every measured non-answer — and the human's own terminal smoke test found and fixed one live defect (an overlay that could never close) before passing clean. **r9 is the admitted next row**; it stays `queued`/`eligible` until its own Gates 1–9 lane starts (`chain_unattended=false`; M4). No row was dropped and no existing row was reordered relative to another. Gate 0 stays the door that re-opens at every road-seam.
-> Moves still available at Gate 0 (e.g. between rows): **approve / revise / reject / edit-rows /
-> add-row / drop-row**.
->
-> **Head:** the structured block below is the source of truth, validated by
-> `kiln/schemas/roadmap.schema.json` and `kiln/validate/roadmap.ts` (it is JSON, a *subset of*
-> YAML). **Table:** a projection of the head (a human view; the validator does not gate on it —
-> M4 enforces only the per-row status invariants).
+> **Head:** the structured block below is the source of truth, validated by `kiln/schemas/roadmap.schema.json` and
+> `kiln/validate/roadmap.ts`. **Table:** a projection of the head for people; the validator does not gate on it.
 
 ```json
 {
- "deliverable": "kiln-v1",
+ "deliverable": "kiln-v1 — the new KILN (local web front door on Pi Durable), per docs/prd/kiln-prd.md",
  "owner": "human@batorfi",
- "updated": "2026-09-22T17:56:10Z",
+ "updated": "2026-10-20T12:00:00Z",
  "rows": [
   {
-   "id": "r1",
-   "short": "core single-lane runtime (lane + gate + log-writer + affinity scheduler + HUD/Popup)",
+   "id": "r12",
+   "short": "Foundations reset — the new codebase layout (packages: contracts, durable, record, lane, workers, director, server, web, cli, checks), the legacy Pi extension frozen in legacy/, and the keep-list ported with its tests green: standard flow and move kinds as data, schemas, validators, affinity scheduler, strongest-judge tier policy, the never-vacuous network check",
    "deps": [],
-   "status": "done",
-   "spec": "specs/002-kiln-lane/spec.md",
-   "outcome": "@PR#1"
+   "status": "queued"
   },
   {
-   "id": "r2",
-   "short": "Flow UI — Layer C (the roadmap overlay; the program-level zoom-out)",
+   "id": "r13",
+   "short": "Durable core — the Pi Durable seam and the gate contract: roadmap, row, unit, gate and lane tasks; a move and its gate's completion in one atomic commit, first move wins, no clock settles a gate, headless means waiting; proven by kill-and-resume with nothing approved by a restart",
    "deps": [
-    "r1"
-   ],
-   "status": "done",
-   "outcome": "@PR#2"
-  },
-  {
-   "id": "r3",
-   "short": "first live-model smoke walk — one feature end-to-end (Gates 1–9) on a local model",
-   "deps": [
-    "r1"
-   ],
-   "status": "done",
-   "outcome": "@PR#3"
-  },
-  {
-   "id": "r7",
-   "short": "true live local inference — a real Ollama-backed resident + an OllamaReady preflight probe that actually dials the endpoint",
-   "deps": [
-    "r3"
-   ],
-   "status": "done",
-   "spec": "specs/006-kiln-live-inference/spec.md",
-   "outcome": "@PR#4"
-  },
-  {
-   "id": "r8",
-   "short": "kiln-v1 foundation — the Pi extension: spike the Pi extension API for real (ctx.ui, commands, lifecycle) and load KILN as an actual Pi extension with a package layout the later rows build on",
-   "deps": [
-    "r7"
-   ],
-   "status": "done",
-   "spec": "specs/007-kiln-pi-extension/spec.md",
-   "outcome": "@PR#5"
-  },
-  {
-   "id": "r9",
-   "short": "kiln-v1 real UI — the three Flow layers (footer HUD, gate popup, roadmap overlay) on Pi's real ctx.ui, so a human answers a gate in Pi and the move is recorded as a real human decision",
-   "deps": [
-    "r2",
-    "r8"
+    "r12"
    ],
    "status": "queued"
   },
   {
-   "id": "r10",
-   "short": "kiln-v1 roles and tiers — the role agents (agents/*.md), a tier-to-model mapping, and unload-on-swap so the lane's swap becomes a real model swap",
+   "id": "r14",
+   "short": "Gates as data, walked headless — the standard flow (Roadmap gate + Gates 1–9) executed from data with the closed set of move kinds and kiln check flow for the default flow; a scripted feature walks all ten gates from the CLI and survives kill-and-resume at every gate",
    "deps": [
-    "r8"
+    "r13"
    ],
    "status": "queued"
   },
   {
-   "id": "r11",
-   "short": "kiln-v1 director and commands — the director that turns an approved spec into gated work units, and the commands to run a lane; acceptance: a newcomer starts a lane on a real feature in Pi and a human answers its gates",
+   "id": "r15",
+   "short": "The record — transactional outbox, schema-versioned event envelope and catalog, backbone with consumer cursors; the factory-log as a projection rebuilt byte-identically; the old committed walks replayed as event streams",
    "deps": [
-    "r9",
-    "r10"
+    "r14"
    ],
    "status": "queued"
   },
   {
-   "id": "r4",
-   "short": "cut the kiln-v1 release — a curated, versioned, URL-runnable distribution of the runnable factory: a release manifest, a version tag and GitHub Release, and a PublishedReady probe (the repository is already public and carries its README and LICENSE)",
+   "id": "r16",
+   "short": "Real local workers — conversations on local models through pi-ai, tool sets and replay discipline, the residency manager (explicit load/unload, loopback only) and the model pool on one host; a scripted feature walks with real workers and real judges",
    "deps": [
-    "r2",
-    "r3",
-    "r7",
-    "r8",
-    "r9",
-    "r10",
-    "r11"
+    "r13",
+    "r15"
    ],
    "status": "queued"
   },
   {
-   "id": "r5",
-   "short": "URL-runnable installer / scaffolding script — set up the kiln toolchain into an existing repo from a public GitHub URL",
+   "id": "r17",
+   "short": "Configuration as files — kiln.config/ with role files (agents/*.md), the tier map with judges bound to the strongest model, kiln check config and kiln check model, changes recorded with before and after and applied from the next step",
    "deps": [
-    "r4"
+    "r16"
    ],
    "status": "queued"
   },
   {
-   "id": "r6",
-   "short": "comprehensive newcomer docs (getting-started · how-to's · technical overviews) published to GitHub Pages",
+   "id": "r18",
+   "short": "The director — the deterministic core executing a feature's pinned flow, affinity ordering, capped automatic fix rounds, and the planner role drafting proposals that are checked before anyone sees them; answers from the record",
    "deps": [
-    "r5"
+    "r14",
+    "r17"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r19",
+   "short": "Web front door, read-only — the loopback server with a per-launch secret and Host/Origin checks, read models with live push and resume-from-seq, and the first screens: workshop overview, factory live view, record explorer",
+   "deps": [
+    "r15"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r20",
+   "short": "Gates on the web — the ten-part gate brief with its headline, moves bound to the state version they were made against, the brief recorded as seen, and Needs you; a person decides every gate of a real feature in the browser",
+   "deps": [
+    "r18",
+    "r19"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r21",
+   "short": "Stepping in — the unattended tail armed at the Specification gate and ended by any objection, steering of work steps (never judges), risky-action approvals held by policy, and notifications that are information only",
+   "deps": [
+    "r20"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r22",
+   "short": "Shaping the roadmap together — the roadmap brief of the engineer's inputs, a shaping conversation with the planner, direct edits and pins the planner never silently changes, versioned drafts checked on every version, row origins in the Roadmap gate brief, approve bound to the version read",
+   "deps": [
+    "r20"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r23",
+   "short": "The factory knowledge base — an LLM wiki per factory (raw sources, pages, schema, log as a projection) with ingest, query and lint as steps, the Obsidian vault contract readable in Zed, Curator edit rights, and knowledge cited in gate briefs",
+   "deps": [
+    "r20"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r24",
+   "short": "Implementation knowledge and the workshop wiki — implementation digests per gate, feature stories, overviews, explainers and how-tos grounded in code at a commit with drift flagged; a workshop wiki anyone may edit, included read-only in every factory vault",
+   "deps": [
+    "r23"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r25",
+   "short": "One workshop, several factories — the factory registry, the model pool shared across factories with the host scheduler, people and roles for a single user, and Needs you across factories",
+   "deps": [
+    "r20"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r26",
+   "short": "Agents and flows — the Agents screen with role versions and try-runs on past features; added gates and flows from files, per-feature flow choice at the Roadmap gate, team-required gates, gate try-runs, kiln check flow for added gates",
+   "deps": [
+    "r18",
+    "r25"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r27",
+   "short": "Health and broken guarantees — the observe-never-act health watcher with signals, baselines and unknown-since states; broken-guarantee signals always critical and kept in the record; core metrics derived from events; kiln health",
+   "deps": [
+    "r19",
+    "r15"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r28",
+   "short": "First run — kiln init (browser or terminal) and kiln doctor: machine check, models recommended and checked, workshop and storage, a first factory from a repository with Spec Kit adopted or added and the constitution confirmed, knowledge bootstrap, and the first roadmap shaped together",
+   "deps": [
+    "r17",
+    "r22",
+    "r23"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r29",
+   "short": "New codebases — start empty: create the repository with Spec Kit, the product brief, a constitution written from it, technology decisions recorded by a person, and a walking skeleton on the foundation flow verified from a clean clone",
+   "deps": [
+    "r26",
+    "r28"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r30",
+   "short": "Existing codebases, part 1 — the codebase profile and the full scan of code and repository history into the knowledge base: raw scan facts, codebase and module pages cited at the scanned commit, open questions, a scan report with coverage; durable, local, deep in the territory",
+   "deps": [
+    "r24",
+    "r28"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r31",
+   "short": "Existing codebases, part 2 — the baseline of failing and flaky tests, the factory's territory, fitting the team's process (conventions, CI as evidence, code owners, the Merge gate opening a pull request) and base drift shown in briefs",
+   "deps": [
+    "r30",
+    "r21"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r32",
+   "short": "Cut the kiln-v1 release — installer, newcomer docs, a demo factory replaying a committed walk through all ten gates, a release manifest and version tag; acceptance: a newcomer installs KILN, runs first setup on a real repository, and decides its first Roadmap gate in under an hour",
+   "deps": [
+    "r21",
+    "r24",
+    "r26",
+    "r27",
+    "r29",
+    "r31"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r33",
+   "short": "Models beyond the machine (kiln-v1.x) — the model catalog with locality, profiles, per-role routing with cross-family judging, egress policy checked before sending, budgets, fallback as policy, policy stops in Needs you",
+   "deps": [
+    "r32"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r34",
+   "short": "The bench, part 1 (kiln-v1.x) — the private notebook with capture and promotion, keeper suggestions, research steps with cited results, origin and maturity labels",
+   "deps": [
+    "r32"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r35",
+   "short": "The bench, part 2 (kiln-v1.x) — spikes in throwaway worktrees with spike reports, propose as feature, the candidate list with evidence and readiness at the Roadmap gate",
+   "deps": [
+    "r34"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r36",
+   "short": "Observability in full (kiln-v1.x) — per-feature traces, insights with honest numbers, time travel in the record explorer, diagnostics bundle, the opt-in loopback OpenTelemetry export",
+   "deps": [
+    "r32"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r37",
+   "short": "Factories anywhere (kiln-v1.x) — the host runtime and channel, host join and measure, placement decided at the Roadmap gate, moves with handover, sleeping hosts, network failure that never approves anything",
+   "deps": [
+    "r32"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r38",
+   "short": "Team space, part 1 (kiln-v1.x) — the team-space repository with subscribe and publish, members' signing keys and signed acts, the team floor, the team roadmap decided by quorum",
+   "deps": [
+    "r37"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r39",
+   "short": "Team space, part 2 (kiln-v1.x) — claims and protected paths with overlap at the Work plan gate, requests and mirrored reviews between workshops, the team-aware Merge gate with the code host's merge queue, published progress, team knowledge, shared hosts, and bench work shared in a team",
+   "deps": [
+    "r38"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r40",
+   "short": "Existing codebases, the rest (kiln-v1.x) — preserved behaviour and characterization tests, adoption stages with rehearsal on past changes, brownfield knowledge from history and interviews, incremental re-scans, issues as candidates",
+   "deps": [
+    "r31",
+    "r35"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r41",
+   "short": "New codebases, the rest (kiln-v1.x) — conventions enforced from the second feature, vertical slices riskiest first, growing into brownfield practices by recorded decision, starting a new product as a team",
+   "deps": [
+    "r29",
+    "r35",
+    "r39"
    ],
    "status": "queued"
   }
  ],
  "ordering": [
-  "r1",
-  "r2",
-  "r3",
-  "r7",
-  "r8",
-  "r9",
-  "r10",
-  "r11",
-  "r4",
-  "r5",
-  "r6"
+  "r12",
+  "r13",
+  "r14",
+  "r15",
+  "r16",
+  "r17",
+  "r18",
+  "r19",
+  "r20",
+  "r21",
+  "r22",
+  "r23",
+  "r24",
+  "r25",
+  "r26",
+  "r27",
+  "r28",
+  "r29",
+  "r30",
+  "r31",
+  "r32",
+  "r33",
+  "r34",
+  "r35",
+  "r36",
+  "r37",
+  "r38",
+  "r39",
+  "r40",
+  "r41"
  ],
  "chain_unattended": false,
  "gate0": {
-  "status": "approved",
-  "rows": "r7,r8..r11,r4..r6",
-  "decided_by": "human@batorfi",
-  "at": "2026-09-13T06:54:20Z",
-  "note": "GATE-0 LOG (chronological, P-VII recorded):\n 1) 2026-09-13T06:54:20Z  human@batorfi  APPROVE  program r1->r6 (standing admission; the runtime did not make it for itself).\n 2) 2026-09-15T18:16:08Z  human@batorfi  road-seam   r1 (002) & r2 (003) closed -> main (nominal @PR#1/@PR#2); gate0 RE-OPENS at the seam.\n 3) 2026-09-15T18:59:08Z  human@batorfi  APPROVE(re-admit) TAIL r3->r6 UNCHANGED. In light of r1/r2 closing the tail is re-admitted without revise/revoke; r3 is the ADMITTED NEXT ROW TO FIRE (first live-model smoke walk). No row retracted. chain_unattended=false: r3 stays QUEUED until its own Gates 1-9 lane actually starts (its lane has no live gate yet, so r3 stays queued, not 'active' — M4 active requires a live gate). NOMINAL OUTCOMES: pre-r4 @PR#N are per-row close-LABELS (direct-commit dev tree), not GitHub PRs; the real PR/issue flow arrives at r4 (publish) / r5 (installer).\n  4) 2026-09-19T17:57:57Z  human@batorfi  road-seam   r3 (004-kiln-live-walk) closed -> main (nominal @PR#3; live-verified 124/124). gate0 RE-OPENS at the seam; r4->r6 re-admitted UNCHANGED (standing; r3 retired from the open tail). r3 FIRED LIVE: live walk PASSes 001 log.ts, --stub RECORDED (F-NOT-SILENT), LiveModelReady READY, zero-cloud; P-VI/SC-007 held (no program admitted BY THE BUILD, no gate advanced BY AUTHORING -- this human close IS that decision). r4 now the next row to fire.\n  5) 2026-09-19T20:24:57Z  human@batorfi  ADD-ROW + EDIT-ROWS  r7 INSERTED before r4 (ordering r1,r2,r3,r7,r4,r5,r6); r4.deps extended to [r2,r3,r7]. WHY: r3 closed with a DETERMINISTIC live-resident adapter (kiln/src/live-resident.ts returns a pure function; no Ollama client, no fetch, no subprocess in kiln/; DEFAULT_LOCAL_MODEL names a model not installed on this host), so the FIRED-LIVE claim r4's spec leans on as its trust anchor is not yet true. r7 makes it true BEFORE the toolchain is packaged for distribution, and before r5's installer and r6's docs are written against a dist whose spine may still change (NC1: the sync/async fork -- 0 async/await/Promise in kiln/src|ui|validate today). NOT A RETRACTION: no row is dropped, and no existing row is reordered relative to another; r3 stays 'done' @PR#3 and its delivered scope stands (the full-rail walk, the log-replay net, the recorded --stub toggle, the Layers A/B/C live smoke). r7 pays the LIVE-INFERENCE debt r3 named at kiln/src/stub-resident.ts:8 and carried forward. PROPOSED BY: the director (draft at specs/006-kiln-live-inference/gate0-add-row-proposal.md, committed eccfbdf). DECIDED BY: the human at this seam -- P-VI/P-I: the runtime did not make this move for itself. NC1 REMAINS OPEN: it is now a gate-1/gate-2 question inside r7's own lane, not a pre-vote condition; if it resolves to the subprocess option the spine never breaks and the r7-before-r4 sequencing case weakens (recorded so the trade stays visible). r7 stays 'queued' (M4: 'active' requires a live gate; chain_unattended=false lifts nothing).\n  6) 2026-09-21T04:05:07Z  human@batorfi  CLOSE r7 + DEFINE kiln-v1 + ADD-ROW r8 + EDIT-ROWS r4.deps. (a) r7 CLOSED as done @PR#4 (nominal close-label; direct commit to main): 006-kiln-live-inference delivered -- a real Ollama-backed resident and OllamaReady; fixes 0c5bc19, last commit 7a196ca; 232 tests; a code review's 12 findings all fixed; F-1 decided 'keep as is'. (b) kiln-v1 DEFINED by the human: a FULLY RUNNABLE FACTORY, including a real UI, commands, a director and roles -- not a runtime library plus proofs. (c) r8 ADDED before r4 (ordering r1,r2,r3,r7,r8,r4,r5,r6), deps [r2,r7]: make the factory runnable. (d) r4.deps extended to [r2,r3,r7,r8], so the release cannot fire before there is a runnable factory to release. WHY: an audit at the r7 seam found nothing a newcomer can RUN to use the factory on a feature -- kiln/bin is empty and package.json has no 'bin'; the only Pi-API references in kiln/ are 3 comments; .pi/ holds only spec-kit prompts; there are no agents/*.md; 'director' appears only in comments; the real ctx.ui wiring was deferred at r2 (NC1) and again at r3 ('later polish'). r4-r6 (publish, installer, docs) would distribute and document a surface that r8 is about to change -- the same reason r7 was placed before r4. NOT A RETRACTION: no row is dropped; r1-r3 and r7 stay done; r4-r6 are unchanged apart from r4's deps. CONCERN RECORDED (not blocking): r8 as ONE row is very large (r1 alone was a row); its first clarify should decide whether to split it (a Gate-0 add-row), and its first lane step should be a spike on the Pi extension API, which has never been exercised. r8 STAYS 'queued' (M4: 'active' requires a live gate; chain_unattended=false lifts nothing). NOT DONE HERE: r4's short and specs/005-kiln-publish still say 'publish to a public GitHub repo' although batorfi/kiln is ALREADY public; they need their own revise. A README and LICENSE were prepared as a chore, outside Gate 0. PROPOSED BY: the director; DECIDED BY: the human at this seam -- P-VI/P-I: the runtime did not make this move for itself.\n  7) 2026-09-21T04:21:47Z  human@batorfi  SPLIT r8 + REWORD r4. (a) r8 SPLIT into four rows by the human: r8 (the Pi extension foundation, opening with an API spike), r9 (the real UI on Pi), r10 (role agents, a tier-to-model mapping and unload-on-swap), r11 (the director and commands; the acceptance row). New ordering r1,r2,r3,r7,r8,r9,r10,r11,r4,r5,r6. r8.deps [r2,r7] -> [r7]; r9.deps [r2,r8]; r10.deps [r8]; r11.deps [r9,r10]. (b) r4 REWORDED and its deps extended to [r2,r3,r7,r8,r9,r10,r11]: 'publish the kiln toolchain to a public GitHub repo' -> 'cut the kiln-v1 release'. batorfi/kiln is ALREADY public and now carries a README, an Apache-2.0 LICENSE, NOTICE and THIRD-PARTY-NOTICES, so r4 no longer creates a distribution point; it cuts a curated, versioned release of the runnable factory (manifest, tag + GitHub Release, PublishedReady). specs/005-kiln-publish was revised to match. WHY THE SPLIT: entry 6 recorded the concern that ONE row for a real UI + commands + a director + roles is very large (r1 alone, the lane, was a row). The split follows natural interfaces and puts the biggest unknown first -- the Pi extension API has never been exercised, so r8 opens with a spike and every later row plans against what Pi actually allows. r10 carries the half of r7's code-review finding CR-5 that was left undone (a tier-to-model mapping and unload-on-swap, which turn the lane's swap from bookkeeping into a real model swap). r11 is the acceptance row: a newcomer starts a lane on a real, non-throwaway feature in Pi and a human answers its gates. NOT A RETRACTION: no row dropped; r1-r3 and r7 stay done; r8 keeps its id and narrows its scope. CONCERN RECORDED (not blocking): r11 may itself prove too big; that is a call for its own first clarify. r8 STAYS 'queued' (M4; chain_unattended=false). PROPOSED BY: the director (the shape of the split); DECIDED BY: the human -- P-VI/P-I.\n  8) 2026-09-22T17:56:10Z  human@batorfi  CLOSE r8 + ADD spec pointer. r8 CLOSED as done @PR#5 (nominal close-label; direct commits to main: 6ca9279 feat(007-kiln-pi-extension) implement r8, bea0683 docs(007-kiln-pi-extension) reports, f050f30 test pin untouched.test.ts; spec specs/007-kiln-pi-extension/spec.md). WHAT WAS DELIVERED: kiln/pi/ -- a real Pi extension (kiln-status, kiln-selftest), a seam (kiln/pi/outcome.ts) that turns every measured Pi dialog outcome into answered(option) or no-answer, never a decision on silence/cancel/timeout/a headless mode, mutation-tested (11/11 caught by name); kiln/validate/pi-ready.ts + _pi-driver.ts -- a probe that starts a REAL Pi hermetically and loads KILN both ways (-e and a package manifest), 9 named checks, 11 CLI hooks, all verified to fail by their own name; an append-only correction banner on docs/concepts/ui-layers-deep.md (several 'confirmed' Pi API claims were measured false). 233->376 tests, 0 regressions. THE HUMAN TERMINAL SMOKE TEST (FR-016/SC-008) WAS PERFORMED (human@batorfi, 2026-09-22, Pi 0.85.1) and did exactly what it exists for: it found ONE real defect LIVE that no automated check could ever see (RPC mode never invokes a component's handleInput) -- kiln-selftest's overlay had no handleInput and never called Pi's done callback, so it could never close in a real terminal. Fixed (the component now closes on Enter/Esc, matching Pi's own bundled example components), re-verified offline (3 new regression tests), then the smoke test re-run clean: step 3 answered:approve, step 4 (Esc at the question) correctly no-answer:dismissed -- a cancelled human is never read as an approval. A CODE REVIEW found three further defects, all fixed in the same pass: an unhandled process 'error' event could crash the whole run on a misconfigured KILN_PI_BIN (CR-1); a PiReady check hardcoded its pass/fail instead of observing Pi's real behaviour (CR-2); a stale timer and a latent temp-directory leak (CR-3). Full detail in specs/007-kiln-pi-extension/{implementation-report.md, verification-report.md, code-review-report.md, mutation-log.md, compliance-note.md}. NOT A RETRACTION: no row dropped; r1-r3 and r7 stay done; r8 keeps its scope as split. r9 is now the ADMITTED NEXT ROW (deps r2 done, r8 done); it stays 'queued' (M4: 'active' requires a live gate; chain_unattended=false lifts nothing). PROPOSED BY: none needed (r8's own completed lane); DECIDED BY: the human at this seam -- P-VI/P-I: the runtime did not make this move for itself."
+  "status": "pending",
+  "note": "PROPOSED, NOT ADMITTED. Drafted from the PRD (rev 4+) and the concept set on 2026-10-20 as a proposal for the Roadmap gate. Nothing here is admitted until human@batorfi decides at the Roadmap gate (approve / revise / reject / edit-rows / add-row / drop-row). The previous approved program (r1–r11, KILN as a Pi extension) is archived at specs/archive/ROADMAP-2026-09-kiln-on-pi.md; row ids continue from r12 so every id stays unique across the repository's history."
  },
- "trace": "P-VI (Gate 0 = sole, human-only admission; this is the human record, updated to the r1/r3 seam); P-VII (recorded, never silent/false; the pre-r4 @PR#N are NOMINAL row-close labels, documented in gate0.note); P-IX (roadmap fields)."
-}```
-
-
+ "trace": "P-VI (the Roadmap gate — gate0 — is the sole admission, human-only, always; this draft admits nothing), P-VII (recorded), P-IX (roadmap fields)"
+}
+```
 
 ## Rendered table (projection of the head — a human view only)
 
-| id | status | short | deps | notes |
-|----|--------|-------|------|-------|
-| r1 | **done** | core single-lane runtime (lane + gate + log-writer + affinity scheduler + HUD/Popup) | — | CLOSED at the seam: **002-kiln-lane** delivered; nominal close-label **@PR#1** (pre-r4 = direct commit to `main`) |
-| r2 | **done** | Flow UI — Layer C (roadmap overlay) | r1 | CLOSED this session: **003-kiln-roadmap-overlay**, `c89f9b4` (pushed to `main`); nominal close-label **@PR#2** |
-| r3 | **done** | first full-rail smoke walk (one feature end-to-end, Gates 1–9) | r1 | CLOSED at the seam: **004-kiln-live-walk** delivered (the walk PASSes 001's `log.ts` and a broken no-decider FAILs by named R3; `--stub` RECORDED via F-NOT-SILENT; LiveModelReady READY; zero-cloud); nominal close-label **@PR#3** (124/124). **Caveat recorded 2026-09-19:** its resident is a *deterministic adapter*, not inference — **r7 completes this** |
-| r7 | **done** | **true live local inference** — a real Ollama-backed resident + an `OllamaReady` preflight probe that actually dials the endpoint | r3 | CLOSED at the r7 seam (2026-09-21): **006-kiln-live-inference** delivered — the kiln now fires a **real** local model through the same lane, output captured, `OllamaReady` fails a *claimed* live run that *performed* nothing; the P-VIII scan repaired (it had scanned zero files since r1) and made a real tokenizer; a code review's 12 findings all fixed; F-1 decided *keep as is*; nominal close-label **@PR#4** (`0c5bc19`…`7a196ca` on `main`) |
-| r8 | **done** | **kiln-v1 foundation — the Pi extension.** Spike the Pi extension API for real (`ctx.ui`, commands, lifecycle) and load KILN as an actual Pi extension with a package layout the later rows build on | r7 | CLOSED at the r8 seam (2026-09-22): **007-kiln-pi-extension** delivered — KILN loads into real Pi both ways (`-e` and a package manifest), a seam refuses every measured non-answer shape (mutation-tested 11/11), `PiReady` fails by name across 9 checks/11 hooks; the human terminal smoke test found and fixed one live defect (the self-test overlay could not close — invisible to every automated check) before passing clean; a code review found and fixed three more; 233→376 tests; nominal close-label **@PR#5** |
-| r9 | **next (queued)** | **kiln-v1 real UI.** The three Flow layers (footer HUD, gate popup, roadmap overlay) on Pi's real `ctx.ui`, so a human answers a gate *in Pi* and the move is recorded as a real human decision | r2, r8 | ELIGIBLE (r2, r8 both done) but **not begun**; headless still prints and `WAIT`s, and a missing UI still never approves |
-| r10 | queued | **kiln-v1 roles and tiers.** The role agents (`agents/*.md`), a **tier → model mapping**, and **unload-on-swap** so the lane's `swap` becomes a real model swap | r8 | carries the half of r7's code-review finding CR-5 that was left undone (P-IV) |
-| r11 | queued | **kiln-v1 director and commands — the acceptance row.** The director that turns an approved spec into gated work units, and the commands to run a lane | r9, r10 | **acceptance:** a newcomer starts a lane on a real, non-throwaway feature in Pi and a human answers its gates. May itself need splitting — a call for its own clarify |
-| r4 | queued | **cut the `kiln-v1` release** — a curated, versioned, URL-runnable distribution of the runnable factory (manifest, version tag + GitHub Release, `PublishedReady`) | r2, r3, r7, r8, r9, r10, **r11** | **REWORDED at the r7 seam** (was *publish to a public GitHub repo*): `batorfi/kiln` is **already public** and now carries a README, LICENSE and third-party notices. **GATED on r11** (and so on r8–r10): fires only once the factory is runnable. Spec `005-kiln-publish` revised to match |
-| r5 | queued | **URL-runnable installer / scaffolding script** — set up the kiln toolchain into an *existing* repo from a public GitHub URL | r4 | the operator's requested capability; runs **from** the published toolchain, never off an unpublished dev tree |
-| r6 | queued | **comprehensive newcomer docs** (getting-started · how-to's · technical overviews for newcomer agentic developers) on **GitHub Pages** | r5 | the operator's requested capability; sequenced *after* the installer so the "install → run" path a newcomer follows is real |
+| id | phase | feature | deps | PRD requirements | acceptance (what proves the row) |
+|----|-------|---------|------|------------------|----------------------------------|
+| r12 | Foundation | **Foundations reset** | — | GATE-1/2, WORK-2, LANE-2, EVT-5 (validators) | new layout builds; legacy frozen; every ported test green; `kiln check` runs the network check |
+| r13 | Durable core | **Durable core and the gate contract** | r12 | CORE-1…6, LANE-1 | kill the server at every step of a gate task: it resumes, waits, and settles only on a committed move |
+| r14 | Durable core | **Gates as data, walked headless** | r13 | GATE-3/4/5, FLOW-1/2/3, FLOW-7 (default) | a scripted feature walks ten gates from the CLI; `kiln check flow` refuses every invalid flow in its negative suite |
+| r15 | Durable core | **The record** | r14 | EVT-1…5 | factory-log rebuilt byte-identical from events; the committed r1–r11 walks replay as streams |
+| r16 | Workers | **Real local workers** | r13, r15 | WORK-1, 3–5, LANE-3 | a feature walks with real local workers and judges on Ollama; a crash mid-generation resumes without double-charging a tool |
+| r17 | Workers | **Configuration as files** | r16 | CFG-1, 3, 4, 6 (local), 7 (roles), 8 | a weaker judge binding is refused; a config change applies from the next step and is recorded with before/after |
+| r18 | Director | **The director** | r14, r17 | DIR-1…5 | the same situation yields the same next step every time; planner drafts that fail checks never reach a person |
+| r19 | Front door | **Web front door, read-only** | r15 | WEB-1, 2, 4, OBS-1 (basic) | a second browser tab without the secret sees nothing; a reconnect resumes from its last seq with no polling |
+| r20 | Front door | **Gates on the web** | r18, r19 | BRIEF-1…4, WEB-3 (core), DIR-6 | a person decides every gate of a real feature in the browser; a move on a stale state version is refused |
+| r21 | Front door | **Stepping in** | r20 | HITL-1/2, GATE-4, WEB-5 | an armed tail crosses clean gates as *delegated*, and stops at the first objection; a judge cannot be steered |
+| r22 | Front door | **Shaping the roadmap together** | r20 | DIR-7 | a roadmap shaped from inputs, conversation and pinned edits; approve admits exactly the version read |
+| r23 | Knowledge | **The factory knowledge base** | r20 | KNOW-1 (factory), 2, 3, 4, BRIEF-5 | a wiki that opens cleanly in Obsidian and Zed; briefs cite pages and flag stale ones |
+| r24 | Knowledge | **Implementation knowledge and the workshop wiki** | r23 | KNOW-1 (workshop), 5, 6 | a merged feature has a feature story grounded at a commit; a code change flags the pages it drifts |
+| r25 | Workshop | **One workshop, several factories** | r20 | HOST-1, LANE-4, WORK-6, PPL-1 (single user) | three factories on one host share the model pool; one Needs you across them |
+| r26 | Workshop | **Agents and flows** | r18, r25 | CFG-2, CFG-7 (try-runs), FLOW-4…9 | an added gate defined, checked, tried on a past feature, and chosen for one feature at the Roadmap gate |
+| r27 | Workshop | **Health and broken guarantees** | r19, r15 | OBS-1 (core), OBS-3, OBS-5, OBS-6 | an injected broken guarantee is critical and recorded; a silent watcher shows *unknown*, never healthy |
+| r28 | Getting started | **First run** | r17, r22, r23 | SETUP-1…11 | from install to a first Roadmap gate in under an hour on a fresh machine, nothing leaving it |
+| r29 | Getting started | **New codebases** | r26, r28 | GREEN-1…5 | an empty repository reaches a merged walking skeleton that builds and passes from a clean clone |
+| r30 | Getting started | **Existing codebases, part 1: profile and full scan** | r24, r28 | BROWN-1, BROWN-11 | a full scan of this repository writes module pages, a coverage report and open questions; a crash mid-scan resumes |
+| r31 | Getting started | **Existing codebases, part 2: baseline, territory, process** | r30, r21 | BROWN-2, 3, 5, 8 | a feature outside its territory is flagged at Code review; pre-existing failures never block on their own |
+| r32 | Release | **Cut the kiln-v1 release** | r21, r24, r26, r27, r29, r31 | §3.1 goals, M14 | a newcomer installs KILN, runs first setup on a real repository and decides its first Roadmap gate in under an hour |
+| r33 | kiln-v1.x | **Models beyond the machine** | r32 | MOD-1…5, HITL-3, CFG-6 (remote) | a hybrid factory's cloud judge sees only what policy allows; a local-only factory reaches nothing beyond loopback |
+| r34 | kiln-v1.x | **The bench, part 1: notebook and research** | r32 | BENCH-1…4, BENCH-7 | a notebook entry promoted to knowledge keeps its origin; research results are cited |
+| r35 | kiln-v1.x | **The bench, part 2: spikes and candidates** | r34 | BENCH-5, 6, 8, 10–12 | a spike's report becomes evidence on a candidate shown at the Roadmap gate; spike code never merges |
+| r36 | kiln-v1.x | **Observability in full** | r32 | OBS-2, OBS-4, EVT-6 | one trace per feature; insights with counts and sample sizes; time travel to any moment |
+| r37 | kiln-v1.x | **Factories anywhere** | r32 | HOST-2…7, WEB-2 (network), CFG-5 | a factory moves between hosts with handover; a network failure approves nothing |
+| r38 | kiln-v1.x | **Team space, part 1** | r37 | TEAM-1, 2, 3, 8 | a team roadmap change takes effect only when the quorum has signed |
+| r39 | kiln-v1.x | **Team space, part 2** | r38 | TEAM-4…7, TEAM-9, BENCH-9 | overlapping claims surface at the Work plan gate; the Merge gate uses the code host's queue |
+| r40 | kiln-v1.x | **Existing codebases, the rest** | r31, r35 | BROWN-4, 6, 7, 9, 10, 12 | a rehearsal on a past change compares the judges' findings with what the team merged |
+| r41 | kiln-v1.x | **New codebases, the rest** | r29, r35, r39 | GREEN-6…9 | conventions written by the skeleton are enforced from feature two; a team starts a product together |
 
-**order** = `r1 → r2 → r3 → r7 → r8 → r9 → r10 → r11 → r4 → r5 → r6` · **chain_unattended** = `false` · **gate0** =
-**`approved`** · **decided_by** = `human@batorfi` (admitted 2026-09-13T06:54:20Z; amended 2026-09-19T20:24:57Z, 2026-09-21T04:05:07Z, 2026-09-21T04:21:47Z and 2026-09-22T17:56:10Z) ·
-**eligibility** = **r1, r2, r3, r7, r8 DONE**; **r9 is the next row** — eligible (deps r2, r8 done) but **not begun** (`chain_unattended=false`; M4 keeps it `queued`, not `active`, until its lane opens a live gate); **r10** once r8 is `done` (already true — eligible, but ordered after r9 in the firing sequence); **r11** once r9 ∧ r10 are `done`; **r4 is not eligible** until r11 is `done`;
-r5 once r4 is `done`; r6 once r5 is `done`. Inter-row chaining is **off** — the human
-re-admits at each `roadmap_row_done` seam unless they explicitly elect it (logged).
+All rows: status **queued**. One row = one feature through the ten gates; each row's Concept or Specification gate may
+still split it (`split+revise` at the Implementation gate exists for exactly this).
 
-> **Note on the numbering.** Row ids are *identities*; `ordering` is the *firing sequence*. `r7`
-> and `r8`–`r11` fire **fourth** to **seventh** because the schema pins ids to `^r[0-9]+$` (so `r3b` is illegal) and renumbering
-> r4→r6 would have broken every cross-reference in `specs/005-kiln-publish/` and the `gate0.note`
-> history. The numeric value carries no ordering meaning.
+## How the program is cut
 
-### The proof row (r7) — added at the r3 seam
+**Principles used.** Every row ends usable and checked (PRD §11). Each row is one reviewable feature, not a milestone; the
+PRD's larger milestones are split where one feature would be too big to review (M1 → r13/r14, M3 → r16/r17, M5 → r20–r22,
+M7 → r23/r24, M8 → r25–r27, M13 → r34/r35, M12 → r38/r39, M15 → r30/r31/r40, M16 → r29/r41). Riskiest foundations first:
+the durable gate contract (r13) and the record (r15) are what every later promise rests on.
 
-- **r7 — true live local inference.** A genuine Ollama-backed `Resident` plus an **`OllamaReady`**
-   preflight probe that *actually dials* the endpoint (the sibling of `RuntimeReady` →
-   `OverlayCReady` → `LiveModelReady`, and the first that makes a real call). **Why it exists:** r3
-   closed with a *deterministic adapter* — `kiln/src/live-resident.ts` returns a pure function, and
-   `kiln/` contains no Ollama client, no `fetch`, and no subprocess — so the live-model claim r4
-   rests on was not yet true. r7 also **hardens the guard it uses**: the P-VIII zero-network scan is
-   import-/primitive-based today and does **not** detect a `fetch` call, so r7 makes it call-based
-   and allowlists the one loopback module by name. Depends on `r3` (it completes r3's work rather
-   than redoing it); `r3` stays `done` @PR#3 and its delivered scope stands.
-   **Clarified 2026-09-19 — NC1–NC3 resolved** (`human@batorfi`): **NC1 = async HTTP + an async
-   spine** (`Resident.run` becomes async, threaded through `lane.run` → `walk` → `live-walk` →
-   `scheduler.schedule`), **NC2 = loopback is local + harden the guard** (no constitution amendment),
-   **NC3 = env-gated live tier** (`KILN_LIVE=1`, skip-with-record, fixture-based replay). **NC1's
-   resolution confirms the r7-before-r4 sequencing**: the breaking change to r4's payload is real, and
-   it now lands before r4 packages that surface. Decided on measured evidence — the `ollama` CLI
-   exposes no `--seed`/`--temperature` (3 runs → 3 digests), while the HTTP path reproduced
-   identically at temp 0 + seed 42.
+| Phase | Rows | Ends with |
+|---|---|---|
+| **Foundation** | r12 | the new layout with every kept rule ported and tested |
+| **Durable core** | r13–r15 | a feature walks ten gates headless, survives any crash, and is fully recorded |
+| **Workers** | r16–r17 | real local models doing the work and judging it, configured as files |
+| **Director** | r18 | deterministic orchestration with a checked planner |
+| **Front door** | r19–r22 | a person runs a real feature from the browser — gates, briefs, delegation, steering, roadmap shaping |
+| **Knowledge** | r23–r24 | a factory wiki and implementation knowledge readable in Obsidian and Zed |
+| **Workshop** | r25–r27 | several factories, added gates and flows, health with broken-guarantee signals |
+| **Getting started** | r28–r31 | first run, new codebases, existing codebases with a full scan |
+| **Release** | r32 | **`kiln-v1`** |
+| **kiln-v1.x** | r33–r41 | models beyond the machine, the bench, full observability, factories anywhere, team space, the rest of brownfield and greenfield |
 
-### What `kiln-v1` means (defined by the human, 2026-09-21)
+**The `kiln-v1` line.** r12–r32 deliver the PRD's definition of `kiln-v1`: M0–M8 plus the *Must* items of M9, M15 and M16,
+and M14's release. The PRD lists M14 as depending on M1–M7 only; this draft makes the release depend on every `kiln-v1` row
+(r21, r24, r26, r27, r29, r31 and, through them, the rest) — a correction to propose back into the PRD.
 
-**`kiln-v1` is a fully runnable factory — including a real UI, commands, a director and roles.** It is *not* a runtime library plus proofs. The distinction was made explicit at the r7 seam,
-because the program's rows r1–r7 built and verified the *pieces* (the single lane, the gates, the log, the affinity scheduler, Layers A/B/C as pure renders, a real local-model resident, the probes)
-while nothing yet lets a person **use** them: `kiln/bin` is empty and `package.json` has no `bin`; the only Pi-API references in `kiln/` are comments; `.pi/` holds only spec-kit prompts; there are no
-`agents/*.md` role files; and "director" appears only in comments. The concept document's own promise — *the human's only job is to plan the roadmap with the director, decide at the gates, and watch the kiln* —
-is not yet something a newcomer can do.
+**After `kiln-v1`.** r33–r41 follow as `kiln-v1.x`. Each depends only on the release (or on its own earlier part), so their
+order can be reshaped freely at later Roadmap gates without touching anything built before. r40 and r41 wait for the bench
+(r35) because their evidence comes from research and spikes.
 
-### The runnable-factory rows (r8–r11) — one row, split at the r7 seam
+## Decisions needed before rows fire
 
-The human first added **one** row (r8) to make the factory runnable. The director recorded a concern — one lane for *a real UI, commands, a director and roles* is very large (r1 alone, the lane, was a row) — and the human
-ordered it **split** (2026-09-21T04:21:47Z). The split follows natural interfaces and puts the biggest unknown first:
+From PRD §14, placed at the row that needs them:
 
-- **r8 — the Pi extension foundation (opens with an API spike).** Exercise the Pi extension API for real — `ctx.ui`, commands, lifecycle — and load KILN as an actual Pi extension with a package layout the later rows build on;
-  resolve the UI/keymap questions `ui-layers-deep.md §10` left open (r2 and r3 both deferred them as "later polish"). *Deps: r7.* **Why first:** the Pi API has never been exercised, and every later row depends on what it actually allows.
-- **r9 — the real UI on Pi.** The three Flow layers (footer HUD, gate popup, roadmap overlay) on Pi's real `ctx.ui` — today they are pure renders driven through an abstract `LiveUICtx` — so a human answers a gate *in Pi* and the move is recorded as
-  a real human decision; headless still prints and `WAIT`s, and a missing UI never approves. *Deps: r2, r8.*
-- **r10 — role agents and model tiers.** The role agents (`agents/*.md`: the four line-of-defense roles, always on the strongest model, and the work roles), a **tier → model mapping**, and **unload-on-swap**, which turns the lane's `swap` from bookkeeping into a real
-  model swap (P-IV) — the half of r7's code-review finding CR-5 that was left undone. *Deps: r8.*
-- **r11 — the director and commands (the acceptance row).** The director — the scheduler that turns an approved spec into gated work units and holds the lane (today `director` appears only in comments and the only walk is a scripted throwaway) — and the commands to run a lane and answer its gates.
-  **Acceptance:** a newcomer starts a lane on a real, non-throwaway feature in Pi and a human answers its gates. *Deps: r9, r10.* **A concern, recorded and not blocking:** r11 may itself prove too big; that is a call for its own first clarify.
+| Before | Decision |
+|---|---|
+| **r12** | keep a terminal surface (the r9 work) or retire it — decides what `legacy/` keeps alive (PRD §14.1) |
+| **r19** | user-facing words: Factory / Feature / Step; *Knowledge* versus *wiki* (§14.5) |
+| **r20** | whether KILN may recommend a move at a gate; limits on *request more evidence* (§14.6) |
+| **r23** | wiki keeper as its own role or the researcher with a schema; review age before a brief flags a page; how much code implementation pages reproduce (§14.2–4) |
+| **r26** | added gates as delegation arming points; `applies_when` on the diff; several Deciders on one gate (§14.7, §14.12) |
+| **r33** | egress policy language and model-family identity (§14.9) |
+| **r35** | research and spike capacity on shared hosts; keeper suggestions off-switch; spike retention (§14.11) |
+| **r37** | hosts in several workshops; workspace moves; failover; container forms (§14.8) |
+| **r38** | quorum rules, claim expiry, publishing levels (§14.10) |
 
-**Why all four precede r4:** publishing, installing and documenting a factory that cannot yet be run — and whose surface these rows are about to change (an extension entry point, the package layout) — would repeat exactly the mistake r7 was placed before r4 to avoid.
-r4 therefore depends on **all four** (`[r2, r3, r7, r8, r9, r10, r11]`).
+Proposals awaiting review in the concept docs also land at specific rows: the flow's reject targets and re-crossing
+(`the-flow.md` §11) at **r14/r20**; health's director-rule question (`health.md` §15) at **r27**.
 
-### The distribution tail (r4–r6) — approved as proposed
+## What the Roadmap gate is asked to decide
 
-- **r4 — cut the `kiln-v1` release.** *(Reworded at the r7 seam; it read "publish the toolchain to a public GitHub repo".)* `batorfi/kiln` is **already public** and now carries its README, an Apache-2.0 LICENSE, a NOTICE and
-   third-party notices, so this row no longer *creates* a distribution point — it **cuts a release**: a curated, versioned, URL-runnable distribution of the runnable factory, i.e. a release manifest (what ships and what does not),
-   a version tag and GitHub Release, and a `PublishedReady` probe. Pushing a release stays a human-gated network move (P-I / P-V). `deps: [r2, r3, r7, r8, r9, r10, r11]` — it fires only once the factory is runnable.
-   Spec `005-kiln-publish` was revised to match.
-- **r5 — a URL-runnable installer / scaffolding script.** Sets up the kiln toolchain into an
-   *existing* repo from a public GitHub URL (a `curl <url>/install | sh`-style bootstrap that
-   drops the kiln toolchain — `kiln/`, schemas, validators, gate-rail, and the `.pi`/`.specify`
-   scaffolding — into a target repo without a clone). Depends on `r4`: the installer runs *from
-   the published URL*, never off an unpublished dev tree. *Local-first note (P-VIII): the
-   installer fetches the published toolchain over the network by design — it is the one row that
-   is *network-permitting* precisely because it is the bootstrap; once installed the resident
-   remains local.*
-- **r6 — comprehensive newcomer documentation, published to GitHub Pages.** Getting-started,
-   how-to's, and technical overviews written *for newcomer agentic developers*, hosted on GitHub
-   Pages. Depends on `r5` (the "install → run" path the docs describe is real once the installer
-   exists) and, transitively, on `r4` (docs host on the published repo's Pages). The doc set
-   reuses `docs/concepts/` as source and adds the operational layer; a build/keymap spike
-   (cf. Layer C's `ui-layers-deep.md §7`) precedes the build.
+1. **The program** — the rows, their order and dependencies, and the `kiln-v1` line at r32.
+2. **The first row** — on approval, **r12** is the admitted next row; nothing else is chained (`chain_unattended=false`).
+3. **The open decision before r12** — terminal surface kept or retired.
+4. **Optional reshaping** — for example: pull **r27 Health** earlier (right after r19) if broken-guarantee signals should
+   watch the durable core from the start; or move **r30/r31 Existing codebases** ahead of **r29 New codebases** if KILN's
+   first real users bring existing repositories.
 
-## What Gate 0 is being asked to do next
+## Guardrails this draft keeps
 
-The program is **approved** and **five rows are closed** (r1, r2, r3, r7, r8). At the r7 seam (2026-09-21) the human **closed r7**, **defined `kiln-v1` as a fully runnable factory**, added **r8**, and — at 04:21:47Z — **split r8 into r8–r11** and **reworded r4** (*cut the release*), gated on all four. At the **r8 seam (2026-09-22)** the human **closed r8** — KILN loads into real Pi, both ways, and the human's own terminal smoke test found and fixed one live defect before passing clean. The next step is to **fire r9**:
-
-1. ~~**Fire r1**~~ — **DONE**: 002-kiln-lane delivered (spec/plan/tasks/implement all written; the lane
-    spine + HUD/Popup + the `RuntimeReady` dogfood shipped). Closed at the seam, nominal **@PR#1**.
-2. ~~**Fire r2**~~ — **DONE**: 003-kiln-roadmap-overlay delivered (the Layer-C overlay + its Gate-0
-    face + the headless print-and-`WAIT` twin + the `OverlayCReady` probe; 98/98 tests; an overlay accuracy fix (a queue row "waits" only not-yet-closed deps; all-deps-closed reads "eligible"); a closed-row program walk
-    PASSES 001's `log.ts` while a broken auto-approve FAILs it with a named R3). Closed at the seam, nominal
-    **@PR#2** (`c89f9b4` pushed to `main`).
-3. ~~**Fire r3**~~ — **DONE**: 004-kiln-live-walk delivered — the first **full-rail** smoke walk, one
-    feature end-to-end across Gates 1–9 (E1–E5: the resident adapter, the walk, the live TUI, the
-    `LiveModelReady` probe); it also supplied the **live TUI smoke walk** r2 deferred under NC1. Verified 124/124;
-    the live walk PASSes 001's *unmodified* `log.ts` while a broken `no-decidedBy` walk FAILs it with a named R3, the
-    `--stub` stand-in is RECORDED (F-NOT-SILENT), `LiveModelReady` is READY, and the run is zero-cloud. Closed at the
-    seam, nominal **@PR#3** (`06cad9c`/`a0f52df` on `main`; the close is the human's r3-seam move, P-VI).
-4. ~~**Fire r7**~~ — **DONE**: 006-kiln-live-inference delivered — the kiln now fires a **real** local model through the same single lane (an async spine, a real Ollama-backed resident whose output is captured but never logged),
-    with `OllamaReady` failing a *claimed* live run that *performed* nothing, and a P-VIII scan that genuinely reads the code (the old one had scanned zero files since r1). 232 tests; a fresh live capture reproduces the committed ledger byte for byte;
-    a code review's 12 findings were all fixed and mutation-tested (29/29 killed); verification finding F-1 was **decided: keep as is**. Closed at the r7 seam, nominal **@PR#4** (`0c5bc19`…`7a196ca` on `main`; the close is the human's move, P-VI).
-5. ~~**Fire r8**~~ — **DONE**: 007-kiln-pi-extension delivered — the Pi extension foundation, opening with an API spike (see *The runnable-factory rows (r8–r11)* above). KILN loads into real Pi both ways (`-e` and a package manifest); a seam (`kiln/pi/outcome.ts`) turns every measured Pi dialog outcome into `answered`/`no-answer`, never a decision on silence, cancellation, timeout or a headless mode (mutation-tested, 11/11 caught by name); `PiReady` starts a real Pi hermetically and fails by name across 9 checks and 11 CLI hooks. The **human terminal smoke test** (FR-016) found one real defect live — the self-test overlay had no way to close itself, invisible to every RPC-mode automated check — fixed and re-verified, then the smoke test passed clean (a cancelled human correctly reads as `no-answer`, never `answered`). A code review found and fixed three more defects. 233→376 tests, 0 regressions. Closed at the r8 seam, nominal **@PR#5** (`6ca9279`…`f050f30` on `main`; the close is the human's move, P-VI).
-6. **→ Fire r9 (ADMITTED, next to fire).** The real UI on Pi (see *The runnable-factory rows (r8–r11)* above). r9 is *admitted & eligible* (deps r2, r8 done) but **not yet begun** (`chain_unattended=false`; it stays `queued`, not `active`, per M4).
-7. **Then r10 → r11** (roles and tiers; the director and commands — the acceptance row), **then fire r4** (cut the release) — `deps: [r2, r3, r7, r8, r9, r10, r11]`, so it becomes eligible only when r11 closes.
-    Spec **005-kiln-publish** was revised for the new wording (the repository is already public; the README and LICENSE now exist).
-8. **Chaining is off** (`chain_unattended: false`); any line-of-defense veto *inside* a row halts its lane;
-   cross-row chaining, if ever elected, is per-row, logged, and veto-liftable — and stays that way across r9→r6.
-
-### Guardrails that held for this admission (verified)
-
-- **It validates as an APPROVED program.** `node kiln/validate/roadmap.ts <this file>` → PASS:
-   the `gate0` carries the full human-decided record (`status=approved` + `rows` + `decided_by`
-   + `at`), so M3 / Q2=A are satisfied; a *pending* artifact could *pre-authorize* nothing, but
-   this *approved* record is exactly the human move M3 demands.
-- **The admission is recorded, not silent.** `decided_by`/`at` make the human's decision durable
-   and greppable in the factory-log lineage (Principle VII); a missing UI can now flip nothing,
-   because the decision is a recorded human move, never a model-written approval.
-- **No auto-chaining.** `chain_unattended: false`; nothing in-flight; each row closes at its PR.
-
-## Gate 0 re-admission log (inter-row seams — P-VII, recorded)
-
-| time (UTC) | decider | move | effect |
-|---|---|---|---|
-| 2026-09-13T06:54:20Z | human@batorfi | `approve` | admission: program r1→r6 (standing approval) |
-| 2026-09-15T18:16:08Z | human@batorfi | road-seam | r1 & r2 closed → main (@PR#1/@PR#2); Gate 0 re-opens |
-| 2026-09-15T18:59:08Z | human@batorfi | `approve` (re-admit) | tail r3→r6 **re-admitted unchanged**; r3 = admitted next row |
-| 2026-09-19T17:57:57Z | human@batorfi | road-seam | r3 (004-kiln-live-walk) closed → main (@PR#3, live-verified 124/124); Gate 0 re-opens; r4→r6 re-admitted unchanged |
-| 2026-09-19T20:24:57Z | human@batorfi | `add-row` + `edit-rows` | **r7 inserted before r4** (ordering `r1,r2,r3,r7,r4,r5,r6`); **r4.deps → `[r2,r3,r7]`**. r7 pays the live-inference debt r3 carried forward; no row dropped, no existing row reordered relative to another, r3 stays `done` @PR#3. Proposed by the director (`specs/006-kiln-live-inference/gate0-add-row-proposal.md`), **decided by the human** |
-| 2026-09-21T04:05:07Z | human@batorfi | `close` r7 + **define kiln-v1** + `add-row` + `edit-rows` | **r7 closed** (`done` @PR#4). **`kiln-v1` = a fully runnable factory (real UI, commands, director, roles).** **r8 inserted before r4** (ordering `r1,r2,r3,r7,r8,r4,r5,r6`); **r4.deps → `[r2,r3,r7,r8]`**. No row dropped; r1–r3 and r7 stay `done`. Proposed by the director, **decided by the human** |
-| 2026-09-21T04:21:47Z | human@batorfi | `revise`/split r8 + reword r4 | **r8 split into r8–r11** (Pi extension foundation · real UI · roles and tiers · director and commands); ordering `r1,r2,r3,r7,r8,r9,r10,r11,r4,r5,r6`; **r4 reworded** to *cut the `kiln-v1` release* and **r4.deps → `[r2,r3,r7,r8,r9,r10,r11]`**. No row dropped; r8 keeps its id and narrows its scope. Proposed by the director, **decided by the human** |
-| 2026-09-22T17:56:10Z | human@batorfi | `close` r8 | **r8 closed** (`done` @PR#5; spec `specs/007-kiln-pi-extension/spec.md`). KILN loads into real Pi both ways; the seam refuses every measured non-answer; the human terminal smoke test found and fixed one live defect (an overlay that could not close), then passed clean; a code review found and fixed three more. No row dropped; r1–r3, r7 and r8 stay `done`. **r9 is the admitted next row**, **decided by the human** |
-
-> The re-admission is the **human's** program-level move the runtime never makes for itself (P-VI). It is logged here and in the head's `gate0.note` so a missing UI flips nothing and a silent approval is impossible (P-VII). `gate0.status` stays `approved` — a re-admission *and* an amendment, not a re-vote of the program. After the 2026-09-19T20:24:57Z amendment, **`r7` is the next row** and stays `queued` until its own lane fires; `r4` follows it, gated on `r7`.
->
-> **On the amendment specifically (P-I).** The director *proposed* the row and the dep change and
-> **could not make them**; the move above is the human's. The proposal was verified against the
-> repo's own unmodified validator before the vote (schema-correct once decided, un-admittable while
-> its `<<HUMAN-DECIDES>>` placeholders remained), and it recorded two validator findings it did
-> **not** fix: `nextEligibleRow` counts an `aborted` row as satisfying its dependents (contradicting
-> M2 and the constitution's "only when its `deps` are `done`"), and `checkM1`'s cycle detector
-> follows only `deps[0]`, so a third dep is never traversed. Both are open hardening work.
->
-> **On the r7-seam move specifically (P-I / P-VI).** The director *recommended* inserting a row before r4 and the human *decided* it — and, in doing so, **defined what `kiln-v1` means**, which is the more consequential decision: it turns r4–r6 from "package what exists" into "package a factory that runs". One concern is on the record and was not overridden: r8 is one very large row, so it should begin with a spike and may need splitting. `nextEligibleRow` now returns **r8**; it returns **r4** only once r8 is `done`.
->
-> **On the split (P-I / P-VI).** The human ordered r8 split; the director proposed *where* to cut it and could not make the move. The shape puts the biggest unknown first (the Pi API spike) and makes r11 the acceptance row. `nextEligibleRow` still returns **r8**, then **r9** (r8 done), and returns **r4** only once **r11** is `done`.
->
-> **On the r8-close move specifically (P-I / P-VI).** r8's own lane produced its evidence — the implementation, verification and code-review reports, and the mutation-testing record — but **closing the row is the human's decision alone**; nothing in r8's own build could admit itself (P-VI). The one piece the human's own hands were needed for was FR-016's terminal smoke test: every automated check in this row runs Pi in `rpc`, `json` or `print` mode, and RPC's `custom()` never invokes an overlay's `handleInput` at all — so a human, in a real terminal, was the *only* possible way to find the live defect this close records (the overlay could not close). That is not a coincidence; it is the reason NC1 split the acceptance test into an automated half and a human half in the first place. `nextEligibleRow` now returns **r9**; it returns **r4** only once **r9, r10 and r11** are all `done`.
+- **It admits nothing.** `gate0.status` is `pending`; no row is `active` or `done`; the draft's author is not its decider.
+- **History is kept.** The previous program is archived unchanged with its Gate 0 log; no closed row is rewritten.
+- **Ids are unique.** New rows start at r12; `specs/001–008` stay the record of the old rows.
+- **Valid by construction.** Every dependency names an existing row and appears earlier in the ordering, so the graph is
+  acyclic (M1); no approved state is claimed (M3); no row carries a gate or an outcome (M4).

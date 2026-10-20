@@ -184,7 +184,8 @@ the first roadmap:
 
 Setup reads the repository **locally** — its languages, size, test command, existing docs — to prepare the next two steps;
 it changes nothing in it. For an existing codebase with a team, history and CI, setup continues as described in
-`brownfield.md` §12: profile and baseline, territory, process, and the Observe stage.
+`brownfield.md` §12: profile and baseline, territory, process, and the Observe stage. For *Start empty*, it continues as
+described in `greenfield.md` §14: product brief, constitution, open technology choices, and a walking skeleton first.
 
 ## 9. Step 5 — knowledge
 
