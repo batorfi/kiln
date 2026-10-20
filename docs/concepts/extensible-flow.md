@@ -15,7 +15,7 @@
 >   6. A flow is chosen **per feature**, at the Roadmap gate, from a factory default.
 >
 > Companion docs:
->   - The gates and their rationale:  `gates-why-how-what.md` (describes the default flow)
+>   - The default flow in depth:      `the-flow.md` (proposes `returns_to` defaults for the built-in gates, §11 P1)
 >   - The design:                     `web-front-door.md` (§3.1 the default flow, §5 gates as durable tasks)
 >   - Configuration:                  `configuration.md` (where gate and flow files live)
 >   - The record:                     `the-record.md`

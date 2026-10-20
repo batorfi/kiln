@@ -1,0 +1,66 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Concept gate</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.prem td{font-size:12.5px;vertical-align:top}.scope{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.scope>div{border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:12.5px;background:var(--surface-2)}
+.scope ul{margin:6px 0 0 16px}.scope li{margin:2px 0}
+.cite{font-size:11px;color:var(--info);background:var(--info-soft);border-radius:5px;padding:1px 6px;white-space:nowrap}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a class="on">Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot idle"></span>kiln-v1</span></a>
+    <a><span class="fac"><span class="dot idle"></span>billing-service</span></a>
+    <a><span class="fac"><span class="dot idle"></span>docs-site</span></a>
+    <a><span class="fac"><span class="dot idle"></span>handbook</span></a>
+  </div>
+  <div class="machine"><b>Viewing Oct 12, 17:40</b><div style="margin-top:6px">A moment from the record, shown as it was.</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0"><b>kiln-v1</b> · Feature r10 · Role agents and model tiers · Oct 12, 17:40</div><span class="grow"></span><span class="pill wait">Waiting 35 min</span><span class="pill">Round 1</span><span class="pill local">local-only</span></div>
+    <div class="row" style="margin-top:12px;gap:24px;align-items:center">
+      <div style="min-width:470px"><div class="kicker">Concept gate · 1 of 9 · contract</div><div class="q">Is this worth building, on these premises?</div>
+        <div class="sub">The cheapest place to stop a wrong idea. Nothing is designed yet — you judge the problem, the premises and the scope.</div></div>
+      <div class="grow"><div class="rail"><div class="g now"><div class="c"></div><div class="l">Concept</div></div><div class="g "><div class="c"></div><div class="l">Design</div></div><div class="g "><div class="c"></div><div class="l">Spec</div></div><div class="g "><div class="c"></div><div class="l">Plan</div></div><div class="g "><div class="c"></div><div class="l">Impl.</div></div><div class="g "><div class="c"></div><div class="l">Code review</div></div><div class="g "><div class="c"></div><div class="l">Verify</div></div><div class="g "><div class="c"></div><div class="l">Docs</div></div><div class="g "><div class="c"></div><div class="l">Merge</div></div></div></div></div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 430px;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="part"><span class="num">3</span><h2>The work</h2><span class="ask">What is proposed?</span></div>
+        <div style="font-size:13px;line-height:1.55"><b>Problem.</b> Every step in kiln-v1 runs on one model. Nothing stops a judge from running on a weaker model than the author it judges, and roles exist only as code paths, not as definitions a person can read and change.<br><b>Proposal.</b> Define each role as an agent file, and bind roles to models through one tier map — with judges always on the strongest model.</div>
+        <div class="sub" style="margin-top:6px">Concept writer · qwen3-coder:30b · 1 page · <span class="mono">concept.md</span> · open in full</div></div>
+      <div class="card"><div class="part"><span class="num">4</span><h2>The premises</h2><span class="ask">What must be true for this to be worth it?</span></div>
+        <table class="prem"><tr><th></th><th>Premise</th><th>Rests on</th><th></th></tr>
+          <tr><td class="ok3">✓</td><td>A 30B worker and a 27B judge fit in memory together on studio-m5</td><td><span class="cite">[[Models on studio-m5]]</span> measured Oct 9</td><td><span class="pill ok">proven</span></td></tr>
+          <tr><td class="ok3">✓</td><td>Pi agents can be defined as markdown files with tools and a model</td><td><span class="cite">[[Pi agent definitions]]</span> from Pi 1.0 docs</td><td><span class="pill ok">sourced</span></td></tr>
+          <tr><td class="wt3">?</td><td>Swapping models between roles costs less than 10% of a feature's machine time</td><td>no measurement — estimated from load times</td><td><span class="pill wait">unproven</span></td></tr></table></div>
+      <div class="card"><div class="part"><span class="num">3</span><h2>Scope</h2><span class="ask">What is in, and what is explicitly out</span></div>
+        <div class="scope"><div><b>In</b><ul><li>agent files for the 11 roles</li><li>a tier map: role → model</li><li>judges bound to the strongest model, failing closed</li><li>unload a model before loading the next</li></ul></div>
+          <div><b>Out</b><ul><li>remote providers — a later feature</li><li>per-factory overrides of the tier map</li><li>changing the gate rail</li></ul></div></div></div>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="part"><span class="num">6</span><h2>Risks and open issues</h2><span class="ask">What should worry me?</span></div>
+        <div style="font-size:12.5px;line-height:1.55"><span class="sev minor">assumption</span> the swap-cost premise is unproven — a spike could measure it in about 40 min.<br><span class="sev note">stale</span> <span class="cite">[[Lane and model affinity]]</span> unreviewed for 34 days.</div></div>
+      <div class="card options-card"><div class="part"><span class="num">9</span><h2>The options</h2><span class="ask">What happens then?</span></div>
+        <div class="grid" style="gap:9px"><div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Approve</h3><ul><li>Design starts: the architecture designer, then the critic on gemma4:27b.</li><li>About 1 h 10 min of machine time before the Design gate.</li></ul></div><div class="opt"><h3><span class="dot" style="background:var(--wait)"></span>Revise <span class="pill" style="font-weight:500">note required</span></h3><ul><li>Your note goes to the same concept writer.</li><li>The concept returns to this gate.</li></ul></div><div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Reject <span class="pill" style="font-weight:500">note required</span></h3><ul><li>r10 leaves the lane and goes back to the roadmap; its work stays in the record.</li><li>The Roadmap gate re-opens for what comes next.</li></ul></div>
+          <div class="note-box">Your note…</div>
+          <div class="row"><span class="btn grow">Reject</span><span class="btn grow">Revise</span><span class="btn ok grow">Approve</span></div></div></div>
+      <div class="card"><div class="part"><span class="num">10</span><h2>Other actions</h2><span class="ask">None of these decides the gate</span></div><div class="act"><span class="ic">◇</span><div><b>Spike the swap cost</b><div class=sub>40 min · ungated · the gate keeps waiting</div></div></div><div class="act"><span class="ic">?</span><div><b>Ask the director</b><div class=sub>“Why not do remote providers first?”</div></div></div><div class="act"><span class="ic">⏸</span><div><b>Leave it waiting</b></div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

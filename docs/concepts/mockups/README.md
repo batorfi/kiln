@@ -5,7 +5,7 @@
 > layout, control and colour here is open; what they are meant to show is the *content and the guarantees* the
 > UX concept asks for.
 
-All sixty share one scenario: one person (Zsolt) runs a **workshop** on a 128 GB Mac Studio-class machine (host
+All seventy-two share one scenario: one person (Zsolt) runs a **workshop** on a 128 GB Mac Studio-class machine (host
 `studio-m5`, joined by a team server, a cloud machine and a spare server in 33–35) with four
 factories — `kiln-v1` and `docs-site` (local-only), `billing-service` (hybrid, cloud judges) and `handbook` (new,
 waiting for its first roadmap). Most mockups show the same morning after an overnight crash; those marked
@@ -73,6 +73,33 @@ waiting for its first roadmap). Most mockups show the same morning after an over
 | 58 | [A gate added in flight](58-gate-added-in-flight.png) | a Work plan that touches `src/auth/` adds the team-required Security review (shown, not declinable) and suggests a Licence check (your choice); nothing is ever removed |
 | 59 | [Changing a gate's version](59-gate-version-change.png) | Security review v2 → v3: the diff, try-runs on past features, features pinned to v2 unaffected, and the team quorum vote |
 | 60 | [Do added gates earn their place?](60-gate-insights.png) | per added gate: runs, confirmed problems caught, approvals despite objection, machine and human time — evidence for owners, never automatic change |
+
+### First run
+
+*Concept: `../first-run.md`. These show the start of the scenario: the morning Zsolt installs KILN on `studio-m5`.*
+
+| # | Mockup | Illustrates |
+|---|---|---|
+| 61 | [The machine](61-first-run-machine.png) | `kiln doctor`: hardware, Node, git, Spec Kit, Ollama missing (KILN never installs system software), network and disk; what this machine can run, measured; the steps ahead |
+| 62 | [Models](62-first-run-models.png) | a work model and a stronger judge recommended for 128 GB; downloads continuing in the background; `kiln check model` results; roles bound to models in `tiers.yaml`; remote providers off and collapsed |
+| 63 | [Workshop and storage](63-first-run-workshop.png) | name, owner and roles; a personal signing key; the KILN home shown before it is created; disk budget, backups, retention; setup recorded as the first events |
+| 64 | [First factory](64-first-run-factory.png) | a local clone, a separate worktree, `local-only`, the standard flow; what KILN found; **Spec Kit adopted** (version, Pi integration, templates against the manifest, existing features); how the gates use Spec Kit; **the constitution** adopted, with the principles that predate the new concept flagged |
+| 65 | [Knowledge](65-first-run-knowledge.png) | choosing sources to ingest; bootstrap ingest in progress on the lane; first pages, `index.md` and starter `AGENTS.md`; workshop knowledge and an empty notebook; Obsidian and Zed from the first page |
+| 66 | [First roadmap](66-first-run-roadmap.png) | **your inputs** — goal, must-have, constraint, a feature of your own; **the planner asking** where they are in tension; the roadmap **shaped together** — version 3, each row's origin (*planner* or *you*, pinned), the inputs it answers, a planner suggestion on your row shown but not applied, readiness per feature; *Open the Roadmap gate* or the demo factory; starting or joining a team, optional |
+
+### The flow, gate by gate
+
+*Concept: `../the-flow.md`. The four built-in gates without a brief elsewhere, the whole flow on one page, and one feature's
+journey. 68–70 are moments from r10's record; 71 is later today; 72 is the same moment as 21.*
+
+| # | Mockup | Illustrates |
+|---|---|---|
+| 67 | [The standard flow](67-the-flow.png) | all ten gates in four phases — each gate's question, author, judge and moves; triage skip; where the tail can be armed and what it covers; where every move leads; the five moments of every gate |
+| 68 | [Concept gate](68-concept-gate.png) *(as it was, Oct 12)* | problem and proposal; premises with what each rests on — proven, sourced, unproven; scope in and out; reject sends the feature back to the roadmap; *spike this* while the gate waits |
+| 69 | [Design gate](69-design-gate.png) *(as it was, Oct 13)* | the structure and the alternatives rejected; the critic's objections, the designer's one answer, and which the critic accepts; an unresolved objection carried forward |
+| 70 | [Work plan gate](70-work-plan-gate.png) *(as it was, Oct 15)* | tasks traced to requirements; deterministic checks instead of a judge; the model order the plan implies, machine time and swaps; claims |
+| 71 | [Documentation gate](71-documentation-gate.png) *(later today, 12:37)* | doc changes; what was built mapped to where it is documented; an open question documented as built; what the feature added to the knowledge base |
+| 72 | [A feature's journey](72-feature-journey.png) | r10 gate by gate — rounds, moves, who decided, machine time versus waiting; two restarts to the same restorable commit; one objection traced from Design to Code review to the code being written now |
 
 ### Gate briefs — one for each kind of gate
 
@@ -144,9 +171,10 @@ and where it is illustrated:
 
 | Capability | Mockups |
 |---|---|
-| Gate brief, all ten parts | 02 · 03 · 07 · 08 · 09 · 10 |
+| The whole flow: phases, gates, judges, moves and where they lead; one feature's journey | 67 · 72 |
+| Gate brief, all ten parts | 02 · 03 · 07 · 08 · 09 · 10 · 68 · 69 · 70 · 71 |
 | Gate headline wherever a gate appears | 01 · 05 · 13 · 20 |
-| Every kind of gate: Roadmap, Specification, Implementation, Code review, Verification, Merge (Concept, Design, Work plan and Documentation share the generic brief) | 03 · 07 · 08 · 02 · 09 · 10 |
+| Every kind of gate: Roadmap, Concept, Design, Specification, Work plan, Implementation, Code review, Verification, Documentation, Merge | 03 · 68 · 69 · 07 · 70 · 08 · 02 · 09 · 71 · 10 |
 | Moves per gate, including those a gate does **not** have | 02 · 03 · 07 · 08 · 09 · 10 |
 | Triage skipping Concept and Design | 01 · 04 · 06 · 07 · 10 |
 | Unattended tail: arming, running, ending on an objection | 07 · 04 · 09 · 10 · 06 · 18 |
@@ -179,7 +207,7 @@ and where it is illustrated:
 | Time travel and replay | 18 · 06 · 07 · 08 · 11 |
 | Tracing | 17 |
 | Metrics and insights (`../insights.md`) | 16 · 15 · 60 |
-| Health without decisions | 19 |
+| Health without decisions (`../health.md`) | 19 · 05 · 01 |
 | Factory-log as a validated projection | 18 · 19 |
 | Extensible flow: gate definitions, flows, per-feature flow choice, team-required gates, `kiln check flow`, try a gate | 52 · 53 · 54 · 55 · 56 · 57 |
 | Flow changes over time: gates added in flight, gate versions and pins, whether added gates earn their place | 58 · 59 · 60 |
@@ -188,6 +216,7 @@ and where it is illustrated:
 | Bench: notebook and promotion, research steps, spikes and spike reports, origin and maturity labels | 40 · 41 · 42 · 43 |
 | Bench and the roadmap: candidate list, evidence and readiness at the Roadmap gate, what we learned, corrections | 44 · 45 |
 | Team space: team roadmap by quorum, claims and protected paths, overlap, requests, mirrored reviews, merge queue, publishing | 36 · 37 · 38 · 39 |
+| First run: machine check, models, workshop and storage, first factory, knowledge bootstrap, first roadmap, team start or join | 61 · 62 · 63 · 64 · 65 · 66 |
 | Loopback-only session security | 20 |
 
 ## Regenerating

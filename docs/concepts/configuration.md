@@ -11,6 +11,7 @@
 >   - Teams:                     `team-space.md` (team rules as a floor)
 >   - The director:              `the-director.md` (the planner role)
 >   - The record:                `the-record.md`
+>   - First run:                 `first-run.md` (how setup writes the first configuration)
 >   - The user experience:       `user-experience.md` (and `mockups/14`, `15`, `20`, `33`, `49`–`51`)
 >   - The PRD:                   `../prd/kiln-prd.md`
 
@@ -53,6 +54,7 @@ kiln.config/                ← a git repository (or a folder in one)
     egress.yaml             ← what may leave, to which locality
     budgets.yaml            ← spend and research caps
     tools.yaml              ← risky-action rules
+  health.yaml               ← health thresholds, reminders, notifications, quiet hours (health.md §7)
   factories/<name>.yaml     ← per factory: profile, policy, budget, placement, tier overrides
 ```
 

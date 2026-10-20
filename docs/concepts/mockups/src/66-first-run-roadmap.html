@@ -1,0 +1,75 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — first run</title><link rel="stylesheet" href="kiln-mock.css"><style>
+.side .stp{display:flex;flex-direction:column;gap:2px;margin-top:6px}
+.side .st{display:flex;align-items:center;gap:10px;padding:8px 8px;border-radius:7px;font-size:13px;color:var(--side-muted)}
+.side .st .n{width:22px;height:22px;border-radius:50%;border:1.5px solid #4A423B;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none}
+.side .st.done{color:var(--side-ink)}.side .st.done .n{background:#15803D;border-color:#15803D;color:#fff}
+.side .st.now{background:var(--side-2);color:#fff}.side .st.now .n{background:#F97316;border-color:#F97316;color:#fff}
+.side .st.optl .n{border-style:dashed}
+.wiz{max-width:1260px}
+.foot{display:flex;align-items:center;gap:10px;margin-top:4px}
+.big{font-size:26px;font-weight:700;letter-spacing:-.015em}
+.chk{display:grid;grid-template-columns:24px 170px 1fr auto;gap:10px;padding:10px 0;border-top:1px solid var(--line-2);font-size:13px;align-items:center}
+.chk:first-child{border-top:0}
+.ok3{color:var(--ok);font-weight:700}.wt3{color:var(--wait);font-weight:700}.no3{color:var(--bad);font-weight:700}
+.tree{font-family:var(--mono);font-size:12px;line-height:1.75;background:#1F1B17;color:#E9E2D9;border-radius:9px;padding:12px 14px;white-space:pre}
+.tree .c{color:#8C8279}
+</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>First run · studio-m5</small></div></div>
+  <div><div class="nav-h">Setup</div><div class="stp">
+    <div class="st done"><span class="n">✓</span>Machine</div>
+    <div class="st done"><span class="n">✓</span>Models</div>
+    <div class="st done"><span class="n">✓</span>Workshop & storage</div>
+    <div class="st done"><span class="n">✓</span>First factory</div>
+    <div class="st done"><span class="n">✓</span>Knowledge</div>
+    <div class="st now"><span class="n">6</span>First roadmap</div>
+    <div class="st  optl"><span class="n">7</span>Team (optional)</div>
+  </div></div>
+  <div class="machine"><b>Everything stays on this machine.</b><div style='margin-top:6px'>Setup writes plain files to <span class='mono'>~/kiln/</span>; you can stop and resume at any time.</div></div>
+</aside>
+<main class="main wiz">
+  <style>.goal{border:1px solid var(--line);border-radius:10px;background:#fff;padding:12px 14px;font-size:13px;line-height:1.55}
+  .fr2{display:grid;grid-template-columns:28px 1fr 80px;gap:10px;padding:10px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+  .fr2:first-of-type{border-top:0}
+  .rd{font-size:11.5px;font-weight:650;border-radius:6px;padding:2px 8px;text-align:center;height:fit-content}
+  .rd.thin{background:var(--wait-soft);color:var(--wait)}.rd.ready{background:var(--ok-soft);color:var(--ok)}
+  .alt{border:1px dashed var(--line);border-radius:10px;padding:12px 14px;background:var(--surface-2);font-size:12.5px}
+  .team{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .team>div{border:1px solid var(--line);border-radius:10px;padding:11px 13px;background:#fff;font-size:12.5px}.inp{display:grid;grid-template-columns:120px 1fr;gap:8px;padding:7px 0;border-top:1px solid var(--line-2);font-size:12.5px}
+  .inp:first-of-type{border-top:0}.inp span:first-child{color:var(--muted)}
+  .orig{font-size:10.5px;font-weight:700;border-radius:5px;padding:1px 6px;margin-left:6px}
+  .orig.you{background:var(--ember-soft);color:var(--ember)}.orig.pl{background:var(--info-soft);color:var(--info)}
+  .ask{border-left:3px solid var(--info);background:var(--info-soft);border-radius:0 8px 8px 0;padding:9px 12px;font-size:12.5px;line-height:1.5}
+  .sugg{border:1px dashed var(--line);border-radius:8px;padding:7px 10px;font-size:12px;color:var(--ink-2);margin-top:4px}
+  .fr2{grid-template-columns:28px 1fr 70px !important}</style>
+  <div class="top"><div><div class="crumb">kiln init · step 6 of 6</div><div class="big">Your first roadmap — and your first decision</div>
+    <div class="sub" style="margin-top:6px">Say what you want first — goals, must-haves, constraints, features you already have in mind. Shape the roadmap with the planner, edit it yourself, then decide at the Roadmap gate.</div></div></div>
+  <div class="grid" style="grid-template-columns:1.25fr 1fr;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Your inputs</h2><span class="sub">the roadmap brief · read first by the planner · edit any time</span></div>
+        <div class="inp"><span>Goal</span><span>“Get kiln-v1 to its first runnable release: the durable core, gates on the web, and real local workers.”</span></div>
+        <div class="inp"><span>Must-have</span><span>kill-and-resume proven before any UI work</span></div>
+        <div class="inp"><span>Constraint</span><span>local-only · nothing remote this quarter</span></div>
+        <div class="inp"><span>Your feature</span><span>“Event backbone with a byte-identical factory-log rebuild”</span></div>
+        <div class="row" style="margin-top:6px"><span class="btn" style="padding:3px 9px">+ add an input</span><span class="sub">or let the director propose from open issues and TODOs</span></div></div>
+      <div class="ask"><b>The planner asks</b> — “Should the event backbone come before real workers? Workers write events, so building the backbone first avoids redoing their logging — but it delays the first real model run by about a day.”<div class="row" style="margin-top:6px"><span class="btn" style="padding:3px 9px">Backbone first</span><span class="btn" style="padding:3px 9px">Workers first</span><span class="btn" style="padding:3px 9px">Answer in my words</span></div></div>
+      <div class="card"><div class="card-h"><h2>The roadmap, shaped together</h2><span class="sub">version 3 of 3 · checked ✓ · compare versions</span></div>
+        <div class="fr2"><span class="mono muted">r1</span><div><b>Foundations reset</b><span class="orig pl">planner</span> — port the kept code, new layout<div class="sub">answers: goal · from PRD §10, constitution</div></div><span class="rd ready">ready</span></div>
+        <div class="fr2"><span class="mono muted">r2</span><div><b>Durable core, headless</b><span class="orig pl">planner</span> — gates as data, kill-and-resume<div class="sub">answers: must-have · from Pi Durable concept</div></div><span class="rd thin">thin</span></div>
+        <div class="fr2"><span class="mono muted">r3</span><div><b>Event backbone, factory-log rebuild</b><span class="orig you">you · pinned 📌</span><div class="sugg">Planner suggests — not applied: split off the log rebuild as r3b, to keep r3 small. <u>Apply</u> · <u>Dismiss</u></div></div><span class="rd thin">thin</span></div>
+        <div class="fr2"><span class="mono muted">r4</span><div><b>Real local workers</b><span class="orig pl">planner</span><div class="sub">answers: goal · from models measured in step 2</div></div><span class="rd thin">thin</span></div>
+        <div class="foot" style="margin-top:10px"><span class="btn">Ask for an alternative</span><span class="btn">Edit rows</span><span class="grow"></span><span class="btn primary">Open the Roadmap gate on v3</span></div></div>
+    </div>
+    <div class="grid">
+      <div class="alt"><b>New to gates? See a whole feature first.</b><div style="margin-top:4px">The demo factory replays a recorded walk through all ten gates — read-only, nothing to decide — so you can see every brief and the record before your first real decision.</div><div class="row" style="margin-top:8px"><span class="btn">Open the demo factory</span></div></div>
+      <div class="card"><div class="card-h"><h2>7 · A team <span class="muted" style="font-weight:500">— optional, any time</span></h2></div>
+        <div class="team"><div><b>Start a team</b><div class="sub" style="margin-top:3px">create a team-space repository · set the quorum · share roles and flows · invite</div></div><div><b>Join a team</b><div class="sub" style="margin-top:3px">open an invite · register your key · review the team floor before accepting</div></div></div>
+        <div class="sub" style="margin-top:8px">Joining never loosens your workshop — the team floor can only make it stricter, and you see every change first.</div></div>
+      <div class="card"><div class="kv2" style="grid-template-columns:130px 1fr"><span>Setup time</span><span>38 min · 31 of them downloading the judge model</span><span>Left the machine</span><span>nothing</span><span>Re-run any step</span><span><span class="mono">kiln init --step models</span> · <span class="mono">kiln doctor</span></span></div></div>
+    </div>
+  </div>
+
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

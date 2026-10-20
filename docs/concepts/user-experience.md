@@ -23,7 +23,11 @@
 >   - Configuration:                     `configuration.md`
 >   - An extensible flow:                `extensible-flow.md`
 >   - Insights:                          `insights.md`
->   - Illustrative mockups:              `mockups/` — sixty high-resolution illustrations covering every capability below. They
+>   - First run:                         `first-run.md`
+>   - The flow, gate by gate:            `the-flow.md`
+>   - In an existing codebase:           `brownfield.md`
+>   - Health:                            `health.md`
+>   - Illustrative mockups:              `mockups/` — seventy-two high-resolution illustrations covering every capability below. They
 >     are discussion aids, not design decisions; this doc governs where they differ.
 
 # KILN — the user experience, as a concept
@@ -263,6 +267,9 @@ proposals.
 *Guarantees:*
 - the human can ask the director why things are ordered as they are, and get an answer grounded in the record;
 - the director proposes (a roadmap change, a split, a plan); the human accepts or rejects;
+- **roadmaps are shaped together**: the human's own inputs — goals, constraints, preferences, their own features — come
+  first; the planner asks where they are thin and drafts alternatives; the human edits and pins rows, which the planner
+  never silently changes; every row shows where it came from (`the-director.md` §4.3);
 - **talking to the director never decides a gate**; decisions remain moves at gates.
 
 ### 7.8 Coming back
@@ -446,6 +453,22 @@ proposals.
 - each feature's flow is proposed with reasons and decided at the Roadmap gate; team-required gates are shown and cannot be
   dropped; a flow never changes for a feature in flight, though a gate can be added to it by decision;
 - every added gate presents the full gate brief, and nothing about it can weaken the gate contract.
+
+### 7.24 Getting started
+
+*Purpose:* go from install to a first factory waiting at its first Roadmap gate in under an hour (`first-run.md`).
+*Guarantees:*
+- nothing leaves the machine during setup unless a remote provider is explicitly added;
+- what the machine can run is measured and said plainly; every model is checked before a role can use it, and setup does
+  not finish without a judge on the strongest model;
+- every default — storage location, profile, flow, retention — is shown before it applies, and everything setup writes is
+  plain files that can be read and changed later;
+- Spec Kit is adopted if the repository uses it, or added only with approval, and the constitution every gate measures
+  against is confirmed or drafted and approved before the first roadmap;
+- the first knowledge base comes from the repository's own documents, readable in Obsidian or an IDE from its first page;
+- setup can be interrupted and resumed, and any step redone later; it is recorded as the start of the workshop's record;
+- the first real act is a decision at the Roadmap gate — or, first, a read-only demo of a whole feature; a team can be
+  started or joined at the end or any time after, and joining never loosens the workshop.
 
 ## 8. The gate brief: rich context at every gate
 

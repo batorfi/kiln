@@ -6,6 +6,9 @@
 > **Needs you** inbox contains and how it is ordered. It draws together `web-front-door.md` §5 and §9, `user-experience.md`
 > §6–§8, and the bench, knowledge and team-space concepts. It is a concept, not a design or a spec.
 >
+> **Update (2026-10-20):** roadmaps are **shaped together** — the engineer's own inputs, a conversation with the planner and
+> direct edits sit beside the planner's draft, with every row's origin shown (§4.3).
+>
 > Companion docs:
 >   - The design:                `web-front-door.md` (§5 the task graph, §9 working with the orchestrator)
 >   - The user experience:       `user-experience.md` (§6 attention, §7 core experiences) and `mockups/46`–`48`
@@ -46,8 +49,9 @@ labelled as such; its *decisions* do not exist — people make them.
 
 - A role like any other: instructions in `agents/planner.md`, bound in the tier map, run as a **step** — on the lane, below
   feature work when it is not on the critical path, recorded, durable.
-- It reads the factory's knowledge, the candidate list, the record and the team roadmap; it writes **drafts** with a reason
-  for every choice and citations for every reason.
+- It reads **the engineer's roadmap inputs** (§4.3), the factory's knowledge, the candidate list, the record and the team
+  roadmap; it writes **drafts** with a reason for every choice and citations for every reason — and says which of the
+  engineer's inputs each row answers, and which it could not satisfy.
 - Its drafts are checked deterministically before anyone sees them: dependencies resolve, claims and protected paths are
   respected, policy and placement fit — a draft that fails is sent back to the planner, never shown as if valid.
 - It never changes code, never settles anything, never creates conversations for other roles.
@@ -81,6 +85,7 @@ What this means in practice:
 | Interaction | Where | Who acts | What changes |
 |---|---|---|---|
 | **Decide a gate** | gate brief | you | the factory moves on — the only way a gate settles |
+| **Shape the roadmap** | the roadmap, any time; the Roadmap gate | you and the planner, together | a new version of the proposed roadmap — never an admission (§4.3) |
 | **Accept or reject a proposal** | Roadmap gate, Implementation gate (split), candidate list | you | the roadmap or work plan, by your decision |
 | **Ask** | *Ask the director*, from anywhere | the director answers | nothing — answers are information |
 | **Command** | buttons and commands: start, pause after step, abort step, arm delegation, move a factory | you | the lane — recorded, idempotent, never a gate |
@@ -102,7 +107,60 @@ What this means in practice:
 
 Talking to the director never moves a gate. *Approve it* typed in a conversation is answered with a link to the gate.
 
-### 4.2 What the director tells you without being asked
+### 4.3 Shaping the roadmap together
+
+A roadmap is not something the planner hands over for a yes or no. The engineer shapes it — with their own inputs, in
+conversation with the planner, and by editing it directly — and the planner's draft is one voice in that work, not the
+starting point it has to be.
+
+**1. Your inputs — the roadmap brief.** A short, living document per factory that the engineer writes and the planner
+must read first:
+
+| Input | Example |
+|---|---|
+| **Goals** | *first runnable release: durable core, gates on the web, real local workers* |
+| **Must-haves and must-nots** | *kill-and-resume before any UI work* · *no remote providers this quarter* |
+| **Constraints** | a date, a dependency on another team, a freeze window, a budget, a host |
+| **Order preferences** | *risky things early* · *one user-visible feature in every two* |
+| **Appetite** | how large a feature may be before it should be split |
+| **Your own features** | rows the engineer already has in mind, written in their own words |
+| **Pointers** | knowledge pages, spikes, issues or notebook entries the planner should weigh |
+
+The brief can be written before any draft exists, added to at any time, or grown out of the conversation below. Goals and
+constraints worth keeping can be filed to the knowledge base as a *direction* page labelled *from a person*.
+
+**2. A conversation with the planner.** A shaping session is a recorded conversation with the planner role:
+
+- the planner **asks** where the inputs are thin or in tension — *the date and "kill-and-resume first" cannot both hold
+  with three features ahead; which gives?* — and the answer becomes part of the brief;
+- the engineer **asks back** — *why is r12 before r13?*, *what if billing export went first?* — answered from the record
+  where possible, by the planner where it needs synthesis (§4.1);
+- the engineer asks for **alternatives** — *a version that ships something user-visible this week* — and the planner drafts
+  them side by side, each with its trade-offs.
+
+**3. Direct edits.** The engineer can add, remove, reorder, split, merge or rename rows, or write a row from scratch.
+
+- Rows the engineer writes or changes are labelled **from you**; the planner **never silently changes them** — it may
+  propose a change, shown as a suggestion with its reason.
+- The engineer can **pin** a row, an order or a constraint; every later draft must respect pins.
+- Each edit or redraft makes a **new version** of the proposed roadmap; versions are kept and compared, so *what did I
+  change, what did the planner change* is always answerable.
+
+**4. Every version checked.** After each edit or redraft, deterministic checks run: dependencies resolve, pins and
+constraints hold, claims and protected paths in a team are respected, readiness and flow are computed, the time ahead is
+estimated against the factory's host. A violation is shown at once, attributed to the edit or draft that caused it —
+the engineer may keep an edit that breaks a planner preference, never one that breaks a rule.
+
+**5. Then the decision.** Shaping never admits anything. When the engineer is ready, the Roadmap gate's brief is assembled
+for **that version**, showing every row's origin — *from you*, *from the planner*, *from a candidate*, *from the team
+roadmap* — and which inputs it answers; approve admits the next feature from exactly the version that was read. A move on
+an older version is refused.
+
+**Any time, not only at the gate.** The roadmap can be opened and shaped while the factory works; changes become the
+proposal at the next Roadmap gate and never alter the feature in progress. In a team, shaping can propose changes to the
+team roadmap, which the team space decides by quorum (`team-space.md` §6).
+
+### 4.4 What the director tells you without being asked
 
 - **At gates**, through briefs: what it did, why, and what each move would do next.
 - **In Needs you**, when it needs a choice.
@@ -198,6 +256,8 @@ only more visible. People can sort, filter by factory or kind, or hand an item t
 1. Should people be able to tune Needs you's default order (for example *teammates first*)?
 2. Should the planner run on the strongest model by default, given that its drafts shape roadmaps?
 3. How many factual question templates should exist before a question falls through to an explain step?
+4. Should the planner be allowed to **re-order rows the engineer wrote** when dependencies require it, or only propose it?
+5. Should a shaping session limit how many alternatives are drafted at once, given that each costs machine time?
 
 ## 9. One sentence
 

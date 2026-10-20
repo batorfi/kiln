@@ -1,0 +1,68 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — first run</title><link rel="stylesheet" href="kiln-mock.css"><style>
+.side .stp{display:flex;flex-direction:column;gap:2px;margin-top:6px}
+.side .st{display:flex;align-items:center;gap:10px;padding:8px 8px;border-radius:7px;font-size:13px;color:var(--side-muted)}
+.side .st .n{width:22px;height:22px;border-radius:50%;border:1.5px solid #4A423B;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none}
+.side .st.done{color:var(--side-ink)}.side .st.done .n{background:#15803D;border-color:#15803D;color:#fff}
+.side .st.now{background:var(--side-2);color:#fff}.side .st.now .n{background:#F97316;border-color:#F97316;color:#fff}
+.side .st.optl .n{border-style:dashed}
+.wiz{max-width:1260px}
+.foot{display:flex;align-items:center;gap:10px;margin-top:4px}
+.big{font-size:26px;font-weight:700;letter-spacing:-.015em}
+.chk{display:grid;grid-template-columns:24px 170px 1fr auto;gap:10px;padding:10px 0;border-top:1px solid var(--line-2);font-size:13px;align-items:center}
+.chk:first-child{border-top:0}
+.ok3{color:var(--ok);font-weight:700}.wt3{color:var(--wait);font-weight:700}.no3{color:var(--bad);font-weight:700}
+.tree{font-family:var(--mono);font-size:12px;line-height:1.75;background:#1F1B17;color:#E9E2D9;border-radius:9px;padding:12px 14px;white-space:pre}
+.tree .c{color:#8C8279}
+</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>First run · studio-m5</small></div></div>
+  <div><div class="nav-h">Setup</div><div class="stp">
+    <div class="st done"><span class="n">✓</span>Machine</div>
+    <div class="st done"><span class="n">✓</span>Models</div>
+    <div class="st now"><span class="n">3</span>Workshop & storage</div>
+    <div class="st "><span class="n">4</span>First factory</div>
+    <div class="st "><span class="n">5</span>Knowledge</div>
+    <div class="st "><span class="n">6</span>First roadmap</div>
+    <div class="st  optl"><span class="n">7</span>Team (optional)</div>
+  </div></div>
+  <div class="machine"><b>Everything stays on this machine.</b><div style='margin-top:6px'>Setup writes plain files to <span class='mono'>~/kiln/</span>; you can stop and resume at any time.</div></div>
+</aside>
+<main class="main wiz">
+  <style>.fld{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line-2);font-size:13px}
+  .fld:first-child{border-top:0}.inp{border:1px solid var(--line);border-radius:8px;padding:7px 10px;background:#fff}
+  .key{display:flex;align-items:center;gap:10px;border:1px solid var(--ok-line);background:var(--ok-soft);border-radius:10px;padding:10px 12px;font-size:12.5px}</style>
+  <div class="top"><div><div class="crumb">kiln init · step 3 of 6</div><div class="big">Your workshop — and where everything is stored</div>
+    <div class="sub" style="margin-top:6px">The workshop is your home in KILN: your factories, your decisions, your knowledge. Everything goes under one folder you can back up, inspect and move.</div></div></div>
+  <div class="grid" style="grid-template-columns:1fr 1fr;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Workshop</h2></div>
+        <div class="fld"><span class="muted">Name</span><span class="inp">Zsolt's workshop</span></div>
+        <div class="fld"><span class="muted">Owner</span><span class="inp">Zsolt Bátorfi · zsolt@…</span></div>
+        <div class="fld"><span class="muted">Your roles</span><span>Operator · Decider · Curator <span class="sub">— more people come with a team</span></span></div>
+        <div class="key" style="margin-top:10px"><span style="font-size:18px">🔑</span><div><b>Personal signing key created</b> · ed25519 · <span class="mono">5C91…A07E</span><div class="sub">kept in the macOS keychain · every decision you make is signed with it · also set as your git signing key</div></div></div></div>
+      <div class="card"><div class="card-h"><h2>Storage</h2></div>
+        <div class="fld"><span class="muted">KILN home</span><span class="inp mono">~/kiln/</span></div>
+        <div class="fld"><span class="muted">Disk budget</span><span><span class="inp" style="display:inline-block">200 GB</span> <span class="sub">warn at 80% · nothing is deleted automatically</span></span></div>
+        <div class="fld"><span class="muted">Backups</span><span>off · <span class="btn" style="padding:4px 9px">Choose a folder or git remote…</span></span></div>
+        <div class="fld"><span class="muted">Retention</span><span>record: permanent · telemetry: 90 days · archived transcripts: until you remove them</span></div></div>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>What will be created</h2><span class="sub">nothing yet — shown first</span></div>
+<div class="tree">~/kiln/
+  kiln.config/           <span class="c"># your configuration — a git repository</span>
+  workshop/
+    store.sqlite         <span class="c"># workshop record: people, hosts, registry</span>
+    wiki/                <span class="c"># workshop knowledge (Obsidian vault)</span>
+  factories/             <span class="c"># one folder per factory: store, record, wiki</span>
+  notebook/              <span class="c"># your private notebook</span>
+  archive/               <span class="c"># archived spikes and closed stores</span></div>
+        <div class="sub" style="margin-top:8px">Your code stays where it is — KILN records repository paths and never moves them.</div></div>
+      <div class="card"><div class="kv2" style="grid-template-columns:130px 1fr"><span>Records</span><span><span class="mono">setup.step_completed</span> · <span class="mono">config.changed</span> — the record begins with how this workshop was made</span><span>Change later</span><span>Settings, or edit <span class="mono">kiln.config/workshop.yaml</span></span></div></div>
+      <div class="foot"><span class="btn">Back</span><span class="grow"></span><span class="btn primary">Create workshop</span></div>
+    </div>
+  </div>
+
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

@@ -1,0 +1,71 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Work plan gate</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.tasks td{font-size:12px;padding:5px 8px}.tasks tr.ph td{background:var(--surface-2);font-weight:650;font-size:12px}
+.req{font-family:var(--mono);font-size:10.5px;border:1px solid var(--line);border-radius:4px;padding:0 4px;margin-right:2px;background:#fff}
+.seq{display:flex;height:30px;border-radius:7px;overflow:hidden;font-size:10.5px;font-weight:650;color:#fff;margin-top:6px}
+.seq>div{display:flex;align-items:center;justify-content:center;white-space:nowrap}
+.cov td{font-size:12.5px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a class="on">Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot idle"></span>kiln-v1</span></a>
+    <a><span class="fac"><span class="dot idle"></span>billing-service</span></a>
+    <a><span class="fac"><span class="dot idle"></span>docs-site</span></a>
+    <a><span class="fac"><span class="dot idle"></span>handbook</span></a>
+  </div>
+  <div class="machine"><b>Viewing Oct 15, 08:40</b><div style="margin-top:6px">A moment from the record, shown as it was.</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0"><b>kiln-v1</b> · Feature r10 · Role agents and model tiers · Oct 15, 08:40</div><span class="grow"></span><span class="pill wait">Waiting 9 min</span><span class="pill">Round 1</span><span class="pill local">local-only</span></div>
+    <div class="row" style="margin-top:12px;gap:24px;align-items:center">
+      <div style="min-width:470px"><div class="kicker">Work plan gate · 4 of 9 · contract</div><div class="q">In what pieces, and in what order, will it be built?</div>
+        <div class="sub">The order of the tasks is also the order of the models on the lane — and so its switching cost.</div></div>
+      <div class="grow"><div class="rail"><div class="g done"><div class="c">✓</div><div class="l">Concept</div></div><div class="g done"><div class="c">✓</div><div class="l">Design</div></div><div class="g done"><div class="c">✓</div><div class="l">Spec</div></div><div class="g now"><div class="c"></div><div class="l">Plan</div></div><div class="g "><div class="c"></div><div class="l">Impl.</div></div><div class="g "><div class="c"></div><div class="l">Code review</div></div><div class="g "><div class="c"></div><div class="l">Verify</div></div><div class="g "><div class="c"></div><div class="l">Docs</div></div><div class="g "><div class="c"></div><div class="l">Merge</div></div></div></div></div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 430px;align-items:start">
+    <div class="card"><div class="part"><span class="num">3</span><h2>The work plan</h2><span class="ask">15 tasks in 3 parts · from the approved specification</span></div>
+      <table class="tasks"><tr><th>#</th><th>Task</th><th>Requirements</th><th>Est.</th></tr>
+        <tr class="ph"><td colspan="4">A · Role catalog</td></tr>
+        <tr><td>1</td><td>Role file schema and loader in <span class="mono">src/roles.ts</span></td><td><span class="req">FR-1</span></td><td>20 min</td></tr>
+        <tr><td>2–5</td><td>Agent files for 11 roles, in 4 groups (work · judges · planner · keepers)</td><td><span class="req">FR-1</span></td><td>55 min</td></tr>
+        <tr><td>6</td><td>Schema check over <span class="mono">agents/*.md</span> in the test suite</td><td><span class="req">FR-1</span></td><td>25 min</td></tr>
+        <tr class="ph"><td colspan="4">B · Tier map and binding</td></tr>
+        <tr><td>7</td><td><span class="mono">tiers.ts</span>: role → model, resolved once per feature</td><td><span class="req">FR-2</span><span class="req">FR-4</span></td><td>25 min</td></tr>
+        <tr><td>8</td><td>Judges only on the strongest model — <span class="mono">TierPolicyError</span>, fail closed</td><td><span class="req">FR-2</span></td><td>20 min</td></tr>
+        <tr><td>9–11</td><td>Replace hard-coded model names in <span class="mono">roles.ts</span>, <span class="mono">walk.ts</span>, <span class="mono">lane.ts</span></td><td><span class="req">FR-4</span></td><td>45 min</td></tr>
+        <tr class="ph"><td colspan="4">C · Unload-on-swap</td></tr>
+        <tr><td>12–13</td><td>Swap unloads the resident model before loading — <b>checking the hold flag</b></td><td><span class="req">FR-3</span></td><td>40 min</td></tr>
+        <tr><td>14</td><td>Swap events in the record; swap count in the lane checkpoint</td><td><span class="req">FR-3</span></td><td>15 min</td></tr>
+        <tr><td>15</td><td>Loopback-only network scan in CI</td><td><span class="req">NFR-1</span></td><td>15 min</td></tr></table>
+      <div class="sub" style="margin-top:8px">Planner · gemma4:27b · tasks 12–13 name the hold-flag check — the open objection from the Design gate.</div></div>
+    <div class="grid">
+      <div class="card"><div class="part"><span class="num">5</span><h2>The evidence</h2><span class="ask">Deterministic checks — no judge at this gate</span></div>
+        <table class="cov"><tr><td class="ok3">✓</td><td>every requirement has a task · every task traces to a requirement</td></tr><tr><td class="ok3">✓</td><td>order respects dependencies (A before B before C)</td></tr><tr><td class="ok3">✓</td><td>no task touches a path an added gate applies to</td></tr><tr><td class="wt3">!</td><td>15 tasks · your last 5 features averaged 8</td></tr></table></div>
+      <div class="card"><div class="part"><span class="num">5</span><h2>Model order and cost</h2><span class="ask">What this order means on the lane</span></div>
+        <div class="seq"><div style="flex:9;background:var(--s1)">worker · qwen3-coder:30b · tasks 1–15</div><div style="flex:2;background:var(--ink-2)">reviewer</div><div style="flex:2;background:#4a423b">verifier</div></div>
+        <div class="kv2" style="grid-template-columns:120px 1fr;margin-top:10px"><span>Machine time</span><span>about 4 h 20 min to Code review</span><span>Swaps</span><span>3 expected · 1 if no fix round is needed</span><span>Claims</span><span>kiln-v1 is not in a team space — no overlap to check</span></div></div>
+      <div class="card options-card"><div class="part"><span class="num">9</span><h2>The options</h2><span class="ask">What happens then?</span></div>
+        <div class="grid" style="gap:9px"><div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Approve</h3><ul><li>The Implementation gate opens with a restorable commit and the size of this plan.</li><li>No code is written before that gate.</li></ul></div><div class="opt"><h3><span class="dot" style="background:var(--wait)"></span>Revise <span class="pill" style="font-weight:500">note required</span></h3><ul><li>Your note goes to the same planner — e.g. reorder, merge or cut tasks.</li></ul></div><div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Reject <span class="pill" style="font-weight:500">note required</span></h3><ul><li>A fresh plan from the same specification — or name Specification in your note.</li></ul></div>
+          <div class="note-box">Your note…</div>
+          <div class="row"><span class="btn grow">Reject</span><span class="btn grow">Revise</span><span class="btn ok grow">Approve</span></div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

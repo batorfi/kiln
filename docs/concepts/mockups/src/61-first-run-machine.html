@@ -1,0 +1,56 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — first run</title><link rel="stylesheet" href="kiln-mock.css"><style>
+.side .stp{display:flex;flex-direction:column;gap:2px;margin-top:6px}
+.side .st{display:flex;align-items:center;gap:10px;padding:8px 8px;border-radius:7px;font-size:13px;color:var(--side-muted)}
+.side .st .n{width:22px;height:22px;border-radius:50%;border:1.5px solid #4A423B;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none}
+.side .st.done{color:var(--side-ink)}.side .st.done .n{background:#15803D;border-color:#15803D;color:#fff}
+.side .st.now{background:var(--side-2);color:#fff}.side .st.now .n{background:#F97316;border-color:#F97316;color:#fff}
+.side .st.optl .n{border-style:dashed}
+.wiz{max-width:1260px}
+.foot{display:flex;align-items:center;gap:10px;margin-top:4px}
+.big{font-size:26px;font-weight:700;letter-spacing:-.015em}
+.chk{display:grid;grid-template-columns:24px 170px 1fr auto;gap:10px;padding:10px 0;border-top:1px solid var(--line-2);font-size:13px;align-items:center}
+.chk:first-child{border-top:0}
+.ok3{color:var(--ok);font-weight:700}.wt3{color:var(--wait);font-weight:700}.no3{color:var(--bad);font-weight:700}
+.tree{font-family:var(--mono);font-size:12px;line-height:1.75;background:#1F1B17;color:#E9E2D9;border-radius:9px;padding:12px 14px;white-space:pre}
+.tree .c{color:#8C8279}
+</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>First run · studio-m5</small></div></div>
+  <div><div class="nav-h">Setup</div><div class="stp">
+    <div class="st now"><span class="n">1</span>Machine</div>
+    <div class="st "><span class="n">2</span>Models</div>
+    <div class="st "><span class="n">3</span>Workshop & storage</div>
+    <div class="st "><span class="n">4</span>First factory</div>
+    <div class="st "><span class="n">5</span>Knowledge</div>
+    <div class="st "><span class="n">6</span>First roadmap</div>
+    <div class="st  optl"><span class="n">7</span>Team (optional)</div>
+  </div></div>
+  <div class="machine"><b>Everything stays on this machine.</b><div style='margin-top:6px'>Setup writes plain files to <span class='mono'>~/kiln/</span>; you can stop and resume at any time.</div></div>
+</aside>
+<main class="main wiz">
+  <div class="top"><div><div class="crumb">kiln init · step 1 of 6 · Oct 19, 08:02</div><div class="big">Welcome to KILN. First, what this machine can do.</div>
+    <div class="sub" style="margin-top:6px">KILN runs factories on your own machine: agents do the work, independent judges check it, and you decide at every gate. Setup takes about 40 minutes, most of it downloading models. Nothing leaves this machine.</div></div>
+    <span class="pill local">local-only setup</span></div>
+  <div class="grid" style="grid-template-columns:1.4fr 1fr;align-items:start">
+    <div class="card"><div class="card-h"><h2>kiln doctor</h2><span class="pill ok">6 of 7 passed · 1 to fix</span></div>
+      <div class="chk"><span class="ok3">✓</span><b>Hardware</b><span>Apple M5 Max · 128 GB unified memory · 1.6 TB free</span><span class="pill ok">great</span></div>
+      <div class="chk"><span class="ok3">✓</span><b>Node</b><span>24.1 — supported (needs ^22.18 or ≥ 23.6)</span><span></span></div>
+      <div class="chk"><span class="ok3">✓</span><b>git</b><span>2.47 · user set · <span class="wt3">no signing key yet</span> — setup can create one</span><span></span></div>
+      <div class="chk"><span class="ok3">✓</span><b>Spec Kit</b><span><span class="mono">specify</span> 1.0.6 — supported (1.0.x) · uv 0.9 · Python 3.12</span><span></span></div>
+      <div class="chk"><span class="no3">✕</span><b>Ollama</b><span>not found on 127.0.0.1:11434 — KILN does not install system software for you</span><span class="btn">How to install</span></div>
+      <div class="chk"><span class="ok3">✓</span><b>Network</b><span>loopback reachable · no outbound connection needed for a local-only setup</span><span></span></div>
+      <div class="chk"><span class="ok3">✓</span><b>Disk</b><span>models need ~40 GB · KILN home ~2 GB to start</span><span></span></div>
+      <div class="foot" style="margin-top:12px"><span class="sub grow">Install Ollama, then re-check — setup waits here and resumes where it stopped.</span><span class="btn primary">Re-check</span></div></div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>What this machine can run</h2><span class="sub">measured, not guessed</span></div>
+        <div class="kv2" style="grid-template-columns:130px 1fr"><span>Recommended</span><span>2–3 factories · a ~30B work model and a ~27B judge kept loaded</span><span>Memory budget</span><span>104 GB for models (24 GB left for macOS and tools)</span><span>Concurrency</span><span>up to 3 generations at once — tuned after the first runs</span></div></div>
+      <div class="card"><div class="card-h"><h2>What happens next</h2></div>
+        <div style="font-size:12.5px;line-height:1.9">2 · choose and check models<br>3 · create your workshop and storage<br>4 · add a first factory — with Spec Kit and its constitution<br>5 · seed its knowledge from your docs<br>6 · the director proposes a first roadmap — your first decision<br><span class="muted">7 · start or join a team — optional, any time</span></div></div>
+      <div class="card"><div class="kv2" style="grid-template-columns:110px 1fr"><span>Also in terminal</span><span class="mono">kiln init --no-browser</span><span>Writes</span><span>plain files in <span class="mono">~/kiln/</span> · in your repository only with your approval</span></div></div>
+    </div>
+  </div>
+
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

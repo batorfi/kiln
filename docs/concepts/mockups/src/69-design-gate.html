@@ -1,0 +1,74 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Design gate</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.mods{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:4px}
+.mods>div{border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-size:11.5px;background:#fff}
+.mods b{font-family:var(--mono);font-size:11.5px;display:block;margin-bottom:3px}
+.flowline{font-family:var(--mono);font-size:11.5px;color:var(--ink-2);background:var(--surface-2);border-radius:8px;padding:8px 10px;margin-top:10px}
+.alt td{font-size:12.5px}
+.dlg{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:8px;font-size:12.5px;line-height:1.5}
+.dlg .who{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-top:6px}
+.dlg .who:first-child{margin-top:0}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a class="on">Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot idle"></span>kiln-v1</span></a>
+    <a><span class="fac"><span class="dot idle"></span>billing-service</span></a>
+    <a><span class="fac"><span class="dot idle"></span>docs-site</span></a>
+    <a><span class="fac"><span class="dot idle"></span>handbook</span></a>
+  </div>
+  <div class="machine"><b>Viewing Oct 13, 15:30</b><div style="margin-top:6px">A moment from the record, shown as it was.</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0"><b>kiln-v1</b> · Feature r10 · Role agents and model tiers · Oct 13, 15:30</div><span class="grow"></span><span class="pill wait">Waiting 18 min</span><span class="pill">Round 1</span><span class="pill local">local-only</span></div>
+    <div class="row" style="margin-top:12px;gap:24px;align-items:center">
+      <div style="min-width:470px"><div class="kicker">Design gate · 2 of 9 · judged gate</div><div class="q">Is this the right structure?</div>
+        <div class="sub">An independent architecture critic reviewed the design, and the designer answered once. You decide whether this is the shape to build.</div></div>
+      <div class="grow"><div class="rail"><div class="g done"><div class="c">✓</div><div class="l">Concept</div></div><div class="g now"><div class="c"></div><div class="l">Design</div></div><div class="g "><div class="c"></div><div class="l">Spec</div></div><div class="g "><div class="c"></div><div class="l">Plan</div></div><div class="g "><div class="c"></div><div class="l">Impl.</div></div><div class="g "><div class="c"></div><div class="l">Code review</div></div><div class="g "><div class="c"></div><div class="l">Verify</div></div><div class="g "><div class="c"></div><div class="l">Docs</div></div><div class="g "><div class="c"></div><div class="l">Merge</div></div></div></div></div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 440px;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="part"><span class="num">3</span><h2>The structure</h2><span class="ask">What is proposed?</span></div>
+        <div class="mods"><div><b>agents/*.md</b>11 role files: kind, tools, line of defense, version</div><div><b>src/roles.ts</b>loads and validates role files</div><div><b>src/tiers.ts</b>the only place a role meets a model; judges → strongest, fail closed</div><div><b>src/lane.ts</b>swap: unload the resident model, then load the next</div></div>
+        <div class="flowline">step needs role → tiers.bind(role) → lane.acquire(model) → swap if needed → run → release</div>
+        <table class="alt" style="margin-top:10px"><tr><th>Alternative considered</th><th>Why not</th></tr>
+          <tr><td>model named in each agent file</td><td>the judge rule would be checked in 11 places instead of one</td></tr>
+          <tr><td>keep all models loaded</td><td>does not fit: 19 + 17 + 8 GB plus headroom exceeds the 104 GB budget with a second factory</td></tr></table></div>
+      <div class="card"><div class="part"><span class="num">5</span><h2>The evidence</h2><span class="ask">The critic and the designer</span></div><span class="sub">Architecture critic · gemma4:27b (strongest local, pinned) · 11 min · lane held</span>
+        <div class="dlg"><div class="who"><span class="sev major">major</span> critic</div>The tier map is resolved when a step starts. If a model is changed mid-feature, a judge could be rebound between two rounds of the same gate.
+          <div class="who">designer's answer</div>Bindings are resolved once, when the feature starts, and pinned for the feature — like gate versions.
+          <div class="who">critic</div><span class="ok3">✓ accepted</span> — resolved.</div>
+        <div class="dlg"><div class="who"><span class="sev minor">minor</span> critic</div>Unload-on-swap lives in the lane but must know which models are held by a judge; the hold flag and the swap are in different modules.
+          <div class="who">designer's answer</div>The lane already owns the hold flag; swap will read it there.
+          <div class="who">critic</div><span class="wt3">not accepted</span> — “nothing in the design shows swap checking the hold before unloading.”</div></div>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="part"><span class="num">4</span><h2>The yardstick</h2><span class="ask">Measured against</span></div>
+        <div class="kv2" style="grid-template-columns:120px 1fr"><span>Concept</span><span>approved by you, Oct 12 · 3 premises, 1 unproven</span><span>Knowledge</span><span>[[Lane and model affinity]] · [[Judges on the strongest model]]</span></div></div>
+      <div class="card"><div class="part"><span class="num">6</span><h2>Risks and open issues</h2><span class="ask">What should worry me?</span></div>
+        <div style="font-size:12.5px;line-height:1.55"><span class="sev minor">open</span> the hold-vs-swap objection is unresolved; approving carries it forward to Code review as a known risk.</div></div>
+      <div class="card options-card"><div class="part"><span class="num">9</span><h2>The options</h2><span class="ask">What happens then?</span></div>
+        <div class="grid" style="gap:9px"><div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Approve</h3><ul><li>The Specification is written next, from this structure.</li><li>The open objection is carried forward and shown at Code review.</li></ul></div><div class="opt"><h3><span class="dot" style="background:var(--wait)"></span>Revise <span class="pill" style="font-weight:500">note required</span></h3><ul><li>Your note goes to the same designer; the critic re-runs.</li><li>About 25 min, then this gate again.</li></ul></div><div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Reject <span class="pill" style="font-weight:500">note required</span></h3><ul><li>A fresh designer starts from the concept — or name Concept in your note to go back further.</li></ul></div>
+          <div class="note-box">Your note…</div>
+          <div class="row"><span class="btn grow">Reject</span><span class="btn grow">Revise</span><span class="btn ok grow">Approve</span></div></div></div>
+      <div class="card"><div class="part"><span class="num">10</span><h2>Other actions</h2><span class="ask">None of these decides the gate</span></div><div class="act"><span class="ic">+</span><div><b>Request a second critic</b><div class=sub>another model family — none installed on this host</div></div></div><div class="act"><span class="ic">?</span><div><b>Ask the designer</b><div class=sub>“Show where swap reads the hold flag.”</div></div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

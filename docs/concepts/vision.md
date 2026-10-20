@@ -14,7 +14,8 @@
 >   - Teams and the team space:        `team-space.md`
 >   - The bench:                       `the-bench.md`
 >   - The original concept:            `concept.md`
->   - Human gates — why & how & what:  `gates-why-how-what.md`
+>   - The flow, gate by gate:          `the-flow.md` (supersedes `gates-why-how-what.md`)
+>   - KILN at a glance (infographic):  `infographic/kiln-at-a-glance.png`
 
 # KILN — vision
 
