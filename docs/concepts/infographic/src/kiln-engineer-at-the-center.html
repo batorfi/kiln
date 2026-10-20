@@ -1,0 +1,159 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — the engineer at the center</title>
+<style>
+:root{--bg:#F5F2EE;--ink:#1C1814;--ink2:#3A332C;--muted:#756C62;--faint:#A39A90;--line:#E6E0D8;
+--ember:#C2410C;--ember2:#EA580C;--ember-soft:#FFF1E8;--ember-line:#F6C9AE;--info:#1D4ED8;--info-soft:#EEF3FE;--info-line:#C7D6FA;
+--ok:#15803D;--ok-soft:#ECF8F0;--ok-line:#BFE3CB;--deleg:#6D28D9;--deleg-soft:#F4EFFD;--deleg-line:#D9C9F6;
+--wait:#B45309;--wait-soft:#FEF6E7;--wait-line:#F3D9A6;--dark:#1A1714;
+--sans:-apple-system,"SF Pro Text","Inter","Helvetica Neue",Arial,sans-serif;--mono:"SF Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:2000px;background:var(--bg);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;font-size:13px;line-height:1.38}
+.hdr{background:var(--dark);color:#EDE7E0;padding:34px 56px;display:flex;align-items:center;gap:26px}
+.mark{width:70px;height:70px;background:url(../../../brand/kiln-mark.svg) center/contain no-repeat}
+.hdr h1{font-size:36px;font-weight:800;letter-spacing:-.01em}.hdr h1 b{letter-spacing:.14em;margin-right:14px}
+.hdr p{color:#C9BFB4;font-size:16px;margin-top:6px;max-width:1300px}
+.sec{padding:30px 56px 0}.sh{display:flex;align-items:baseline;gap:14px;margin-bottom:14px}
+.sh .no{font-size:13px;font-weight:800;color:#fff;background:var(--ember);border-radius:7px;padding:3px 9px}
+.sh h2{font-size:25px}.sh p{color:var(--muted);font-size:14.5px}
+/* hero */
+#hero{position:relative;height:940px;background:#fff;border:1.5px solid var(--line);border-radius:20px}
+svg.links{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+.col-h{position:absolute;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.actor{position:absolute;width:272px;border-radius:14px;padding:12px 14px;z-index:2}
+.actor b{display:flex;align-items:center;gap:9px;font-size:14.5px}.actor span{display:block;font-size:12px;color:var(--ink2);margin-top:4px}
+.actor .with{display:block;font-size:11px;font-weight:700;margin-top:6px}
+.k .with{color:var(--info)}.t .with{color:var(--deleg)}
+.actor i{font-style:normal;width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;flex:none}
+.k{background:var(--info-soft);border:1.5px solid var(--info-line)}.k i{background:#fff;color:var(--info)}
+.t{background:var(--deleg-soft);border:1.5px solid var(--deleg-line)}.t i{background:#fff;color:var(--deleg)}
+.hat{position:absolute;width:300px;border-radius:16px;padding:14px 16px;background:#fff;border:2px solid var(--ember-line);z-index:2;box-shadow:0 6px 18px rgba(60,40,20,.06)}
+.hat h3{display:flex;align-items:center;gap:10px;font-size:17px}
+.hat h3 i{font-style:normal;width:34px;height:34px;border-radius:10px;background:var(--ember-soft);color:var(--ember);display:inline-flex;align-items:center;justify-content:center;font-size:17px}
+.hat .r{font-size:12.5px;color:var(--ink2);margin-top:6px}
+.hat .ex{font-size:11.5px;color:var(--muted);margin-top:7px;border-top:1px dashed var(--line);padding-top:6px}
+.hat .ex b{color:var(--ember)}
+#you{position:absolute;left:814px;top:345px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle at 50% 40%,#FFF3E6,#FFE2C7 60%,#FBC79A);border:3px solid var(--ember2);z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:0 0 0 14px rgba(234,88,12,.08),0 0 0 30px rgba(234,88,12,.05)}
+#you .face{width:64px;height:64px;border-radius:50%;background:#fff;border:2px solid var(--ember2);display:flex;align-items:center;justify-content:center;font-size:30px}
+#you h2{font-size:21px;margin-top:8px}#you p{font-size:12px;color:var(--ink2);max-width:190px;margin-top:3px}
+.under{position:absolute;left:699px;top:640px;width:490px;text-align:center;z-index:2}
+.under .q{font-size:13px;color:var(--ink2);background:#FFF7F0;border:1px solid var(--ember-line);border-radius:12px;padding:10px 14px}
+.lbl{font:600 11px var(--sans)}
+/* day */
+.day{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.ev{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:12px 13px;position:relative}
+.ev .tm{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--ember)}
+.ev h4{font-size:14.5px;margin:3px 0 6px;line-height:1.25}
+.ev .chips{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px}
+.chip{font-size:10.5px;font-weight:700;border-radius:6px;padding:1px 7px;background:var(--ember-soft);color:var(--ember)}
+.chip.k{background:var(--info-soft);color:var(--info);border:0}.chip.t{background:var(--deleg-soft);color:var(--deleg);border:0}
+.ev .w{display:grid;grid-template-columns:58px 1fr;gap:3px 6px;font-size:11.5px;color:var(--ink2)}
+.ev .w b{color:var(--muted);font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;padding-top:1px}
+.track{height:6px;background:linear-gradient(90deg,var(--ember-line),var(--ember2));border-radius:3px;margin:6px 0 14px}
+/* loop */
+.loop{display:grid;grid-template-columns:repeat(7,1fr);gap:0;position:relative;background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:22px 18px 70px}
+.st{padding:0 10px;position:relative}
+.st .ic{width:56px;height:56px;border-radius:50%;background:var(--ember-soft);border:2px solid var(--ember-line);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:8px}
+.st h4{font-size:16px}.st .ph{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:6px}
+.st .w{font-size:11.5px;color:var(--ink2);margin-top:4px}.st .w b{display:inline-block;width:44px;font-size:10px;text-transform:uppercase;color:var(--muted);letter-spacing:.05em}
+.st:not(:last-child)::after{content:"›";position:absolute;right:-8px;top:12px;font-size:30px;color:var(--faint)}
+.back{position:absolute;left:46px;right:46px;bottom:20px;height:34px;border:2.5px dashed var(--ember-line);border-top:0;border-radius:0 0 22px 22px;display:flex;align-items:flex-end;justify-content:center}
+.back span{background:#fff;padding:0 12px;transform:translateY(12px);font-size:12.5px;font-weight:650;color:var(--ember)}
+/* foot */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.box{border-radius:18px;padding:18px 22px}
+.box h3{font-size:17px;margin-bottom:8px}.box ul{margin-left:18px;font-size:13.5px;line-height:1.7}
+.only{background:var(--ember-soft);border:1.5px solid var(--ember-line)}.never{background:#fff;border:1.5px solid var(--line)}
+.wm{padding:22px 56px 26px;color:var(--faint);font-size:11.5px}
+</style></head><body>
+<div class="hdr"><div class="mark"></div><div><h1><b>KILN</b>the engineer at the center</h1>
+<p>Agents do the work; independent judges check it; you decide what matters. Six roles you play, who works for you, who you work with — and how one real day and one full feature flow through your hands.</p></div></div>
+
+<div class="sec"><div class="sh"><span class="no">1</span><h2>You, your roles, your crew and your team</h2><p>Zsolt runs his own workshop — four factories on one machine — and works with Anna and Bence in a team space.</p></div>
+<div id="hero">
+<svg class="links" id="hl"></svg>
+<div class="col-h" style="left:36px;top:24px;color:var(--info)">KILN works for you</div>
+<div class="col-h" style="right:36px;top:24px;color:var(--deleg);text-align:right;width:300px">You work with your team</div>
+
+<div class="actor k" id="a-dir" style="left:36px;top:60px"><b><i>⚙</i>Director</b><span>keeps every factory moving by rule; stops and asks when it needs you — never decides</span><span class="with">→ you: asks at gates, applies your moves</span></div>
+<div class="actor k" id="a-plan" style="left:36px;top:200px"><b><i>≡</i>Planner</b><span>drafts roadmaps, plans and splits from your inputs — labelled advice, checked by rules</span><span class="with">⇄ you: your inputs, its drafts</span></div>
+<div class="actor k" id="a-crew" style="left:36px;top:340px"><b><i>✦</i>Crew</b><span>researcher, writers, workers on local models — do the work; you can steer them</span><span class="with">→ you: research, spikes; you steer them</span></div>
+<div class="actor k" id="a-judge" style="left:36px;top:480px"><b><i>⚖</i>Judges</b><span>architecture critic, code reviewer, verifier on the strongest model — evidence for you</span><span class="with">→ you: evidence in every judged brief</span></div>
+<div class="actor k" id="a-keeper" style="left:36px;top:620px"><b><i>❖</i>Knowledge keeper</b><span>writes the wiki as features pass gates; asks Curators what it cannot infer</span><span class="with">⇄ you: its questions, your answers</span></div>
+<div class="actor k" id="a-needs" style="left:36px;top:760px"><b><i>◉</i>Needs you · Health</b><span>one inbox for what waits on you; health signals that never act on their own</span><span class="with">→ you: what waits on you, signals</span></div>
+
+<div class="actor t" id="t-anna" style="right:36px;top:60px"><b><i>A</i>Anna — teammate</b><span>her own workshop and factories; asks your opinion, reviews your changes</span><span class="with">⇄ you: opinions, reviews, overlaps</span></div>
+<div class="actor t" id="t-bence" style="right:36px;top:200px"><b><i>B</i>Bence — teammate, Curator</b><span>keeps team knowledge true; votes on the team roadmap</span><span class="with">⇄ you: team knowledge, roadmap votes</span></div>
+<div class="actor t" id="t-space" style="right:36px;top:340px"><b><i>⇄</i>Team space</b><span>a git repository: team roadmap by quorum, claims, requests, team knowledge, team rules</span><span class="with">⇄ you: votes, claims, team features</span></div>
+<div class="actor t" id="t-host" style="right:36px;top:480px"><b><i>⎔</i>Code host</b><span>pull requests, CI, required reviews, merge queue — the team's own process</span><span class="with">⇄ you: pull requests, merge queue</span></div>
+<div class="actor t" id="t-gpu" style="right:36px;top:620px"><b><i>▤</i>Shared hosts</b><span>gpu-01, cloud-eu-1 — where factories run when your machine is not enough</span><span class="with">← you: placement of factories</span></div>
+<div class="actor t" id="t-new" style="right:36px;top:760px"><b><i>+</i>Newcomers</b><span>read the knowledge base and feature stories to learn how the code was built</span><span class="with">← you: read what you curate</span></div>
+
+<div class="hat" id="h-dec" style="left:400px;top:70px"><h3><i>◆</i>Decider</h3><div class="r">decides every gate with a ten-part brief — approve, revise, reject, restart, split; arms delegation deliberately</div><div class="ex"><b>e.g.</b> restarts r10 at Code review: “check the hold flag inside the lane”</div></div>
+<div class="hat" id="h-shape" style="left:400px;top:375px"><h3><i>≡</i>Roadmap shaper</h3><div class="r">writes goals and constraints first, shapes the draft with the planner, pins rows, admits one feature</div><div class="ex"><b>e.g.</b> pins “Event backbone” before real workers</div></div>
+<div class="hat" id="h-bench" style="left:400px;top:690px"><h3><i>✎</i>Thinker at the bench</h3><div class="r">researches, reads code and prototypes while factories work; notes become knowledge with their origin</div><div class="ex"><b>e.g.</b> spikes the swap cost before admitting “Pin judges”</div></div>
+<div class="hat" id="h-team" style="left:1188px;top:70px"><h3><i>⇄</i>Teammate</h3><div class="r">votes on the team roadmap, claims paths, answers opinion requests, reviews teammates’ pull requests</div><div class="ex"><b>e.g.</b> resolves an overlap with Anna on shared/config.ts</div></div>
+<div class="hat" id="h-cur" style="left:1188px;top:375px"><h3><i>❖</i>Curator</h3><div class="r">keeps the knowledge base true: answers the keeper’s questions, resolves contradictions, reviews drift</div><div class="ex"><b>e.g.</b> answers “why does billing/legacy/ exist?”</div></div>
+<div class="hat" id="h-op" style="left:1188px;top:690px"><h3><i>⚙</i>Operator</h3><div class="r">configures models, roles, flows, hosts and policies as files; reads health; places factories</div><div class="ex"><b>e.g.</b> adds a security reviewer, tries it on a past feature</div></div>
+
+<div id="you"><div class="face">🧑‍💻</div><h2>You</h2><p>the software engineer — owner of the workshop, reviewer of record</p></div>
+<div class="under"><div class="q"><b>What only you do:</b> admit features · decide gates · say where models run · delegate on purpose · keep knowledge true</div></div>
+</div></div>
+
+<div class="sec"><div class="sh"><span class="no">2</span><h2>One real day</h2><p>Thursday in Zsolt’s workshop — what happens, what he does, what KILN does, where the team comes in.</p></div>
+<div class="track"></div>
+<div class="day">
+ <div class="ev"><div class="tm">08:30</div><h4>Coffee and Needs you</h4><div class="chips"><span class="chip">Decider</span><span class="chip t">team</span></div><div class="w"><b>Sees</b><span>a Roadmap gate, a budget stop in billing-service, a team roadmap vote, a question from a handbook step</span><b>KILN</b><span>ordered by what each item blocks; nothing decided overnight</span></div></div>
+ <div class="ev"><div class="tm">08:45</div><h4>Ask the director</h4><div class="chips"><span class="chip">Roadmap shaper</span></div><div class="w"><b>Asks</b><span>“Why is Event backbone first?”</span><b>KILN</b><span>answers from the record in a second, with citations — no model needed</span></div></div>
+ <div class="ev"><div class="tm">09:05</div><h4>Shape and admit</h4><div class="chips"><span class="chip">Roadmap shaper</span><span class="chip">Decider</span></div><div class="w"><b>Does</b><span>adds a constraint, pins Event backbone, approves version 3 at the Roadmap gate</span><b>KILN</b><span>planner redrafts, checks every version; the feature starts</span></div></div>
+ <div class="ev"><div class="tm">09:20</div><h4>Team roadmap vote</h4><div class="chips"><span class="chip">Teammate</span><span class="chip t">Anna · Bence</span></div><div class="w"><b>Does</b><span>signs the team roadmap change; quorum reached with Bence</span><b>Team</b><span>Anna’s factory adopts the new team feature</span></div></div>
+ <div class="ev"><div class="tm">10:05</div><h4>Code review, round 2</h4><div class="chips"><span class="chip">Decider</span><span class="chip k">judges</span></div><div class="w"><b>Reads</b><span>the reviewer’s 2 major findings, mapped to the spec</span><b>Does</b><span>restart with a note; the crew rebuilds from the safe commit, tests first</span></div></div>
+ <div class="ev"><div class="tm">10:30</div><h4>At the bench</h4><div class="chips"><span class="chip">Thinker</span></div><div class="w"><b>Does</b><span>spikes a dependency upgrade in a throwaway worktree; writes notes</span><b>KILN</b><span>keeper suggests links; the spike report becomes evidence on a candidate</span></div></div>
+ <div class="ev"><div class="tm">11:00</div><h4>An overlap with Anna</h4><div class="chips"><span class="chip">Teammate</span><span class="chip t">Anna</span></div><div class="w"><b>Sees</b><span>both factories will touch shared/config.ts — flagged at Work plan</span><b>Does</b><span>agrees Anna goes first; his factory waits on her claim</span></div></div>
+ <div class="ev"><div class="tm">11:30</div><h4>A risky action</h4><div class="chips"><span class="chip">Decider</span><span class="chip k">crew</span></div><div class="w"><b>Sees</b><span>a worker wants to add a dependency — its reason, the policy, reversibility</span><b>Does</b><span>allows it; recorded under his name</span></div></div>
+ <div class="ev"><div class="tm">13:15</div><h4>A question from the keeper</h4><div class="chips"><span class="chip">Curator</span><span class="chip k">keeper</span></div><div class="w"><b>Answers</b><span>“Is the retry in sync.ts deliberate?” — yes, and why</span><b>KILN</b><span>a page labelled <i>from a person</i>; the contradiction closes</span></div></div>
+ <div class="ev"><div class="tm">14:10</div><h4>Merge gate</h4><div class="chips"><span class="chip">Decider</span><span class="chip t">code host</span></div><div class="w"><b>Reads</b><span>the whole feature end to end; Anna’s required review; CI green</span><b>Does</b><span>approves; the code host’s merge queue merges it</span></div></div>
+ <div class="ev"><div class="tm">15:30</div><h4>A better reviewer</h4><div class="chips"><span class="chip">Operator</span></div><div class="w"><b>Does</b><span>tries a new security-reviewer instruction on two past features</span><b>KILN</b><span>shows the findings it would have added — changes nothing until he applies it</span></div></div>
+ <div class="ev"><div class="tm">17:00</div><h4>Leaving</h4><div class="chips"><span class="chip">—</span></div><div class="w"><b>Sees</b><span>only suggestions left in Needs you</span><b>KILN</b><span>factories work on to their next gate and wait — overnight, nothing is approved</span></div></div>
+</div></div>
+
+<div class="sec"><div class="sh"><span class="no">3</span><h2>One feature, the full agentic lifecycle</h2><p>Where you act, what the agents do, and where the team comes in — from an idea to knowledge.</p></div>
+<div class="loop">
+ <div class="st"><div class="ic">✎</div><div class="ph">bench</div><h4>Think</h4><div class="w"><b>You</b>notes, research, spikes</div><div class="w"><b>KILN</b>research steps, spike reports</div><div class="w"><b>Team</b>shared research by choice</div></div>
+ <div class="st"><div class="ic">≡</div><div class="ph">roadmap</div><h4>Shape</h4><div class="w"><b>You</b>goals, constraints, pins</div><div class="w"><b>KILN</b>planner drafts, checks, readiness</div><div class="w"><b>Team</b>team roadmap, claims</div></div>
+ <div class="st"><div class="ic">◆</div><div class="ph">Roadmap gate</div><h4>Admit</h4><div class="w"><b>You</b>admit one feature, its flow, where it runs</div><div class="w"><b>KILN</b>brief with evidence per row</div><div class="w"><b>Team</b>quorum for team features</div></div>
+ <div class="st"><div class="ic">▣</div><div class="ph">Gates 1–4</div><h4>Contract</h4><div class="w"><b>You</b>decide concept, design, spec, plan</div><div class="w"><b>KILN</b>writers draft; the critic judges design</div><div class="w"><b>Team</b>overlap at Work plan</div></div>
+ <div class="st"><div class="ic">⚒</div><div class="ph">Gates 5–7</div><h4>Build &amp; prove</h4><div class="w"><b>You</b>watch, steer, decide review and verification</div><div class="w"><b>KILN</b>workers build; reviewer and verifier judge; fix rounds</div><div class="w"><b>Team</b>opinions, mirrored reviews</div></div>
+ <div class="st"><div class="ic">⇪</div><div class="ph">Gates 8–9</div><h4>Ship</h4><div class="w"><b>You</b>decide docs and merge</div><div class="w"><b>KILN</b>docs, feature story, pull request</div><div class="w"><b>Team</b>required reviews, merge queue</div></div>
+ <div class="st"><div class="ic">❖</div><div class="ph">after merge</div><h4>Learn</h4><div class="w"><b>You</b>curate, read insights</div><div class="w"><b>KILN</b>knowledge digests, insights, next proposal</div><div class="w"><b>Team</b>team knowledge, progress</div></div>
+ <div class="back"><span>what each feature teaches flows back into knowledge — and into the next roadmap</span></div>
+</div></div>
+
+<div class="sec"><div class="two">
+ <div class="box only"><h3>Only you</h3><ul><li>admit what gets built — at the Roadmap gate, one feature at a time</li><li>decide every gate, with the whole picture in the brief</li><li>choose where models run and what may leave the machine</li><li>delegate routine gates on purpose — any objection gives them back</li><li>keep the knowledge true, so the next decision is better informed</li></ul></div>
+ <div class="box never"><h3>Never your chore</h3><ul><li>driving each step — the director keeps factories moving by rule</li><li>watching screens — what needs you comes to one place, and waits</li><li>remembering context — every brief is self-contained</li><li>writing the record — every decision is recorded with who and why</li><li>chasing teammates — claims show overlap before it becomes a conflict</li></ul></div>
+</div></div>
+<div class="wm">KILN concept · the engineer at the center · Oct 2026 · illustrative scenario (Zsolt, Anna, Bence), not a design decision · see docs/concepts/user-experience.md, the-director.md, team-space.md, the-bench.md</div>
+
+<script>
+const C={me:'#EA580C',k:'#1D4ED8',t:'#6D28D9'};
+const L=[
+ ['you','h-dec','me',''],['you','h-shape','me',''],['you','h-bench','me',''],['you','h-team','me',''],['you','h-cur','me',''],['you','h-op','me',''],
+ ['a-dir','h-dec','k','asks at gates'],['a-judge','h-dec','k','evidence in briefs'],['a-plan','h-shape','k','drafts ⇄ inputs'],
+ ['a-crew','h-bench','k','research · spikes'],['a-needs','h-dec','k','what waits on you'],
+ ['t-anna','h-team','t','opinions · reviews'],['t-space','h-team','t','votes · claims'],['t-host','h-team','t','merge queue'],
+ ['t-bence','h-cur','t','team knowledge'],['t-gpu','h-op','t','placement'],['t-new','h-cur','t','reads what you curate'],['a-keeper','h-bench','k','promote notes'],
+];
+function draw(){const h=document.getElementById('hero'),svg=document.getElementById('hl'),H=h.getBoundingClientRect();
+ svg.setAttribute('width',H.width);svg.setAttribute('height',H.height);
+ const box=id=>{const r=document.getElementById(id).getBoundingClientRect();return {x:r.left-H.left,y:r.top-H.top,w:r.width,h:r.height,cx:r.left-H.left+r.width/2,cy:r.top-H.top+r.height/2};};
+ let d='<defs>';for(const k in C)d+=`<marker id="m${k}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="${C[k]}"/></marker>`;d+='</defs>';
+ L.forEach(([a,b,k,t])=>{const A=box(a),B=box(b);let p,q;
+  if(a=='you'){const ang=Math.atan2(B.cy-A.cy,B.cx-A.cx);p=[A.cx+Math.cos(ang)*132,A.cy+Math.sin(ang)*132];q=[B.cx<A.cx?B.x+B.w:B.x,B.cy];}
+  else{const left=A.cx<B.cx;p=[left?A.x+A.w:A.x,A.cy];q=[left?B.x:B.x+B.w,B.cy];}
+  const dx=(q[0]-p[0])*.5;const path=`M${p[0]},${p[1]} C${p[0]+dx},${p[1]} ${q[0]-dx},${q[1]} ${q[0]},${q[1]}`;
+  const w=a=='you'?4:2.2,dash=k=='t'?' stroke-dasharray="7 5"':'';
+  d+=`<path d="${path}" fill="none" stroke="${C[k]}" stroke-width="${w}" opacity="${a=='you'?.55:.85}"${dash} ${a=='you'?'':`marker-end="url(#m${k})"`}/>`;
+  if(false&&t){const mx=(p[0]+q[0])/2,my=(p[1]+q[1])/2,tw=t.length*5.9+16;d+=`<rect x="${mx-tw/2}" y="${my-10}" width="${tw}" height="20" rx="10" fill="#fff" stroke="${C[k]}" stroke-width="1.2"/><text class="lbl" x="${mx}" y="${my+4}" text-anchor="middle" fill="${C[k]}">${t}</text>`;}
+ });svg.innerHTML=d;}
+draw();
+</script>
+</body></html>

@@ -1,0 +1,181 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — platform architecture</title>
+<style>
+:root{--bg:#F5F2EE;--ink:#1C1814;--ink2:#3A332C;--muted:#756C62;--faint:#A39A90;--line:#E6E0D8;
+--ember:#C2410C;--ember-soft:#FFF1E8;--ember-line:#F6C9AE;--info:#1D4ED8;--info-soft:#EEF3FE;--info-line:#C7D6FA;
+--ok:#15803D;--ok-soft:#ECF8F0;--ok-line:#BFE3CB;--deleg:#6D28D9;--deleg-soft:#F4EFFD;--deleg-line:#D9C9F6;
+--wait:#B45309;--wait-soft:#FEF6E7;--wait-line:#F3D9A6;--dark:#1A1714;
+--sans:-apple-system,"SF Pro Text","Inter","Helvetica Neue",Arial,sans-serif;--mono:"SF Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:2000px;background:var(--bg);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;font-size:13px;line-height:1.35}
+.hdr{background:var(--dark);color:#EDE7E0;padding:30px 48px;display:flex;align-items:center;gap:26px}
+.mark{width:64px;height:64px;background:url(../../../brand/kiln-mark.svg) center/contain no-repeat}
+.hdr h1{font-size:34px;letter-spacing:.14em;font-weight:800}.hdr h1 span{letter-spacing:0;font-weight:500;color:#FDBA74;font-size:24px;margin-left:14px}
+.hdr p{color:#BFB5AA;font-size:15px;margin-top:6px}
+.hdr .lg{margin-left:auto;display:grid;grid-template-columns:auto auto;gap:6px 18px;font-size:12.5px;color:#D9D0C6}
+.lg i{display:inline-block;width:26px;height:0;border-top:2.5px solid;vertical-align:middle;margin-right:8px}
+#wrap{position:relative;padding:28px 48px 34px;display:grid;grid-template-columns:1fr 380px;gap:22px}
+svg#links{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+.stack{display:flex;flex-direction:column;gap:46px}
+.layer{display:grid;grid-template-columns:150px 1fr;border-radius:16px;border:1.5px solid var(--line);background:#fff;overflow:visible}
+.lt{padding:14px 16px;border-right:1.5px solid var(--line);border-radius:16px 0 0 16px}
+.lt b{display:block;font-size:16px}.lt small{display:block;color:var(--muted);font-size:11.5px;margin-top:3px}
+.lt .n{font-size:11px;font-weight:800;color:#fff;background:var(--ink2);border-radius:5px;padding:1px 7px;display:inline-block;margin-bottom:6px}
+.row{display:flex;gap:44px;padding:14px 16px;flex-wrap:nowrap}
+.rows{display:flex;flex-direction:column}
+.c{flex:1;border:1.5px solid var(--line);border-radius:11px;padding:10px 11px;background:#fff;min-width:0;position:relative;z-index:2}
+.c b{display:block;font-size:13.5px;margin-bottom:3px}
+.c span{display:block;color:var(--ink2);font-size:11.5px}
+.c .t{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:4px}
+.L1 .lt{background:#FFF7F0}.L1 .c{border-color:var(--ember-line)}
+.L2 .lt{background:#FFFBF5}.L2 .c{border-color:var(--wait-line)}
+.L3 .lt{background:#F7F5F2}
+.L4 .lt{background:var(--info-soft)}.L4 .c{border-color:var(--info-line)}
+.L5 .lt{background:var(--ok-soft)}.L5 .c{border-color:var(--ok-line)}
+.c.key{border-width:2.5px;border-color:var(--ink2)}
+.c.ext{border-style:dashed}
+.sub{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:12px 14px 0}
+.side{display:flex;flex-direction:column;gap:16px}
+.panel{border-radius:16px;border:1.5px solid var(--line);background:#fff;padding:14px 16px;position:relative;z-index:2}
+.panel h3{font-size:15px;margin-bottom:6px}.panel p{font-size:12px;color:var(--ink2)}
+.panel ul{margin:6px 0 0 16px;font-size:12px;color:var(--ink2)}.panel li{margin:2px 0}
+.panel.team{background:var(--info-soft);border:2px dashed var(--info-line)}
+.panel.cc{background:#FBFAF8}
+.ccnote{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.badge{font:700 11px var(--sans)}
+.foot{padding:0 48px 30px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.foot div{font-size:12px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--ink2)}
+.foot div b{color:var(--ember);margin-right:6px}
+.wm{padding:0 48px 22px;color:var(--faint);font-size:11.5px}
+</style></head><body>
+<div class="hdr"><div class="mark"></div><div><h1>KILN<span>platform architecture</span></h1><p>Layers, components and connections — one workshop per person, one host per machine, one process and one durable store per factory.</p></div>
+  <div class="lg"><span><i style="border-color:#C2410C"></i>decisions &amp; commands</span><span><i style="border-color:#1D4ED8"></i>events &amp; views</span>
+  <span><i style="border-color:#15803D"></i>model inference &amp; residency</span><span><i style="border-color:#6D28D9;border-top-style:dashed"></i>coordination &amp; external</span></div></div>
+
+<div id="wrap">
+<svg id="links"></svg>
+<div class="stack">
+  <div class="layer L1"><div class="lt"><span class="n">1</span><b>People &amp; clients</b><small>where people act and read</small></div>
+    <div class="row">
+      <div class="c" id="person"><b>Person</b><span>Decider · Operator · Curator — decides every gate</span></div>
+      <div class="c key" id="browser"><b>Web front door</b><span>live factory, gate briefs, Needs you, record, knowledge</span><div class="t">browser · loopback</div></div>
+      <div class="c" id="cli"><b>CLI</b><span>init · doctor · health · check · serve · host · replay</span></div>
+      <div class="c" id="vault"><b>Obsidian / Zed</b><span>read and edit every wiki as plain markdown</span></div>
+    </div></div>
+
+  <div class="layer L2"><div class="lt"><span class="n">2</span><b>Workshop</b><small>one per person · durable</small></div>
+    <div class="row">
+      <div class="c" id="needs"><b>Needs you</b><span>gate inbox across factories · nothing decides itself</span></div>
+      <div class="c key" id="server"><b>Server</b><span>HTTP · session security · read models · live push · move &amp; command intake</span></div>
+      <div class="c" id="people"><b>People · roles · policies</b><span>who may decide, configure, curate</span></div>
+      <div class="c" id="registry"><b>Registry &amp; placement</b><span>factories, hosts, where each factory runs</span></div>
+      <div class="c" id="wstore"><b>Workshop store &amp; record</b><span>registry, pool leases, workshop events</span></div>
+      <div class="c" id="wwiki"><b>Workshop wiki</b><span>models, machines, learnings</span></div>
+    </div></div>
+
+  <div class="layer L3"><div class="lt"><span class="n">3</span><b>Host</b><small>a machine running factories</small></div>
+    <div class="row">
+      <div class="c" id="health"><b>Health watcher</b><span>signals only — never acts · broken guarantees critical</span></div>
+      <div class="c" id="super"><b>Host supervisor</b><span>starts, restarts and isolates factory processes</span></div>
+      <div class="c key" id="pool"><b>Model pool</b><span>resident set within a memory budget · shared leases · pinned judge</span></div>
+      <div class="c" id="sched"><b>Host scheduler</b><span>affinity across factories · fair share</span></div>
+      <div class="c" id="channel"><b>Host channel</b><span>authenticated · moves, sleep &amp; wake</span></div>
+    </div></div>
+
+  <div class="layer L4"><div class="lt"><span class="n">4</span><b>Factory</b><small>one codebase · one lane · one process · one store</small></div>
+    <div class="rows">
+      <div class="sub">orchestration and work</div>
+      <div class="row">
+        <div class="c key" id="director"><b>Director</b><span>deterministic core runs the pinned flow · planner role drafts, checked</span></div>
+        <div class="c key" id="tasks"><b>Durable task graph</b><span>roadmap · row · unit · <b style="display:inline;font-size:11.5px">gate</b> · lane tasks · gate = durable wait, first move wins</span></div>
+        <div class="c" id="lane"><b>Lane</b><span>one generation at a time · affinity · held lease on judged gates</span></div>
+        <div class="c key" id="workers"><b>Workers &amp; judges</b><span>durable conversations · roles as files · tools · replay rules · judges on strongest</span></div>
+      </div>
+      <div class="sub">record, knowledge and artifacts</div>
+      <div class="row">
+        <div class="c key" id="record"><b>The record</b><span>outbox (same commit) → dispatcher (seq) → backbone → projections: factory-log, state, metrics, traces</span></div>
+        <div class="c" id="kb"><b>Knowledge base</b><span>LLM wiki: raw · pages · schema · ingest/query/lint · digests · full scan</span></div>
+        <div class="c" id="ws"><b>Workspace</b><span>git worktree · constitution · specs/NNN-name/ · tests</span></div>
+        <div class="c" id="bench"><b>Bench</b><span>notebook · research steps · spikes (throwaway worktrees)</span></div>
+      </div>
+    </div></div>
+
+  <div class="layer L5"><div class="lt"><span class="n">5</span><b>Substrate &amp; external</b><small>behind one seam each</small></div>
+    <div class="row">
+      <div class="c key" id="durable"><b>Pi Durable</b><span>harness · SQLite store · tasks · conversations · documents · exactly-once</span><div class="t">seam: durable</div></div>
+      <div class="c" id="ollama"><b>Ollama</b><span>local models on the host</span><div class="t">seam: lane (residency)</div></div>
+      <div class="c" id="piai"><b>pi-ai</b><span>one interface to every model provider</span><div class="t">seam: workers</div></div>
+      <div class="c ext" id="cloud"><b>Private &amp; cloud models</b><span>only by profile and egress policy</span></div>
+      <div class="c" id="speckit"><b>Spec Kit</b><span>specify CLI · templates · speckit.* commands</span></div>
+      <div class="c ext" id="codehost"><b>Code host</b><span>pull requests · CI · reviews · merge queue</span></div>
+    </div></div>
+</div>
+
+<div class="side">
+  <div class="panel team" id="team"><h3>Team space</h3><p>a <b>git repository</b>, not a server — coordinates workshops, decides no one's gates</p>
+    <ul><li>team roadmap by quorum</li><li>claims on paths · overlap</li><li>requests &amp; mirrored reviews</li><li>team knowledge · team rules (floor)</li><li>signed acts · members' keys</li></ul></div>
+  <div class="ccnote">cross-cutting</div>
+  <div class="panel cc" id="config"><h3>Configuration as code</h3><p><span style="font-family:var(--mono)">kiln.config/</span> — hosts, providers, models, roles, tiers, gates, flows, policies, health</p>
+    <ul><li>checked before applied (all or nothing)</li><li>applies from the next step</li><li>team → workshop → factory: only stricter</li></ul></div>
+  <div class="panel cc" id="policy"><h3>Policy &amp; egress</h3><ul><li>profiles: local-only · hybrid · cloud</li><li>checked before every outbound request</li><li>everything that left is recorded</li><li>budgets pause, never skip</li></ul></div>
+  <div class="panel cc" id="security"><h3>Security &amp; identity</h3><ul><li>loopback bind · per-launch secret · Host/Origin checks</li><li>personal signing keys · host identities</li><li>secrets only in the OS store</li></ul></div>
+  <div class="panel cc" id="obs"><h3>Observability</h3><ul><li>everything built from the record</li><li>metrics · traces · insights · health</li><li>opt-in OTLP export to loopback</li></ul></div>
+</div>
+</div>
+
+<div class="foot" id="legend"></div>
+<div class="wm">KILN concept · platform architecture · Oct 2026 · illustrative, not a design decision · sources: docs/prd/kiln-prd.md §8–9, docs/architecture/explainers/kiln-architecture.md</div>
+
+<script>
+const C={dec:'#C2410C',ev:'#1D4ED8',mod:'#15803D',co:'#6D28D9'};
+// [from, to, kind, text, fromSide, toSide, fx, tx]
+const L=[
+ ['person','browser','dec','reads briefs, makes moves','r','l'],
+ ['browser','server','dec','moves & commands over loopback (session secret)','b','t',.3,.3],
+ ['server','browser','ev','read models · live push, resumes from seq','t','b',.7,.7],
+ ['cli','server','dec','same files and stores as the browser','b','t',.3,.9],
+ ['server','tasks','dec','move intake → one atomic commit: move + gate completion + event','b','t',.5,.5,.75],
+ ['registry','channel','co','placement · host channel (moves, sleep, wake)','b','t',.5,.4],
+ ['super','director','dec','one supervised process per factory','b','t',.3,.75,.45],
+ ['director','tasks','dec','creates steps one at a time','r','l'],
+ ['tasks','lane','dec','steps acquire the lane','r','l'],
+ ['lane','pool','mod','lease the tier model','t','b',.4,.6],
+ ['pool','ollama','mod','load · unload · pin','b','t',.2,.5,.92],
+ ['lane','workers','mod','one running generation','r','l'],
+ ['workers','piai','mod','inference through one provider interface','b','t',.15,.6,.85],
+ ['piai','ollama','mod','local models over loopback','l','r'],
+ ['piai','cloud','co','only if policy allows','r','l'],
+ ['tasks','durable','dec','single owner of the store','b','t',.15,.6,.88],
+ ['tasks','record','ev','events in the same commit (outbox)','b','t',.45,.75],
+ ['record','server','ev','projections → read models','l','b',.3,.15,.88,-150],
+ ['record','health','ev','telemetry & events','l','l',.7,.5,.5,-70],
+ ['record','kb','ev','implementation digests','r','l'],
+ ['workers','ws','dec','edit code · run tests · speckit.* commands','b','t',.3,.6,.55],
+ ['ws','speckit','co','constitution, spec, plan, tasks','b','t',.5,.4],
+ ['ws','codehost','co','pull requests · CI results','b','t',.92,.3,.55],
+ ['kb','vault','ev','Obsidian vault (git + markdown)','r','b',.25,.5,.7],
+ ['wstore','team','co','pull & verify · publish signed acts','t','l',.6,.85,.6],
+];
+function draw(){
+ const wrap=document.getElementById('wrap'),svg=document.getElementById('links'),W=wrap.getBoundingClientRect();
+ svg.setAttribute('width',W.width);svg.setAttribute('height',W.height);
+ let defs='<defs>';for(const k in C)defs+=`<marker id="a${k}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${C[k]}"/></marker>`;defs+='</defs>';
+ let out=defs,leg='';
+ const P=(el,side,f)=>{const r=el.getBoundingClientRect();const x=r.left-W.left,y=r.top-W.top;f=f??.5;
+   return side=='t'?[x+r.width*f,y]:side=='b'?[x+r.width*f,y+r.height]:side=='l'?[x,y+r.height*f]:[x+r.width,y+r.height*f];};
+ L.forEach((c,i)=>{const [a,b,k,t,fs,ts,fx,tx,bt,loop]=c;const ea=document.getElementById(a),eb=document.getElementById(b);if(!ea||!eb)return;
+   const p=P(ea,fs,fx),q=P(eb,ts,tx);const d=Math.max(40,Math.min(160,Math.hypot(q[0]-p[0],q[1]-p[1])*.45));
+   const v=s=>s=='t'?[0,-d]:s=='b'?[0,d]:s=='l'?[-d,0]:[d,0];
+   let c1=v(fs),c2=v(ts);
+   if(loop){c1=fs=='l'?[loop,0]:c1;c2=ts=='l'?[loop,0]:(ts=='b'?[0,-loop*0.9]:c2);}
+   const path=`M${p[0]},${p[1]} C${p[0]+c1[0]},${p[1]+c1[1]} ${q[0]+c2[0]},${q[1]+c2[1]} ${q[0]},${q[1]}`;
+   const dash=k=='co'?' stroke-dasharray="6 5"':'';
+   out+=`<path d="${path}" fill="none" stroke="${C[k]}" stroke-width="2.2" opacity=".9"${dash} marker-end="url(#a${k})"/>`;
+   // midpoint of cubic
+   const T=bt??.5,m=(u,w,x,y)=>(1-T)**3*u+3*(1-T)**2*T*w+3*(1-T)*T*T*x+T**3*y;
+   const mx=m(p[0],p[0]+c1[0],q[0]+c2[0],q[0]),my=m(p[1],p[1]+c1[1],q[1]+c2[1],q[1]);
+   out+=`<circle cx="${mx}" cy="${my}" r="10" fill="#fff" stroke="${C[k]}" stroke-width="2"/><text class="badge" x="${mx}" y="${my+4}" text-anchor="middle" fill="${C[k]}">${i+1}</text>`;
+   leg+=`<div><b style="color:${C[k]}">${i+1}</b>${t}</div>`;});
+ svg.innerHTML=out;document.getElementById('legend').innerHTML=leg;}
+draw();
+</script>
+</body></html>

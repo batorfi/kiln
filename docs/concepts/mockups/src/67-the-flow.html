@@ -1,0 +1,94 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — The standard flow</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.flow{display:grid;grid-template-columns:150px repeat(4,1fr) 18px repeat(3,1fr) 18px repeat(2,1fr);gap:8px;align-items:stretch}
+.ph{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;color:var(--muted);padding:0 2px 4px;border-bottom:2px solid var(--line)}
+.gc{border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 10px 9px;font-size:11.5px;display:flex;flex-direction:column;gap:5px}
+.gc.rm{background:var(--ember-soft);border-color:var(--ember-line)}
+.gc.jd{border:2px solid var(--ink-2)}
+.gc .nm{font-size:13px;font-weight:700;display:flex;gap:6px;align-items:baseline}.gc .nm i{font-style:normal;color:var(--faint);font-weight:600;font-size:11px}
+.gc .qq{color:var(--ink-2);line-height:1.35;min-height:46px}
+.gc .who{color:var(--muted);font-size:10.5px;line-height:1.35}
+.gc .jdg{font-size:10px;font-weight:700;color:#fff;background:var(--ink-2);border-radius:5px;padding:1px 6px;width:fit-content}
+.mv{display:flex;flex-wrap:wrap;gap:3px}.mv span{font-size:10px;border:1px solid var(--line);border-radius:5px;padding:0 5px;background:var(--surface-2)}
+.mv span.c{border-color:var(--wait);color:var(--wait)}
+.arr{display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:16px}
+.band{grid-column:span 1;border-radius:7px;font-size:10.5px;padding:4px 8px;font-weight:600}
+.bands{display:grid;grid-template-columns:150px repeat(4,1fr) 18px repeat(3,1fr) 18px repeat(2,1fr);gap:8px;margin-top:8px}
+.tri{background:var(--surface-2);border:1px dashed var(--line);color:var(--muted)}
+.del{background:var(--deleg-soft,#EEF0FB);border:1px solid var(--deleg);color:var(--deleg)}
+.ret td{font-size:12px;padding:7px 8px}.five{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.five>div{border:1px solid var(--line);border-radius:9px;background:#fff;padding:9px 11px;font-size:11.5px;line-height:1.4}
+.five b{display:block;font-size:12.5px;margin-bottom:2px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a class="on">Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">Flows · <b>standard</b> · shipped · the default flow for kiln-v1, docs-site, billing-service</div><h1>The standard flow — from roadmap to merge</h1>
+    <div class="sub">One feature at a time. Agents work, independent judges check, a person decides every gate. Teams can add gates between the built-in ones — never remove or reorder them.</div></div>
+    <div class="row"><span class="pill">10 gates · 3 judged</span><span class="btn">Open in the flow builder</span></div></div>
+  <div class="card">
+    <div class="flow">
+      <div class="ph">Program</div><div class="ph" style="grid-column:span 4">Contract — what to build</div><div></div><div class="ph" style="grid-column:span 3">Build and prove</div><div></div><div class="ph" style="grid-column:span 2">Release</div>
+      <div class="gc rm"><div class="nm"><i>—</i>Roadmap</div><div class="qq">Which features, in what order — and how does this factory run?</div><div class="who">planner drafts · person only</div><div class="mv"><span class="">approve</span><span class="c">revise</span><span class="c">reject</span><span class="">edit rows</span></div></div>
+      <div class="gc "><div class="nm"><i>1</i>Concept</div><div class="qq">Is this worth building, on these premises?</div><div class="who">researcher → concept writer</div><div class="mv"><span class="">approve</span><span class="c">revise</span><span class="c">reject</span></div></div>
+      <div class="gc jd"><div class="nm"><i>2</i>Design</div><div class="qq">Is this the right structure?</div><div class="who">designer</div><span class="jdg">judge · architecture critic</span><div class="mv"><span class="">approve</span><span class="c">revise</span><span class="c">reject</span></div></div>
+      <div class="gc "><div class="nm"><i>3</i>Specification</div><div class="qq">What exactly counts as done?</div><div class="who">spec writer · checks</div><div class="mv"><span class="">approve</span><span class="c">revise</span><span class="c">reject</span><span class="">arm tail</span></div></div>
+      <div class="gc "><div class="nm"><i>4</i>Work plan</div><div class="qq">In what pieces and order?</div><div class="who">planner · model order</div><div class="mv"><span class="">approve</span><span class="c">revise</span><span class="c">reject</span></div></div>
+      <div class="arr">›</div>
+      <div class="gc "><div class="nm"><i>5</i>Implementation</div><div class="qq">Start from a safe point? Still one feature?</div><div class="who">director · restorable commit</div><div class="mv"><span class="">approve</span><span class="c">split+revise</span></div></div>
+      <div class="gc jd"><div class="nm"><i>6</i>Code review</div><div class="qq">Is the code right, against the spec?</div><div class="who">workers</div><span class="jdg">judge · code reviewer</span><div class="mv"><span class="">approve</span><span class="c">restart</span></div></div>
+      <div class="gc jd"><div class="nm"><i>7</i>Verification</div><div class="qq">Does it work as specified?</div><div class="who">workers · ≤ 2 fix rounds</div><span class="jdg">judge · verifier</span><div class="mv"><span class="">approve</span><span class="c">reject</span></div></div>
+      <div class="arr">›</div>
+      <div class="gc "><div class="nm"><i>8</i>Documentation</div><div class="qq">Do the docs describe what was built?</div><div class="who">techwriter · wiki keeper</div><div class="mv"><span class="">approve</span><span class="c">revise</span><span class="c">reject</span></div></div>
+      <div class="gc "><div class="nm"><i>9</i>Merge</div><div class="qq">Do we ship this feature?</div><div class="who">PR writer · checks</div><div class="mv"><span class="">approve = merge</span><span class="c">reject</span></div></div>
+    </div>
+    <div class="bands">
+      <div></div><div class="band tri" style="grid-column:span 2">triage may skip Concept and Design · recorded</div><div class="band" style="font-size:10.5px;color:var(--muted)">◆ arm here</div><div class="band del" style="grid-column:span 7">unattended tail, if armed: Work plan → Documentation, on a clean path only · any objection ends it</div><div class="band tri">Merge: only if included</div>
+    </div>
+    <div class="sub" style="margin-top:10px">After Merge, the Roadmap gate re-opens and admits one next feature. Nothing is chained; nothing is admitted by absence. <span style="color:var(--wait)">Orange</span> moves send work back; bold cards are judged gates — the judge runs on the strongest model and holds the lane.</div>
+  </div>
+  <div class="grid" style="grid-template-columns:1.25fr 1fr;align-items:start">
+    <div class="card"><div class="card-h"><h2>Where the moves lead</h2><span class="sub">every move has a known consequence</span></div>
+      <table class="ret"><tr><th>Move</th><th>Work goes to</th><th>Redone</th></tr>
+        <tr><td><b>revise</b> · note</td><td>the same author conversation, with your note</td><td>this artifact, its checks and judge</td></tr>
+        <tr><td><b>reject</b> · note</td><td>a fresh author here — or an earlier gate you name; at Concept and Merge, back to the roadmap</td><td>the target gate and every gate after it</td></tr>
+        <tr><td><b>restart</b></td><td>a fresh build from the restorable commit, with the findings</td><td>the code, then Code review</td></tr>
+        <tr><td><b>split+revise</b></td><td>part of the work becomes a new roadmap feature</td><td>the work plan, then this gate</td></tr>
+        <tr><td><b>fix round</b> · automatic</td><td>a worker fixes, the same verifier re-checks — at most 2</td><td>the failing parts</td></tr></table>
+      <div class="sub" style="margin-top:8px">Re-crossing: when work goes back, every later gate opens again, and its brief says what changed since you approved it.</div></div>
+    <div class="card"><div class="card-h"><h2>Every gate, the same five moments</h2></div>
+      <div class="five">
+        <div><b>1 · Work</b>authors run on the lane; you may steer work roles</div>
+        <div><b>2 · Evidence</b>judge, checks, fix rounds — evidence, never a decision</div>
+        <div><b>3 · Brief</b>ten parts, complete before the gate waits for you</div>
+        <div><b>4 · Waiting</b>no clock, crash or missing screen settles it</div>
+        <div><b>5 · Move</b>yours, recorded with the brief you saw</div></div>
+      <div class="kv2" style="grid-template-columns:150px 1fr;margin-top:12px"><span>Gates added by flows</span><span>same five moments, same brief, same move kinds — e.g. Threat model after Design</span><span>Never delegable</span><span>the Roadmap gate</span><span>Concept doc</span><span class="mono">docs/concepts/the-flow.md</span></div></div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

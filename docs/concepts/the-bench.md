@@ -234,6 +234,9 @@ The Roadmap gate brief gains an **evidence view** per proposed feature:
   information only; it never decides;
 - **other actions**: *research this* and *spike this before admitting*, each starting a bench item linked to the gate.
 
+Candidates and their evidence enter the roadmap alongside the engineer's own inputs and rows, while the roadmap is shaped
+together with the planner (`the-director.md` §4.3).
+
 The gate's moves are unchanged. *Admit only after a spike* is expressed by editing the rows — leave it out for now, or
 place it later — and revisiting it next time.
 

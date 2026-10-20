@@ -11,6 +11,7 @@
 > Companion docs:
 >   - The record:                `the-record.md` (the only data source)
 >   - The design:                `web-front-door.md` (§6.6 metrics, §6.9 health)
+>   - Health (now, not over time): `health.md`
 >   - Extensible flow:           `extensible-flow.md` (insights for added gates)
 >   - The bench:                 `the-bench.md` · Knowledge: `factory-wiki.md` · Teams: `team-space.md`
 >   - The user experience:       `user-experience.md` §7.12, and mockups 15, 16, 44, 54, 60

@@ -63,3 +63,15 @@ render 57-flow-builder                   1600,900
 render 58-gate-added-in-flight           1600,1020
 render 59-gate-version-change            1600,960
 render 60-gate-insights                  1600,900
+render 61-first-run-machine              1600,940
+render 62-first-run-models               1600,900
+render 63-first-run-workshop             1600,920
+render 64-first-run-factory              1600,1060
+render 65-first-run-knowledge            1600,860
+render 66-first-run-roadmap              1600,1100
+render 67-the-flow                       1600,1000
+render 68-concept-gate                   1600,1080
+render 69-design-gate                    1600,1140
+render 70-work-plan-gate                 1600,1190
+render 71-documentation-gate             1600,1050
+render 72-feature-journey                1600,960

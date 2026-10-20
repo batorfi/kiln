@@ -1,0 +1,59 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — first run</title><link rel="stylesheet" href="kiln-mock.css"><style>
+.side .stp{display:flex;flex-direction:column;gap:2px;margin-top:6px}
+.side .st{display:flex;align-items:center;gap:10px;padding:8px 8px;border-radius:7px;font-size:13px;color:var(--side-muted)}
+.side .st .n{width:22px;height:22px;border-radius:50%;border:1.5px solid #4A423B;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none}
+.side .st.done{color:var(--side-ink)}.side .st.done .n{background:#15803D;border-color:#15803D;color:#fff}
+.side .st.now{background:var(--side-2);color:#fff}.side .st.now .n{background:#F97316;border-color:#F97316;color:#fff}
+.side .st.optl .n{border-style:dashed}
+.wiz{max-width:1260px}
+.foot{display:flex;align-items:center;gap:10px;margin-top:4px}
+.big{font-size:26px;font-weight:700;letter-spacing:-.015em}
+.chk{display:grid;grid-template-columns:24px 170px 1fr auto;gap:10px;padding:10px 0;border-top:1px solid var(--line-2);font-size:13px;align-items:center}
+.chk:first-child{border-top:0}
+.ok3{color:var(--ok);font-weight:700}.wt3{color:var(--wait);font-weight:700}.no3{color:var(--bad);font-weight:700}
+.tree{font-family:var(--mono);font-size:12px;line-height:1.75;background:#1F1B17;color:#E9E2D9;border-radius:9px;padding:12px 14px;white-space:pre}
+.tree .c{color:#8C8279}
+</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>First run · studio-m5</small></div></div>
+  <div><div class="nav-h">Setup</div><div class="stp">
+    <div class="st done"><span class="n">✓</span>Machine</div>
+    <div class="st done"><span class="n">✓</span>Models</div>
+    <div class="st done"><span class="n">✓</span>Workshop & storage</div>
+    <div class="st done"><span class="n">✓</span>First factory</div>
+    <div class="st now"><span class="n">5</span>Knowledge</div>
+    <div class="st "><span class="n">6</span>First roadmap</div>
+    <div class="st  optl"><span class="n">7</span>Team (optional)</div>
+  </div></div>
+  <div class="machine"><b>Everything stays on this machine.</b><div style='margin-top:6px'>Setup writes plain files to <span class='mono'>~/kiln/</span>; you can stop and resume at any time.</div></div>
+</aside>
+<main class="main wiz">
+  <style>.src{display:grid;grid-template-columns:22px 1fr 80px 140px;gap:10px;padding:8px 0;border-top:1px solid var(--line-2);font-size:12.5px;align-items:center}
+  .src:first-of-type{border-top:0}.bx{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff}
+  .bx.on{background:var(--ink-2);border-color:var(--ink-2)}
+  .prog{height:8px;border-radius:5px;background:var(--line-2);overflow:hidden}.prog i{display:block;height:100%;background:var(--s1)}</style>
+  <div class="top"><div><div class="crumb">kiln init · step 5 of 6</div><div class="big">Knowledge — start from what the repository already knows</div>
+    <div class="sub" style="margin-top:6px">The wiki keeper reads the documents you choose and writes a first knowledge base — summaries, concepts, decisions — each page citing its source. It is an Obsidian vault from the first page.</div></div>
+    <div class="row" style="white-space:nowrap;flex:none"><span class="btn">Open in Obsidian</span><span class="btn">Open in Zed</span></div></div>
+  <div class="grid" style="grid-template-columns:1.3fr 1fr;align-items:start">
+    <div class="card"><div class="card-h"><h2>Sources to ingest</h2><span class="sub">code is read when needed, not ingested</span></div>
+      <div class="src"><span class="bx on">✓</span><span class="mono">README.md</span><span class="muted">14 KB</span><span class="pill ok">ingested · 6 pages</span></div>
+      <div class="src"><span class="bx on">✓</span><span class="mono">.specify/memory/constitution.md</span><span class="muted">22 KB</span><span class="pill ok">ingested · 11 pages</span></div>
+      <div class="src"><span class="bx on">✓</span><span class="mono">docs/concepts/ (17 files)</span><span class="muted">410 KB</span><div class="prog"><i style="width:41%"></i></div></div>
+      <div class="src"><span class="bx on">✓</span><span class="mono">specs/ (8 features)</span><span class="muted">620 KB</span><span class="sub">queued</span></div>
+      <div class="src"><span class="bx on">✓</span><span class="mono">specs/ROADMAP.md</span><span class="muted">18 KB</span><span class="sub">queued</span></div>
+      <div class="src"><span class="bx"></span><span class="mono">kiln/factory-log/*.jsonl</span><span class="muted">2 MB</span><span class="sub">not a document — skip</span></div>
+      <div class="sub" style="margin-top:8px">Ingesting runs on the lane while you continue · about 25 min in all · the first roadmap can cite what is ready.</div></div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Knowledge so far</h2><span class="sub">kiln-v1</span></div>
+        <div class="kv2" style="grid-template-columns:140px 1fr"><span>Pages</span><span>17 · overview, 9 concepts, 4 decisions, 3 source summaries</span><span>index.md</span><span>✓ created</span><span>Schema</span><span>starter <span class="mono">AGENTS.md</span> — edit any time</span></div></div>
+      <div class="card"><div class="card-h"><h2>Also created</h2></div>
+        <div class="kv2" style="grid-template-columns:150px 1fr"><span>Workshop knowledge</span><span>pages for your measured models and this machine — true from day one</span><span>Your notebook</span><span>empty · private · <span class="mono">~/kiln/notebook/</span></span></div></div>
+      <div class="foot"><span class="btn">Back</span><span class="grow"></span><span class="btn primary">Continue — ingest keeps running</span></div>
+    </div>
+  </div>
+
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

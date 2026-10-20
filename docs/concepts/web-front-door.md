@@ -52,6 +52,11 @@
 >   - Configuration:                   `configuration.md`
 >   - An extensible flow:              `extensible-flow.md`
 >   - Insights:                        `insights.md`
+>   - First run:                       `first-run.md`
+>   - The flow, gate by gate:          `the-flow.md`
+>   - In an existing codebase:          `brownfield.md`
+>   - In a new codebase:                `greenfield.md`
+>   - Health:                          `health.md`
 
 # KILN — the web front door, on durable agents and durable gates
 
@@ -112,7 +117,8 @@ long-running agentic applications. The primitives KILN uses:
 ### 3.1 The gates, by name — the default flow
 
 *These ten gates are the **default flow**. Teams may add gates of their own between the built-in ones; the Roadmap gate
-stays first, the Merge gate last, and no built-in gate can be removed — see `extensible-flow.md`.*
+stays first, the Merge gate last, and no built-in gate can be removed — see `extensible-flow.md`. The full flow — what runs
+between gates, each gate in depth, and where every move leads — is in `the-flow.md`.*
 
 Every gate has a **name a human understands without the manual**, and each name answers one question.
 Numbers stay only as the *order* along a row (Gates 1–9) and as the identifiers in existing code; in prose,
@@ -512,7 +518,8 @@ The health watcher detects conditions a human should know about:
 
 It **raises signals** — notifier events, health metrics, a `system.health` read model. It never acts on a
 gate, never aborts a unit, never moves the lane. Detection is observation; every corrective action stays a
-human command or a director rule.
+human command or a director rule. *Health in full — domains, signal anatomy, severity, baselines, broken guarantees,
+watching the watcher — is detailed in `health.md`.*
 
 ### 6.10 What this changes in KILN's record
 

@@ -9,6 +9,9 @@
 > never auto-approves — not even headless. See `roadmap.md`.
 > Date: 2026-09-11 · status: concept (pre-implementation).
 >
+> **Superseded (2026-10-19):** for the new concept, the reference description of the flow is `the-flow.md`; this doc is
+> kept as history and for the original rationale.
+>
 > **Update (2026-10-18):** the gates described here are KILN's **default flow**. Teams may add gates between them, with the
 > same contract and guarantees; the Roadmap gate (Gate 0) stays first, the Merge gate (PR) last, and no gate here can be
 > removed — see `extensible-flow.md`. Plain names for these gates: `web-front-door.md` §3.1.

@@ -1,0 +1,59 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — first run</title><link rel="stylesheet" href="kiln-mock.css"><style>
+.side .stp{display:flex;flex-direction:column;gap:2px;margin-top:6px}
+.side .st{display:flex;align-items:center;gap:10px;padding:8px 8px;border-radius:7px;font-size:13px;color:var(--side-muted)}
+.side .st .n{width:22px;height:22px;border-radius:50%;border:1.5px solid #4A423B;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex:none}
+.side .st.done{color:var(--side-ink)}.side .st.done .n{background:#15803D;border-color:#15803D;color:#fff}
+.side .st.now{background:var(--side-2);color:#fff}.side .st.now .n{background:#F97316;border-color:#F97316;color:#fff}
+.side .st.optl .n{border-style:dashed}
+.wiz{max-width:1260px}
+.foot{display:flex;align-items:center;gap:10px;margin-top:4px}
+.big{font-size:26px;font-weight:700;letter-spacing:-.015em}
+.chk{display:grid;grid-template-columns:24px 170px 1fr auto;gap:10px;padding:10px 0;border-top:1px solid var(--line-2);font-size:13px;align-items:center}
+.chk:first-child{border-top:0}
+.ok3{color:var(--ok);font-weight:700}.wt3{color:var(--wait);font-weight:700}.no3{color:var(--bad);font-weight:700}
+.tree{font-family:var(--mono);font-size:12px;line-height:1.75;background:#1F1B17;color:#E9E2D9;border-radius:9px;padding:12px 14px;white-space:pre}
+.tree .c{color:#8C8279}
+</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>First run · studio-m5</small></div></div>
+  <div><div class="nav-h">Setup</div><div class="stp">
+    <div class="st done"><span class="n">✓</span>Machine</div>
+    <div class="st now"><span class="n">2</span>Models</div>
+    <div class="st "><span class="n">3</span>Workshop & storage</div>
+    <div class="st "><span class="n">4</span>First factory</div>
+    <div class="st "><span class="n">5</span>Knowledge</div>
+    <div class="st "><span class="n">6</span>First roadmap</div>
+    <div class="st  optl"><span class="n">7</span>Team (optional)</div>
+  </div></div>
+  <div class="machine"><b>Everything stays on this machine.</b><div style='margin-top:6px'>Setup writes plain files to <span class='mono'>~/kiln/</span>; you can stop and resume at any time.</div></div>
+</aside>
+<main class="main wiz">
+  <style>.mdl{display:grid;grid-template-columns:24px 1fr 120px 110px 130px;gap:12px;padding:12px 0;border-top:1px solid var(--line-2);font-size:12.5px;align-items:center}
+  .mdl:first-of-type{border-top:0}.prog{height:8px;border-radius:5px;background:var(--line-2);overflow:hidden}.prog i{display:block;height:100%;background:var(--s1)}
+  .rl td{font-size:12.5px}</style>
+  <div class="top"><div><div class="crumb">kiln init · step 2 of 6</div><div class="big">Models — one to do the work, a stronger one to judge it</div>
+    <div class="sub" style="margin-top:6px">Recommended for 128 GB. Judges always run on the strongest model you have. Every model is measured before KILN uses it.</div></div>
+    <span class="pill ok">Ollama found · 0.13</span></div>
+  <div class="grid" style="grid-template-columns:1.7fr 1fr;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Recommended for this machine</h2><span class="sub">download continues while you go on</span></div>
+        <div class="mdl"><span class="ok3">✓</span><div><b>qwen3-coder:30b</b> · <span class="muted">work model — writes concepts, specs, code, docs</span></div><span>19 GB · in memory</span><div class="prog"><i style="width:100%;background:var(--ok)"></i></div><span class="pill ok">checked ✓</span></div>
+        <div class="mdl"><span class="wt3">◷</span><div><b>gemma4:27b</b> · <span class="muted">judge model — critic, reviewer, verifier · strongest here</span></div><span>17 GB · pinned</span><div class="prog"><i style="width:62%"></i></div><span class="pill">downloading 62%</span></div>
+        <div class="mdl"><span class="muted">○</span><div><b>gemma4:12b</b> · <span class="muted">optional — fast model for the wiki keeper and research</span></div><span>8 GB</span><div></div><span class="btn">Add</span></div></div>
+      <div class="card"><div class="card-h"><h2>kiln check model · qwen3-coder:30b</h2><span class="pill ok">✓ all capabilities</span></div>
+        <div class="kv2" style="grid-template-columns:140px 1fr"><span>Tool calling</span><span>✓ 12/12 probe calls well-formed</span><span>Streaming</span><span>✓</span><span>Context</span><span>✓ 128k measured</span><span>Speed</span><span>41 tokens/s alone on this machine</span><span>Endpoint</span><span>✓ 127.0.0.1 only</span></div></div>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Roles → models</h2><span class="sub">writes tiers.yaml</span></div>
+        <table class="rl"><tr><td>Worker · spec writer · researcher · wiki keeper</td><td class="mono">qwen3-coder:30b</td></tr><tr><td>Planner · techwriter</td><td class="mono">gemma4:27b</td></tr><tr><td><b>Judges</b> — critic, reviewer, verifier</td><td class="mono">gemma4:27b <span class="pill ok" style="font-size:10.5px">strongest</span></td></tr></table>
+        <div class="sub" style="margin-top:8px">Setup will not finish until every judge is bound to the strongest model and that model passes its checks.</div></div>
+      <div class="card" style="background:var(--surface-2)"><div class="row"><b style="font-size:13px">▸ Add a private or cloud provider</b><span class="grow"></span><span class="pill">off · local-only</span></div>
+        <div class="sub" style="margin-top:6px">Optional. Adding one shows exactly what could leave this machine and turns the factory's profile to <i>hybrid</i>. You can do this later.</div></div>
+      <div class="foot"><span class="btn">Back</span><span class="grow"></span><span class="btn primary">Continue — judge downloads in background</span></div>
+    </div>
+  </div>
+
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

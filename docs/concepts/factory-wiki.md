@@ -108,7 +108,8 @@ without loss of traceability.
 
 | Layer | In a factory wiki | In the workshop wiki |
 |---|---|---|
-| **Raw sources** — `raw/` | added by Curators: design notes, ADRs, incident reports, customer requests, specifications of other systems, clipped articles, meeting notes — plus **implementation digests**, which KILN adds to `raw/record/` as each gate settles (§8.4). Immutable: agents never write to existing files in `raw/`. | added by anyone: model notes, Ollama and Pi documentation, team conventions, shared-service docs, cross-factory lessons. Immutable in the same way. |
+| **Raw sources** — `raw/` | added by Curators: design notes, ADRs, incident reports, customer requests, specifications of other systems, clipped articles, meeting notes — plus **implementation digests**, which KILN adds to `raw/record/` as each gate settles (§8.4), and, for an existing codebase,
+the **full scan**'s machine facts in `raw/scan/<commit>/`, with its pages under `pages/codebase/` (`brownfield.md` §5.3). Immutable: agents never write to existing files in `raw/`. | added by anyone: model notes, Ollama and Pi documentation, team conventions, shared-service docs, cross-factory lessons. Immutable in the same way. |
 | **The wiki** — `pages/` | written by the keeper (and edited by Curators): overview, entities, concepts, decisions, incidents, source summaries, comparisons, filed answers; `index.md` | the same page types, for knowledge that spans factories |
 | **The schema** — `AGENTS.md` | the factory's conventions — page types, naming, required front-matter (sources, reviewed, owner), what counts as a contradiction — refined by Curators and the keeper | the workshop's conventions, refined by anyone with the keeper |
 

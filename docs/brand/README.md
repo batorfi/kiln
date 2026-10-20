@@ -21,3 +21,12 @@ it before using the logo anywhere fonts cannot be relied on.
 
 **Keep it simple.** Don't add a flame, a border or a tagline to the mark; don't recolour the ember; leave clear space
 around the mark of at least the width of the ember.
+
+## GitHub images
+
+| File | Size | Use |
+|---|---|---|
+| `kiln-social-preview.png` | 1280 × 640 | the repository's **social preview** (Settings → General → Social preview) |
+| `kiln-avatar.png` | 512 × 512 | a square **avatar** — the mark on the dark background, for a profile or organisation picture |
+
+GitHub's API cannot set either image; both are uploaded by hand in GitHub's settings.

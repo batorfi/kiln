@@ -21,6 +21,11 @@
 >   - [Configuration](../concepts/configuration.md) — hosts, providers, models and agents
 >   - [An extensible flow](../concepts/extensible-flow.md) — the default flow and gates teams add
 >   - [Insights](../concepts/insights.md) — measures, definitions, honest numbers
+>   - [First run](../concepts/first-run.md) — setup: machine, models, workshop and storage, knowledge, team
+>   - [The flow](../concepts/the-flow.md) — the default flow gate by gate, and where every move leads
+>   - [KILN in an existing codebase](../concepts/brownfield.md) — brownfield adoption: profile, baseline, stages, territory
+>   - [KILN in a new codebase](../concepts/greenfield.md) — greenfield: product brief, decisions, walking skeleton, slices
+>   - [Health](../concepts/health.md) — the watcher, signals, broken guarantees, observe-never-act
 >   - [The original concept](../concepts/concept.md) and [the gates — why, how, what](../concepts/gates-why-how-what.md)
 >   - the existing codebase under [`kiln/`](../../kiln/) (r1–r9, ~5,900 lines of source, 98 test files)
 
@@ -120,7 +125,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 ### 6.1 Gate rail and moves
 
-*Concepts: [gates — why, how, what](../concepts/gates-why-how-what.md) · [design §3.1 the default flow](../concepts/web-front-door.md) · [an extensible flow](../concepts/extensible-flow.md) · [UX §8 the gate brief](../concepts/user-experience.md)*
+*Concepts: [the flow](../concepts/the-flow.md) · [gates — why, how, what](../concepts/gates-why-how-what.md) · [design §3.1 the default flow](../concepts/web-front-door.md) · [an extensible flow](../concepts/extensible-flow.md) · [UX §8 the gate brief](../concepts/user-experience.md)*
 
 | ID | Requirement | |
 |---|---|---|
@@ -129,6 +134,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | GATE-3 | Triage may skip Concept and Design for small features, recorded with its reasoning. | Must |
 | GATE-4 | The **unattended tail** may be armed only at the Specification gate, for Work plan → Documentation; merge excluded unless explicitly delegated; any judge's objection ends it. Auto-crossed gates are recorded as delegated, never as human. | Must |
 | GATE-5 | Corrective moves carry a note that becomes the next step's instruction. | Must |
+| GATE-6 | **Where moves lead** (proposed in `the-flow.md` §11, pending review): reject targets a fresh author at the same gate or an earlier gate named in the note — the roadmap at Concept and Merge; every gate after the target is **re-crossed**, its brief showing what changed; fix-round cap a factory setting (0–3, default 2). | Should |
+| GATE-7 | **A feature's journey**: every gate, round, move and decider, machine time versus waiting, and where work went back — rebuilt from the record. | Should |
 
 ### 6.2 Durable core
 
@@ -168,6 +175,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | DIR-4 | A conversational interface to the director answers from the record with citations; talking never moves a gate. | Should |
 | DIR-5 | The **planner** is an LLM role run as a step; its drafts (roadmap proposals, work plans, splits, synthesis answers) are labelled, checked by deterministic rules before display, and decided by people. | Must |
 | DIR-6 | **Needs you**: one inbox per person across factories, workshop and team space, in three sections — waiting on you, suggestions, worth knowing — each item with its headline and what it blocks; ordered by stakes, blocking others, then waiting time; never decides or expires anything. | Must |
+| DIR-7 | **Shaping the roadmap together**: a per-factory **roadmap brief** of the engineer's inputs (goals, must-haves, constraints, order preferences, appetite, own rows, pointers) read first by the planner; a recorded shaping conversation (planner questions, why/what-if, alternatives side by side); direct edits with **pins** the planner must respect and never silently change; versioned drafts with diffs; deterministic checks on every version; row origin shown in the Roadmap gate brief; approve bound to the version read; shaping possible at any time, never altering work in progress. | Must |
 
 ### 6.5 Event backbone and record
 
@@ -275,7 +283,9 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 |---|---|---|
 | OBS-1 | **Metrics** derived from events (human loop, quality, cost, throughput, model behaviour). | Must (core) |
 | OBS-2 | **Traces**: one per feature (row → gate → unit → model request → tool call), linked to events; opt-in OTLP export to an allowed collector. | Should |
-| OBS-3 | **Health watcher**: signals only — stuck steps, lagging views, slow loads, overlap, host offline, vault conformance. | Should |
+| OBS-3 | **Health watcher** per host, observe-never-act: domains of `health.md` §4 (steps and lane, models, hosts, record and views, gates, policy and security, knowledge, configuration and dependencies, teams, bench); signals with headline, subject, severity, since, why it matters, evidence, likely cause, what a person could do, what the director already did, clearing condition; auto-resolve, acknowledge, snooze; baselines learned per host; thresholds in `health.yaml`. | Should |
+| OBS-5 | **Broken-guarantee signals** (gate settled without a move, judge off the strongest model, disallowed egress reached, non-identical projection rebuild, two store owners): always critical, never snoozed or configurable, kept as domain events; the director's fail-closed checks stop the affected factory, attributed separately. | Must |
+| OBS-6 | **Watching the watcher and diagnostics**: heartbeats, *unknown since* instead of healthy, recovery reports; `kiln health`; a local, content-free diagnostic bundle on request. | Should |
 | OBS-4 | **Insights**: evidence for people, never automatic change — measure families and definitions per `insights.md`; counts and sample sizes always shown; traceable to events; personal figures private to the person, no rankings of people; shown in context (briefs, Roadmap gate, candidates, configuration); **few-cases rule** (< 5 list cases · 5–19 rate with count · 20+ trends); **targets** only on system behaviour, never on human decision time, people or volume, with no automatic consequences; **team comparison** opt-in, system measures only, ≥ 3 contributing workshops, ranges not rankings. | Should |
 | PPL-1 | **People and roles** per factory: Decider, Operator, Curator, Observer, Auditor; identity on every decision. | Must (single user) / Should (team) |
 
@@ -345,12 +355,65 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | FLOW-8 | **Try a gate on a past feature**: ungated replay showing the brief a decider would have seen. | Should |
 | FLOW-9 | Changes by an **Operator**; team-shared gates and flows by the **team quorum**. | Should |
 
+### 6.18 First run
+
+*Concepts: [first run](../concepts/first-run.md) · [configuration](../concepts/configuration.md) · [knowledge](../concepts/factory-wiki.md)*
+
+| ID | Requirement | |
+|---|---|---|
+| SETUP-1 | **`kiln init`**: guided setup in the browser (loopback, one-time secret) or the terminal (`--no-browser`), writing the same files; resumable after interruption; any step rerunnable (`--step`). | Must |
+| SETUP-2 | **`kiln doctor`**: hardware, Node, git, Ollama, network and disk checks with fixes named; a measured recommendation (factories, model sizes, memory budget, concurrency); never installs system software. | Must |
+| SETUP-3 | **Models at setup**: recommendations from hardware, installed models first, background downloads, `kiln check model` on each, `tiers.yaml` written; setup does not finish without a judge bound to the strongest checked model; remote providers off by default. | Must |
+| SETUP-4 | **Workshop and storage**: name, owner, roles, a personal signing key; one KILN home shown before creation; disk budget, backups (off by default), retention defaults. | Must |
+| SETUP-5 | **First factory** from a local clone, a remote or an empty repository; worktree mode by default; `local-only` and the standard flow by default; the repository read locally and never changed. | Must |
+| SETUP-6 | **Knowledge bootstrap**: proposed sources, starter wiki `AGENTS.md`, ingest on the lane in the background, workshop knowledge seeded with measured models and the machine, an empty notebook. | Should |
+| SETUP-7 | **First roadmap**: a goal or open issues → a planner draft citing knowledge → the first Roadmap gate; a read-only **demo factory** from a committed replay. | Must (gate) / Should (demo) |
+| SETUP-8 | **Team at setup**: start (team-space repository, quorum, invite) or join (invite, key registration, team floor preview); joining never loosens the workshop. | Could |
+| SETUP-9 | Setup recorded: `setup.step_completed` and the step's own events begin the workshop record. | Must |
+| SETUP-10 | **Spec Kit**: `kiln doctor` checks `specify` (pinned range, `uv`, Python); setup **adopts** an existing `.specify/` (version, integration, templates against the manifest, existing `specs/`) or **adds** it (`specify init --here --ai pi`) only with approval — as a pull request in team codebases; the Pi integration installed for KILN's roles. | Must |
+| SETUP-11 | **The constitution**: adopted as is, edited, or drafted with `speckit.constitution` from the repository's docs and conventions, approved before the first roadmap; briefs cite its principles. | Must |
+
+### 6.19 Existing codebases
+
+*Concepts: [KILN in an existing codebase](../concepts/brownfield.md) · [first run](../concepts/first-run.md) · [knowledge](../concepts/factory-wiki.md) · [the team space](../concepts/team-space.md)*
+
+| ID | Requirement | |
+|---|---|---|
+| BROWN-1 | **Codebase profile**, read-only: shape, build and test commands, CI, conventions, code owners, existing guidance (including agent instruction files), history, risk areas; correctable by people; corrections win. | Must |
+| BROWN-2 | **Baseline**: build and tests at the base commit, run repeatedly to separate failing from flaky; refreshed at each Roadmap gate; Code review and Verification report new failures, pre-existing failures and *not provable* separately. | Must |
+| BROWN-3 | **Territory**: paths a factory may change, decided at the Roadmap gate; shared paths named per feature; changes outside flagged at Code review. | Must |
+| BROWN-4 | **Preserved behaviour** in the specification and **characterization tasks** first in the work plan where it is untested. | Should |
+| BROWN-5 | **Fitting the team's process**: branch and commit conventions, PR template, CI as evidence, code owners and required reviews shown and never bypassed; the Merge gate opens a pull request in stages 1–3. | Must |
+| BROWN-6 | **Adoption stages** — Observe, Rehearse, Contribute, Own — recorded; **rehearsal** replays a past change, ungated, compared with what the team merged. | Should |
+| BROWN-7 | **Brownfield knowledge**: ingest from code, history and docs with source labels; interview questions for Curators; docs-versus-code disagreements as lint findings. | Should |
+| BROWN-8 | **Base drift**: rebase at defined points; drift in touched files shown in the next brief; conflicts decided by a person. | Must |
+| BROWN-9 | **A small, reviewed footprint**: Spec Kit and the constitution enter through an *Add Spec Kit* pull request on entering Contribute (scratch worktree only before); opt-in committed `.kiln/` and `kilnignore`. | Should |
+| BROWN-10 | Issues imported as bench candidates; review comments on KILN pull requests returned to the factory as notes. | Could |
+| BROWN-11 | **Full scan** of the codebase and repository in seven passes — inventory, structure, repository history, build/CI/tests, understanding, reconciliation, synthesis — written into the factory knowledge base (`raw/scan/<commit>/` facts, `pages/codebase/` pages incl. one per module, open questions and a scan report with coverage); estimated before start, durable and resumable, local by default, deep in the territory and mapped elsewhere; pages cited at the scanned commit, labelled measured or inferred; no per-person rankings. | Must |
+| BROWN-12 | **Keeping the scan true**: incremental re-scan after each merge to main; full re-scan on request or director suggestion; re-scans never overwrite people's edits — conflicts become contradictions. | Should |
+
+### 6.20 New codebases
+
+*Concepts: [KILN in a new codebase](../concepts/greenfield.md) · [first run](../concepts/first-run.md) · [the bench](../concepts/the-bench.md) · [shaping the roadmap](../concepts/the-director.md)*
+
+| ID | Requirement | |
+|---|---|---|
+| GREEN-1 | **Start empty**: create the repository, add Spec Kit (files shown before the first commit), local-only and worktree mode by default. | Must |
+| GREEN-2 | **Product brief**: problem, users, outcomes, non-goals, constraints, quality attributes, success measures — written or drafted with the planner, approved, a knowledge page *from a person*; feeds the roadmap brief. | Must |
+| GREEN-3 | **Constitution written from the brief** with `speckit.constitution`, each principle citing its origin; approved before the first feature; amendments recorded and versioned. | Must |
+| GREEN-4 | **Technology decisions**: open choices listed, evidence from research steps and spikes where the bench is available (M13), decided by a person, recorded as decision pages (and constitution amendments where binding); later Design gates measure against them. | Must |
+| GREEN-5 | **Walking skeleton first**, on a **foundation flow** (standard + `no_triage_skip`): layout, build, tests, CI, formatter/linter, one end-to-end path, quickstart, conventions page; Verification from a clean clone. | Must |
+| GREEN-6 | **Conventions from day one**: written by the skeleton, checked by the code reviewer and CI from feature two; changes are recorded decisions. | Should |
+| GREEN-7 | **Slices and risk**: the planner proposes vertical slices, riskiest assumptions first; tests-first work plans by default. | Should |
+| GREEN-8 | **Growing into brownfield**: director suggestions, decided at a Roadmap gate, to switch on full scan, preserved behaviour and baseline, territories, code map when their triggers are met. | Should |
+| GREEN-9 | **Starting as a team**: brief, constitution and decisions agreed in the team space; skeleton by one workshop; claims after it merges. | Could |
+
 ## 7. Non-functional requirements
 
 | Area | Requirement |
 |---|---|
 | **Runtime** | Node `^22.18.0 || >=23.6.0`, TypeScript run directly where possible; macOS first, Linux next. |
-| **Dependencies** | Runtime dependencies are allowed and **pinned** (Pi Durable, `pi-ai`, `chord`, approved 2026-10-16); each new one is a recorded decision; experimental ones sit behind one seam. The web frontend may use build-time-only tooling, shipped prebuilt. |
+| **Dependencies** | Runtime dependencies are allowed and **pinned** (Pi Durable, `pi-ai`, `chord`, approved 2026-10-16; **GitHub Spec Kit** — the `specify` CLI, its templates and `speckit.*` commands for the Pi integration — for spec-driven artifacts, 2026-10-20); each new one is a recorded decision; experimental ones sit behind one seam. The web frontend may use build-time-only tooling, shipped prebuilt. |
 | **Local-first** | A `local-only` factory on a single machine makes **no outbound connection**; a network check proves it per host from the configured allowlist. |
 | **Durability** | Crash at any point: no lost decision, no double-applied move, no half-committed step. |
 | **Determinism and replay** | Committed event streams replay through every projection to the same result; replays are regression fixtures. |
@@ -401,7 +464,7 @@ kiln/
     bench/         notebook, capture, promotion, research steps, spikes and spike reports
     server/        HTTP, auth, read models, push, intake
     web/           the front door (prebuilt assets)
-    cli/           kiln serve · kiln host (join, measure) · kiln check (config, model) · kiln agents try · kiln replay
+    cli/           kiln init · kiln doctor · kiln health · kiln serve · kiln host (join, measure) · kiln check (config, model) · kiln agents try · kiln replay
   agents/          role instructions (*.md)
   checks/          readiness probes and network checks (the *-ready pattern)
   fixtures/        committed event streams and replays
@@ -422,6 +485,7 @@ management API; only `server` and `host` open network listeners.
 | Factory event stream | ordered domain events | in the factory store; replicated to the workshop |
 | Factory-log | JSONL projection, existing schema | on the host; rebuildable |
 | Workspace | the code (git) | on the factory's host |
+| Spec-driven artifacts | Spec Kit scaffolding (`.specify/`, `.pi/prompts/`), the constitution, `specs/ROADMAP.md`, one `specs/NNN-name/` per feature with KILN's concept, design and judges' reports | in the repository, versioned with the code |
 | Factory wiki | git + Obsidian vault | on the factory's host; reachable as a git remote |
 | Workshop store | registry, people, policies, placement, workshop events | with the workshop |
 | Workshop wiki | git + Obsidian vault | with the workshop; included read-only in factory vaults |
@@ -473,7 +537,7 @@ retire code tied to the Pi-extension host or the terminal UI.** Existing tests t
 
 ## 11. Phasing — candidate roadmap
 
-*Concepts: [design §21 roadmap consequences](../concepts/web-front-door.md) · [current roadmap](../../specs/ROADMAP.md).*
+*Concepts: [design §21 roadmap consequences](../concepts/web-front-door.md) · [the roadmap proposal, r12–r41](../../specs/ROADMAP.md) (cut from these milestones into feature-sized rows).*
 
 Each milestone is a candidate roadmap row with its own gates. Every milestone ends usable and checked.
 
@@ -485,17 +549,19 @@ Each milestone is a candidate roadmap row with its own gates. Every milestone en
 | **M3** | **Real workers** | conversations on local models via `pi-ai`; tier map; tool sets; replay discipline; residency manager; model pool (one host); `kiln.config/` with roles, tier map and `kiln check config` / `kiln check model` | M1, M2 | WORK-1…5, LANE-3, CFG-1, CFG-3, CFG-4, CFG-6 (local), CFG-7 (roles), CFG-8 |
 | **M4** | **Front door, read-only** | server, session security, read models, live push; overview, factory live, record views | M2 | WEB-1/2/4, OBS-1 (basic) |
 | **M5** | **Gates on the web** | full gate brief, moves, delegation, steering, risky-action approvals | M3, M4 | BRIEF-1…4, HITL-1/2, WEB-3/5 |
-| **M6** | **Director** | deterministic planning, affinity ordering, fix rounds, director conversation | M3 | DIR-1…4 |
+| **M6** | **Director** | deterministic planning, affinity ordering, fix rounds, director conversation, shaping the roadmap together | M3 | DIR-1…4, DIR-7 |
 | **M7** | **Knowledge** | factory wiki (ingest/query/lint, vault contract), knowledge in briefs; then workshop wiki and implementation knowledge | M5, M6 | KNOW-1…6, BRIEF-5 |
 | **M8** | **Workshop** | several factories, gate inbox, host scheduler, people and roles; Agents screen and role try-runs; **added gates and flows**, per-feature flow choice, gate try-runs | M5 | HOST-1, LANE-4, PPL-1, CFG-2, CFG-7 (try-runs), FLOW-4…9 |
-| **M9** | **Observability** | metrics, traces, health, insights, time travel | M2, M4 | OBS-1…4, EVT-6 |
+| **M9** | **Observability** | metrics, traces, health, insights, time travel | M2, M4 | OBS-1…6, EVT-6 |
 | **M10** | **Models beyond the machine** | catalog, profiles, routing, egress policy, budgets, fallback, policy stops | M3, M5 | MOD-1…5, HITL-3, CFG-6 (remote) |
 | **M11** | **Factories anywhere** | host runtime and channel, placement, moves, sleeping hosts, network failure | M8 | HOST-2…7, WEB-2 (network), CFG-5 |
 | **M12** | **Team space** | team-space repository, signed acts and keys, team roadmap by quorum, claims and overlap, requests and mirrored reviews, team-aware Merge gate, team knowledge | M7, M8 | TEAM-1…9 |
 | **M13** | **The bench** | notebook and capture, keeper suggestions, promotion; research steps; spikes, spike reports, propose as feature; origin and maturity labels; candidate list and roadmap evidence | M3, M7 | BENCH-1…12 |
-| **M14** | **`kiln-v1` release** | installer, newcomer docs, demo mode from committed replays | M1–M7 (+ chosen Shoulds) | §3.1 goals |
+| **M14** | **`kiln-v1` release** | installer, `kiln init` and `kiln doctor` (SETUP-1…11), newcomer docs, demo mode from committed replays | M0–M8 and the *Must* items of M9, M15, M16 | §3.1 goals |
+| **M15** | **Existing codebases** | profile, **full scan into the knowledge base**, baseline, territory, team-process fit and base drift (the Musts, built alongside M5–M8); then preserved behaviour, adoption stages and rehearsal, brownfield knowledge | M3, M5, M7 | BROWN-1…12 |
+| **M16** | **New codebases** | start empty, product brief, constitution from the brief, technology decisions, walking skeleton on the foundation flow (the Musts, alongside M5–M8; research and spike evidence for decisions once M13 lands); then conventions enforcement, slices, growing into brownfield, team start | M3, M5, M7 | GREEN-1…9 |
 
-**`kiln-v1`** = M0–M8 plus the *Must* items of M9; M10–M13 can follow as `kiln-v1.x` without changing
+**`kiln-v1`** = M0–M8 plus the *Must* items of M9, M15 and M16; M10–M13 can follow as `kiln-v1.x` without changing
 anything built before them, because the single-machine, local-only, single-person workshop is their degenerate case.
 
 ## 12. Success measures

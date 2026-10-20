@@ -1,0 +1,73 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Documentation gate</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.map td{font-size:12.5px;vertical-align:top}.dd{font-family:var(--mono);font-size:11.5px;background:var(--surface-2);border-radius:8px;padding:9px 11px;line-height:1.6;white-space:pre-wrap}
+.dd .a{color:var(--ok)}.dd .r{color:var(--bad)}
+.kn td{font-size:12.5px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a class="on">Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot idle"></span>kiln-v1</span></a>
+    <a class="on"><span class="fac"><span class="dot idle"></span>billing-service</span></a>
+    <a><span class="fac"><span class="dot idle"></span>docs-site</span></a>
+    <a><span class="fac"><span class="dot idle"></span>handbook</span></a>
+  </div>
+  <div class="machine"><b>Later today, 12:37</b><div style="margin-top:6px">b2 has reached the Documentation gate.</div></div>
+</aside>
+<main class="main">
+  <div class="hero">
+    <div class="row"><div class="crumb" style="margin:0"><b>billing-service</b> · Feature b2 · Proration on plan change · today 12:37</div><span class="grow"></span><span class="pill deleg">Delegation ended at Verification</span><span class="pill wait">Waiting 6 min</span><span class="pill cloud">hybrid</span></div>
+    <div class="row" style="margin-top:12px;gap:24px;align-items:center">
+      <div style="min-width:470px"><div class="kicker">Documentation gate · 8 of 9 · release</div><div class="q">Do the docs describe what was actually built?</div>
+        <div class="sub">Compared with the code as built — not with the original intent. The next feature, and the next person, will read these.</div></div>
+      <div class="grow"><div class="rail"><div class="g skip"><div class="c"></div><div class="l">Concept</div></div><div class="g skip"><div class="c"></div><div class="l">Design</div></div><div class="g done"><div class="c">✓</div><div class="l">Spec</div></div><div class="g auto"><div class="c">✓</div><div class="l">Plan</div></div><div class="g auto"><div class="c">✓</div><div class="l">Impl.</div></div><div class="g auto"><div class="c">✓</div><div class="l">Code review</div></div><div class="g done"><div class="c">✓</div><div class="l">Verify</div></div><div class="g now"><div class="c"></div><div class="l">Docs</div></div><div class="g "><div class="c"></div><div class="l">Merge</div></div></div></div></div>
+  </div>
+  <div class="grid" style="grid-template-columns:1fr 430px;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="part"><span class="num">3</span><h2>The work</h2><span class="ask">What changed in the docs</span></div><span class="sub">Techwriter · gemma4:27b · local · 3 files · +118 −9</span>
+        <div class="dd" style="margin-top:8px"><b>docs/billing/proration.md</b> <span class="a">(new)</span>
+Plan changes are prorated <span class="a">by calendar day</span>: the unused days of the old plan
+are credited, and the new plan is charged for the days left in the period.
+<b>docs/api/plans.md</b>
+  PATCH /plans/{id} → response now includes <span class="a">proration: { credit, charge, days }</span>
+<b>CHANGELOG.md</b>  <span class="a">+ Plan changes are now prorated by calendar day.</span></div></div>
+      <div class="card"><div class="part"><span class="num">4</span><h2>The yardstick</h2><span class="ask">What was built, and where it is documented</span></div>
+        <table class="map"><tr><th>Built</th><th>Documented in</th><th></th></tr>
+          <tr><td>Proration by calendar day (FR-1, FR-2)</td><td class="mono">proration.md</td><td class="ok3">✓</td></tr>
+          <tr><td>Leap-year period lengths (fixed in automatic round 1)</td><td class="mono">proration.md · “Edge cases”</td><td class="ok3">✓</td></tr>
+          <tr><td>Proration fields in the API response (FR-4)</td><td class="mono">api/plans.md</td><td class="ok3">✓</td></tr>
+          <tr><td>Downgrades credit to the next invoice (FR-6)</td><td class="mono">proration.md</td><td class="ok3">✓</td></tr>
+          <tr><td>Annual plans follow the monthly rule</td><td class="mono">proration.md</td><td><span class="pill wait">documented as built · still an open question</span></td></tr></table>
+        <div class="sub" style="margin-top:8px">Docs synthesizer cross-check: nothing built and undocumented · nothing documented and not built.</div></div>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="part"><span class="num">5</span><h2>Added to the knowledge base</h2><span class="ask">Written by the wiki keeper as the factory worked</span></div>
+        <table class="kn"><tr><td>Feature story</td><td>[[b2 — How it was built]] · <span class="sub">completes at merge</span></td></tr>
+          <tr><td>Explainers</td><td>[[Proration by calendar day]] · [[Credits on downgrade]]</td></tr>
+          <tr><td>How-to</td><td>[[Adding a plan with custom periods]]</td></tr>
+          <tr><td>Reference</td><td>[[Plans API — proration fields]]</td></tr>
+          <tr><td>Learning</td><td>“Leap years break naive period lengths” — <span class="sub">proposed for the workshop wiki</span></td></tr></table></div>
+      <div class="card options-card"><div class="part"><span class="num">9</span><h2>The options</h2><span class="ask">What happens then?</span></div>
+        <div class="grid" style="gap:9px"><div class="opt"><h3><span class="dot" style="background:var(--ok)"></span>Approve</h3><ul><li>The PR writer prepares PR #41; the Merge gate opens for you.</li><li>Your delegation ended at Verification, so Merge waits for you either way.</li></ul></div><div class="opt"><h3><span class="dot" style="background:var(--wait)"></span>Revise <span class="pill" style="font-weight:500">note required</span></h3><ul><li>Your note goes to the same techwriter — e.g. “say plainly that annual plans are not yet decided”.</li></ul></div><div class="opt"><h3><span class="dot" style="background:var(--bad)"></span>Reject <span class="pill" style="font-weight:500">note required</span></h3><ul><li>A fresh techwriter rewrites the docs from the code.</li></ul></div>
+          <div class="note-box">Your note…</div>
+          <div class="row"><span class="btn grow">Reject</span><span class="btn grow">Revise</span><span class="btn ok grow">Approve</span></div></div></div>
+      <div class="card"><div class="part"><span class="num">10</span><h2>Other actions</h2><span class="ask">None of these decides the gate</span></div><div class="act"><span class="ic">≡</span><div><b>Read the feature story so far</b></div></div><div class="act"><span class="ic">⌕</span><div><b>Open the docs in Obsidian or Zed</b></div></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

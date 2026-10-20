@@ -1,0 +1,61 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — Feature journey</title><link rel="stylesheet" href="kiln-mock.css">
+<style>.jr td{font-size:12.5px;padding:8px 8px;vertical-align:top}
+.jr td:first-child{width:150px;font-weight:650}
+.rd{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:11.5px;margin:0 4px 3px 0;background:#fff}
+.rd.back{border-color:var(--wait);color:var(--wait);background:var(--wait-soft)}
+.rd.cur{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.rd.skip{color:var(--faint);border-style:dashed}
+tr.ahead td{color:var(--faint)}
+.tb{display:flex;height:22px;border-radius:6px;overflow:hidden;margin-top:6px}.tb>div{height:100%}
+.lg{display:flex;gap:14px;font-size:11.5px;color:var(--muted);margin-top:6px}.lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.thread{border-left:3px solid var(--wait);padding:4px 0 4px 12px;font-size:12.5px;line-height:1.55;margin-top:6px}</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a class="on">Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb"><b>kiln-v1</b> · Feature r10 · Role agents and model tiers · today 10:24</div><h1>r10 — the journey so far</h1>
+    <div class="sub">Every gate the feature has crossed, every round, who decided — and where the work went back. Rebuilt from the record.</div></div>
+    <div class="row"><span class="pill ok">Working · round 3</span><span class="pill local">local-only</span></div></div>
+  <div class="card"><div class="rail"><div class="g done"><div class="c">✓</div><div class="l">Concept</div></div><div class="g done"><div class="c">✓</div><div class="l">Design</div></div><div class="g done"><div class="c">✓</div><div class="l">Spec</div></div><div class="g done"><div class="c">✓</div><div class="l">Plan</div></div><div class="g run"><div class="c"></div><div class="l">Impl.</div></div><div class="g "><div class="c"></div><div class="l">Code review</div></div><div class="g "><div class="c"></div><div class="l">Verify</div></div><div class="g "><div class="c"></div><div class="l">Docs</div></div><div class="g "><div class="c"></div><div class="l">Merge</div></div></div></div>
+  <div class="grid" style="grid-template-columns:1fr 420px;align-items:start">
+    <div class="card"><div class="card-h"><h2>Gate by gate</h2><span class="sub">rounds · decisions · machine time · waiting on you</span></div>
+      <table class="jr"><tr><th>Gate</th><th>Rounds and moves</th><th>What mattered</th><th>Machine</th><th>Waiting on you</th></tr><tr><td>Roadmap</td><td><span class="rd">approve · you · Oct 12, 09:30</span></td><td>r10 admitted · standard flow · local-only</td><td>—</td><td>4 min</td></tr><tr><td>1 Concept</td><td><span class="rd">r1 · approve · you · Oct 12</span></td><td>1 premise unproven (swap cost)</td><td>50 min</td><td>40 min</td></tr><tr><td>2 Design</td><td><span class="rd">r1 · approve · you · Oct 13</span></td><td>critic: 1 major answered ✓ · 1 minor <b>not accepted, carried</b></td><td>1 h 10 min</td><td>25 min</td></tr><tr><td>3 Specification</td><td><span class="rd">r1 · approve · you · Oct 14</span></td><td>5 requirements · tail <b>not armed</b></td><td>45 min</td><td>1 h 05 min</td></tr><tr><td>4 Work plan</td><td><span class="rd">r1 · approve · you · Oct 15</span></td><td>15 tasks · 3 swaps expected</td><td>20 min</td><td>12 min</td></tr><tr><td>5 Implementation</td><td><span class="rd">r1 · approve · you · Oct 15</span></td><td>split proposed by the director · <b>declined</b> — kept as one feature</td><td>5 min</td><td>26 min</td></tr><tr><td>6 Code review</td><td><span class="rd back">r1 · restart · you · Oct 16</span><span class="rd back">r2 · restart · you · 10:05</span><span class="rd cur">r3 · building now</span></td><td>r1: judge binding not fail-closed · r2: swap unloads a held judge’s model — finding 1</td><td>6 h 48 min</td><td>41 h</td></tr><tr class="ahead"><td>7 Verification</td><td>ahead</td><td>verifier on gemma4:27b · up to 2 fix rounds</td><td></td><td></td></tr><tr class="ahead"><td>8 Documentation</td><td>ahead</td><td>techwriter · feature story completes</td><td></td><td></td></tr><tr class="ahead"><td>9 Merge</td><td>ahead</td><td>yours — nothing ships without it</td><td></td><td></td></tr></table></div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Where the time went</h2><span class="sub">5 days since admission</span></div>
+        <div class="tb"><div style="flex:10;background:var(--s1)"></div><div style="flex:43.8;background:var(--s2)"></div></div>
+        <div class="lg"><span><i style="background:var(--s1)"></i>machine · 9 h 58 min</span><span><i style="background:var(--s2)"></i>waiting on you · 43 h 50 min</span></div>
+        <div class="sub" style="margin-top:8px">Most of the wait was two Code review briefs left overnight. Waiting has no penalty — this is where the time went, not a score.</div></div>
+      <div class="card"><div class="card-h"><h2>A thread through the gates</h2></div>
+        <div class="thread"><b>Design, Oct 13</b> — the critic: <i>“nothing shows swap checking the hold before unloading”</i>; not accepted, carried forward.<br><b>Work plan, Oct 15</b> — tasks 12–13 named the check.<br><b>Code review, today</b> — finding 1: swap can unload a held judge’s model. You restarted with: <i>“the hold flag must be checked inside the lane”</i>.<br><b>Now</b> — the worker wrote the failing test first and is making it pass.</div></div>
+      <div class="card"><div class="card-h"><h2>Went back</h2></div>
+        <div class="kv2" style="grid-template-columns:120px 1fr"><span>Restarts</span><span>2 · both to the restorable commit <span class="mono">a9067f1</span> from the Implementation gate</span><span>Kept</span><span>concept, design, specification, work plan — none re-opened</span><span>Delegation</span><span>never armed on this feature</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>
