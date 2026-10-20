@@ -82,6 +82,9 @@ own — a threat model, a security review — without removing any. → [`the-fl
 
 Everything waiting on you is in one place, **Needs you**. Nothing decides itself.
 
+<p align="center"><a href="./docs/concepts/infographic/kiln-engineer-at-the-center.png"><img src="./docs/concepts/infographic/kiln-engineer-at-the-center.png" alt="The engineer at the center — six roles, KILN's actors and the team, one real day, and the full agentic lifecycle" width="820"></a><br>
+<sub>The engineer at the center — your roles, your crew and your team, one real day, and one feature's full lifecycle. Click for full size.</sub></p>
+
 ### What's inside
 
 | Part | What it does |
@@ -94,6 +97,10 @@ Everything waiting on you is in one place, **Needs you**. Nothing decides itself
 | **The record** | every state change as an event with its cause and actor — the source of live views, audits, metrics, traces and health |
 | **Knowledge** | an LLM-written wiki per factory and one per workshop, curated by engineers, readable as an Obsidian vault or in any editor |
 | **Health** | watches KILN's own machinery and says plainly when something looks wrong — and never acts on its own |
+
+<p align="center"><a href="./docs/architecture/visualisations/kiln-platform-architecture.png"><img src="./docs/architecture/visualisations/kiln-platform-architecture.png" alt="KILN platform architecture — five layers, the team space, cross-cutting concerns and 25 numbered connections" width="820"></a><br>
+<sub>The platform architecture — layers, components and connections. Explained in prose in the
+<a href="./docs/architecture/explainers/kiln-architecture.md">architecture explainer</a>. Click for full size.</sub></p>
 
 ### Where it runs
 
@@ -170,7 +177,8 @@ Any run that executes **zero** tests fails, so a mistyped path cannot pass silen
 
 | Path | What is in it |
 |---|---|
-| [`docs/concepts/`](./docs/concepts) | the design: vision, the flow, the front door, user experience, and one doc per area — with [mockups](./docs/concepts/mockups/README.md) and the [infographic](./docs/concepts/infographic/README.md) |
+| [`docs/concepts/`](./docs/concepts) | the design: vision, the flow, the front door, user experience, and one doc per area — with [mockups](./docs/concepts/mockups/README.md) and the [infographics](./docs/concepts/infographic/README.md) (KILN at a glance, the engineer at the center) |
+| [`docs/architecture/`](./docs/architecture) | the [architecture explainer](./docs/architecture/explainers/kiln-architecture.md) and the [platform architecture infographic](./docs/architecture/visualisations/README.md) |
 | [`docs/prd/`](./docs/prd/kiln-prd.md) | the product requirements for the restart |
 | [`docs/brand/`](./docs/brand/README.md) | the KILN mark and logos |
 | [`specs/`](./specs) | [`ROADMAP.md`](./specs/ROADMAP.md) (the program, admitted by a person at the Roadmap gate), one directory per feature with its spec, plan, tasks and evidence, and the archived first program |
@@ -191,11 +199,13 @@ what was right.
 
 1. [Vision](./docs/concepts/vision.md) — why KILN exists and where it is going
 2. [KILN at a glance](./docs/concepts/infographic/kiln-at-a-glance.png) — the whole concept on one page
-3. [The flow](./docs/concepts/the-flow.md) — the ten gates, gate by gate
-4. [The user experience](./docs/concepts/user-experience.md) — what working with KILN is like, and the gate brief
-5. [The web front door](./docs/concepts/web-front-door.md) — the design on Pi Durable, events and the record
-6. [First run](./docs/concepts/first-run.md) — from install to a first Roadmap gate
-7. [The PRD](./docs/prd/kiln-prd.md) and [the roadmap proposal](./specs/ROADMAP.md)
+3. [The engineer at the center](./docs/concepts/infographic/kiln-engineer-at-the-center.png) — the user experience on one page: roles, a real day, the full lifecycle
+4. [The flow](./docs/concepts/the-flow.md) — the ten gates, gate by gate
+5. [The user experience](./docs/concepts/user-experience.md) — what working with KILN is like, and the gate brief
+6. [Platform architecture](./docs/architecture/visualisations/kiln-platform-architecture.png) and the [architecture explainer](./docs/architecture/explainers/kiln-architecture.md) — how KILN is built, and why
+7. [The web front door](./docs/concepts/web-front-door.md) — the design on Pi Durable, events and the record
+8. [First run](./docs/concepts/first-run.md) — from install to a first Roadmap gate
+9. [The PRD](./docs/prd/kiln-prd.md) and [the roadmap proposal](./specs/ROADMAP.md)
 
 ## Contributing
 
