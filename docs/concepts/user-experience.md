@@ -61,9 +61,9 @@ Personas are framed by the **job** a person does in KILN, not by their title. On
 The primary persona is the **Decider**. Every other persona's needs are served without competing with the
 Decider's attention.
 
-> **Review:** Is the Decider the right primary persona? For a solo engineer the Decider and the Operator are
-> the same person; for a team they may not be. Should "several Deciders in one factory" be a first-class case,
-> or an edge case?
+> **Decided 2026-10-21** (decisions 22–23): the primary user of `kiln-v1` is an engineer in a **small team** — each
+> engineer a Decider in their own sovereign workshop, the team meeting in a team space (`team-space.md`), which is part of
+> `kiln-v1`. Several Deciders never share one gate: one decision per gate, with teammates' agreement as required reviews.
 
 ## 3. The human's jobs
 
@@ -672,7 +672,7 @@ The experience deliberately does **not**:
 
 Collected for review; each needs a decision before the interaction design phase.
 
-1. Primary persona and the solo-versus-team balance (§2, §9, §12).
+1. ~~Primary persona and the solo-versus-team balance (§2, §9, §12).~~ Decided 2026-10-21 — decision 23.
 2. ~~User-facing vocabulary: Factory, Feature, Step (§4).~~ Decided 2026-10-21 — decisions 15 and 16.
 3. Whether waiting gates ever escalate, and whether interruptions are configurable per gate (§6).
 4. Onboarding and the very first factory as its own core experience (§7).
@@ -712,7 +712,8 @@ Collected for review; each needs a decision before the interaction design phase.
 | 20 | 2026-10-21 | Extra evidence uses only models the factory's policy allows; egress becomes a policy stop | §8.4 | human |
 | 21 | 2026-10-21 | **Hand it over** arrives with multi-person workshops, hidden in a one-person workshop | §8.4 | human |
 | 22 | 2026-10-21 | **One decision per gate**: the first committed move wins and later moves are refused with *decided by …*; when several people must agree, that is a set of **required reviews** — recorded evidence that must exist before *approve* is offered — never several settling moves; no quorum gates in `kiln-v1` | §7, §8.4, §12 | human |
-| 23 | | *(your decisions from this review)* | | |
+| 23 | 2026-10-21 | The primary user is an engineer in a **small team**: personal workshops joined by a team space, both parts of which are in `kiln-v1` (roadmap r38, r39); shared hosts and team bench work stay in `kiln-v1.x` | §2 | human |
+| 24 | | *(your decisions from this review)* | | |
 
 ## 16. One sentence
 

@@ -198,6 +198,24 @@
    "status": "queued"
   },
   {
+   "id": "r38",
+   "short": "Team space, part 1 — the team-space repository with subscribe and publish, members' signing keys and signed acts, the team floor, the team roadmap decided by quorum; personal workshops on their own machines, no shared host required",
+   "deps": [
+    "r24",
+    "r25"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r39",
+   "short": "Team space, part 2 — claims and protected paths with overlap at the Work plan gate, requests and mirrored reviews between workshops (required reviews condition approve), the team-aware Merge gate with the code host's merge queue, published progress, team knowledge",
+   "deps": [
+    "r38",
+    "r31"
+   ],
+   "status": "queued"
+  },
+  {
    "id": "r32",
    "short": "Cut the kiln-v1 release — installer, newcomer docs, a demo factory replaying a committed walk through all ten gates, a release manifest and version tag; acceptance: a newcomer installs KILN, runs first setup on a real repository, and decides its first Roadmap gate in under an hour",
    "deps": [
@@ -206,7 +224,8 @@
     "r26",
     "r27",
     "r29",
-    "r31"
+    "r31",
+    "r39"
    ],
    "status": "queued"
   },
@@ -228,7 +247,7 @@
   },
   {
    "id": "r35",
-   "short": "The bench, part 2 (kiln-v1.x) — spikes in throwaway worktrees with spike reports, propose as feature, the candidate list with evidence and readiness at the Roadmap gate",
+   "short": "The bench, part 2 (kiln-v1.x) — spikes in throwaway worktrees with spike reports, propose as feature, the candidate list with evidence and readiness at the Roadmap gate, and bench work shared in a team",
    "deps": [
     "r34"
    ],
@@ -244,25 +263,9 @@
   },
   {
    "id": "r37",
-   "short": "Factories anywhere (kiln-v1.x) — the host runtime and channel, host join and measure, placement decided at the Roadmap gate, moves with handover, sleeping hosts, network failure that never approves anything",
+   "short": "Factories anywhere (kiln-v1.x) — the host runtime and channel, host join and measure, placement decided at the Roadmap gate, moves with handover, sleeping hosts, network failure that never approves anything, and shared hosts serving several member workshops of a team",
    "deps": [
     "r32"
-   ],
-   "status": "queued"
-  },
-  {
-   "id": "r38",
-   "short": "Team space, part 1 (kiln-v1.x) — the team-space repository with subscribe and publish, members' signing keys and signed acts, the team floor, the team roadmap decided by quorum",
-   "deps": [
-    "r37"
-   ],
-   "status": "queued"
-  },
-  {
-   "id": "r39",
-   "short": "Team space, part 2 (kiln-v1.x) — claims and protected paths with overlap at the Work plan gate, requests and mirrored reviews between workshops, the team-aware Merge gate with the code host's merge queue, published progress, team knowledge, shared hosts, and bench work shared in a team",
-   "deps": [
-    "r38"
    ],
    "status": "queued"
   },
@@ -308,14 +311,14 @@
   "r29",
   "r30",
   "r31",
+  "r38",
+  "r39",
   "r32",
   "r33",
   "r34",
   "r35",
   "r36",
   "r37",
-  "r38",
-  "r39",
   "r40",
   "r41"
  ],
@@ -353,14 +356,14 @@
 | r29 | Getting started | **New codebases** | r26, r28 | GREEN-1…5 | an empty repository reaches a merged walking skeleton that builds and passes from a clean clone |
 | r30 | Getting started | **Existing codebases, part 1: profile and full scan** | r24, r28 | BROWN-1, BROWN-11 | a full scan of this repository writes module pages, a coverage report and open questions; a crash mid-scan resumes |
 | r31 | Getting started | **Existing codebases, part 2: baseline, territory, process** | r30, r21 | BROWN-2, 3, 5, 8 | a feature outside its territory is flagged at Code review; pre-existing failures never block on their own |
-| r32 | Release | **Cut the kiln-v1 release** | r21, r24, r26, r27, r29, r31 | §3.1 goals, M14 | a newcomer installs KILN, runs first setup on a real repository and decides its first Roadmap gate in under an hour |
+| r38 | Team | **Team space, part 1** | r24, r25 | TEAM-1, 2, 3, 8 | a team roadmap change takes effect only when the quorum has signed |
+| r39 | Team | **Team space, part 2** | r38, r31 | TEAM-4…7 | overlapping claims surface at the Work plan gate; a required teammate review conditions *approve*; the Merge gate uses the code host's queue |
+| r32 | Release | **Cut the kiln-v1 release** | r21, r24, r26, r27, r29, r31, r39 | §3.1 goals, M14 | a newcomer installs KILN, runs first setup on a real repository and decides its first Roadmap gate in under an hour |
 | r33 | kiln-v1.x | **Models beyond the machine** | r32 | MOD-1…5, HITL-3, CFG-6 (remote) | a hybrid factory's cloud judge sees only what policy allows; a local-only factory reaches nothing beyond loopback |
 | r34 | kiln-v1.x | **The bench, part 1: notebook and research** | r32 | BENCH-1…4, BENCH-7 | a notebook entry promoted to knowledge keeps its origin; research results are cited |
-| r35 | kiln-v1.x | **The bench, part 2: spikes and candidates** | r34 | BENCH-5, 6, 8, 10–12 | a spike's report becomes evidence on a candidate shown at the Roadmap gate; spike code never merges |
+| r35 | kiln-v1.x | **The bench, part 2: spikes and candidates** | r34 | BENCH-5, 6, 8, 9, 10–12 | a spike's report becomes evidence on a candidate shown at the Roadmap gate; spike code never merges |
 | r36 | kiln-v1.x | **Observability in full** | r32 | OBS-2, OBS-4, EVT-6 | one trace per feature; insights with counts and sample sizes; time travel to any moment |
-| r37 | kiln-v1.x | **Factories anywhere** | r32 | HOST-2…7, WEB-2 (network), CFG-5 | a factory moves between hosts with handover; a network failure approves nothing |
-| r38 | kiln-v1.x | **Team space, part 1** | r37 | TEAM-1, 2, 3, 8 | a team roadmap change takes effect only when the quorum has signed |
-| r39 | kiln-v1.x | **Team space, part 2** | r38 | TEAM-4…7, TEAM-9, BENCH-9 | overlapping claims surface at the Work plan gate; the Merge gate uses the code host's queue |
+| r37 | kiln-v1.x | **Factories anywhere** | r32 | HOST-2…7, WEB-2 (network), CFG-5, TEAM-9 | a factory moves between hosts with handover; a network failure approves nothing |
 | r40 | kiln-v1.x | **Existing codebases, the rest** | r31, r35 | BROWN-4, 6, 7, 9, 10, 12 | a rehearsal on a past change compares the judges' findings with what the team merged |
 | r41 | kiln-v1.x | **New codebases, the rest** | r29, r35, r39 | GREEN-6…9 | conventions written by the skeleton are enforced from feature two; a team starts a product together |
 
@@ -386,14 +389,17 @@ before anything is built on it.
 | **Knowledge** | r23–r24 | a factory wiki and implementation knowledge readable in Obsidian and Zed |
 | **Workshop** | r25–r27 | several factories, added gates and flows, health with broken-guarantee signals |
 | **Getting started** | r28–r31 | first run, new codebases, existing codebases with a full scan |
+| **Team** | r38–r39 | a small team of personal workshops sharing one codebase through a team space — roadmap, claims, reviews, merging |
 | **Release** | r32 | **`kiln-v1`** |
-| **kiln-v1.x** | r33–r41 | models beyond the machine, the bench, full observability, factories anywhere, team space, the rest of brownfield and greenfield |
+| **kiln-v1.x** | r33–r37, r40–r41 | models beyond the machine, the bench, full observability, factories anywhere (with shared hosts), the rest of brownfield and greenfield |
 
-**The `kiln-v1` line.** r12–r32 deliver the PRD's definition of `kiln-v1`: M0–M8 plus the *Must* items of M9, M15 and M16,
-and M14's release. The PRD lists M14 as depending on M1–M7 only; this draft makes the release depend on every `kiln-v1` row
-(r21, r24, r26, r27, r29, r31 and, through them, the rest) — a correction to propose back into the PRD.
+**The `kiln-v1` line.** r12–r32 (with r42, r38 and r39) deliver the PRD's definition of `kiln-v1`: M0–M8 and **M12 (the team
+space)** plus the *Must* items of M9, M15 and M16, and M14's release. M12 joined `kiln-v1` on 2026-10-21, when a **small
+team** became the primary user (`user-experience.md` decision 23); shared hosts (TEAM-9) stay with factories anywhere in
+`kiln-v1.x`, and team bench work (BENCH-9) with the bench. The PRD lists M14 as depending on M1–M7 only; this draft makes the release depend on every `kiln-v1` row
+(r21, r24, r26, r27, r29, r31, r39 and, through them, the rest) — a correction to propose back into the PRD.
 
-**After `kiln-v1`.** r33–r41 follow as `kiln-v1.x`. Each depends only on the release (or on its own earlier part), so their
+**After `kiln-v1`.** r33–r37, r40 and r41 follow as `kiln-v1.x`. Each depends only on the release (or on its own earlier part), so their
 order can be reshaped freely at later Roadmap gates without touching anything built before. r40 and r41 wait for the bench
 (r35) because their evidence comes from research and spikes.
 
@@ -418,7 +424,7 @@ From PRD §14, placed at the row that needs them:
 | **r33** | egress policy language and model-family identity (§14.9) |
 | **r35** | research and spike capacity on shared hosts; keeper suggestions off-switch; spike retention (§14.11) |
 | **r37** | hosts in several workshops; workspace moves; failover; container forms (§14.8) |
-| **r38** | quorum rules, claim expiry, publishing levels (§14.10) |
+| **r38** | quorum rules, claim expiry, publishing levels (§14.10) — now inside `kiln-v1`, so these must be settled before r38 rather than in v1.x |
 
 Decided 2026-10-21, before r14 encodes them: the flow's proposals P1–P6 (`the-flow.md` §11) are accepted and its open
 questions answered (§12) — Code review offers `approve · revise · restart`, a reject may name an earlier gate at any time,

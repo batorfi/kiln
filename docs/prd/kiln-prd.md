@@ -89,7 +89,7 @@ old code that still expresses a rule we keep** (§10).
 
 | Persona | Primary needs | Key requirements |
 |---|---|---|
-| **Decider** (primary) | understand the work, decide well, never be bypassed | gate briefs (§6.8), moves, delegation, stepping in |
+| **Decider** (primary) — an engineer in a **small team**, each running their own workshop | understand the work, decide well, never be bypassed; see what teammates build | gate briefs (§6.8), moves, delegation, stepping in |
 | **Operator** | set up hosts, models, policies, budgets | §6.10, §6.12, §6.13 |
 | **Curator** | keep a factory's knowledge current and traceable | §6.11 |
 | **Engineer at the bench** | research, prototype and understand the code while factories run, and keep what they learn | §6.15 |
@@ -299,14 +299,14 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 | ID | Requirement | |
 |---|---|---|
-| TEAM-1 | **Team space repository**: a git repository holding the team roadmap, claims, team knowledge, published digests, decision requests and responses, team rules and members; every write a signed commit. | Should |
-| TEAM-2 | **Subscribe and publish**: each workshop pulls and verifies the team space into events of its own record, and publishes by its policy; default level **coordination**. | Should |
-| TEAM-3 | **Team roadmap** changed by a **quorum** of named deciders; factories adopt team features at their own Roadmap gate. | Should |
-| TEAM-4 | **Claims**: made on adoption, refined at Work plan, released at merge, expiring when stale; **advisory by default**, exclusive on protected paths; **overlap detection** across workshops shown in both gate briefs. | Should |
-| TEAM-5 | **Decisions across workshops**: opinions, required reviews, delegated deciders — signed, recorded on both sides; required reviews **mirrored** with the code host's pull request. | Should |
-| TEAM-6 | **Merge gate in a team**: base drift, required reviews and checks, the code host's merge-queue position; no KILN queue. | Should |
-| TEAM-7 | **Team knowledge** tier in the team space, editable by every member, included as `team/` in member vaults; merged-feature stories by the author's choice. | Should |
-| TEAM-8 | **Identity**: personal signing keys, registered and revoked through the team's identity provider where one exists; shared workshops join as one member. | Should |
+| TEAM-1 | **Team space repository**: a git repository holding the team roadmap, claims, team knowledge, published digests, decision requests and responses, team rules and members; every write a signed commit. | Must (v1) |
+| TEAM-2 | **Subscribe and publish**: each workshop pulls and verifies the team space into events of its own record, and publishes by its policy; default level **coordination**. | Must (v1) |
+| TEAM-3 | **Team roadmap** changed by a **quorum** of named deciders; factories adopt team features at their own Roadmap gate. | Must (v1) |
+| TEAM-4 | **Claims**: made on adoption, refined at Work plan, released at merge, expiring when stale; **advisory by default**, exclusive on protected paths; **overlap detection** across workshops shown in both gate briefs. | Must (v1) |
+| TEAM-5 | **Decisions across workshops**: opinions, required reviews, delegated deciders — signed, recorded on both sides; required reviews **mirrored** with the code host's pull request. | Must (v1) |
+| TEAM-6 | **Merge gate in a team**: base drift, required reviews and checks, the code host's merge-queue position; no KILN queue. | Must (v1) |
+| TEAM-7 | **Team knowledge** tier in the team space, editable by every member, included as `team/` in member vaults; merged-feature stories by the author's choice. | Must (v1) |
+| TEAM-8 | **Identity**: personal signing keys, registered and revoked through the team's identity provider where one exists; shared workshops join as one member. | Must (v1) |
 | TEAM-9 | **Shared hosts** serving several member workshops with isolated leases, stores and secrets. | Should |
 
 ### 6.15 The bench
@@ -561,12 +561,14 @@ Each milestone is a candidate roadmap row with its own gates. Every milestone en
 | **M11** | **Factories anywhere** | host runtime and channel, placement, moves, sleeping hosts, network failure | M8 | HOST-2…7, WEB-2 (network), CFG-5 |
 | **M12** | **Team space** | team-space repository, signed acts and keys, team roadmap by quorum, claims and overlap, requests and mirrored reviews, team-aware Merge gate, team knowledge | M7, M8 | TEAM-1…9 |
 | **M13** | **The bench** | notebook and capture, keeper suggestions, promotion; research steps; spikes, spike reports, propose as feature; origin and maturity labels; candidate list and roadmap evidence | M3, M7 | BENCH-1…12 |
-| **M14** | **`kiln-v1` release** | installer, `kiln init` and `kiln doctor` (SETUP-1…11), newcomer docs, demo mode from committed replays | M0–M8 and the *Must* items of M9, M15, M16 | §3.1 goals |
+| **M14** | **`kiln-v1` release** | installer, `kiln init` and `kiln doctor` (SETUP-1…11), newcomer docs, demo mode from committed replays | M0–M8, M12 and the *Must* items of M9, M15, M16 | §3.1 goals |
 | **M15** | **Existing codebases** | profile, **full scan into the knowledge base**, baseline, territory, team-process fit and base drift (the Musts, built alongside M5–M8); then preserved behaviour, adoption stages and rehearsal, brownfield knowledge | M3, M5, M7 | BROWN-1…12 |
 | **M16** | **New codebases** | start empty, product brief, constitution from the brief, technology decisions, walking skeleton on the foundation flow (the Musts, alongside M5–M8; research and spike evidence for decisions once M13 lands); then conventions enforcement, slices, growing into brownfield, team start | M3, M5, M7 | GREEN-1…9 |
 
-**`kiln-v1`** = M0–M8 plus the *Must* items of M9, M15 and M16; M10–M13 can follow as `kiln-v1.x` without changing
-anything built before them, because the single-machine, local-only, single-person workshop is their degenerate case.
+**`kiln-v1`** = M0–M8 and **M12 (the team space, without shared hosts)** plus the *Must* items of M9, M15 and M16 —
+M12 joined on 2026-10-21, when a small team became the primary user. M10, M11 and M13 (and TEAM-9, shared hosts) can follow
+as `kiln-v1.x` without changing anything built before them, because the single-machine, local-only workshop is their
+degenerate case.
 
 ## 12. Success measures
 

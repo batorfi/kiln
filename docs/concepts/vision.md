@@ -248,17 +248,17 @@ The path is a sequence of horizons, each admitted at the Roadmap gate in its own
 | Horizon | What it delivers | Where it stands |
 |---|---|---|
 | **Foundation** | the single-lane runtime, the gates, the record, a real local-model worker, readiness checks | built and verified |
-| **Pi integration** | KILN running inside Pi with its gates and roadmap on Pi's interface | built (r8), real UI in flight (r9) |
+| **Pi integration** | KILN running inside Pi with its gates and roadmap on Pi's interface | built (r8); the Pi-embedded UI (r9) retired 2026-10-21 — the `kiln` CLI is the terminal surface |
 | **Web front door on durable agents** | KILN as its own local application; agents and gates as durable tasks on Pi's durable substrate | this vision |
 | **Event-based observability** | the event stream, its views, metrics, traces, health, replay | this vision |
-| **Roles and the director** | the full set of role agents on their model tiers; a director that turns an approved specification into gated work | planned (r10, r11), reshaped by this vision |
+| **Roles and the director** | the full set of role agents on their model tiers; a director that turns an approved specification into gated work | in `kiln-v1` (roadmap r16–r18), reshaped by this vision |
 | **The workshop** | several factories on one machine, sharing a model pool, with one place to decide | this vision |
 | **The factory wiki** | an LLM-maintained, Curator-curated wiki per factory that gives roadmaps and gates their context | this vision |
 | **The bench** | a private notebook that matures into knowledge, research steps on spare capacity, ungated spikes with measured reports that can become features | this vision |
-| **The team space** | personal workshops on one codebase: team roadmap by quorum, claims and overlap, team knowledge, teammate reviews mirrored in the code host | this vision |
+| **The team space** | personal workshops on one codebase: team roadmap by quorum, claims and overlap, team knowledge, teammate reviews mirrored in the code host | in `kiln-v1` (r38–r39) — a small team is the primary user; shared hosts follow with factories anywhere |
 | **Factories anywhere** | one workshop, factories on any host — laptop, team server, cloud VM, container — placed by people, moved without losing a step, sleeping while they wait | this vision |
 | **Models beyond the machine** | private and cloud models when configured: per-role routing, egress policy, budgets, an audit of what left the machine | this vision |
-| **The `kiln-v1` release** | a runnable factory a newcomer can install and point at a feature | the goal |
+| **The `kiln-v1` release** | a runnable factory a newcomer — or a small team — can install and point at a feature | the goal (r32) |
 
 KILN builds on Pi's durable substrate while it is still experimental, and evolves with it as it stabilises.
 
