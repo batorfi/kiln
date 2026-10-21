@@ -109,7 +109,7 @@ The experience stands or falls on a small, stable set of ideas the human can hol
 | **Spike** | an ungated, time-boxed experiment in real code that ends in a measured report | spike |
 | **Claim** | *this feature is being built by this factory, touching these files* — visible to the whole team | claim |
 | **Host** | a machine a factory runs on — this machine, a team server, a cloud machine, a container — with its own models; online, sleeping or offline | host (`factories-anywhere.md`) |
-| **Factory** | one independent line of work with its own roadmap, its own record and its own deciders | flow |
+| **Factory** | one independent line of work with its own roadmap, its own record and its own deciders | factory (*flow* means only the sequence of gates) |
 | **Roadmap** | the ordered list of features a factory will build, approved at the Roadmap gate | roadmap |
 | **Feature** | one item on the roadmap, walked through the nine feature gates | row |
 | **Gate** | a point where the factory stops until a human decides; each asks one question | gate task |
@@ -120,10 +120,10 @@ The experience stands or falls on a small, stable set of ideas the human can hol
 | **Director** | the factory's orchestrator: plans steps, orders them, keeps the line moving; never decides a gate | row and roadmap tasks |
 | **The lane** | the factory's single line of work: one step at a time | lane |
 | **The record** | everything that happened, in order, with who caused it and why | event stream |
-| **Wiki** | a factory's knowledge: pages an LLM writes and Curators shape, every claim traced to a source | factory wiki (`factory-wiki.md`) |
-| **Workshop wiki** | knowledge every factory shares — models, tools, conventions — that anyone can improve | workshop wiki |
-| **Source** | a document the wiki is built from — added by a Curator, never changed afterwards | raw source |
-| **Curator** | the person responsible for a factory's wiki | Curator |
+| **Knowledge** | a factory's knowledge: pages an LLM writes and Curators shape, every claim traced to a source — kept as a wiki | factory wiki (`factory-wiki.md`) |
+| **Workshop knowledge** | knowledge every factory shares — models, tools, conventions — that anyone can improve | workshop wiki |
+| **Source** | a document the knowledge is built from — added by a Curator, never changed afterwards | raw source |
+| **Curator** | the person responsible for a factory's knowledge | Curator |
 
 ### 4.2 The ideas behind the nouns
 
@@ -137,9 +137,11 @@ The experience stands or falls on a small, stable set of ideas the human can hol
 - **The record is the truth.** What KILN shows is derived from what KILN recorded. If it is not in the record, it
   did not happen; if it happened, it is in the record.
 
-> **Review:** User-facing words are the main choice here. Are **Factory** (not "flow"), **Feature** (not
-> "row") and **Step** (not "unit" or "task") right? "Task" was avoided because it collides with work-plan tasks
-> and durable tasks.
+> **Decided 2026-10-21** (decision 15): **Factory**, **Feature** and **Step** are the words people read. Internally,
+> *flow* means only the sequence of gates (`extensible-flow.md`); *row* survives only as the roadmap's data field and
+> ids; *unit* only in code. "Task" stays avoided because it collides with work-plan tasks and durable tasks.
+> **Knowledge** is what people see (*knowledge page*, *workshop knowledge*); *wiki* names how it is kept — an LLM wiki
+> readable as an Obsidian vault — in docs and in technical names (decision 16).
 
 ## 5. Experience principles
 
@@ -614,8 +616,9 @@ What the human must be able to rely on, as properties of the experience itself:
 | **Respectful** | of the human's time, judgment and words | presumptuous — deciding "for convenience" |
 | **Crafted** | the kiln metaphor gives a sense of care and patience | whimsical or cute at the cost of clarity |
 
-> **Review:** How much of the kiln metaphor should reach the experience itself (firing, chamber, heat, workshop)
-> versus staying in the docs? The risk is charm over clarity.
+> **Decided 2026-10-21** (decision 17): the metaphor stays in the **name, the brand and the docs** (`kiln-analogy.md`).
+> The product speaks plainly — factory, gate, step, record; no *firing*, *chamber* or *heat* in the UI or in briefs.
+> *Workshop* stays: it is a plain word for the place where people work.
 
 ## 11. Language and voice
 
@@ -665,11 +668,11 @@ The experience deliberately does **not**:
 Collected for review; each needs a decision before the interaction design phase.
 
 1. Primary persona and the solo-versus-team balance (§2, §9, §12).
-2. User-facing vocabulary: Factory, Feature, Step (§4).
+2. ~~User-facing vocabulary: Factory, Feature, Step (§4).~~ Decided 2026-10-21 — decisions 15 and 16.
 3. Whether waiting gates ever escalate, and whether interruptions are configurable per gate (§6).
 4. Onboarding and the very first factory as its own core experience (§7).
 5. Several Deciders collaborating on one gate: supported, deferred, or out of scope (§7, §8.4, §12).
-6. How much of the kiln metaphor reaches the experience (§10).
+6. ~~How much of the kiln metaphor reaches the experience (§10).~~ Decided 2026-10-21 — decision 17.
 7. Direct versus neutral voice (§11).
 8. Whether KILN offers its own recommended move at a gate, and the limits on requesting more evidence (§8).
 9. ~~Whether the Pi-integrated terminal experience (r9) remains a supported secondary surface.~~ Decided 2026-10-21 —
@@ -695,7 +698,10 @@ Collected for review; each needs a decision before the interaction design phase.
 | 12 | 2026-10-18 | The **bench** — notebook, research steps and spikes — is adopted | §4, §7.18–7.20 | human |
 | 13 | 2026-10-18 | The bench feeds roadmaps through a **candidate list**, evidence and **readiness** at the Roadmap gate, and *what we learned since the last approval* | §7.21, §8.5 | human |
 | 14 | 2026-10-21 | The Pi-integrated terminal surface (r9) is **retired**; the terminal surface is the **`kiln` CLI** — status, Needs you, the gate brief as text and moves, under the same rules as the browser | §14 Q9 | human |
-| 15 | | *(your decisions from this review)* | | |
+| 15 | 2026-10-21 | **Factory, Feature, Step** are the user-facing words; internally *flow* means only the sequence of gates, *row* only the roadmap field, *unit* only code | §4.1 | human |
+| 16 | 2026-10-21 | People see **Knowledge** (knowledge page, workshop knowledge); *wiki* names the format in docs and technical names | §4.1 | human |
+| 17 | 2026-10-21 | The kiln metaphor stays in the **name, brand and docs**; the product speaks plainly | §10 | human |
+| 18 | | *(your decisions from this review)* | | |
 
 ## 16. One sentence
 

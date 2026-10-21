@@ -3,7 +3,7 @@
 >
 > Scope note: this doc describes a *scenario* — KILN with a locally hosted webapp as its front door, its
 > workers running as **Pi Durable** agents, its **gates as durable tasks**, an **event-based
-> observability architecture**, **several flows on one host** (§12), and **non-local models when
+> observability architecture**, **several factories on one host** (§12), and **non-local models when
 > configured** (§13). It is the idea and its
 > consequences, not a UX design and not a spec. Adopting it needs a **Roadmap gate** amendment of the roadmap and
 > a **MAJOR** constitution amendment (Principles III, VII, VIII and IX); until both happen, `concept.md` and the
@@ -14,7 +14,7 @@
 >   - **The experimental status of Pi Durable is accepted**: KILN evolves with it as it stabilizes.
 >   - **Gates are durable tasks.**
 >   - **Observability is event-based**, not a single log file (rev 4, §6).
->   - **A large local host may run several KILN flows** (rev 5, §12).
+>   - **A large local host may run several KILN factories** (rev 5, §12).
 >   - **"Gate 0" is renamed the Roadmap gate** (rev 6). It is the human's approval of the roadmap — the
 >     rows, their order and dependencies — before a lane starts, re-opened at every boundary between rows.
 >     The nine lane gates keep their numbers (Gates 1–9). The existing code's identifier `gate0`
@@ -149,7 +149,7 @@ The ten gates fall into three phases:
 **Definitions.**
 
 - **Roadmap gate.** The human admits the program before any lane starts, and re-checks it at every boundary
-  between rows. Never automatic, never delegated, per flow. *(Formerly "Gate 0".)*
+  between rows. Never automatic, never delegated, per factory. *(Formerly "Gate 0".)*
 - **Concept gate.** The cheapest place to stop a wrong idea: scope, intent and premises are judged before any
   design exists. Skipped for small features by triage, together with the Design gate.
 - **Design gate.** The structure — module boundaries, data flow, abstractions — is judged by the architecture
@@ -218,7 +218,7 @@ the factory-log included — is a rebuildable projection. There is no second led
 
 The KILN server is the store's **single owner**, matching Pi Durable's rule (one owning process, others
 attach). The browser attaches through the server and is never a source of truth. This section describes one
-flow; on a host running several, each flow has its own process and store under a shared workshop (§12).
+factory; on a host running several, each factory has its own process and store under a shared workshop (§12).
 
 ## 5. The factory as a durable task graph
 
@@ -601,13 +601,13 @@ The webapp reads only committed state, through the server, and never polls:
 | Principle | Impact |
 |---|---|
 | I. Author/judge separation | Unchanged; enforced structurally — only the row task creates conversations (§7). |
-| II. Lines of defense on the strongest | Strengthened: the row task binds tiers when it creates judge units; the strongest model may be a configured remote one, and a flow may require judges from a different model family than the author (§13.3). A judge is never silently downgraded (§13.6). On multi-flow hosts the strongest local model may be pinned resident for all flows (§12.4). |
-| III. Single lane | **Redefined (MAJOR) for multi-flow hosts**: one lane per flow, strictly sequential inside the flow (enforced by the lane task, §5.4); how many lanes may hold how many resident models is a host-level memory budget enforced by the model pool (§12.4). On a one-flow host the principle reads exactly as today. |
-| IV. Affinity is the only cost lever | Scoped and extended: affinity is the cost lever for **local** models, host-wide across flows (§12.5); remote spend is governed by budgets (§13.5). Lane state is durable; resume re-establishes affinity first. |
+| II. Lines of defense on the strongest | Strengthened: the row task binds tiers when it creates judge units; the strongest model may be a configured remote one, and a factory may require judges from a different model family than the author (§13.3). A judge is never silently downgraded (§13.6). On multi-factory hosts the strongest local model may be pinned resident for all factories (§12.4). |
+| III. Single lane | **Redefined (MAJOR) for multi-factory hosts**: one lane per factory, strictly sequential inside the factory (enforced by the lane task, §5.4); how many lanes may hold how many resident models is a host-level memory budget enforced by the model pool (§12.4). On a one-factory host the principle reads exactly as today. |
+| IV. Affinity is the only cost lever | Scoped and extended: affinity is the cost lever for **local** models, host-wide across factories (§12.5); remote spend is governed by budgets (§13.5). Lane state is durable; resume re-establishes affinity first. |
 | V. Headless never silently approves | Unchanged; a `WAIT` *is* a waiting gate task, and only a committed move settles it (§5.2). |
-| VI. Gate 0 human-only | Unchanged in substance; **renamed** to "the Roadmap gate is human-only" (a PATCH-level wording amendment). The roadmap task accepts no delegated move. The Roadmap gate is per flow; starting a flow is a recorded human command, and delegation never crosses flows (§12.6). |
+| VI. Gate 0 human-only | Unchanged in substance; **renamed** to "the Roadmap gate is human-only" (a PATCH-level wording amendment). The roadmap task accepts no delegated move. The Roadmap gate is per factory; starting a factory is a recorded human command, and delegation never crosses factories (§12.6). |
 | VII. Everything recorded | **Redefined (MAJOR)**: the ordered domain-event stream, committed atomically with state in the durable store, is the primary record; the factory-log and every other view are rebuildable projections of it (§6). |
-| VIII. Local-first | **Redefined (MAJOR)**: "local by default; egress only by a configured, recorded, policy-checked choice" (§13). Under the default `local-only` profile it holds exactly as today. Clarifications kept: a loopback-only listener is not an outbound dependency; the optional OTLP exporter is loopback-only. The network scan becomes a check of the per-flow allowlist. Extended for factories anywhere (§15): every host and every host–workshop connection is configured, authenticated, encrypted and recorded; each host's allowlist is checked. |
+| VIII. Local-first | **Redefined (MAJOR)**: "local by default; egress only by a configured, recorded, policy-checked choice" (§13). Under the default `local-only` profile it holds exactly as today. Clarifications kept: a loopback-only listener is not an outbound dependency; the optional OTLP exporter is loopback-only. The network scan becomes a check of the per-factory allowlist. Extended for factories anywhere (§15): every host and every host–workshop connection is configured, authenticated, encrypted and recorded; each host's allowlist is checked. |
 | IX. No dashboard, no server | **Redefined (MAJOR)**: "one committed state, surfaces driven by domain events (never polling), a loopback server that is never a source of truth". The "event-driven, never polling" half of IX is kept and strengthened. A workshop reachable over a network (§15) requires real authentication. |
 
 Also proposed (MINOR): **workshops are sovereign** — no act from a team space or another workshop settles a gate; only
@@ -621,29 +621,29 @@ Also superseded: the **zero-runtime-dependency** stance (Pi Durable, `pi-ai`, `c
 
 ## 12. Many kilns on one machine
 
-Everything above describes **one flow**: one roadmap, one lane, one human deciding. KILN's single-lane
+Everything above describes **one factory**: one roadmap, one lane, one human deciding. KILN's single-lane
 thesis came from a constraint — a local machine can hold one useful model at a time, and loading another
 is the expensive move. A machine with a large unified memory (a Mac Studio-class host with 128 GB, for
 example) relaxes that constraint: it can keep **several models resident at once**, and serve **several
 requests concurrently** from one loaded model. This section describes how the concept supports **several
-KILN flows on one host** without giving up what makes a single flow trustworthy.
+KILN factories on one host** without giving up what makes a single factory trustworthy.
 
 ### 12.1 The principle: many kilns, one workshop
 
 A potter with more space does not build a bigger kiln with many chambers; they build **more kilns** in one
 **workshop**, sharing its power, its floor and its people. KILN does the same:
 
-- **A flow stays exactly what it is today**: one roadmap with its own Roadmap gate, one lane, units strictly
-  sequential, a human at every gate. Nothing inside a flow becomes parallel.
-- **The workshop is new**: a host-level layer that owns what flows share — memory, loaded models, compute,
+- **A factory stays exactly what it is today**: one roadmap with its own Roadmap gate, one lane, units strictly
+  sequential, a human at every gate. Nothing inside a factory becomes parallel.
+- **The workshop is new**: a host-level layer that owns what factories share — memory, loaded models, compute,
   the human's attention, and the web surface — and decides how they are shared.
 
-The single lane is redefined at the right level: **one lane per flow**, and a **host-level budget** for how
+The single lane is redefined at the right level: **one lane per factory**, and a **host-level budget** for how
 many lanes may hold how many models at once.
 
-### 12.2 What a flow is
+### 12.2 What a factory is
 
-A flow is the unit of isolation. Each flow has its own:
+A factory is the unit of isolation. Each factory has its own:
 
 - **roadmap and Roadmap gate**, and its own rows;
 - **durable store** (its own Pi Durable harness and storage), and therefore its own ordered event stream;
@@ -651,8 +651,8 @@ A flow is the unit of isolation. Each flow has its own:
   feature on its own branch (§12.7);
 - **owner** — the human(s) allowed to decide at its gates.
 
-Flows never share a store, a lane, a conversation or a gate. A flow's record is complete on its own: its
-event stream replays without reference to any other flow.
+Factories never share a store, a lane, a conversation or a gate. A factory's record is complete on its own: its
+event stream replays without reference to any other factory.
 
 ### 12.3 Process model
 
@@ -662,11 +662,11 @@ event stream replays without reference to any other flow.
  ┌──────────────────────── Workshop (host supervisor) ─────────────────────────┐
  │  web surface · session security · gate inbox · host event stream            │
  │  model pool (resident set, leases, memory budget) · host scheduler          │
- │  flow registry (start · suspend · resume · retire)                          │
+ │  factory registry (start · suspend · resume · retire)                          │
  └───────┬──────────────────────┬──────────────────────┬───────────────────────┘
          │ supervised           │                      │
    ┌─────▼─────┐          ┌─────▼─────┐          ┌─────▼─────┐
-   │ flow A    │          │ flow B    │          │ flow C    │   one process per flow:
+   │ factory A    │          │ factory B    │          │ factory C    │   one process per factory:
    │ harness   │          │ harness   │          │ harness   │   its own Pi Durable store,
    │ store     │          │ store     │          │ store     │   tasks, lane, event stream,
    │ lane      │          │ lane      │          │ lane      │   workspace
@@ -676,14 +676,14 @@ event stream replays without reference to any other flow.
                               Ollama (several resident models, parallel slots)
 ```
 
-- **One process per flow.** Each flow process is the single owner of its store (Pi Durable's rule holds
-  per flow). A crash, a runaway tool or a store failure in one flow cannot take down another; the
-  supervisor restarts the flow, and the flow resumes from its own durable state (§5.4).
+- **One process per factory.** Each factory process is the single owner of its store (Pi Durable's rule holds
+  per factory). A crash, a runaway tool or a store failure in one factory cannot take down another; the
+  supervisor restarts the factory, and the factory resumes from its own durable state (§5.4).
 - **One workshop supervisor.** It owns the web surface, the model pool and the host scheduler. It holds no
-  flow's state; it talks to flow processes over a local, authenticated channel (a Unix socket or loopback).
-- **The workshop is durable too.** Its own small store holds the flow registry, the model pool's resident
+  factory's state; it talks to factory processes over a local, authenticated channel (a Unix socket or loopback).
+- **The workshop is durable too.** Its own small store holds the factory registry, the model pool's resident
   set and its leases, and the host event stream — so a host restart re-establishes which models were
-  resident and which flows held them.
+  resident and which factories held them.
 
 ### 12.4 The model pool
 
@@ -692,66 +692,66 @@ The pool replaces "the lane loads and unloads models" with "the lane **leases** 
 - **Resident set.** The pool decides which models are loaded, bounded by a configured **memory budget**
   (well below physical memory — the OS, the workspace tooling and the browser need theirs). Each resident
   model costs its weights plus a context reservation per concurrent slot.
-- **Leases.** Before a unit's first model request, the flow's lane asks the pool for a lease on its tier
-  model. A lease is **shared**: two flows on the same model share one loaded copy, each using its own
+- **Leases.** Before a unit's first model request, the factory's lane asks the pool for a lease on its tier
+  model. A lease is **shared**: two factories on the same model share one loaded copy, each using its own
   parallel slot. A lease is released when the unit settles.
 - **KILN is the authority over residency, not Ollama.** Ollama's own idle eviction must never unload a model
   out from under a lease. The pool loads explicitly, pins residency while any lease is held, and unloads
-  explicitly — extending what `ollama-resident.ts` already does for one flow (`keep_alive`, explicit unload,
+  explicitly — extending what `ollama-resident.ts` already does for one factory (`keep_alive`, explicit unload,
   "never unload the model out from under a running unit").
-- **Pinned judges.** The strongest model is needed by every flow's line-of-defense roles. On a host that can
+- **Pinned judges.** The strongest model is needed by every factory's line-of-defense roles. On a host that can
   afford it, the pool **pins the strongest model resident** for the whole session, so judging never pays a
-  load and no flow's judge waits for another flow's work model to be evicted. Work models rotate around it.
+  load and no factory's judge waits for another factory's work model to be evicted. Work models rotate around it.
 - **Lane-hold becomes a lease property.** A held lease (the judged gates) guarantees the model stays resident
-  between the work being judged and the verdict, exactly as today — without blocking other flows that share
+  between the work being judged and the verdict, exactly as today — without blocking other factories that share
   the model.
 
 ### 12.5 The host scheduler
 
-Affinity was the only cost lever inside one flow (Principle IV). Across flows it becomes a **host-level**
+Affinity was the only cost lever inside one factory (Principle IV). Across factories it becomes a **host-level**
 lever:
 
-- **Affinity across flows.** When several flows have units waiting, the scheduler prefers units whose model is
+- **Affinity across factories.** When several factories have units waiting, the scheduler prefers units whose model is
   already resident. A swap happens only when no waiting unit fits the resident set and the budget forces an
   eviction — the same rule as today, applied to the whole host.
 - **Admission control.** A lease that would exceed the memory budget waits; the unit stays `queued` (a
   committed state, visible and explained), never fails.
 - **Concurrency limit.** Concurrent generations share the GPU and memory bandwidth; past a point, adding
-  flows only slows every flow. The scheduler caps concurrent generations per model and per host, and the
+  factories only slows every factory. The scheduler caps concurrent generations per model and per host, and the
   cap is tuned from measured throughput (§12.8), not assumed.
-- **Fairness and priority.** Flows have a priority and a fair share; a low-priority flow yields the next lease
-  to a high-priority one. No flow is starved: a queued unit's wait is bounded by policy, and an unusually
+- **Fairness and priority.** Factories have a priority and a fair share; a low-priority factory yields the next lease
+  to a high-priority one. No factory is starved: a queued unit's wait is bounded by policy, and an unusually
   long wait is a health signal.
 - **No preemption mid-generation.** A running model request is never cut to free its slot; priority applies
   at the next lease, not inside a unit.
 
 The scheduler only orders and admits work. It never crosses a gate, never chooses a role or a model for a
-unit (the flow's director does that), and never changes a flow's roadmap.
+unit (the factory's director does that), and never changes a factory's roadmap.
 
-### 12.6 The human across many flows
+### 12.6 The human across many factories
 
-One human with three flows is the real bottleneck, not the machine. Two consequences:
+One human with three factories is the real bottleneck, not the machine. Two consequences:
 
-- **Gate waits become useful.** In a single flow, the lane is idle while the human thinks. With several flows,
-  a gate waiting in flow A frees compute for flow B — the idle time that dominated a single flow's wall-clock
-  becomes another flow's work time. This is the main reason to run several flows at all.
-- **A cross-flow gate inbox.** Every waiting gate task across all flows is visible in one place, each still
-  owned by its flow and decided under that flow's rules. Ordering the inbox is a convenience (oldest first,
+- **Gate waits become useful.** In a single factory, the lane is idle while the human thinks. With several factories,
+  a gate waiting in factory A frees compute for factory B — the idle time that dominated a single factory's wall-clock
+  becomes another factory's work time. This is the main reason to run several factories at all.
+- **A cross-factory gate inbox.** Every waiting gate task across all factories is visible in one place, each still
+  owned by its factory and decided under that factory's rules. Ordering the inbox is a convenience (oldest first,
   priority, line-of-defense first); it never changes what a move means.
 
-Every gate rule from §5.2 holds per flow, unchanged: a move names its flow, its gate instance and the state
+Every gate rule from §5.2 holds per factory, unchanged: a move names its factory, its gate instance and the state
 version; `decided_by` comes from the session; the first committed move wins; nothing approves by clock,
-restart or absence. **Delegation never crosses flows**: arming the unattended tail in flow A authorizes
-nothing in flow B, and **the Roadmap gate stays per flow** — starting a new flow is itself a human command, recorded in
+restart or absence. **Delegation never crosses factories**: arming the unattended tail in factory A authorizes
+nothing in factory B, and **the Roadmap gate stays per factory** — starting a new factory is itself a human command, recorded in
 the workshop's event stream.
 
-Several humans can share a workshop: each flow names its deciders, and a session can only move gates in
-flows it is allowed to decide.
+Several humans can share a workshop: each factory names its deciders, and a session can only move gates in
+factories it is allowed to decide.
 
 ### 12.7 Workspaces and conflicts
 
-- **Separate repositories** are the simple case: flows cannot interfere.
-- **One repository, several flows** needs isolation: each flow works in its own worktree and branch, and meets
+- **Separate repositories** are the simple case: factories cannot interfere.
+- **One repository, several factories** needs isolation: each factory works in its own worktree and branch, and meets
   the others only at the Merge gate.
 - **The layout** (decided 2026-10-21): **one KILN-managed worktree per factory**, created with the factory; **one
   branch per feature** (`kiln/<factory>/<row>`), cut from the base when the Roadmap gate admits it. KILN never checks out
@@ -759,29 +759,29 @@ flows it is allowed to decide.
 - **Cleanup has two owners.** When a feature closes, its row task's last step removes the local feature branch after
   merge, or keeps an abandoned one as a tag (`kiln/abandoned/<row>`) for the record. The factory owns its worktree and
   removes it only when the factory is retired. Health flags orphaned branches and worktrees; nothing else deletes them.
-- **Overlap is surfaced, not resolved by machines.** When two flows touch the same files, the workshop raises
+- **Overlap is surfaced, not resolved by machines.** When two factories touch the same files, the workshop raises
   an overlap signal (an event and a health condition) at the earliest gate where it is visible — the human
   decides whether to sequence, split or proceed.
 
-### 12.8 Events and observability across flows
+### 12.8 Events and observability across factories
 
-- **Each flow keeps its own ordered stream** (§6). Envelope fields gain a `flow` id; `correlation` and
-  `causation` stay within a flow.
-- **The workshop has its own stream** for host events: `flow.started` · `flow.suspended` · `flow.resumed` ·
-  `flow.retired` · `pool.model_loaded` · `pool.model_evicted` · `pool.lease_granted` · `pool.lease_waiting` ·
+- **Each factory keeps its own ordered stream** (§6). Envelope fields gain a `factory` id; `correlation` and
+  `causation` stay within a factory.
+- **The workshop has its own stream** for host events: `factory.started` · `factory.suspended` · `factory.resumed` ·
+  `factory.retired` · `pool.model_loaded` · `pool.model_evicted` · `pool.lease_granted` · `pool.lease_waiting` ·
   `pool.lease_released` · `host.memory_pressure` · `host.concurrency_capped`.
-- **A cross-flow lease links the streams**: a flow's `lane.acquired` event references the workshop's
+- **A cross-factory lease links the streams**: a factory's `lane.acquired` event references the workshop's
   `pool.lease_granted` event by id, so a unit's wait can be explained across both.
-- **There is no global total order across flows**, and none is needed. Cross-flow views (the gate inbox, host
+- **There is no global total order across factories**, and none is needed. Cross-factory views (the gate inbox, host
   utilisation) are projections that merge streams by time, and are labelled as such.
 - **New metrics**: memory headroom; resident set over time; lease wait per tier; concurrent generations; the
-  throughput each flow loses to contention (tokens per second solo versus shared); utilisation recovered from
+  throughput each factory loses to contention (tokens per second solo versus shared); utilisation recovered from
   gate waits; fairness (share received versus share configured).
 - **One trace per row still holds**; lease waits appear as spans, linked to the workshop's pool spans.
 
 ### 12.9 What concurrency changes, and what it must not
 
-- **Timing changes; outcomes must not depend on it.** A flow's units still run in its own order, gates still
+- **Timing changes; outcomes must not depend on it.** A factory's units still run in its own order, gates still
   wait for humans, and its record still replays on its own.
 - **Model outputs may vary under concurrent load.** Batched inference on shared models can produce slightly
   different outputs than solo runs. KILN already does not rely on deterministic generation — every artifact
@@ -799,7 +799,7 @@ configured, recorded, policy-checked choice.**
 
 ### 13.1 Locality is a property of a model
 
-KILN keeps a **model catalog**. Every model a flow may use has an entry with:
+KILN keeps a **model catalog**. Every model a factory may use has an entry with:
 
 | Field | Meaning |
 |---|---|
@@ -807,7 +807,7 @@ KILN keeps a **model catalog**. Every model a flow may use has an entry with:
 | **provider and model version** | pinned exactly; a provider changing what a model name means is treated as a different model |
 | **capabilities** | context size, tool calling, image input, streaming, usage reporting |
 | **cost model** | load time and memory for `local`; price per input / output / cached token for `private` and `remote` |
-| **data handling** | what the provider's terms promise: retention, training use, region — checked against a flow's policy (§13.4) |
+| **data handling** | what the provider's terms promise: retention, training use, region — checked against a factory's policy (§13.4) |
 | **endpoint** | the one host the model is reached at; the network allowlist is derived from these entries |
 
 Model access already goes through `pi-ai`, which supports local and remote providers alike; KILN adds the
@@ -816,7 +816,7 @@ store, events, logs, the factory-log or the browser.
 
 ### 13.2 Profiles
 
-A flow runs under one of three named **profiles**:
+A factory runs under one of three named **profiles**:
 
 | Profile | Meaning |
 |---|---|
@@ -824,10 +824,10 @@ A flow runs under one of three named **profiles**:
 | **hybrid** | local by default; named roles may use named `private` or `remote` models |
 | **remote-first** | `private` / `remote` models for most roles; local only where the policy requires it |
 
-The profile, the per-role routing (§13.3) and the egress policy (§13.4) are fixed **per flow at the Roadmap
+The profile, the per-role routing (§13.3) and the egress policy (§13.4) are fixed **per factory at the Roadmap
 gate** — a human decision, recorded as part of the roadmap move. Changing any of them later is a recorded
-command, effective from the next unit; a running unit never changes model or locality mid-run. A flow's
-profile is part of its read model and appears wherever the flow does.
+command, effective from the next unit; a running unit never changes model or locality mid-run. A factory's
+profile is part of its read model and appears wherever the factory does.
 
 ### 13.3 Routing roles to models
 
@@ -841,7 +841,7 @@ possible:
 - **Local judges, remote workers.** Fast remote generation, with verdicts that never leave the machine.
 - **Cross-family judging.** The judge runs on a **different model family** from the author. Models from one
   family share blind spots; a judge from another family is more likely to catch what the author missed.
-  Author/judge separation becomes separation of *roles and model families*, not only of roles. A flow's
+  Author/judge separation becomes separation of *roles and model families*, not only of roles. A factory's
   policy may require it for the judged gates.
 - **Private infrastructure.** A team GPU host serving a large model counts as `private`: no third party sees
   the data, but traffic leaves the machine and is governed like any other egress.
@@ -850,16 +850,16 @@ The director still binds models when it creates a unit (§7); routing never beco
 
 ### 13.4 Egress policy: what may leave the machine
 
-Each non-local flow has an **egress policy**, decided at the Roadmap gate:
+Each non-local factory has an **egress policy**, decided at the Roadmap gate:
 
 - **What may be sent, to which locality** — for example: specifications and plans to `remote`; source code
-  only to `private`; these paths never; secrets never; nothing about other flows.
+  only to `private`; these paths never; secrets never; nothing about other factories.
 - **Which provider terms are acceptable** — the catalog's data-handling fields must satisfy the policy, or the
   model cannot be routed to.
 - **Checks before every request** — the outgoing context is matched against the policy, scanned for secrets
   and keys, and redacted where the policy says so. A violation **blocks the request** and raises a signal; it
   never sends a quietly trimmed version, and a blocked unit waits for a human like a stopped gate.
-- **Network enforcement** — the only hosts KILN may reach are loopback plus the catalog endpoints a flow's
+- **Network enforcement** — the only hosts KILN may reach are loopback plus the catalog endpoints a factory's
   policy allows. The network scan of P-VIII becomes a check of exactly that allowlist.
 
 Tools follow the same rule: a tool that reaches the network (web research, for example) is an egress like a
@@ -872,20 +872,20 @@ are first-class:
 
 - **Affinity is a local concern.** A swap to a remote model has no load cost, so the affinity scheduler
   (Principle IV) orders local work only; a remote unit never forces a local swap.
-- **Budgets.** Each flow and each row can carry a spend cap. Reaching it **pauses the lane and raises a
+- **Budgets.** Each factory and each row can carry a spend cap. Reaching it **pauses the lane and raises a
   signal** — it never skips a gate, never downgrades a model, never approves anything.
 - **Caching.** Each durable conversation carries a stable provider session identity, so providers that cache
   prompts can reuse a unit's context across its turns.
-- **The single lane stays.** One lane per flow holds for remote units too: the lane paces the human and keeps
+- **The single lane stays.** One lane per factory holds for remote units too: the lane paces the human and keeps
   the record ordered, not only the memory. Remote units do not need a lease from the workshop's model pool
-  (§12.4), so a host running several flows can carry more of them.
+  (§12.4), so a host running several factories can carry more of them.
 
 ### 13.6 Fallback is policy, never reflex
 
 Remote models bring outages, rate limits and latency spikes. Pi Durable already retries interrupted requests
 and keeps partial output; beyond that:
 
-- **A work role may fall back** (remote → local, or to another provider) only if the flow's policy names the
+- **A work role may fall back** (remote → local, or to another provider) only if the factory's policy names the
   fallback; the switch is recorded.
 - **A judge never silently falls back to a weaker model.** Downgrading a line-of-defense judge weakens the
   defense line, so it needs a human decision; until then the judged gate's unit waits.
@@ -898,7 +898,7 @@ Model requests become fully attributable:
 - new events: `model.request.started` / `model.request.settled` with locality, provider, pinned version,
   tokens, cost and **bytes sent**; `egress.blocked` (policy rule, unit); `budget.reached`;
   `model.fallback` (from → to, policy rule); `profile.changed`; `provider.model_deprecated`;
-- an **egress audit** per flow and per row: every request that left the machine, to which provider, under which
+- an **egress audit** per factory and per row: every request that left the machine, to which provider, under which
   rule, carrying which artifacts — shown at the Merge gate as "what left the machine for this feature";
 - **comparable outcomes**: veto rate, rework and lead time per model and locality, so "is local good enough?"
   becomes a measurement for each role rather than a belief.
@@ -1063,7 +1063,7 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
   only the server opens it;
 - domain events and telemetry never carry prompt or answer content; the `privacy` field gates what each
   consumer and the optional exporter may see, and the exporter only ever targets `127.0.0.1`;
-- provider credentials live in the OS keychain only; every outbound request is checked against the flow's
+- provider credentials live in the OS keychain only; every outbound request is checked against the factory's
   egress policy and allowlist before it leaves (§13.4).
 
 ## 20. Open design questions
@@ -1076,10 +1076,10 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
   `keep_alive` and loads or unloads; a model loaded behind its back is a broken-guarantee signal.
 - ~~**Store lifetime**~~: **Decided 2026-10-21** (human@batorfi) — one store per factory; closed features' transcripts move to a feature
   archive beside the store; the record stays whole and unsegmented in `kiln-v1` (`pi-durable.md` §12, `the-record.md` §18).
-- **Multi-flow sizing**: default memory budget, per-model concurrency caps and the flow limit for a given host,
+- **Multi-factory sizing**: default memory budget, per-model concurrency caps and the factory limit for a given host,
   derived from measured throughput under contention rather than fixed numbers.
-- **Flow-to-workshop channel**: the protocol between the supervisor and flow processes, and how leases
-  survive a supervisor restart while flows keep running.
+- **Factory-to-workshop channel**: the protocol between the supervisor and factory processes, and how leases
+  survive a supervisor restart while factories keep running.
 - **Egress policy language**: how policies name artifacts, paths and localities, and how redaction rules are
   expressed and tested.
 - **Model-family identity**: how the catalog records families so cross-family judging can be enforced.
@@ -1117,9 +1117,9 @@ Not a decision — the shape the Roadmap gate would be asked to consider:
 - **Durable workers** — units as conversations, per-role tool sets with replay declarations, lane-gated model
   access.
 - **Server and web surface** — session security, move and command intake, live projection.
-- **Workshop (multi-flow)** — supervisor, flow registry, model pool with leases and memory budget, host
-  scheduler, cross-flow gate inbox, host event stream. Can follow the single-flow rows: a one-flow workshop is
-  the degenerate case, so the single-flow design does not need to change to admit it.
+- **Workshop (multi-factory)** — supervisor, factory registry, model pool with leases and memory budget, host
+  scheduler, cross-factory gate inbox, host event stream. Can follow the single-factory rows: a one-factory workshop is
+  the degenerate case, so the single-factory design does not need to change to admit it.
 - **Models beyond the machine** — model catalog, profiles, per-role routing, egress policy and checks,
   budgets, fallback rules, egress audit. Can follow the local-only rows: `local-only` is the default and needs
   none of it.

@@ -411,7 +411,7 @@ From PRD §14, placed at the row that needs them:
 | **r16** | ~~model residency vs. harness requests~~ — **decided 2026-10-21**: every request through the lane via a KILN provider; housekeeping on the resident model (PRD LANE-3, OBS-5) |
 | **r16** | ~~session reuse~~ — **decided 2026-10-21**: a fresh conversation per step; only `revise` continues one (PRD WORK-1) |
 | **r18** | ~~the planner's limits~~ — **decided 2026-10-21**: strongest model by default; only proposes changes to rows the engineer wrote (PRD DIR-5) |
-| **r19** | user-facing words: Factory / Feature / Step; *Knowledge* versus *wiki* (§14.5) |
+| **r19** | ~~user-facing words~~ — **decided 2026-10-21**: Factory / Feature / Step; *flow* = gate sequence only; people see *Knowledge*; metaphor in name and docs only (§14.5) |
 | **r20** | whether KILN may recommend a move at a gate; limits on *request more evidence* (§14.6) |
 | **r23** | wiki keeper as its own role or the researcher with a schema; review age before a brief flags a page; how much code implementation pages reproduce (§14.2–4) |
 | **r26** | added gates as delegation arming points; `applies_when` on the diff; several Deciders on one gate (§14.7, §14.12) |

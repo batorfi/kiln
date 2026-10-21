@@ -603,7 +603,9 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 2. Wiki keeper: dedicated role or researcher with a schema — before M7.
 3. How long a knowledge page may go unreviewed before a brief flags it — M7.
 4. How much code implementation pages reproduce versus reference — M7.
-5. User-facing words: Factory / Feature / Step; *Knowledge* versus *wiki* in docs — before M4.
+5. ~~User-facing words: Factory / Feature / Step; *Knowledge* versus *wiki* in docs — before M4.~~ **Decided 2026-10-21:**
+   Factory, Feature, Step; *flow* means only the gate sequence; people see *Knowledge*, *wiki* names the format; the kiln
+   metaphor stays in the name and docs (`user-experience.md` decisions 15–17).
 6. Whether KILN may recommend a move at a gate, and limits on *request more evidence* — M5.
 7. Several Deciders collaborating on one gate — M8.
 8. Hosts in several workshops; how workspaces move; workshop failover; container forms — M11.
@@ -647,14 +649,14 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 | Bench | bench | a person's place for notes, research steps and spikes |
 | Notebook | notebook | a private vault where notes mature into knowledge by promotion |
 | Spike | spike | an ungated, time-boxed experiment that ends in a measured report |
-| Factory | flow | one roadmap, one lane, one record |
-| Feature | row | one roadmap item, walked through nine gates |
-| Step | unit | one piece of work by one role |
+| Factory | factory | one roadmap, one lane, one record |
+| Feature | row (roadmap field and ids only) | one roadmap item, walked through nine gates |
+| Step | unit (code only) | one piece of work by one role |
 | Gate | gate task | a stop that waits for a human move |
 | Flow | flow | the gates a feature passes: the default ten plus any the team added |
 | Move kind | move kind | the fixed meaning behind a move — approve, revise, reject, restart, split+revise, mitigate |
 | Move | move | a human decision at a gate |
 | Gate brief | brief | the full context presented with a gate |
 | Record | event stream | everything that happened, in order |
-| Knowledge | factory / workshop wiki | LLM-written, people-curated knowledge |
+| Knowledge · Workshop knowledge | factory wiki · workshop wiki | LLM-written, people-curated knowledge, kept as a wiki |
 | Curator | Curator | keeper of a factory's knowledge |
