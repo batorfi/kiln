@@ -238,12 +238,12 @@ Continuing from `first-run.md` Step 4 with *Start empty*:
 
 ## 17. Open questions
 
-1. Should KILN offer **starter templates** for common stacks (as recorded decisions with their evidence), or always start
-   from open choices?
-2. How small may a walking skeleton be for a library with no runtime or storage — is *build, test, CI, one public function
-   end to end* enough?
-3. Should the foundation flow add a **Decisions gate** before Design for the skeleton, or are decision pages and the
-   Design gate enough?
+1. ~~Starter templates?~~ **Decided 2026-10-21** (human@batorfi): **no** — technology choices start open and are decided by a person with
+   researched evidence; prior decisions in workshop knowledge may be cited as evidence, never pre-filled as defaults.
+2. ~~How small may a library's skeleton be?~~ **Decided 2026-10-21** (human@batorfi): **build, test, CI, packaging and one public function exercised
+   end to end through the public API** is enough for a library; a service still needs its full path.
+3. ~~A Decisions gate before Design?~~ **Decided 2026-10-21** (human@batorfi): **no** — decision pages a person approves, shown in the Design gate
+   brief; a team that wants a Decisions gate adds it as an added gate.
 4. When should a greenfield factory **revisit** an early decision automatically suggested by evidence (for example, a
    spike-backed choice that later features keep fighting)?
 

@@ -213,7 +213,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | WEB-2 | **Session security**: loopback bind, per-launch secret, Host/Origin checks, CSRF protection; `decided_by` from the session. Network-shared workshop: TLS and the team's identity provider. | Must / Should |
 | WEB-3 | Surfaces (from the mockups): workshop overview and *Needs you*; factory live view; **gate brief**; coming back; record and feature record; knowledge; insights; models & policy; hosts; health; people. | Must (core) / Should (rest) |
 | WEB-4 | A reconnecting browser resumes from its last `seq`; no polling. | Must |
-| WEB-5 | Notifications are information only — never decisions. | Must |
+| WEB-5 | Notifications are information only — never decisions. Waiting gates never escalate or time out; each person chooses which gate kinds may interrupt them. | Must |
 | WEB-6 | **The CLI is the terminal surface**: `kiln status`, `kiln needs` and `kiln gate` show the same projections as the browser, the gate brief as plain text, and make moves through the same move intake under the same rules — a move only where the full brief has been shown, bound to the state version it was made against. | Must |
 
 ### 6.8 The gate brief
@@ -405,8 +405,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | GREEN-1 | **Start empty**: create the repository, add Spec Kit (files shown before the first commit), local-only by default; always a KILN-managed worktree. | Must |
 | GREEN-2 | **Product brief**: problem, users, outcomes, non-goals, constraints, quality attributes, success measures — written or drafted with the planner, approved, a knowledge page *from a person*; feeds the roadmap brief. | Must |
 | GREEN-3 | **Constitution written from the brief** with `speckit.constitution`, each principle citing its origin; approved before the first feature; amendments recorded and versioned. | Must |
-| GREEN-4 | **Technology decisions**: open choices listed, evidence from research steps and spikes where the bench is available (M13), decided by a person, recorded as decision pages (and constitution amendments where binding); later Design gates measure against them. | Must |
-| GREEN-5 | **Walking skeleton first**, on a **foundation flow** (standard + `no_triage_skip`): layout, build, tests, CI, formatter/linter, one end-to-end path, quickstart, conventions page; Verification from a clean clone. | Must |
+| GREEN-4 | **Technology decisions**: open choices listed, evidence from research steps and spikes where the bench is available (M13), decided by a person, recorded as decision pages (and constitution amendments where binding); later Design gates measure against them. No starter templates: choices start open; prior decisions in workshop knowledge are evidence, never defaults; no built-in Decisions gate (decision pages appear in the Design brief). | Must |
+| GREEN-5 | **Walking skeleton first**, on a **foundation flow** (standard + `no_triage_skip`): layout, build, tests, CI, formatter/linter, one end-to-end path, quickstart, conventions page; Verification from a clean clone. For a library, build, test, CI, packaging and one public function end to end through the public API is a complete skeleton. | Must |
 | GREEN-6 | **Conventions from day one**: written by the skeleton, checked by the code reviewer and CI from feature two; changes are recorded decisions. | Should |
 | GREEN-7 | **Slices and risk**: the planner proposes vertical slices, riskiest assumptions first; tests-first work plans by default. | Should |
 | GREEN-8 | **Growing into brownfield**: director suggestions, decided at a Roadmap gate, to switch on full scan, preserved behaviour and baseline, territories, code map when their triggers are met. | Should |

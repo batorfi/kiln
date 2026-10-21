@@ -674,7 +674,8 @@ Collected for review; each needs a decision before the interaction design phase.
 
 1. ~~Primary persona and the solo-versus-team balance (§2, §9, §12).~~ Decided 2026-10-21 — decision 23.
 2. ~~User-facing vocabulary: Factory, Feature, Step (§4).~~ Decided 2026-10-21 — decisions 15 and 16.
-3. Whether waiting gates ever escalate, and whether interruptions are configurable per gate (§6).
+3. ~~Whether waiting gates ever escalate, and whether interruptions are configurable per gate (§6).~~ Decided 2026-10-21 —
+   decision 24.
 4. Onboarding and the very first factory as its own core experience (§7).
 5. ~~Several Deciders collaborating on one gate.~~ Decided 2026-10-21 — decision 22.
 6. ~~How much of the kiln metaphor reaches the experience (§10).~~ Decided 2026-10-21 — decision 17.
@@ -713,7 +714,8 @@ Collected for review; each needs a decision before the interaction design phase.
 | 21 | 2026-10-21 | **Hand it over** arrives with multi-person workshops, hidden in a one-person workshop | §8.4 | human |
 | 22 | 2026-10-21 | **One decision per gate**: the first committed move wins and later moves are refused with *decided by …*; when several people must agree, that is a set of **required reviews** — recorded evidence that must exist before *approve* is offered — never several settling moves; no quorum gates in `kiln-v1` | §7, §8.4, §12 | human |
 | 23 | 2026-10-21 | The primary user is an engineer in a **small team**: personal workshops joined by a team space, both parts of which are in `kiln-v1` (roadmap r38, r39); shared hosts and team bench work stay in `kiln-v1.x` | §2 | human |
-| 24 | | *(your decisions from this review)* | | |
+| 24 | 2026-10-21 | Waiting gates **never escalate** and never time out; each person chooses which gate kinds may interrupt them; Needs you shows how long each has waited; Health may note unusually long waits as information | §6 | human |
+| 25 | | *(your decisions from this review)* | | |
 
 ## 16. One sentence
 
