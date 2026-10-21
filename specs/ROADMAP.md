@@ -408,6 +408,7 @@ From PRD §14, placed at the row that needs them:
 | **r13 / r15** | ~~store lifetime~~ — **decided 2026-10-21**: one store per factory; closed features archived beside it; the record unsegmented in `kiln-v1`, measured in r15 (PRD CORE-7) |
 | **r15** | ~~event schema evolution~~ — **decided 2026-10-21**: upcast on read; stored events immutable (PRD EVT-3a) |
 | **r16** | ~~workspace isolation~~ — **decided 2026-10-21**: a KILN-managed worktree per factory, a branch per feature; row task cleans its branch, factory its worktree (PRD WORK-6) |
+| **r16** | ~~model residency vs. harness requests~~ — **decided 2026-10-21**: every request through the lane via a KILN provider; housekeeping on the resident model (PRD LANE-3, OBS-5) |
 | **r19** | user-facing words: Factory / Feature / Step; *Knowledge* versus *wiki* (§14.5) |
 | **r20** | whether KILN may recommend a move at a gate; limits on *request more evidence* (§14.6) |
 | **r23** | wiki keeper as its own role or the researcher with a schema; review age before a brief flags a page; how much code implementation pages reproduce (§14.2–4) |

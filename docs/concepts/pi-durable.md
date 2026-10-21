@@ -200,7 +200,10 @@ The human accepted Pi Durable's experimental status; KILN evolves with it. To ke
   seam. A no-go re-opens the Roadmap gate.
 - **Local models through `pi-ai`.** Tool calling, streaming, usage reporting and context-limit behaviour on Ollama
   models need to be established for each model KILN supports.
-- **Model residency.** How the lane's explicit loading and pinning composes with requests issued by the harness.
+- ~~**Model residency.**~~ **Decided 2026-10-21** (human@batorfi): every model request — including the harness's own, such as compaction — goes through a KILN provider
+  in front of Ollama, must hold the lane lease and targets the resident model; a request for another model is refused
+  or becomes an explicit, recorded swap. Harness housekeeping runs on the step's resident model. Only KILN sets
+  `keep_alive` and loads or unloads; a model loaded behind its back is a broken-guarantee signal.
 - ~~**Store lifetime.**~~ **Decided 2026-10-21** (human@batorfi): **one store per factory**. When a feature closes (merged or abandoned), its
   conversations and checkpoints are exported to a checksummed, compressed **feature archive** on the factory's host —
   beside the store, never in git — a `feature.archived` event records its reference and hash, and they are compacted out

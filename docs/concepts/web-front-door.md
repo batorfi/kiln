@@ -1066,9 +1066,10 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 
 - ~~**Workspace isolation**~~: **Decided 2026-10-21** (human@batorfi) — a worktree per factory, a branch per feature; the row task cleans its
   branch, the factory its worktree (§12.7).
-- **Model residency**: loading and evicting the resident Ollama model stays KILN's job
-  (`ollama-resident.ts`); the lane task drives it, but how residency composes with requests issued by the
-  harness needs design.
+- ~~**Model residency**~~: **Decided 2026-10-21** (human@batorfi) — every model request — including the harness's own, such as compaction — goes through a KILN provider
+  in front of Ollama, must hold the lane lease and targets the resident model; a request for another model is refused
+  or becomes an explicit, recorded swap. Harness housekeeping runs on the step's resident model. Only KILN sets
+  `keep_alive` and loads or unloads; a model loaded behind its back is a broken-guarantee signal.
 - ~~**Store lifetime**~~: **Decided 2026-10-21** (human@batorfi) — one store per factory; closed features' transcripts move to a feature
   archive beside the store; the record stays whole and unsegmented in `kiln-v1` (`pi-durable.md` §12, `the-record.md` §18).
 - **Multi-flow sizing**: default memory budget, per-model concurrency caps and the flow limit for a given host,
