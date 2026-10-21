@@ -145,7 +145,8 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | **The process** | [The flow](./docs/concepts/the-flow.md) | the ten gates in depth, what runs between them, where every move leads |
 | | [An extensible flow](./docs/concepts/extensible-flow.md) | gates teams add to the default flow, with the same guarantees |
 | | [The director and Needs you](./docs/concepts/the-director.md) | deterministic orchestration, the planner, shaping the roadmap together, the one inbox |
-| **Foundations** | [KILN on Pi Durable](./docs/concepts/pi-durable.md) | why durable tasks and conversations are the key enabler |
+| **Foundations** | [The constitution, explained](./docs/architecture/explainers/kiln-constitution.md) | the twelve principles, the flow's invariants and governance — what each rule means for the code you write |
+| | [KILN on Pi Durable](./docs/concepts/pi-durable.md) | why durable tasks and conversations are the key enabler |
 | | [The record](./docs/concepts/the-record.md) | events, the envelope, projections, replay and audit |
 | | [Configuration](./docs/concepts/configuration.md) | hosts, providers, models and roles as files, checked and recorded |
 | | [Health](./docs/concepts/health.md) | the watcher that observes and never acts; broken-guarantee signals |
@@ -170,7 +171,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 |---|---|
 | **The design** | **final** (2026-10-21) as concepts: [vision](./docs/concepts/vision.md), [the flow](./docs/concepts/the-flow.md), [the web front door](./docs/concepts/web-front-door.md), [user experience](./docs/concepts/user-experience.md) and companions in [`docs/concepts/`](./docs/concepts); [decisions settled and still open](./docs/concepts/open-decisions.md) |
 | **The product definition** | the [PRD](./docs/prd/kiln-prd.md), **final**: principles, requirements, architecture, what to keep from today's code, milestones |
-| **The law** | the [constitution](./.specify/memory/constitution.md) **v2.0.1**, amended for the restart on 2026-10-21 |
+| **The law** | the [constitution](./.specify/memory/constitution.md) **v2.0.1**, amended for the restart on 2026-10-21 — [explained for engineers](./docs/architecture/explainers/kiln-constitution.md) |
 | **The roadmap** | a [proposal](./specs/ROADMAP.md) of 31 feature-sized rows (r12–r42, with the r42 spike before r13 and the team space in `kiln-v1`), `kiln-v1` at r32 — **pending the Roadmap gate** |
 | **The code** | the **foundation from the first program** (rows r1–r8, KILN as a Pi extension): the single-lane runtime, the gate and log machinery, a real local-model worker, KILN loading into Pi, validators and readiness probes, and the test suite — reused by the restart (PRD §10) |
 
@@ -213,7 +214,7 @@ Any run that executes **zero** tests fails, so a mistyped path cannot pass silen
 | Path | What is in it |
 |---|---|
 | [`docs/concepts/`](./docs/concepts) | the design: vision, the flow, the front door, user experience, and one doc per area — with [mockups](./docs/concepts/mockups/README.md) and the [infographics](./docs/concepts/infographic/README.md) (KILN at a glance, the engineer at the center) |
-| [`docs/architecture/`](./docs/architecture) | the [architecture explainer](./docs/architecture/explainers/kiln-architecture.md) and the [platform architecture infographic](./docs/architecture/visualisations/README.md) |
+| [`docs/architecture/`](./docs/architecture) | the [architecture explainer](./docs/architecture/explainers/kiln-architecture.md), the [constitution explainer](./docs/architecture/explainers/kiln-constitution.md) and the [platform architecture infographic](./docs/architecture/visualisations/README.md) |
 | [`docs/prd/`](./docs/prd/kiln-prd.md) | the product requirements for the restart |
 | [`docs/brand/`](./docs/brand/README.md) | the KILN mark and logos |
 | [`specs/`](./specs) | [`ROADMAP.md`](./specs/ROADMAP.md) (the program, admitted by a person at the Roadmap gate), one directory per feature with its spec, plan, tasks and evidence, and the archived first program |
