@@ -614,7 +614,8 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 7. ~~Several Deciders collaborating on one gate — M8.~~ **Decided 2026-10-21:** one decision per gate (CORE-3, first
    move wins); agreement among several people is modelled as required reviews that condition *approve*, never as several
    settling moves; no quorum gates in `kiln-v1`.
-8. Hosts in several workshops; how workspaces move; workshop failover; container forms — M11.
+8. ~~Hosts in several workshops~~ (answered: yes, `team-space.md` §13); how workspaces move; workshop failover; container
+   forms — M11.
 9. Egress policy language and model-family identity — M10.
 10. ~~Exact quorum rules, exclusive-claim expiry, publishing levels beyond coordination — M12.~~ **Decided 2026-10-21:**
    majority quorum by default (rules, deciders and threshold change by the same quorum); claims renewed by activity,

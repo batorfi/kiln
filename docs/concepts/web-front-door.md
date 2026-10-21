@@ -1083,8 +1083,8 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 - **Egress policy language**: how policies name artifacts, paths and localities, and how redaction rules are
   expressed and tested.
 - **Model-family identity**: how the catalog records families so cross-family judging can be enforced.
-- **Telemetry retention**: how long spans and fine-grained metrics are kept locally before ageing out
-  (domain events are never aged out; archived transcripts: kept forever unless an Operator sets an age-out — decided
+- ~~**Telemetry retention**~~: spans and fine-grained metrics are kept **90 days** by default, settable by an Operator
+  (`first-run.md` §7; aligned 2026-10-21) (domain events are never aged out; archived transcripts: kept forever unless an Operator sets an age-out — decided
   2026-10-21).
 - **Bench**: reserving research and spike capacity per person on shared hosts; switching off keeper suggestions;
   how long archived spikes are kept (`the-bench.md` §10).

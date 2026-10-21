@@ -257,7 +257,8 @@ These lines prove that the gate waited, who decided, on which brief, and that no
 
 ## 18. Open questions
 
-1. **Retention** — the record is permanent; on what schedule should telemetry age out? *(Archived transcripts: **Decided 2026-10-21** (human@batorfi) —
+1. ~~**Retention**~~ — the record is permanent; **telemetry is kept 90 days by default**, settable by an Operator (as
+   `first-run.md` §7 already sets at setup; aligned 2026-10-21). *(Archived transcripts: **Decided 2026-10-21** (human@batorfi) —
    kept forever unless an Operator sets an age-out, recorded as configuration; ageing out deletes the feature archive and
    records `transcript.aged_out`.)*
 2. ~~**Schema evolution**~~ — **Decided 2026-10-21** (human@batorfi): **upcast on read.** Stored events never change. Each breaking schema
