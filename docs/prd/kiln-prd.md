@@ -136,7 +136,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | GATE-3 | Triage may skip Concept and Design for small features, recorded with its reasoning. | Must |
 | GATE-4 | The **unattended tail** may be armed only at the Specification gate, for Work plan → Documentation; merge excluded unless explicitly delegated; any judge's objection ends it. Auto-crossed gates are recorded as delegated, never as human. | Must |
 | GATE-5 | Corrective moves carry a note that becomes the next step's instruction. | Must |
-| GATE-6 | **Where moves lead** (proposed in `the-flow.md` §11, pending review): reject targets a fresh author at the same gate or an earlier gate named in the note — the roadmap at Concept and Merge; every gate after the target is **re-crossed**, its brief showing what changed; fix-round cap a factory setting (0–3, default 2). | Should |
+| GATE-6 | **Where moves lead** (`the-flow.md` §7, §11–12, accepted 2026-10-21): reject targets a fresh author at the same gate or an earlier gate named in the note — the roadmap at Concept and Merge — and a person may make a reject to an earlier gate at any time; Code review offers `approve · revise · restart`, `revise` going to the workers; every gate after a reject's target is **re-crossed**, its brief showing what changed, with no lighter confirmation; triage never skips Documentation; fix-round cap a factory setting (0–3, default 2). | Must |
 | GATE-7 | **A feature's journey**: every gate, round, move and decider, machine time versus waiting, and where work went back — rebuilt from the record. | Should |
 
 ### 6.2 Durable core
@@ -240,7 +240,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | HITL-1 | **Steering** of work steps (never judges), recorded under the person's name. | Must |
 | HITL-2 | **Risky-action approvals**: tool calls held by policy until a person allows or refuses; answers remembered across restarts; never a gate move. | Must |
 | HITL-3 | **Policy stops** — blocked egress, budget reached, judge unavailable — arrive as decisions, never as workarounds. | Should |
-| HITL-4 | **Hand-over** of a waiting decision to another permitted Decider; available once a workshop has more than one person (PPL-1 team), hidden otherwise. | Should |
+| HITL-4 | **Hand-over** of a waiting decision to another permitted Decider — a person in the same workshop (PPL-1 team) or a teammate the workshop explicitly names (TEAM-5); hidden in a one-person workshop with no team space. | Should |
 
 ### 6.10 Models beyond the machine
 
@@ -550,18 +550,18 @@ Each milestone is a candidate roadmap row with its own gates. Every milestone en
 | # | Milestone | Delivers | Depends on | Key requirements |
 |---|---|---|---|---|
 | **M0** | **Foundations reset** | new layout; legacy frozen; contracts, schemas, validators, scheduler, roles and network check ported with their tests green | — | GATE-1/2, WORK-2, LANE-2, EVT-5 (validators) |
-| **M1** | **Durable core, headless** | Pi Durable seam; roadmap/row/unit/gate/lane tasks; the gate contract; a scripted feature walks ten gates from the CLI, survives kill-and-resume; **gates as data** with the default flow | M0 | CORE-1…6, LANE-1, GATE-3/4/5, FLOW-1/2/3, FLOW-7 (default) |
-| **M2** | **Record** | outbox, envelope, catalog, backbone, cursors; factory-log projection byte-identical on rebuild; old walks replayed as event streams | M1 | EVT-1…5 |
-| **M3** | **Real workers** | conversations on local models via `pi-ai`; tier map; tool sets; replay discipline; residency manager; model pool (one host); `kiln.config/` with roles, tier map and `kiln check config` / `kiln check model` | M1, M2 | WORK-1…5, LANE-3, CFG-1, CFG-3, CFG-4, CFG-6 (local), CFG-7 (roles), CFG-8 |
+| **M1** | **Durable core, headless** | Pi Durable seam; roadmap/row/unit/gate/lane tasks; the gate contract; a scripted feature walks ten gates from the CLI, survives kill-and-resume; **gates as data** with the default flow | M0 | CORE-1…7, LANE-1, GATE-3/4/5/6, FLOW-1/2/3, FLOW-7 (default) |
+| **M2** | **Record** | outbox, envelope, catalog, backbone, cursors; factory-log projection byte-identical on rebuild; old walks replayed as event streams | M1 | EVT-1…5, EVT-3a |
+| **M3** | **Real workers** | conversations on local models via `pi-ai`; tier map; tool sets; replay discipline; residency manager; model pool (one host); `kiln.config/` with roles, tier map and `kiln check config` / `kiln check model` | M1, M2 | WORK-1…5, LANE-3, CFG-1, CFG-3, CFG-4, CFG-6 (local), CFG-7 (roles), CFG-8, MOD-1 (local) |
 | **M4** | **Front door, read-only** | server, session security, read models, live push; overview, factory live, record views | M2 | WEB-1/2/4, OBS-1 (basic) |
-| **M5** | **Gates on the web** | full gate brief, moves, delegation, steering, risky-action approvals | M3, M4 | BRIEF-1…4, HITL-1/2, WEB-3/5 |
-| **M6** | **Director** | deterministic planning, affinity ordering, fix rounds, director conversation, shaping the roadmap together | M3 | DIR-1…4, DIR-7 |
+| **M5** | **Gates on the web** | full gate brief, moves, delegation, steering, risky-action approvals | M3, M4 | BRIEF-1…4, BRIEF-6, HITL-1/2, WEB-3/5/6, DIR-6 |
+| **M6** | **Director** | deterministic planning, affinity ordering, fix rounds, director conversation, shaping the roadmap together | M3 | DIR-1…5, DIR-7 |
 | **M7** | **Knowledge** | factory wiki (ingest/query/lint, vault contract), knowledge in briefs; then workshop wiki and implementation knowledge | M5, M6 | KNOW-1…6, BRIEF-5 |
-| **M8** | **Workshop** | several factories, gate inbox, host scheduler, people and roles; Agents screen and role try-runs; **added gates and flows**, per-feature flow choice, gate try-runs | M5 | HOST-1, LANE-4, PPL-1, CFG-2, CFG-7 (try-runs), FLOW-4…9 |
-| **M9** | **Observability** | metrics, traces, health, insights, time travel | M2, M4 | OBS-1…6, EVT-6 |
-| **M10** | **Models beyond the machine** | catalog, profiles, routing, egress policy, budgets, fallback, policy stops | M3, M5 | MOD-1…5, HITL-3, CFG-6 (remote) |
-| **M11** | **Factories anywhere** | host runtime and channel, placement, moves, sleeping hosts, network failure | M8 | HOST-2…7, WEB-2 (network), CFG-5 |
-| **M12** | **Team space** | team-space repository, signed acts and keys, team roadmap by quorum, claims and overlap, requests and mirrored reviews, team-aware Merge gate, team knowledge | M7, M8 | TEAM-1…9 |
+| **M8** | **Workshop** | several factories, gate inbox, host scheduler, people and roles; Agents screen and role try-runs; **added gates and flows**, per-feature flow choice, gate try-runs | M5 | HOST-1, HOST-2 (in-process), LANE-4, WORK-6, PPL-1, CFG-2, CFG-7 (try-runs), FLOW-4…9 |
+| **M9** | **Observability** | metrics, traces, health, insights, time travel | M2, M4 | OBS-1…6, EVT-6, GATE-7 |
+| **M10** | **Models beyond the machine** | catalog, profiles, routing, egress policy, budgets, fallback, policy stops | M3, M5 | MOD-1 (remote), MOD-2…5, HITL-3, CFG-6 (remote) |
+| **M11** | **Factories anywhere** | host runtime and channel, placement, moves, sleeping hosts, network failure | M8 | HOST-2 (separate), HOST-3…7, WEB-2 (network), CFG-5, TEAM-9 |
+| **M12** | **Team space** | team-space repository, signed acts and keys, team roadmap by quorum, claims and overlap, requests and mirrored reviews, hand-over to a named teammate, team-aware Merge gate, team knowledge (shared hosts move to M11) | M7, M8 | TEAM-1…8, HITL-4 |
 | **M13** | **The bench** | notebook and capture, keeper suggestions, promotion; research steps; spikes, spike reports, propose as feature; origin and maturity labels; candidate list and roadmap evidence | M3, M7 | BENCH-1…12 |
 | **M14** | **`kiln-v1` release** | installer, `kiln init` and `kiln doctor` (SETUP-1…11), newcomer docs, demo mode from committed replays | M0–M8, M12 and the *Must* items of M9, M15, M16 | §3.1 goals |
 | **M15** | **Existing codebases** | profile, **full scan into the knowledge base**, baseline, territory, team-process fit and base drift (the Musts, built alongside M5–M8); then preserved behaviour, adoption stages and rehearsal, brownfield knowledge | M3, M5, M7 | BROWN-1…12 |

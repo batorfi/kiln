@@ -337,19 +337,19 @@
 |----|-------|---------|------|------------------|----------------------------------|
 | r12 | Foundation | **Foundations reset** | — | GATE-1/2, WORK-2, LANE-2, EVT-5 (validators) | new layout builds; legacy frozen; every ported test green; `kiln check` runs the network check |
 | r42 | Durable core | **Spike: completing a waiting task from outside** | r12 | CORE-6 | go / go-with-fallback / no-go decided by a spike report; kill-at-every-step tests show one atomic move + completion, first move wins; a no-go re-opens the Roadmap gate |
-| r13 | Durable core | **Durable core and the gate contract** | r12, r42 | CORE-1…6, LANE-1 | kill the server at every step of a gate task: it resumes, waits, and settles only on a committed move |
-| r14 | Durable core | **Gates as data, walked headless** | r13 | GATE-3/4/5, FLOW-1/2/3, FLOW-7 (default) | a scripted feature walks ten gates from the CLI; `kiln check flow` refuses every invalid flow in its negative suite |
-| r15 | Durable core | **The record** | r14 | EVT-1…5 | factory-log rebuilt byte-identical from events; the committed r1–r11 walks replay as streams |
+| r13 | Durable core | **Durable core and the gate contract** | r12, r42 | CORE-1…5, CORE-7 (store), LANE-1 | kill the server at every step of a gate task: it resumes, waits, and settles only on a committed move |
+| r14 | Durable core | **Gates as data, walked headless** | r13 | GATE-3/4/5/6, FLOW-1/2/3, FLOW-7 (default) | a scripted feature walks ten gates from the CLI; `kiln check flow` refuses every invalid flow in its negative suite |
+| r15 | Durable core | **The record** | r14 | EVT-1…5, EVT-3a, CORE-7 (archive; record size measured) | factory-log rebuilt byte-identical from events; the first program's committed walks (closed rows r1–r3, r7, r8) replay as streams; old event versions upcast on read |
 | r16 | Workers | **Real local workers** | r13, r15 | WORK-1, 3–5, LANE-3 | a feature walks with real local workers and judges on Ollama; a crash mid-generation resumes without double-charging a tool |
-| r17 | Workers | **Configuration as files** | r16 | CFG-1, 3, 4, 6 (local), 7 (roles), 8 | a weaker judge binding is refused; a config change applies from the next step and is recorded with before/after |
+| r17 | Workers | **Configuration as files** | r16 | CFG-1, 3, 4, 6 (local), 7 (roles), 8, MOD-1 (local) | a weaker judge binding is refused; a config change applies from the next step and is recorded with before/after |
 | r18 | Director | **The director** | r14, r17 | DIR-1…5 | the same situation yields the same next step every time; planner drafts that fail checks never reach a person |
 | r19 | Front door | **Web front door, read-only** | r15 | WEB-1, 2, 4, OBS-1 (basic) | a second browser tab without the secret sees nothing; a reconnect resumes from its last seq with no polling |
-| r20 | Front door | **Gates on the web** | r18, r19 | BRIEF-1…4, WEB-3 (core), WEB-6, DIR-6 | a person decides every gate of a real feature in the browser and from the CLI; a move on a stale state version is refused |
+| r20 | Front door | **Gates on the web** | r18, r19 | BRIEF-1…4, BRIEF-6, WEB-3 (core), WEB-6, DIR-6 | a person decides every gate of a real feature in the browser and from the CLI; a move on a stale state version is refused |
 | r21 | Front door | **Stepping in** | r20 | HITL-1/2, GATE-4, WEB-5 | an armed tail crosses clean gates as *delegated*, and stops at the first objection; a judge cannot be steered |
 | r22 | Front door | **Shaping the roadmap together** | r20 | DIR-7 | a roadmap shaped from inputs, conversation and pinned edits; approve admits exactly the version read |
 | r23 | Knowledge | **The factory knowledge base** | r20 | KNOW-1 (factory), 2, 3, 4, BRIEF-5 | a wiki that opens cleanly in Obsidian and Zed; briefs cite pages and flag stale ones |
 | r24 | Knowledge | **Implementation knowledge and the workshop wiki** | r23 | KNOW-1 (workshop), 5, 6 | a merged feature has a feature story grounded at a commit; a code change flags the pages it drifts |
-| r25 | Workshop | **One workshop, several factories** | r20 | HOST-1, LANE-4, WORK-6, PPL-1 (single user) | three factories on one host share the model pool; one Needs you across them |
+| r25 | Workshop | **One workshop, several factories** | r20 | HOST-1, HOST-2 (in-process), LANE-4, WORK-6, PPL-1 (single user) | three factories on one host share the model pool; one Needs you across them |
 | r26 | Workshop | **Agents and flows** | r18, r25 | CFG-2, CFG-7 (try-runs), FLOW-4…9 | an added gate defined, checked, tried on a past feature, and chosen for one feature at the Roadmap gate |
 | r27 | Workshop | **Health and broken guarantees** | r19, r15 | OBS-1 (core), OBS-3, OBS-5, OBS-6 | an injected broken guarantee is critical and recorded; a silent watcher shows *unknown*, never healthy |
 | r28 | Getting started | **First run** | r17, r22, r23 | SETUP-1…11 | from install to a first Roadmap gate in under an hour on a fresh machine, nothing leaving it |
@@ -357,13 +357,13 @@
 | r30 | Getting started | **Existing codebases, part 1: profile and full scan** | r24, r28 | BROWN-1, BROWN-11 | a full scan of this repository writes module pages, a coverage report and open questions; a crash mid-scan resumes |
 | r31 | Getting started | **Existing codebases, part 2: baseline, territory, process** | r30, r21 | BROWN-2, 3, 5, 8 | a feature outside its territory is flagged at Code review; pre-existing failures never block on their own |
 | r38 | Team | **Team space, part 1** | r24, r25 | TEAM-1, 2, 3, 8 | a team roadmap change takes effect only when the quorum has signed |
-| r39 | Team | **Team space, part 2** | r38, r31 | TEAM-4…7 | overlapping claims surface at the Work plan gate; a required teammate review conditions *approve*; the Merge gate uses the code host's queue |
+| r39 | Team | **Team space, part 2** | r38, r31 | TEAM-4…7, HITL-4 | overlapping claims surface at the Work plan gate; a required teammate review conditions *approve*; the Merge gate uses the code host's queue |
 | r32 | Release | **Cut the kiln-v1 release** | r21, r24, r26, r27, r29, r31, r39 | §3.1 goals, M14 | a newcomer installs KILN, runs first setup on a real repository and decides its first Roadmap gate in under an hour |
-| r33 | kiln-v1.x | **Models beyond the machine** | r32 | MOD-1…5, HITL-3, CFG-6 (remote) | a hybrid factory's cloud judge sees only what policy allows; a local-only factory reaches nothing beyond loopback |
+| r33 | kiln-v1.x | **Models beyond the machine** | r32 | MOD-1 (remote), MOD-2…5, HITL-3, CFG-6 (remote) | a hybrid factory's cloud judge sees only what policy allows; a local-only factory reaches nothing beyond loopback |
 | r34 | kiln-v1.x | **The bench, part 1: notebook and research** | r32 | BENCH-1…4, BENCH-7 | a notebook entry promoted to knowledge keeps its origin; research results are cited |
 | r35 | kiln-v1.x | **The bench, part 2: spikes and candidates** | r34 | BENCH-5, 6, 8, 9, 10–12 | a spike's report becomes evidence on a candidate shown at the Roadmap gate; spike code never merges |
-| r36 | kiln-v1.x | **Observability in full** | r32 | OBS-2, OBS-4, EVT-6 | one trace per feature; insights with counts and sample sizes; time travel to any moment |
-| r37 | kiln-v1.x | **Factories anywhere** | r32 | HOST-2…7, WEB-2 (network), CFG-5, TEAM-9 | a factory moves between hosts with handover; a network failure approves nothing |
+| r36 | kiln-v1.x | **Observability in full** | r32 | OBS-2, OBS-4, EVT-6, GATE-7 | one trace per feature; insights with counts and sample sizes; time travel to any moment |
+| r37 | kiln-v1.x | **Factories anywhere** | r32 | HOST-2 (separate), HOST-3…7, WEB-2 (network), CFG-5, TEAM-9 | a factory moves between hosts with handover; a network failure approves nothing |
 | r40 | kiln-v1.x | **Existing codebases, the rest** | r31, r35 | BROWN-4, 6, 7, 9, 10, 12 | a rehearsal on a past change compares the judges' findings with what the team merged |
 | r41 | kiln-v1.x | **New codebases, the rest** | r29, r35, r39 | GREEN-6…9 | conventions written by the skeleton are enforced from feature two; a team starts a product together |
 
@@ -396,8 +396,8 @@ before anything is built on it.
 **The `kiln-v1` line.** r12–r32 (with r42, r38 and r39) deliver the PRD's definition of `kiln-v1`: M0–M8 and **M12 (the team
 space)** plus the *Must* items of M9, M15 and M16, and M14's release. M12 joined `kiln-v1` on 2026-10-21, when a **small
 team** became the primary user (`user-experience.md` decision 23); shared hosts (TEAM-9) stay with factories anywhere in
-`kiln-v1.x`, and team bench work (BENCH-9) with the bench. The PRD lists M14 as depending on M1–M7 only; this draft makes the release depend on every `kiln-v1` row
-(r21, r24, r26, r27, r29, r31, r39 and, through them, the rest) — a correction to propose back into the PRD.
+`kiln-v1.x`, and team bench work (BENCH-9) with the bench. The release depends on every `kiln-v1` row (r21, r24, r26, r27, r29, r31, r39 and, through them, the rest), matching
+PRD M14.
 
 **After `kiln-v1`.** r33–r37, r40 and r41 follow as `kiln-v1.x`. Each depends only on the release (or on its own earlier part), so their
 order can be reshaped freely at later Roadmap gates without touching anything built before. r40 and r41 wait for the bench
