@@ -187,6 +187,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | EVT-1 | **Transactional outbox**: every state change commits its domain events in the same commit; one writer per factory gives one total order. | Must |
 | EVT-2 | **Envelope**: id, seq, type, schema version, time, subject, actor, correlation, causation, trace, privacy, data — never prompt or answer content. | Must |
 | EVT-3 | **Catalog** with versioned JSON schemas (program/roadmap, row, gate, unit, lane, delegation, mitigation, tool approval, command, model, egress, wiki, host, system); an invalid event fails its commit. | Must |
+| EVT-3a | **Schema evolution by upcasting on read**: stored events are never rewritten; each breaking version ships a pure, lossless upcaster from the previous one; consumers handle only the current version; additive optional fields need no new version; upcasters are proven by replaying the committed walks with byte-identical projections. | Must |
 | EVT-4 | In-process backbone with **durable consumer cursors**, at-least-once and idempotent; a slow consumer never blocks a factory. | Must |
 | EVT-5 | **Factory-log projection** in the existing schema; the existing validators run on it; a rebuild must be byte-identical to the live projection. | Must |
 | EVT-6 | **Time travel**: any projection rebuildable as of any `seq`. | Should |

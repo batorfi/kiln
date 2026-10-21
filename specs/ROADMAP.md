@@ -406,6 +406,7 @@ From PRD §14, placed at the row that needs them:
 | **r12** | ~~keep a terminal surface (the r9 work) or retire it~~ — **decided 2026-10-21: retired**; `legacy/` is frozen and retired, the terminal surface is the `kiln` CLI (PRD §14.1, WEB-6) |
 | **r42** | ~~how external completion of a waiting task is settled~~ — **decided 2026-10-21**: a time-boxed spike row before r13 with a go/no-go; default fallback an upstream proposal plus a KILN decision table in the same SQLite transaction (PRD CORE-6) |
 | **r13 / r15** | ~~store lifetime~~ — **decided 2026-10-21**: one store per factory; closed features archived beside it; the record unsegmented in `kiln-v1`, measured in r15 (PRD CORE-7) |
+| **r15** | ~~event schema evolution~~ — **decided 2026-10-21**: upcast on read; stored events immutable (PRD EVT-3a) |
 | **r19** | user-facing words: Factory / Feature / Step; *Knowledge* versus *wiki* (§14.5) |
 | **r20** | whether KILN may recommend a move at a gate; limits on *request more evidence* (§14.6) |
 | **r23** | wiki keeper as its own role or the researcher with a schema; review age before a brief flags a page; how much code implementation pages reproduce (§14.2–4) |

@@ -1082,8 +1082,7 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 - **Wikis**: a dedicated wiki keeper role or the researcher with a schema; how long a page may go unreviewed before a
   gate brief flags it; how often a factory's copy of the workshop wiki is updated; how much code implementation pages
   reproduce (`factory-wiki.md` §14).
-- **Event schema evolution**: upcasting old event versions on replay versus keeping every version's
-  consumer logic.
+- ~~**Event schema evolution**~~: **Decided 2026-10-21** (human@batorfi) — upcast on read; stored events never change (`the-record.md` §18).
 - ~~**r9 and the Pi extension**: `kiln/pi/` remains an alternate surface or is retired.~~ **Decided 2026-10-21: retired**;
   the terminal surface is the `kiln` CLI (PRD WEB-6), and r9 closes as superseded.
 - **Positioning**: from "a factory *for Pi*" to "a factory *built on* Pi's durable substrate, with its own
