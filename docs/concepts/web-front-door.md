@@ -164,8 +164,9 @@ The ten gates fall into three phases:
   features" (`split+revise`). It has no reject — a feature about to be built is not "done wrong". It opens
   *before* implementation; the implemented code is judged later, at the Code review gate. *(Formerly "checkpoint".)*
 - **Code review gate.** An independent reviewer on the strongest model judges the diff against the
-  specification. The reviewer never edits, so the only corrective move is `restart` — rebuild from the
-  restorable commit confirmed at the Implementation gate.
+  specification. The reviewer never edits: `revise` sends its findings to the **workers** on the current code,
+  and `restart` rebuilds from the restorable commit confirmed at the Implementation gate (decided 2026-10-21,
+  `the-flow.md` §12).
 - **Verification gate.** An independent verifier on the strongest model proves the feature meets the
   specification. A failure first triggers up to two automatic fix rounds; only then does the gate stop for
   the human.
@@ -297,7 +298,7 @@ gate task's steps:
 | Roadmap gate | approve · revise · reject · edit-rows · add-row · drop-row | owned by the roadmap task; roadmap edits committed with the move |
 | Concept · Design · Specification · Work plan · Documentation | approve · revise · reject | corrective moves require a note |
 | Implementation | approve · split+revise | no reject; split carries the split definition |
-| Code review | approve · restart | no revise |
+| Code review | approve · revise · restart | revise goes to the workers, never the reviewer; every review round is a fresh reviewer conversation |
 | Verification | approve · reject | on reject, the row task runs up to **2** auto-mitigation rounds before this gate opens again for a human; the round count lives in the row task's checkpoint |
 | Merge | approve · reject | under unattended delegation, approve = "ready to merge" unless merge was delegated too |
 
@@ -323,7 +324,9 @@ waiting for a human holds no model.
 | `approve` | close the unit's conversation; create the next unit or gate task |
 | `revise` (note) | submit the note as a follow-up to the **same** conversation; re-open the gate when it settles |
 | `reject` | end the conversation (kept for the record); a fresh conversation for the next attempt |
-| `restart` (review) | a fresh reviewer conversation — a judge never revises its verdict in place |
+| `revise` (Code review) | submit the findings and the note to the **workers**, on the current code; then a fresh reviewer conversation |
+| `restart` (Code review) | fresh worker conversations rebuild from the restorable commit, with the findings; then a fresh reviewer conversation — a judge never revises its verdict in place |
+| `reject` to an earlier gate (any time) | stop the running step at its checkpoint; re-open the target gate's author; every gate after the target re-opens |
 | `split+revise` (Implementation gate) | **fork** the row's work at the approved restorable commit into two continuations, each with its own gates |
 | Roadmap gate `approve` | the roadmap task creates the admitted row task; nothing else is chained |
 

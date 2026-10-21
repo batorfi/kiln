@@ -566,7 +566,7 @@ The structure is fixed; the emphasis follows the gate's question.
 | **Specification gate** | what "done" means, requirement by requirement; how each will be verified; that this is where the unattended tail can be armed, and what arming it would cover |
 | **Work plan gate** | the pieces and their order; the model order this implies and its expected cost in time and swaps; **overlap with teammates' claims** |
 | **Implementation gate** | the restorable starting point; the size of the work ahead; whether it is still one feature, and what a split would look like |
-| **Code review gate** | the changes, mapped to the specification; the code reviewer's findings by severity; that `restart` is the only corrective move, and what it rebuilds |
+| **Code review gate** | the changes, mapped to the specification; the code reviewer's findings by severity; what `revise` (workers fix on the current code) and `restart` (rebuild from the restorable commit) would each redo |
 | **Verification gate** | requirement-by-requirement results; the automatic fix rounds already attempted and what they changed; the verifier's diagnosis |
 | **Documentation gate** | what the documentation now says, compared with what was built |
 | **Merge gate** | the whole feature end to end — every gate's decision and by whom; open risks carried forward; what left the machine; what merging will do; **what the feature added to the wiki**, starting with its feature story; in a team: **required reviews and checks, base drift, the code host's merge-queue position, and what will be published** |

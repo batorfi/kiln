@@ -130,7 +130,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | ID | Requirement | |
 |---|---|---|
 | GATE-1 | The **default flow**: ten gates with plain names and one question each: **Roadmap gate**, Concept, Design, Specification, Work plan, **Implementation**, Code review, Verification, Documentation, **Merge**. Internal ids stay stable (`gate0`, `1-concept` … `9-pr`). | Must |
-| GATE-2 | Each gate offers only its own moves (the existing move vocabulary), including the special cases: Implementation `approve · split+revise`; Code review `approve · restart`; Verification `approve · reject` with **2** automatic fix rounds; Merge `approve · reject`. | Must |
+| GATE-2 | Each gate offers only its own moves (the existing move vocabulary), including the special cases: Implementation `approve · split+revise`; Code review `approve · revise · restart` (revise goes to the workers); Verification `approve · reject` with **2** automatic fix rounds; Merge `approve · reject`. | Must |
 | GATE-3 | Triage may skip Concept and Design for small features, recorded with its reasoning. | Must |
 | GATE-4 | The **unattended tail** may be armed only at the Specification gate, for Work plan → Documentation; merge excluded unless explicitly delegated; any judge's objection ends it. Auto-crossed gates are recorded as delegated, never as human. | Must |
 | GATE-5 | Corrective moves carry a note that becomes the next step's instruction. | Must |

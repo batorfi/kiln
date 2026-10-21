@@ -11,8 +11,9 @@
 > (§5), the gate brief (`user-experience.md` §8), added gates and flows (`extensible-flow.md`), the director
 > (`the-director.md`).
 >
-> **Proposed here, for review** (§11): where a `reject` sends the work at each gate, what re-crossing a gate means, the
-> fix-round cap as a factory setting, and answers to the open questions left in `gates-why-how-what.md`.
+> **Decided 2026-10-21** (human@batorfi): §11's proposals P1–P6 are accepted, and §12's open questions are answered —
+> `revise` is added at Code review, reject-to-earlier can be made at any time, re-crossing has no lighter move, and
+> triage never skips Documentation.
 >
 > Companion docs:
 >   - Gate names and the durable gate contract: `web-front-door.md` §3.1, §5
@@ -68,7 +69,7 @@ gate for the next one.
 | 3 | **Specification** | What exactly counts as done? | specification | spec writer | — (deterministic checks) | approve · revise · reject · *arm the tail* |
 | 4 | **Work plan** | In what pieces and order will it be built? | work plan | planner | — (deterministic checks) | approve · revise · reject |
 | 5 | **Implementation** | Do we start building from a safe point — and is this still one feature? | restorable commit + size | director | — | approve · split+revise |
-| 6 | **Code review** | Is the code right, against the specification? | diff + review notes | workers | **code reviewer** | approve · restart |
+| 6 | **Code review** | Is the code right, against the specification? | diff + review notes | workers | **code reviewer** | approve · revise · restart |
 | 7 | **Verification** | Does it actually work as specified? | verification report | workers (fix rounds) | **verifier** | approve · reject |
 | 8 | **Documentation** | Do the docs describe what was actually built? | doc changes + feature story | techwriter, wiki keeper | — | approve · revise · reject |
 | 9 | **Merge** | Do we ship this feature? | pull request | PR writer | — (checks, team reviews) | approve (= merge) · reject |
@@ -196,8 +197,10 @@ lead**, and **what it hands forward**.
   **code reviewer** (strongest model, lane held) reads the diff against the specification and the design.
 - **Brief first.** The changes mapped to requirements; findings by severity with locations; on a return round, how the
   previous note was addressed.
-- **Moves.** approve → Verification (open minor findings carried forward, recorded as accepted) · restart → rebuild from
-  the restorable commit with the findings and the note. **No revise**: the reviewer judges, it never edits.
+- **Moves.** approve → Verification (open minor findings carried forward, recorded as accepted) · revise (note) → the
+  workers fix the findings on the current code, and a fresh reviewer conversation reviews the whole diff again ·
+  restart → rebuild from the restorable commit with the findings and the note, for when the approach itself is wrong.
+  The reviewer never edits: `revise` goes to the **workers**, never to the reviewer.
 - **Hands forward.** Reviewed code and any accepted findings.
 - *Mockups:* 02 · 21.
 
@@ -244,6 +247,8 @@ lead**, and **what it hands forward**.
 | **approve** | the next gate | everything | nothing |
 | **revise** (note) | the same author conversation, with the note | the conversation and its context | the artifact, then this gate's checks and judge |
 | **reject** (note) | a fresh author at this gate — or an earlier gate the note names (§11, P1) | every gate approved before the target | the target gate's artifact and every gate after it |
+| **revise** (Code review) | the workers, on the current code, with the findings and the note | the code and the workers' context | the fixes, then a fresh review of the whole diff |
+| **reject to an earlier gate** (any time) | the named earlier gate; a running step stops at its checkpoint | every gate approved before the target | the target's artifact and every gate after it |
 | **restart** (Code review) | a fresh build from the restorable commit, with the findings | concept, design, specification, work plan, restorable commit | the code, then Code review |
 | **split+revise** (Implementation) | the feature shrinks; the rest becomes a new roadmap feature | everything approved so far, for the kept part | the work plan, then this gate |
 | **automatic fix round** (Verification) | a worker fixes; the same verifier re-checks; at most 2 | everything | the failing parts |
@@ -296,7 +301,7 @@ gate move, and all of which appear in the next brief's provenance (`web-front-do
 - **Added gates** (`extensible-flow.md`). A flow can add gates between built-in ones, with the same five moments, brief
   and move kinds; nothing here changes for them.
 
-## 11. Proposed in this revisit — for review
+## 11. Proposed in this revisit — accepted 2026-10-21
 
 | # | Proposal | Why |
 |---|---|---|
@@ -323,13 +328,19 @@ What this revisit settles from the open questions of `gates-why-how-what.md` §5
 
 ## 12. Open questions
 
-1. Should a person be able to **re-open an approved gate** without a reject at a later one — for example, to amend the
-   specification mid-build?
-2. Should the Code review gate offer **revise to the workers** (keep the code, fix the findings) alongside `restart`, as
-   a distinct move kind from the reviewer's verdict?
-3. When a re-crossed gate's artifact did not change, should the brief offer a **lighter** confirmation — and would that
-   invite rubber-stamping?
-4. Should triage be allowed to skip the **Documentation** gate for changes with no user-visible effect?
+All four were decided on 2026-10-21 (human@batorfi); none adds a move kind.
+
+1. ~~Re-open an approved gate without a reject at a later one?~~ **Yes, as a reject to an earlier gate.** A person may make
+   it at any time, not only at an open gate: a running step stops at its checkpoint, the person sees the target gate's
+   approved artifact and what will be redone, and every gate after the target re-opens (P1, P2). It is recorded as a
+   `reject` with its target.
+2. ~~Revise to the workers at Code review?~~ **Yes.** Code review offers `approve · revise · restart`. `revise` is the
+   existing kind: the findings and the note go to the workers on the current code, and a fresh reviewer conversation
+   reviews the whole diff again. `restart` stays for a wrong approach.
+3. ~~A lighter confirmation for an unchanged re-crossed gate?~~ **No.** The brief and the move stay the same; the brief
+   leads with *unchanged since the approval on <date>* and what changed upstream. Armed delegation may cover it.
+4. ~~Triage skipping Documentation?~~ **No.** Documentation also completes the knowledge base and the feature story (P4);
+   triage skips Concept and Design only (constitution, *The Flow*).
 
 ## 13. One sentence
 

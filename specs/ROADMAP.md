@@ -414,8 +414,10 @@ From PRD §14, placed at the row that needs them:
 | **r37** | hosts in several workshops; workspace moves; failover; container forms (§14.8) |
 | **r38** | quorum rules, claim expiry, publishing levels (§14.10) |
 
-Proposals awaiting review in the concept docs also land at specific rows: the flow's reject targets and re-crossing
-(`the-flow.md` §11) at **r14/r20**; health's director-rule question (`health.md` §15) at **r27**.
+Decided 2026-10-21, before r14 encodes them: the flow's proposals P1–P6 (`the-flow.md` §11) are accepted and its open
+questions answered (§12) — Code review offers `approve · revise · restart`, a reject may name an earlier gate at any time,
+no lighter re-crossing, no Documentation skip; the move kinds stay closed. Still open: health's director-rule question
+(`health.md` §15) at **r27**.
 
 ## What the Roadmap gate is asked to decide
 
