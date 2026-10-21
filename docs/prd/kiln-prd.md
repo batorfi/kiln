@@ -611,6 +611,12 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 
 *Concepts: [design §11 constitution impact](../concepts/web-front-door.md) · [constitution](../../.specify/memory/constitution.md).*
 
+> **Enacted 2026-10-21 as constitution v2.0.0** (approved by human@batorfi), with two additions to the table below:
+> Principle II now binds **every judge role** — built-in or added — to the strongest model (the Documentation gate is
+> unjudged, so the Docs Synthesizer is no longer a line of defense), and the flow and role sections keep **invariants
+> only** (the per-gate moves live in the gate-rail contract, roles in `kiln.config/`). The table is kept as the record of
+> what was asked for.
+
 | Principle | Change |
 |---|---|
 | III Single lane | one lane **per factory**; resident models bounded per host (MAJOR) |

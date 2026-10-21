@@ -7,229 +7,233 @@
 
 ### I. Author / Judge Separation — no model may approve its own work
 
-No role — including the director — ever decides the gate its own artifact feeds. A producer
-*produces* (researcher, concept-writer, designer, worker, techwriter, pr-writer, adr-maker); a
-line-of-defense role *judges* (architecture-critic, verifier/diagnosis, code-reviewer,
-docs-synthesizer); the *deciding* move is always a **human's**. A "gate" is a human decision the
-lane blocks on until a verdict arrives as an event. Judgment is distributed across many judges, but
-the decision is singular, at one human, at one kiln.
+No role — including the director and the planner — ever decides the gate its own artifact feeds. A **producer** makes an
+artifact; a **judge** examines it and produces evidence; the **deciding move is always a person's**, made live or through
+a recorded delegation (see *The Flow*). A gate is a person's decision that the factory waits on until a move arrives.
+Judgment may be spread across several judges and checks; the decision is singular, made by a person.
 
-*Rationale:* this is the precondition for a trustworthy gate; a role that blesses its own artifact
-has removed its own check, and the safety net collapses.
-*Testable as:* a lane must not advance past any gate without a human move; no gate report is ever
-authored and adjudicated by the same execution unit.
+*Rationale:* this is the precondition for a trustworthy gate; a role that blesses its own artifact has removed its own
+check, and the safety net collapses.
+*Testable as:* no gate settles without a person's move or a recorded delegation; no artifact is authored and judged by
+the same unit or conversation.
 
-### II. The lines of defense are always the strongest
+### II. Every judge runs on the strongest model
 
-The four line-of-defense roles — **Architecture Critic, Verifier / Diagnosis, Code Reviewer, and
-Docs Synthesizer** — MUST run on the **strongest resident model, on every substrate, including a
-local one** where every *other* role is free to be cheap. A cheap judge at any of these positions
-is a rejected configuration.
+Every **judge role** — the architecture critic, the code reviewer and the verifier on the built-in gates, and any judge on
+a gate a team adds — MUST be bound to the **strongest model available to the factory**, on every substrate, including a
+local one, while producer roles are free to be cheaper. A weaker binding is a refused configuration, not a warning, and a
+judge is **never silently downgraded**: when the strongest model is unavailable, the judged step waits and says why. A
+factory or team policy may additionally require judges from a **different model family** than the author.
 
-*Rationale:* these roles are the gates' backgates; a single lane has no parallel pass to catch what a
-weak judge misses, so a weak backgate defeats the whole net.
-*Testable as:* the model on each line-of-defense unit is the strongest available; never a cheaper tier.
+*Rationale:* judges are the gates' backgates; a single lane has no parallel pass to catch what a weak judge misses, so a
+weak judge defeats the whole net.
+*Testable as:* every judge unit records a model that is the strongest the factory's configuration allows; no judge binds
+to a cheaper tier; a missing strongest model produces a wait, never a substitute.
 
-### III. A single lane; one resident model at a time
+### III. One lane per factory; sequential inside it
 
-The factory is **strictly sequential**: exactly one lane, one resident model at a time, with no
-parallelism by design. The **director *is* the scheduler** — there is no separate scheduling
-abstraction to collapse. It holds the lane, *yields* it to a worker, and reclaims it when the
-worker returns.
+Each **factory** works on one codebase, **strictly sequentially**: one lane, one running unit at a time, one feature at a
+time. The **director is the scheduler** — it holds the lane, yields it to a unit and reclaims it when the unit returns;
+there is no separate scheduling abstraction. Parallelism happens **between factories**, never inside one. How many
+factories may hold how many resident models at once is a **per-host memory budget** enforced by the host's model pool.
 
-*Rationale:* predictability and low *hold* cost are the point of a local kiln — one chamber, not a
-foundry; the single chamber is the thesis, not a constraint to fight.
-*Testable as:* at most one model is resident and one work unit is running at any instant.
+*Rationale:* predictability and low hold cost are the point of a local kiln — one chamber per factory, not a foundry; the
+budget keeps several chambers on one machine honest.
+*Testable as:* within a factory, at most one unit runs at any instant; across a host, resident models never exceed the
+host's budget; on a one-factory host this reads exactly as one lane, one resident model.
 
-### IV. Model affinity is the only cost lever; swap only when a tier demands it
+### IV. Model affinity is the cost lever for local models
 
-Work units are queued in a **model-affinity queue** so the lane changes model **as rarely as
-possible**; a model swap happens **only** when the next unit's required tier differs from the
-resident one. The cost model is `wall-clock = (work) + (switching)`, with the *switching* term
-local-dominant; keeping the lane resident is the single highest-leverage cost control.
+Work is ordered so that the lane changes local model **as rarely as possible**; a swap happens **only** when the next
+unit's required tier differs from the resident one. Affinity applies **host-wide**, across the factories sharing a model
+pool; after a restart, the lane re-establishes affinity first. Spend on remote models is governed by **budgets**, not by
+affinity.
 
-*Rationale:* loading a new model locally is the expensive move (re-heating the kiln from cold);
-firing like units together keeps the chamber hot and the switch-tax low.
-*Testable as:* the observed switch count is the minimum the plan's tier sequence requires; no swap
-occurs on an affinity-compatible boundary.
+*Rationale:* loading a local model is the expensive move (re-heating the kiln from cold); firing like units together keeps
+the chamber hot and the switch tax low.
+*Testable as:* the observed local swap count is the minimum the planned tier sequence requires; no swap occurs on an
+affinity-compatible boundary; remote spend never exceeds its budget without a recorded stop.
 
-### V. Headless never silently approves
+### V. A missing person never approves
 
-A missing UI may **hide** a gate or a roadmap row, but it may **never silently approve** one. In
-headless (`!ctx.hasUI`) every gate — **including Gate 0** — degrades to a **durable `WAIT` row**
-in the factory-log (a resume token + a deadline), under the default `gate-block` policy; a gate
-advances only on an explicit human move or a *recorded exception*. Gate 0 specifically *prints* the
-roadmap table and *waits*, rather than auto-first-row.
+A missing screen, a closed browser, a crash, a restart, a lost connection or an elapsed clock may **delay** a gate; none
+may **settle** one. A waiting gate is a **durable waiting task**; it settles only on a **committed move** — a person's, or
+an approve under a recorded delegation on a clean path. Nothing is ever inferred from absence.
 
-*Rationale:* this is the one rule that keeps an unattended run honest; the factory-log enforces it,
-and it is the exact opposite of a missing-UI silent approval.
-*Testable as:* with no UI present, no gate report is marked approved without a human move or a
-logged, distinct pre-delegation entry.
+*Rationale:* this is the one rule that keeps unattended work honest; a missing UI that approved silently would make every
+other guarantee decorative.
+*Testable as:* kill the factory at every step of every gate: it resumes waiting; no gate is settled without a committed
+move; no settlement carries a clock or a restart as its cause.
 
-### VI. Gate 0 is human-only, always
+### VI. The Roadmap gate is human-only, always
 
-The **Roadmap (Gate 0)** is the **one gate no exception may silence** — not the unattended tail, not
-a cheap head, and *especially* not a missing UI, where it prints-and-WAITS rather than auto-
-advancing. Gate 0 is the most expensive decision of all (the whole program: its rows, order, and
-dependencies), and it is the one the constitution refuses to auto-authorize.
+The **Roadmap gate** admits the next feature and decides how the factory runs. It is the **one gate no exception may
+silence**: it accepts **no delegated move**, no unattended chain reaches it, and a missing person leaves it waiting. It
+re-opens after every merged or abandoned feature; starting a factory is a recorded human command, and delegation never
+crosses factories.
 
-*Rationale:* a wrong *program* costs the entire feature-set downstream of it and is not cheap to
-un-fire; getting it right first is what the whole "firing program" is for.
-*Testable as:* Gate 0 opens at kickoff and at every inter-row seam, and no path reaches a row's gate
-1 without a human Gate 0 approve recorded in the log.
+*Rationale:* a wrong program costs everything downstream of it and is not cheap to un-fire; getting it right is what the
+firing program is for.
+*Testable as:* no feature reaches its first gate without a person's approve at the Roadmap gate recorded with its actor;
+no delegation names the Roadmap gate.
 
-### VII. Everything is recorded in the factory-log
+### VII. Everything is recorded
 
-Every state transition (load / hold / yield / swap), gate completion, human decision, skip/override,
-and cost number (rail, resident model, switch count, wall-clock) **MUST** land in the **factory-log**,
-time-stamped, durable, and greppable, so a feature's whole journey is reconstructable from the log
-alone. An auto-crossed gate still emits its report, **tagged *auto-approved under pre-delegation
-(spec #N approved T)*** with the reviewing model and a "no objections" note — a **distinct ledger
-entry** from a gate the human decided at the keyboard.
+Every state change — gate opened, step started, model loaded or swapped, move made, delegation armed or ended, policy
+stop, cost — is a **domain event** with its **cause and actor**, committed **atomically with the state it changes**, in an
+ordered stream. That stream is the **primary record**; the factory-log and every other view are **projections**, rebuildable
+from it. A delegated approve stays a **distinct entry** from a person's move, naming the delegation that produced it.
 
-*Rationale:* the log is the audit trail and the backing for the headless contract; a closed terminal
-must leave a complete trail, and a human pre-delegating an approve must stay *distinguishable* from a
-gate that genuinely ran with no human present.
-*Testable as:* the log, read alone, reconstructs every gate's outcome, decider, and cost for a feature.
+*Rationale:* the record is the audit trail and the backing of every other guarantee; a decision that cannot be explained
+afterwards did not happen safely.
+*Testable as:* any merged feature can be reconstructed — every gate's outcome, decider, evidence and cost — from the
+record alone; every projection rebuilds identically from the stream.
 
-### VIII. Local-first: no cloud round-trip
+### VIII. Local by default
 
-The factory MUST run on **local models** (Ollama-served) with **no cloud API dependency**. On a
-local substrate a role that needs an outside resource (e.g. web research) **flags it as *unavailable
-rather than blocking the feature*** — a local-first feature does not need the web.
+A factory runs on **local models** and its data stays on the machine **by default**. Remote models, remote hosts and any
+other egress happen **only by a configured, recorded, policy-checked choice**, per factory and per role; everything that
+leaves is recorded. Every connection beyond loopback is **authenticated and encrypted**. A role that needs an outside
+resource the policy does not allow **flags it as unavailable rather than blocking** the feature.
 
-*Rationale:* each local model is a scarce, slow-to-swap resource held on one machine; the factory's
-shape (single lane, held heat, affinity) follows that constraint instead of fighting it.
-*Testable as:* the run completes with no outbound network dependency; missing web access flags, not
-fails, a feature.
+*Rationale:* ownership of code, intent and cost is a promise people make to their organisations; the default must keep it
+without configuration, and every exception must be visible.
+*Testable as:* under the default local-only profile, a run completes with no outbound network traffic beyond the
+allowlist; every egress event names the policy that allowed it.
 
-### IX. No dashboard: three UI layers, event-driven, no polling, no server
+### IX. One committed state; surfaces driven by events
 
-The "dashboard" idea becomes **Layer A (Flow HUD**, a persistent footer), **Layer B (Flow Popup**, the
-on-demand gate card), and **Layer C (the Roadmap overlay**, the deliverable-level zoom-out) — three
-surfaces that read **one shared `FactoryState`** and redraw **on factory events, never by polling, and
-never from a server**. One overlay primitive renders the closed / open-gate / Gate-0 faces, so a
-*missing* overlay can never *inadvertently* auto-advance.
+Every surface — the web front door, the command line, any other view — reads **one committed state** and updates **on
+domain events, never by polling**. The front door is a **loopback server that is never a source of truth**: it renders
+projections and carries moves and commands into the factory, and nothing is decided in it. A front door reachable over a
+network requires **real authentication**.
 
-*Rationale:* the human watches the kiln *where the work happens*; determinism plus "never poll / never
-run a server" keeps the status a distilled read, not a second source of truth. A missing Layer C
-degrades to a *printed* roadmap table, never a silent advance.
-*Testable as:* no surface blocks on a timer or a socket; every redraw is triggered by a fired event.
+*Rationale:* the person watches and decides where the record lives; a surface that held its own truth would be a second,
+unaudited factory.
+*Testable as:* no surface blocks on a timer; every update is caused by an event; stopping the front door loses no state
+and settles no gate; a non-loopback listener without authentication is refused.
 
-## The Gate Rail & The Roadmap
+### X. Knowledge is context, never authority
 
-The gate rail is KILN's spine. Per feature, in order:
+Factory, workshop and team knowledge (the wikis) **inform** producers, judges and people; they never **settle** anything.
+Every knowledge claim is **traceable to a source** — a commit, a document, a decision, a person — and no knowledge content
+satisfies a gate, overrides a specification or counts as a judge's verdict.
 
-```
-Gate 0  ROADMAP (pre-lane, human-only)
-1  CONCEPT   2  ARCHITECTURE   3  SPEC   4  PLAN   5  CHECKPOINT
-6  REVIEW     7  VERIFICATION   8  DOCS   9  PR
-```
+*Rationale:* an LLM-written knowledge base is useful exactly as long as it is treated as a well-cited colleague, not as a
+law; stale or wrong knowledge must cost a re-check, never a wrong decision.
+*Testable as:* every knowledge page cites its sources; no gate move, delegation or check takes a knowledge page as its
+cause.
 
-**Move vocabulary.** Most gates are `Approve / Revise / Reject`. Two line-of-defense gates and two
-control gates specialise:
-- **Checkpoint (5)** adds **`Split + Revise`** and has **no `Reject`** — a checkpoint is not "done
-  wrongly," it may simply become *two*; it is the one move that *grows* a feature.
-- **Review (6)** is **`Approve / Restart`** — the code-reviewer *judges* the diff, it does not
-  author it, so there is **no `Revise`**; the corrective move *reopens* implementation from the
-  checkpoint and routes back through it.
-- **Verification (7)** is **`Approve / Reject`** with **bounded auto-mitigation (≤ 2 rounds)** then
-  escalates to a human `WAIT`; rejection does not bounce to an editor — the factory may fix its own
-  defect cheaper, but the cap forces a persistent failure to a human.
-- **Checkpoint (5)** and **PR (9)** omit `Revise` — a restorable *base commit* and a *merge* are
-  yes/no, not an edit.
+### XI. A factory is portable
 
-**Two front-gate trims, deliberately composed.** *Triage-skip* and *the unattended tail* are the two
-deliberate, recorded lane-shaping levers — never defaults the system reaches for on its own:
-- **Triage** (cheap head, before the lane) may route a *small* feature past **gates 1 + 2**
-  (Concept, Architecture) *only*. No safety-net gate is skippable; the skip is a human-overridable
-  *classification*, and an over-classification (call it `small-triage` when it is not) is the costlier
-  mistake, because it skips the very gates that would have caught the complexity.
-- **The unattended tail** lets a human who *just approved the Spec (gate 3)* pre-authorize the
-  *approve side* of gates **4–9** and let the lane drive itself to a PR. It pre-schedules only the
-  *green* outcome: **any line-of-defense veto — an architecture-critic objection, a code-reviewer
-  `restart`, a verifier `reject`, or a checkpoint that overflows/splits — halts the cruise and returns
-  the lane to the human.** It also **never authorizes Gate 0**: *firing the next roadmap row is always
-  a fresh human decision.* "If everything checks out, don't bother me" is **not** "ship it even if a
-  judge says no."
+A factory's state, record and decisions are independent of the host it runs on. **Moving a factory never changes a
+decision**: a move between hosts, a sleeping host or a lost connection pauses work and resumes it; it never settles,
+re-opens or alters a gate.
 
-**Gate 5 is a control gate, not a content gate:** it creates a **restorable git base** *before* risky
-work begins — the rollback handle for gates 6/7. Bouncing is *cheap early, costly late*; the
-checkpoint is that "restorable before-the-high-fire" state.
+*Rationale:* factories run wherever people place them; if placement could change outcomes, every move would need a fresh
+audit.
+*Testable as:* a factory moved at any step resumes in the same state with the same record; no move or host change appears
+as the cause of a gate settlement.
 
-**The Roadmap (Gate 0) invariants.** A deliverable is broken into an ordered, **dependency-gated**
-list of feature **rows**, each row **one full Gates 1–9 lane**, fired **one row at a time**:
-- **Gate 0 is human-only, always** (Principle VI).
-- **One row, one line.** Exactly one row is the hot kiln at a time; rows are sequential,
-  **deps-gated**, and never parallel.
-- **Dep order is enforced.** A row fires *only* when its `deps` are `done`.
-- **A row is a whole firing.** Each row runs the full Gates 1–9 (with its own optional in-row
-  unattended tail); Gate 0 sits *between* rows, never *inside* one.
-- **The inter-row chain is gated by a human.** Each `roadmap_row_done` re-opens Gate 0; cross-row
-  chaining is **opt-in, logged, and veto-liftable**; the safe default **stops at one feature's PR**
-  and hands the program back to Gate 0.
-- **`gate0` ≠ `gate`.** `gate` is one row's live Gates 1–9 gate; `gate0` is the program gate between
-  rows; the two are never conflated in state or in the move vocabulary.
-- **One RoadmapRow ↔ one HUD row ↔ one Gates 1–9 lane ↔ one closure PR**, and the roadmap is **a
-  committed, reviewed artifact** (`ROADMAP.md`), not ephemeral UI.
+### XII. Workshops are sovereign
 
-## Roles, Model Tiers & the Local Substrate
+Each workshop decides its own gates. **No act from a team space or another workshop settles a gate** — not a claim, a
+quorum, a teammate's review or a published rule; only the owning workshop's deciders, or a person it explicitly names, do.
+A teammate's review is a **person's evidence**, never a model's verdict and never a decision on the owner's behalf.
 
-**Two-track routing (the director's job).** The directive that decides which head a unit runs on is
-two-track and is the reason a cheaper head is acceptable upstream of a gate:
-- **Work roles** run on the **cheapest model the gate on their far side can bound** — the far gate is
-  the producer's backgate.
-- **The four line-of-defense roles** run on the **strongest resident model, always** — they *are* the
-  backgates (Principle II).
-- **Triage** is cheap *because* it is bounded *immediately* by a human gate.
+*Rationale:* teams coordinate by making work visible, not by deciding for each other; a team space that could approve a
+gate would be a control plane nobody signed up for.
+*Testable as:* every gate settlement names a decider belonging to, or explicitly named by, the owning workshop; no team
+space event appears as the cause of a settlement.
 
-| Tier | Role | Model |
-|---|---|---|
-| **Line of defense** | Architecture Critic | **strongest, always** |
-| **Line of defense** | Verifier / Diagnosis | **strongest, always** |
-| **Line of defense** | Code Reviewer | **strongest, always** |
-| **Line of defense** | Docs Synthesizer | **strongest, always** |
-| Work | Researcher | cheap → standard (feeds Concept; local-first) |
-| Work | Concept Writer | standard (its backgate is Architecture) |
-| Work | Architecture Designer | standard (bounded by critic + Gate 2) |
-| Work | ADR Maker | cheap (a warm step between strong passes) |
-| Work | Worker | per-task tier (bounded by its checkpoint gate) |
-| Work | Techwriter / PR Writer | cheap (bounded by the Docs / PR backgate) |
-| Triage | Feature-size triage | cheap (bounded immediately by a human gate) |
+## The Flow & The Roadmap
 
-**Artifacts a lane produces** (the chain a feature leaves behind):
-`context.md → concept.md → proposal.md → critique.md → ADR → spec.md → plan.md → [checkpoints] →
-review → verification → docs → pr`, plus the deliverable-level `ROADMAP.md`. The **researcher**
-(*context.md*) runs only for a *standard* feature and may flag unavailable web research rather than
-block (Principle VIII); the **docs-synthesizer** is a *cross-feature* pass the **human invokes directly**,
-**outside** any feature's nine gates.
+The flow is KILN's spine. KILN ships one **default flow** — the **Roadmap gate** and nine feature gates in order: Concept,
+Design, Specification, Work plan, Implementation, Code review, Verification, Documentation, Merge. The constitution fixes
+its **invariants**; the gates' questions, artifacts, judges and moves are specified in the **gate-rail contract**
+(`kiln/contracts/gate-rail.md`) and explained in `docs/concepts/the-flow.md`.
 
-**Local substrate & cost.** The cost unit is **held compute / wall-clock**, not cloud tokens. There is
-**no dashboard, no pane-per-worker parallelism, no separate 14th scheduling abstraction** — the lane
-is one module with a cost/switch account; the director *is* that scheduler. Complexity must be
-justified; a cheaper head is *permitted* upstream of a gate, never at one of the four defense
-positions.
+**Flow invariants.**
+- **Fixed anchors.** The Roadmap gate is always first and the Merge gate always last.
+- **Built-in gates are never removed.** A flow may only **add** gates, by a recorded decision of an Operator (or the team
+  quorum for team-shared flows); every added gate keeps the full gate contract — durable, waiting, settled only by a
+  committed move, recorded.
+- **A closed set of move kinds.** Every move is one of a closed set of kinds with a known consequence (*approve*,
+  *revise*, *reject*, *restart*, *split*, and the Roadmap gate's row edits); teams may label moves in their own words but
+  not invent new kinds. Changing the set is a constitutional amendment.
+- **One feature at a time per factory.** A feature walks its flow from the Roadmap gate to Merge; the Roadmap gate admits
+  one feature only and re-opens after it; there is no unattended chaining between features.
+- **A flow is chosen per feature** at the Roadmap gate, from the factory's default.
 
-**This constitution is the kiln's recipe.** Per `kiln-analogy.md` §4.8 it binds *across firings and
-across a whole batch*: a feature that violates it is "fired in the wrong atmosphere" — the defect is
-in the *surroundings*, so it must be caught *before* the unattended tail is allowed to run.
+**Shortcuts are decisions, not defaults.** Both are bounded, recorded and visible in every later brief:
+- **Triage skip** may route a small feature past **Concept and Design only**, with its reasoning recorded; a person may
+  override it, and a flow may forbid it. No judged gate after Design is skippable.
+- **Delegation (the unattended tail)** may be armed only by the person who approves a feature's **Specification gate**,
+  and covers only the **approve side** of the gates after it — Merge only if explicitly included. **Any objection** — a
+  judge's objection, a code reviewer's `restart`, a verifier's `reject`, a split proposed at Implementation, a blocked
+  request, a reached budget — **ends the delegation** for that gate and every gate after it. Delegation never reaches the
+  Roadmap gate and is never inferred from absence.
+- **Bounded automatic fixing.** Verification may run a capped number of automatic fix rounds (default 2, settable 0–3 at
+  the Roadmap gate) before the gate opens; the cap forces a persistent failure in front of a person.
+
+**The Roadmap invariants.** The program is an ordered, **dependency-gated** list of feature **rows**, kept as a committed,
+reviewed artifact (`ROADMAP.md`) and admitted only at the Roadmap gate (Principle VI). A row fires only when its
+dependencies are done; each row is one full walk of its flow; the Roadmap gate sits **between** rows, never inside one.
+The program gate and a feature's gates are never conflated in state or in the move vocabulary.
+
+## Roles & Model Tiers
+
+Roles are defined as **files** (`kiln.config/`, see `docs/concepts/configuration.md`) and bound to models by a tier map.
+The constitution fixes the **tier rule**:
+- **Judges** run on the **strongest model available to the factory, always** (Principle II).
+- **Producers** run on the **cheapest model the gate on their far side can bound** — the far gate is the producer's
+  backgate.
+- **Triage** may be cheap *because* a person's gate bounds it immediately.
+- **The planner** drafts; it never decides. Its drafts are checked and labelled before a person sees them.
+
+Configuration may choose models; it can never configure these rules away. The cost of local work is **held compute and
+wall-clock**; complexity must be justified.
+
+## Dependencies
+
+KILN may take **runtime dependencies** where they carry their weight — Pi, Pi Durable and their companions are approved.
+Every dependency is **pinned**, its adoption is a **recorded decision**, and it is reached through **one seam** so that
+the guarantees above outlive its API. A dependency never weakens a principle: where it cannot honour one, KILN works
+around it or does not use it.
+
+**This constitution is the kiln's recipe.** Per `kiln-analogy.md` §4.8 it binds *across firings and across a whole batch*:
+a feature that violates it is "fired in the wrong atmosphere" — the defect is in the *surroundings*, so it must be caught
+*before* delegation is allowed to run.
 
 ## Governance
 
-- **This constitution supersedes all other KILN practices.** Where a runtime concept doc and this
-  constitution disagree, the constitution governs. The concept set (`docs/concepts/` — *the guidance
-  file for runtime development*) is read to *understand* the system; it never overrides a principle
-  here.
-- **Amendment requires** a written rationale, **human approval**, a **version bump** by the policy
-  below, and — for any MAJOR (breaking) change — a migration note. Changes are drafted with a **Sync
-  Impact Report** (an HTML comment at the top of this file) that is **scratch, removed before the
-  amended constitution is committed**.
+- **This constitution supersedes all other KILN practices.** Where a concept doc and this constitution disagree, the
+  constitution governs. The concept set (`docs/concepts/`) is read to *understand* the system; it never overrides a
+  principle here.
+- **Amendment requires** a written rationale, **human approval**, a **version bump** by the policy below, and — for any
+  MAJOR (breaking) change — a migration note. Changes are drafted with a **Sync Impact Report** (an HTML comment at the top
+  of this file) that is **scratch, removed before the amended constitution is committed**.
 - **Versioning (semantic).**
   - **MAJOR** — a backward-incompatible governance/principle removal or redefinition.
   - **MINOR** — a new principle/section added, or materially expanded guidance.
   - **PATCH** — clarification, wording, typo, or non-semantic refinement.
-- **Compliance.** Every gate and every PR **MUST verify compliance** with this constitution; each
-  non-obvious decision is justified; and the **factory-log is the compliance evidence** (Principle
-  VII) — the record a closed terminal leaves behind is itself the audit.
+- **Compliance.** Every gate and every pull request **MUST verify compliance** with this constitution; each non-obvious
+  decision is justified; and **the record is the compliance evidence** (Principle VII).
 
-**Version**: 1.0.0 | **Ratified**: 2026-09-12 | **Last Amended**: 2026-09-12
+## Amendment record
+
+**2.0.0 (2026-10-21)** — the restart: KILN moves from a Pi extension with a terminal UI to a local web front door on Pi
+and Pi Durable, with many factories per host, an event-based record, knowledge per factory and teams of sovereign
+workshops (`docs/prd/kiln-prd.md` §15, `docs/concepts/web-front-door.md` §11). Redefines II, III, VII, VIII and IX; scopes
+IV; rewords I, V and VI; adds X, XI and XII; reduces the flow and role sections to invariants; allows pinned runtime
+dependencies.
+*Migration:* the first program's code (rows r1–r8) was built under 1.0.0 and stays valid history; it is frozen in
+`legacy/` and its keep-list is ported under 2.0.0 (roadmap r12). Its four line-of-defense roles, nine-gate names and
+factory-log-as-record are legacy terms; principle numbers I–IX keep their meaning for traces (`P-I`…`P-IX`) in code,
+specs and contracts. On a single-person, single-host, local-only workshop, III, IV and VIII read as 1.0.0 did; II, VII
+and IX still change (Documentation is no longer judged; the event stream replaces the factory-log as the record; a
+loopback front door replaces the three terminal layers).
+
+**1.0.0 (2026-09-12)** — ratified with the first program.
+
+**Version**: 2.0.0 | **Ratified**: 2026-09-12 | **Last Amended**: 2026-10-21

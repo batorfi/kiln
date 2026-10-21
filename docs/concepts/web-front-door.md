@@ -587,6 +587,10 @@ The webapp reads only committed state, through the server, and never polls:
 
 ## 11. Constitution impact
 
+> **Enacted 2026-10-21 as [constitution v2.0.0](../../.specify/memory/constitution.md)**, including the three MINOR
+> principles below (X knowledge is context, XI a factory is portable, XII workshops are sovereign) and the dependency
+> stance. Where this table and the constitution differ, the constitution governs.
+
 | Principle | Impact |
 |---|---|
 | I. Author/judge separation | Unchanged; enforced structurally — only the row task creates conversations (§7). |
