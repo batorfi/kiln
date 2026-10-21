@@ -179,7 +179,7 @@ Every gate and flow is checked before it can be used — deterministically, fail
   never the author;
 - moves only from the closed set; `returns_to` points to an earlier gate; `restart` has a restorable point before it;
   `mitigate` has verification evidence to work from;
-- delegation can be armed only at a gate marked as an arming point (the Specification gate by default);
+- delegation can be armed only at the Specification gate (decided 2026-10-21); an added gate is never an arming point;
 - team-required gates present for matching features;
 - no cycles, no unreachable gates.
 
@@ -229,9 +229,11 @@ flows can arrive later without reworking the director.
 
 ## 14. Open questions
 
-1. Should added gates be allowed to be **arming points** for delegation, or only the Specification gate?
-2. Should `applies_when` be able to look at the **diff** (not only paths and labels) — for example *a new dependency was
-   added*?
+1. ~~Added gates as arming points?~~ **Decided 2026-10-21** (human@batorfi): **no — the Specification gate only**, as the constitution says. An
+   added gate may be `delegable: false`, never an arming point.
+2. ~~`applies_when` on the diff?~~ **Decided 2026-10-21** (human@batorfi): **yes, deterministic predicates only** — paths changed, a new dependency
+   or lockfile change, file types, size — computed by checks, never by an LLM. A match in flight only offers to add the
+   gate at the next gate (§7 step 4), a recorded decision.
 3. When post-merge gates come into scope, how should they relate to the Merge gate's authority?
 
 ## 15. One sentence

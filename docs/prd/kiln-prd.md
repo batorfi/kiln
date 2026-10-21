@@ -335,12 +335,12 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | ID | Requirement | |
 |---|---|---|
 | CFG-1 | **Configuration as files** (`kiln.config/`): workshop, hosts, providers, model catalog, `agents/*.md`, `tiers.yaml`, policies, per-factory settings; the front door edits the same files; secrets only by reference. | Must |
-| CFG-2 | **Layering**: team floor → workshop → factory, each stricter only. | Must (workshop/factory) / Should (team) |
+| CFG-2 | **Layering**: team floor → workshop → factory, each stricter only; `kiln.config/` always lives per workshop, the team floor in the team space. | Must (workshop/factory) / Should (team) |
 | CFG-3 | **`kiln check config`**: all-or-nothing validation before apply — bindings, judge rules, capabilities, pins, allowlists, floors, no secrets; never vacuous. | Must |
 | CFG-4 | **Applies from the next step**; host changes affect new leases only. | Must |
 | CFG-5 | **Hosts**: join with Operator approval, `kiln host measure`, capacity, pins, sleep, `serves`, revoke. | Should |
 | CFG-6 | **Providers and models**: provider entries via `pi-ai`; catalog with pinned versions and families; **`kiln check model`** measures capabilities and re-checks on version change. | Must (local) / Should (remote) |
-| CFG-7 | **Agents**: role files with kind, line of defense, tools, replay, gate, version; version recorded per step; **try on a past feature** as an ungated replay; judge and team-shared role changes need an Operator and, if shared, the team quorum. | Must (roles, versions) / Should (try-runs) |
+| CFG-7 | **Agents**: role files with kind, line of defense, tools, replay, gate, version; version recorded per step; **try on a past feature** as an ungated replay; judge and team-shared role changes need an Operator and, if shared, the team quorum. A **judge** instruction change applies only after a try-run on a past feature (enforced from r26); old role versions are kept forever. | Must (roles, versions, judge try-runs) / Should (other try-runs) |
 | CFG-8 | **History**: every change recorded with who, before and after; config events in the workshop record. | Must |
 
 ### 6.17 An extensible flow
@@ -352,7 +352,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | FLOW-1 | **Gates as data**: the director executes a feature's flow from definitions, not a constant rail; the default flow ships as data. | Must |
 | FLOW-2 | **Anchors and invariants**: Roadmap gate first, Merge gate last, all built-in gates present in order; added gates only between built-in ones; skipping only as triage does today; nothing after Merge. | Must |
 | FLOW-3 | **Move kinds**: a closed set (approve · revise · reject · restart · split+revise · mitigate) with team labels and rules (required note, `returns_to`, rounds); events record kind and label. | Must |
-| FLOW-4 | **Gate definitions** (`gates/<id>.md`): question, phase and placement, artifact, author, judges, moves, delegable, hold lane, `applies_when`, deciders, brief emphasis, version. | Should |
+| FLOW-4 | **Gate definitions** (`gates/<id>.md`): question, phase and placement, artifact, author, judges, moves, delegable, hold lane, `applies_when` (paths, labels, and deterministic diff predicates — never an LLM), deciders, brief emphasis, version; an added gate is never an arming point. | Should |
 | FLOW-5 | **Flows** (`flows/<name>.yaml`): extend the standard flow and add gates; factory default; team-required gates by path or label. | Should |
 | FLOW-6 | **Per-feature flow**: proposed with reasons and decided at the Roadmap gate; pinned with gate versions at admission; gates may be added in flight by decision, never removed. | Should |
 | FLOW-7 | **`kiln check flow`**: all-or-nothing validation of anchors, placement, roles and judges, move kinds, `returns_to`, restart and mitigate prerequisites, arming points, required gates, cycles. | Must (default flow) / Should (added gates) |
@@ -624,7 +624,8 @@ Consolidated from the concept docs; each needs an answer before the milestone th
    advisory stale at 3 days and expired at 7, exclusive expired at 48 hours; coordination as a floor, extras per item by
    the author's choice (TEAM-2…4).
 11. Research and spike capacity on shared hosts; switching off keeper suggestions; archived spike retention — M13.
-12. Added gates as delegation arming points; `applies_when` on the diff; post-merge gates when they come into scope — M8.
+12. ~~Added gates as delegation arming points; `applies_when` on the diff~~ — **Decided 2026-10-21:** Specification only;
+   deterministic diff predicates allowed. Still open: post-merge gates when they come into scope — M8.
 
 ## 15. Constitution amendments required
 
