@@ -162,7 +162,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | WORK-3 | Only the director creates conversations; workers have no subagent tool. | Must |
 | WORK-4 | **Replay discipline**: read-only tools are replay-safe; writes and commands are not — the model is told of an interruption. | Must |
 | WORK-5 | Deterministic `requestId` per step (feature, gate, step, attempt). | Must |
-| WORK-6 | Workspace per factory (repository or worktree); overlap between factories detected and surfaced. | Must / Should |
+| WORK-6 | **Workspace per factory**: one KILN-managed worktree per factory, never a person's working copy; one branch per feature (`kiln/<factory>/<row>`) cut at admission; the row task removes its branch after merge or tags an abandoned one (`kiln/abandoned/<row>`); the factory removes its worktree only when retired; Health flags orphans. Overlap between factories detected and surfaced. | Must / Should |
 
 ### 6.4 Director and commands
 
@@ -368,7 +368,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | SETUP-2 | **`kiln doctor`**: hardware, Node, git, Ollama, network and disk checks with fixes named; a measured recommendation (factories, model sizes, memory budget, concurrency); never installs system software. | Must |
 | SETUP-3 | **Models at setup**: recommendations from hardware, installed models first, background downloads, `kiln check model` on each, `tiers.yaml` written; setup does not finish without a judge bound to the strongest checked model; remote providers off by default. | Must |
 | SETUP-4 | **Workshop and storage**: name, owner, roles, a personal signing key; one KILN home shown before creation; disk budget, backups (off by default), retention defaults. | Must |
-| SETUP-5 | **First factory** from a local clone, a remote or an empty repository; worktree mode by default; `local-only` and the standard flow by default; the repository read locally and never changed. | Must |
+| SETUP-5 | **First factory** from a local clone, a remote or an empty repository; always a KILN-managed worktree; `local-only` and the standard flow by default; the repository read locally and never changed. | Must |
 | SETUP-6 | **Knowledge bootstrap**: proposed sources, starter wiki `AGENTS.md`, ingest on the lane in the background, workshop knowledge seeded with measured models and the machine, an empty notebook. | Should |
 | SETUP-7 | **First roadmap**: a goal or open issues → a planner draft citing knowledge → the first Roadmap gate; a read-only **demo factory** from a committed replay. | Must (gate) / Should (demo) |
 | SETUP-8 | **Team at setup**: start (team-space repository, quorum, invite) or join (invite, key registration, team floor preview); joining never loosens the workshop. | Could |
@@ -401,7 +401,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 | ID | Requirement | |
 |---|---|---|
-| GREEN-1 | **Start empty**: create the repository, add Spec Kit (files shown before the first commit), local-only and worktree mode by default. | Must |
+| GREEN-1 | **Start empty**: create the repository, add Spec Kit (files shown before the first commit), local-only by default; always a KILN-managed worktree. | Must |
 | GREEN-2 | **Product brief**: problem, users, outcomes, non-goals, constraints, quality attributes, success measures — written or drafted with the planner, approved, a knowledge page *from a person*; feeds the roadmap brief. | Must |
 | GREEN-3 | **Constitution written from the brief** with `speckit.constitution`, each principle citing its origin; approved before the first feature; amendments recorded and versioned. | Must |
 | GREEN-4 | **Technology decisions**: open choices listed, evidence from research steps and spikes where the bench is available (M13), decided by a person, recorded as decision pages (and constitution amendments where binding); later Design gates measure against them. | Must |

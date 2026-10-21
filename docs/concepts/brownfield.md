@@ -287,7 +287,7 @@ The knowledge base stays in the workshop by default; a team may choose to publis
 
 Continuing from `first-run.md` Step 4, with an existing repository:
 
-1. **Point at the repository** — local clone or remote; worktree mode; local-only by default.
+1. **Point at the repository** — local clone or remote; KILN works in its own worktree; local-only by default.
 2. **Profile** — read-only, minutes; the person reviews and corrects it.
 3. **Full scan** — estimated, then started by the person; durable, local, deep in the territory; pages appear in the
    knowledge base as it runs; the baseline is recorded in its fourth pass; the scan report closes it.

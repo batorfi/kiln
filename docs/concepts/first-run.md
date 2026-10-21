@@ -138,7 +138,8 @@ Setup shows and lets the person choose:
 ## 8. Step 4 — the first factory, Spec Kit and the constitution
 
 - **Point at a repository** — an existing local clone (most common), a remote to clone, or a new empty one.
-- **Workspace mode** — work in branches of this clone, or in a separate worktree KILN manages (recommended).
+- **Workspace** — KILN creates its own worktree of this repository and works only there, one branch per feature; it
+  never checks out branches or writes files in your clone (decided 2026-10-21, `web-front-door.md` §12.7).
 - **Profile** — `local-only` (default), with a one-line explanation of what that guarantees.
 - **Flow** — the standard flow; added gates come later (`extensible-flow.md`).
 - **Name** — suggested from the repository.

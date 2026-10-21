@@ -209,7 +209,7 @@ There are no adoption stages to climb: the factory has owned the repository from
 
 Continuing from `first-run.md` Step 4 with *Start empty*:
 
-1. **Create the repository** — local `git init`, optionally a remote; worktree mode; local-only by default.
+1. **Create the repository** — local `git init`, optionally a remote; KILN works in its own worktree; local-only by default.
 2. **Add Spec Kit** — `specify init --here --ai pi`; the files are shown before the first commit.
 3. **Product brief** — written by the person, or drafted in conversation with the planner; approved.
 4. **Constitution** — drafted from the brief with `speckit.constitution`; edited and approved.

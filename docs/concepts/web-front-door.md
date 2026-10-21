@@ -643,7 +643,8 @@ A flow is the unit of isolation. Each flow has its own:
 
 - **roadmap and Roadmap gate**, and its own rows;
 - **durable store** (its own Pi Durable harness and storage), and therefore its own ordered event stream;
-- **workspace** — its own repository, or its own isolated worktree of a shared repository;
+- **workspace** — its own KILN-managed worktree of the repository, never a working copy a person uses; each
+  feature on its own branch (§12.7);
 - **owner** — the human(s) allowed to decide at its gates.
 
 Flows never share a store, a lane, a conversation or a gate. A flow's record is complete on its own: its
@@ -748,6 +749,12 @@ flows it is allowed to decide.
 - **Separate repositories** are the simple case: flows cannot interfere.
 - **One repository, several flows** needs isolation: each flow works in its own worktree and branch, and meets
   the others only at the Merge gate.
+- **The layout** (decided 2026-10-21): **one KILN-managed worktree per factory**, created with the factory; **one
+  branch per feature** (`kiln/<factory>/<row>`), cut from the base when the Roadmap gate admits it. KILN never checks out
+  branches or writes files in a person's own clone. Spikes and brownfield rehearsals get their own scratch worktrees.
+- **Cleanup has two owners.** When a feature closes, its row task's last step removes the local feature branch after
+  merge, or keeps an abandoned one as a tag (`kiln/abandoned/<row>`) for the record. The factory owns its worktree and
+  removes it only when the factory is retired. Health flags orphaned branches and worktrees; nothing else deletes them.
 - **Overlap is surfaced, not resolved by machines.** When two flows touch the same files, the workshop raises
   an overlap signal (an event and a health condition) at the earliest gate where it is visible — the human
   decides whether to sequence, split or proceed.
@@ -1057,7 +1064,8 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 
 ## 20. Open design questions
 
-- **Workspace isolation**: shared repo or per-row worktrees, and which task owns cleanup.
+- ~~**Workspace isolation**~~: **Decided 2026-10-21** (human@batorfi) — a worktree per factory, a branch per feature; the row task cleans its
+  branch, the factory its worktree (§12.7).
 - **Model residency**: loading and evicting the resident Ollama model stays KILN's job
   (`ollama-resident.ts`); the lane task drives it, but how residency composes with requests issued by the
   harness needs design.
