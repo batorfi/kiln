@@ -676,7 +676,7 @@ Collected for review; each needs a decision before the interaction design phase.
 2. ~~User-facing vocabulary: Factory, Feature, Step (§4).~~ Decided 2026-10-21 — decisions 15 and 16.
 3. Whether waiting gates ever escalate, and whether interruptions are configurable per gate (§6).
 4. Onboarding and the very first factory as its own core experience (§7).
-5. Several Deciders collaborating on one gate: supported, deferred, or out of scope (§7, §8.4, §12).
+5. ~~Several Deciders collaborating on one gate.~~ Decided 2026-10-21 — decision 22.
 6. ~~How much of the kiln metaphor reaches the experience (§10).~~ Decided 2026-10-21 — decision 17.
 7. Direct versus neutral voice (§11).
 8. ~~Whether KILN offers its own recommended move at a gate, and the limits on requesting more evidence (§8).~~ Decided
@@ -711,7 +711,8 @@ Collected for review; each needs a decision before the interaction design phase.
 | 19 | 2026-10-21 | **Request more evidence** is additive (never erases a verdict), costed before it runs, bounded by budget and policy, not by a count | §8.4 | human |
 | 20 | 2026-10-21 | Extra evidence uses only models the factory's policy allows; egress becomes a policy stop | §8.4 | human |
 | 21 | 2026-10-21 | **Hand it over** arrives with multi-person workshops, hidden in a one-person workshop | §8.4 | human |
-| 22 | | *(your decisions from this review)* | | |
+| 22 | 2026-10-21 | **One decision per gate**: the first committed move wins and later moves are refused with *decided by …*; when several people must agree, that is a set of **required reviews** — recorded evidence that must exist before *approve* is offered — never several settling moves; no quorum gates in `kiln-v1` | §7, §8.4, §12 | human |
+| 23 | | *(your decisions from this review)* | | |
 
 ## 16. One sentence
 

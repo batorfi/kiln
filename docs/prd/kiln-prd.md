@@ -609,7 +609,9 @@ Consolidated from the concept docs; each needs an answer before the milestone th
    metaphor stays in the name and docs (`user-experience.md` decisions 15–17).
 6. ~~Whether KILN may recommend a move at a gate, and limits on *request more evidence* — M5.~~ **Decided 2026-10-21:**
    no recommendation in the brief, only on request and labelled; more evidence additive, costed and policy-bound (BRIEF-6).
-7. Several Deciders collaborating on one gate — M8.
+7. ~~Several Deciders collaborating on one gate — M8.~~ **Decided 2026-10-21:** one decision per gate (CORE-3, first
+   move wins); agreement among several people is modelled as required reviews that condition *approve*, never as several
+   settling moves; no quorum gates in `kiln-v1`.
 8. Hosts in several workshops; how workspaces move; workshop failover; container forms — M11.
 9. Egress policy language and model-family identity — M10.
 10. Exact quorum rules, exclusive-claim expiry, publishing levels beyond coordination — M12.
