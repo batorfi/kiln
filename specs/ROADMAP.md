@@ -424,7 +424,7 @@ From PRD §14, placed at the row that needs them:
 | **r33** | egress policy language and model-family identity (§14.9) |
 | **r35** | research and spike capacity on shared hosts; keeper suggestions off-switch; spike retention (§14.11) |
 | **r37** | hosts in several workshops; workspace moves; failover; container forms (§14.8) |
-| **r38** | quorum rules, claim expiry, publishing levels (§14.10) — now inside `kiln-v1`, so these must be settled before r38 rather than in v1.x |
+| **r38** | ~~quorum rules, claim expiry, publishing levels~~ — **decided 2026-10-21**: majority quorum (rules and membership by the same quorum); activity-renewed claims, 7 days / 48 hours; coordination as a floor (§14.10) |
 
 Decided 2026-10-21, before r14 encodes them: the flow's proposals P1–P6 (`the-flow.md` §11) are accepted and its open
 questions answered (§12) — Code review offers `approve · revise · restart`, a reject may name an earlier gate at any time,

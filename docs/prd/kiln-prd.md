@@ -300,9 +300,9 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | ID | Requirement | |
 |---|---|---|
 | TEAM-1 | **Team space repository**: a git repository holding the team roadmap, claims, team knowledge, published digests, decision requests and responses, team rules and members; every write a signed commit. | Must (v1) |
-| TEAM-2 | **Subscribe and publish**: each workshop pulls and verifies the team space into events of its own record, and publishes by its policy; default level **coordination**. | Must (v1) |
-| TEAM-3 | **Team roadmap** changed by a **quorum** of named deciders; factories adopt team features at their own Roadmap gate. | Must (v1) |
-| TEAM-4 | **Claims**: made on adoption, refined at Work plan, released at merge, expiring when stale; **advisory by default**, exclusive on protected paths; **overlap detection** across workshops shown in both gate briefs. | Must (v1) |
+| TEAM-2 | **Subscribe and publish**: each workshop pulls and verifies the team space into events of its own record, and publishes by its policy; **coordination** is the floor for team-roadmap features, anything richer per item by the author's choice. | Must (v1) |
+| TEAM-3 | **Team roadmap** changed by a **quorum** of named deciders; factories adopt team features at their own Roadmap gate. Default quorum: a majority of named deciders; team rules, the decider list and the threshold change only by the current quorum; an unmet quorum changes nothing. | Must (v1) |
+| TEAM-4 | **Claims**: made on adoption, refined at Work plan, released at merge; **renewed by activity**, stale after 3 quiet days, expired after 7 (exclusive: 48 hours), expiry releasing the claim only; **advisory by default**, exclusive on protected paths; **overlap detection** across workshops shown in both gate briefs. | Must (v1) |
 | TEAM-5 | **Decisions across workshops**: opinions, required reviews, delegated deciders — signed, recorded on both sides; required reviews **mirrored** with the code host's pull request. | Must (v1) |
 | TEAM-6 | **Merge gate in a team**: base drift, required reviews and checks, the code host's merge-queue position; no KILN queue. | Must (v1) |
 | TEAM-7 | **Team knowledge** tier in the team space, editable by every member, included as `team/` in member vaults; merged-feature stories by the author's choice. | Must (v1) |
@@ -616,7 +616,10 @@ Consolidated from the concept docs; each needs an answer before the milestone th
    settling moves; no quorum gates in `kiln-v1`.
 8. Hosts in several workshops; how workspaces move; workshop failover; container forms — M11.
 9. Egress policy language and model-family identity — M10.
-10. Exact quorum rules, exclusive-claim expiry, publishing levels beyond coordination — M12.
+10. ~~Exact quorum rules, exclusive-claim expiry, publishing levels beyond coordination — M12.~~ **Decided 2026-10-21:**
+   majority quorum by default (rules, deciders and threshold change by the same quorum); claims renewed by activity,
+   advisory stale at 3 days and expired at 7, exclusive expired at 48 hours; coordination as a floor, extras per item by
+   the author's choice (TEAM-2…4).
 11. Research and spike capacity on shared hosts; switching off keeper suggestions; archived spike retention — M13.
 12. Added gates as delegation arming points; `applies_when` on the diff; post-merge gates when they come into scope — M8.
 

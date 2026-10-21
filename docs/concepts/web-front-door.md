@@ -1088,8 +1088,9 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
   2026-10-21).
 - **Bench**: reserving research and spike capacity per person on shared hosts; switching off keeper suggestions;
   how long archived spikes are kept (`the-bench.md` §10).
-- **Teams**: exact quorum rules per team; how exclusive claims expire; publishing levels beyond coordination
-  (`team-space.md`).
+- ~~**Teams**: quorum rules; claim expiry; publishing levels~~ — **decided 2026-10-21**: majority quorum by default,
+  rules and membership by the same quorum; activity-renewed claims (7 days advisory, 48 hours exclusive); coordination as
+  a floor, extras by choice (`team-space.md` decisions 11–14).
 - **Factories anywhere**: hosts in more than one workshop (answered for team spaces: yes, `team-space.md` §13); how workspaces move; workshop failover; which container
   forms to support; other Pi Durable storage adapters (`factories-anywhere.md` §13).
 - **Wikis**: a dedicated wiki keeper role or the researcher with a schema; how long a page may go unreviewed before a
