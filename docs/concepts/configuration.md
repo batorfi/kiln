@@ -175,7 +175,7 @@ You review the diff for security issues against the specification…
 # tiers.yaml
 worker: qwen3-coder:30b
 researcher: qwen3-coder:30b
-planner: gemma4:27b
+planner: strongest                # default; an Operator may bind it lower (decided 2026-10-21)
 code-reviewer: strongest           # resolved per host and profile
 verifier: strongest
 security-reviewer: strongest
