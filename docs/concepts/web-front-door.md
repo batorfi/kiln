@@ -545,6 +545,10 @@ Each unit task's conversation is configured with:
 
 Rules:
 
+- **A fresh conversation per step** (decided 2026-10-21). Its inputs are explicit — the approved artifacts, the step's
+  task and knowledge pages, each referenced in the record; steps of the same role never share a conversation. The only
+  continuation is `revise`; a shared preamble may come from forking a prepared base conversation; judges are always
+  fresh.
 - **No model spawns a model.** Workers get no subagent tool. Every conversation is created by a unit task,
   which only the row task creates — which is how author/judge separation and line-of-defense tiers stay
   enforced.

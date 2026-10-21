@@ -210,7 +210,9 @@ The human accepted Pi Durable's experimental status; KILN evolves with it. To ke
   of the live store. Archives travel with the factory on a move. They are kept forever unless an Operator sets an age-out
   (recorded; `transcript.aged_out`). The record is never archived or aged out; it is not segmented in `kiln-v1` (see
   `the-record.md` §18).
-- **Session reuse.** Whether consecutive steps of the same role may share a conversation, or always start fresh.
+- ~~**Session reuse.**~~ **Decided 2026-10-21** (human@batorfi): **a fresh conversation per step**, with explicit inputs (approved artifacts,
+  the step's task, knowledge pages) referenced in the record. The only continuation is `revise`. A shared preamble may
+  come from forking a prepared base conversation. Judges are always fresh.
 
 ## 13. One sentence
 

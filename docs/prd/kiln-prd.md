@@ -157,7 +157,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 | ID | Requirement | |
 |---|---|---|
-| WORK-1 | Each step is a durable **conversation** with its role's instructions (`agents/*.md`), its tier's model and only its permitted tools. | Must |
+| WORK-1 | Each step is a **fresh** durable **conversation** with its role's instructions (`agents/*.md`), its tier's model, only its permitted tools and explicit inputs referenced in the record; steps never share a conversation — the only continuation is `revise`; a shared preamble may come from forking a prepared base. | Must |
 | WORK-2 | **Tier map**: roles bound to models in one place; judges (architecture critic, code reviewer, verifier, docs synthesizer) bind only to the strongest model; a weaker binding fails closed. | Must |
 | WORK-3 | Only the director creates conversations; workers have no subagent tool. | Must |
 | WORK-4 | **Replay discipline**: read-only tools are replay-safe; writes and commands are not — the model is told of an interruption. | Must |
