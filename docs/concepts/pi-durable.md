@@ -201,8 +201,12 @@ The human accepted Pi Durable's experimental status; KILN evolves with it. To ke
 - **Local models through `pi-ai`.** Tool calling, streaming, usage reporting and context-limit behaviour on Ollama
   models need to be established for each model KILN supports.
 - **Model residency.** How the lane's explicit loading and pinning composes with requests issued by the harness.
-- **Store lifetime.** One store per factory is the starting point; how closed features are archived, and how large a
-  long-lived SQLite store may grow, need deciding.
+- ~~**Store lifetime.**~~ **Decided 2026-10-21** (human@batorfi): **one store per factory**. When a feature closes (merged or abandoned), its
+  conversations and checkpoints are exported to a checksummed, compressed **feature archive** on the factory's host —
+  beside the store, never in git — a `feature.archived` event records its reference and hash, and they are compacted out
+  of the live store. Archives travel with the factory on a move. They are kept forever unless an Operator sets an age-out
+  (recorded; `transcript.aged_out`). The record is never archived or aged out; it is not segmented in `kiln-v1` (see
+  `the-record.md` §18).
 - **Session reuse.** Whether consecutive steps of the same role may share a conversation, or always start fresh.
 
 ## 13. One sentence

@@ -149,6 +149,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | CORE-4 | Restart resumes every task from its last checkpoint; a waiting gate resumes as waiting; a half-done step never commits its result. | Must |
 | CORE-5 | Exactly-once commands and moves via idempotency keys. | Must |
 | CORE-6 | The "complete a waiting task from outside" primitive is settled with Pi Durable **in a time-boxed go/no-go spike before the durable core** (roadmap r42): natively if the library allows it; otherwise an upstream proposal and, until it lands, a KILN decision table committed in the same SQLite transaction as the task store, behind the seam. A no-go re-opens the Roadmap gate. The gate contract does not depend on its exact API. | Must (early) |
+| CORE-7 | **One store per factory.** A closed feature's conversations and checkpoints are exported to a checksummed **feature archive** beside the store (never in git), recorded by `feature.archived` with its hash, and compacted out of the live store; archives move with the factory; kept forever unless an Operator sets an age-out (`transcript.aged_out`). The record is never archived, aged out or (in `kiln-v1`) segmented; r15 measures its size and rebuild time. | Must |
 
 ### 6.3 Workers and roles
 

@@ -121,7 +121,7 @@ Each event type has a versioned JSON schema in `contracts/events/`.
 | Group | Event types (examples) |
 |---|---|
 | **Roadmap** | `roadmap_gate.opened` · `roadmap_gate.decided` · `roadmap.amended` · `row.admitted` · `roadmap.correction_flagged` |
-| **Feature** | `row.started` · `row.triaged` · `row.paused` · `row.resumed` · `row.closed` |
+| **Feature** | `row.started` · `row.triaged` · `row.paused` · `row.resumed` · `row.closed` · `feature.archived` · `transcript.aged_out` |
 | **Gate** | `gate.opened` (brief reference) · `gate.waiting` · `move.committed` · `move.refused` · `gate.auto_approved` · `gate.vetoed` · `gate.settled` |
 | **Step** | `unit.queued` · `unit.started` · `unit.steered` · `unit.settled` · `unit.failed` · `unit.aborted` · `unit.resumed_after_crash` |
 | **Lane and models** | `lane.acquired` · `lane.released` · `lane.held` · `lane.swap_started` · `lane.swapped` · `model.request.started` · `model.request.settled` |
@@ -257,11 +257,15 @@ These lines prove that the gate waited, who decided, on which brief, and that no
 
 ## 18. Open questions
 
-1. **Retention** — the record is permanent; on what schedule should telemetry and archived durable-store transcripts age out?
+1. **Retention** — the record is permanent; on what schedule should telemetry age out? *(Archived transcripts: **Decided 2026-10-21** (human@batorfi) —
+   kept forever unless an Operator sets an age-out, recorded as configuration; ageing out deletes the feature archive and
+   records `transcript.aged_out`.)*
 2. **Schema evolution** — upcast old events on replay, or keep every version's consumer logic?
 3. **Export** — a standard export (CloudEvents JSONL) for teams with their own audit systems: opt-in, content-free, local by
    default.
-4. **Size** — when a long-lived factory record should be segmented, and how segments stay rebuildable.
+4. ~~**Size** — when a long-lived factory record should be segmented.~~ **Decided 2026-10-21** (human@batorfi): **not in `kiln-v1`**. r15
+   measures stream size and full-rebuild time; Health warns past a threshold; segmentation (per closed feature,
+   hash-chained, rebuildable) becomes a later roadmap row only if the measurements call for it.
 
 ## 19. One sentence
 

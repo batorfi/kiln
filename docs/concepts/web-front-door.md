@@ -1061,8 +1061,8 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 - **Model residency**: loading and evicting the resident Ollama model stays KILN's job
   (`ollama-resident.ts`); the lane task drives it, but how residency composes with requests issued by the
   harness needs design.
-- **Store lifetime**: one store per deliverable (`kiln-v1`) or per row, and how a closed row's store and
-  event stream are archived beside its factory-log projection.
+- ~~**Store lifetime**~~: **Decided 2026-10-21** (human@batorfi) — one store per factory; closed features' transcripts move to a feature
+  archive beside the store; the record stays whole and unsegmented in `kiln-v1` (`pi-durable.md` §12, `the-record.md` §18).
 - **Multi-flow sizing**: default memory budget, per-model concurrency caps and the flow limit for a given host,
   derived from measured throughput under contention rather than fixed numbers.
 - **Flow-to-workshop channel**: the protocol between the supervisor and flow processes, and how leases
@@ -1071,7 +1071,8 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
   expressed and tested.
 - **Model-family identity**: how the catalog records families so cross-family judging can be enforced.
 - **Telemetry retention**: how long spans and fine-grained metrics are kept locally before ageing out
-  (domain events are never aged out).
+  (domain events are never aged out; archived transcripts: kept forever unless an Operator sets an age-out — decided
+  2026-10-21).
 - **Bench**: reserving research and spike capacity per person on shared hosts; switching off keeper suggestions;
   how long archived spikes are kept (`the-bench.md` §10).
 - **Teams**: exact quorum rules per team; how exclusive claims expire; publishing levels beyond coordination
