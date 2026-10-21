@@ -1,4 +1,6 @@
-> Status: product requirements — draft for review (rev 4, 2026-10-18) — **not admitted**
+> Status: product requirements — **final** (2026-10-21, human@batorfi; previously a proposal, rev 4, 2026-10-18). Open decisions were
+> settled on 2026-10-21 and are recorded where they apply; what remains open is listed in
+> [`open-decisions.md`](../concepts/open-decisions.md). Building it is admitted only at the Roadmap gate.
 > Type: PRD (high level)
 >
 > Scope note: this document defines **the new KILN codebase** — what it must do, how it is organised, and which of the

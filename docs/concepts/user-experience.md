@@ -1,4 +1,6 @@
-> Status: concept draft for review (rev 10, 2026-10-18) — **not admitted**
+> Status: concept — **final** (2026-10-21, human@batorfi; previously a proposal, rev 10, 2026-10-18). Open decisions were
+> settled on 2026-10-21 and are recorded where they apply; what remains open is listed in
+> [`open-decisions.md`](./open-decisions.md). Building it is admitted only at the Roadmap gate.
 > Type: concept
 >
 > Scope note: this doc describes the **KILN user experience at the conceptual level** — who uses KILN, what they

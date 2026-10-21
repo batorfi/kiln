@@ -1,4 +1,6 @@
-> Status: concept (proposal, 2026-10-17) — **not admitted**
+> Status: concept — **final** (2026-10-21, human@batorfi; previously a proposal, 2026-10-17). Open decisions were
+> settled on 2026-10-21 and are recorded where they apply; what remains open is listed in
+> [`open-decisions.md`](./open-decisions.md). Building it is admitted only at the Roadmap gate.
 > Type: concept
 >
 > Scope note: this doc describes **KILN factories that run anywhere** — on the machine in front of you, on a team

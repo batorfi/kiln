@@ -1,4 +1,6 @@
-> Status: vision (proposal, rev 6, 2026-10-18) — **not admitted**
+> Status: vision — **final** (2026-10-21, human@batorfi; previously a proposal, rev 6, 2026-10-18). Open decisions were
+> settled on 2026-10-21 and are recorded where they apply; what remains open is listed in
+> [`open-decisions.md`](./open-decisions.md). Building it is admitted only at the Roadmap gate.
 > Type: vision
 >
 > Scope note: this is the *why* and the *where to* of KILN, written for anyone deciding whether KILN is worth
@@ -291,7 +293,9 @@ KILN builds on Pi's durable substrate while it is still experimental, and evolve
 
 ## 11. What this vision asks for
 
-Adopting it needs deliberate, recorded human decisions:
+Adopting it needs deliberate, recorded human decisions. **As of 2026-10-21** the constitution amendments and the
+dependency stance are enacted (constitution v2.0.1), the future of the Pi-integrated UI is decided (retired; the `kiln`
+CLI is the terminal surface), and the Roadmap gate amendment is the one step still waiting:
 
 - **Constitution amendments**: local by default with egress only by configured, recorded choice
   (Principle VIII); one lane *per factory* with a machine-wide model budget (Principle III); the
