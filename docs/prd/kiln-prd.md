@@ -366,15 +366,15 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | ID | Requirement | |
 |---|---|---|
 | SETUP-1 | **`kiln init`**: guided setup in the browser (loopback, one-time secret) or the terminal (`--no-browser`), writing the same files; resumable after interruption; any step rerunnable (`--step`). | Must |
-| SETUP-2 | **`kiln doctor`**: hardware, Node, git, Ollama, network and disk checks with fixes named; a measured recommendation (factories, model sizes, memory budget, concurrency); never installs system software. | Must |
+| SETUP-2 | **`kiln doctor`**: hardware, Node, git, Ollama, network and disk checks with fixes named; a measured recommendation (factories, model sizes, memory budget, concurrency) against a **32 GB minimum / 64 GB recommended** for local-only; never installs system software. | Must |
 | SETUP-3 | **Models at setup**: recommendations from hardware, installed models first, background downloads, `kiln check model` on each, `tiers.yaml` written; setup does not finish without a judge bound to the strongest checked model; remote providers off by default. | Must |
 | SETUP-4 | **Workshop and storage**: name, owner, roles, a personal signing key; one KILN home shown before creation; disk budget, backups (off by default), retention defaults. | Must |
 | SETUP-5 | **First factory** from a local clone, a remote or an empty repository; always a KILN-managed worktree; `local-only` and the standard flow by default; the repository read locally and never changed. | Must |
 | SETUP-6 | **Knowledge bootstrap**: proposed sources, starter wiki `AGENTS.md`, ingest on the lane in the background, workshop knowledge seeded with measured models and the machine, an empty notebook. | Should |
-| SETUP-7 | **First roadmap**: a goal or open issues → a planner draft citing knowledge → the first Roadmap gate; a read-only **demo factory** from a committed replay. | Must (gate) / Should (demo) |
+| SETUP-7 | **First roadmap**: a goal or open issues → a planner draft citing knowledge → the first Roadmap gate; a read-only **demo factory** from a committed replay, downloaded on request (a recorded, one-off download). | Must (gate) / Should (demo) |
 | SETUP-8 | **Team at setup**: start (team-space repository, quorum, invite) or join (invite, key registration, team floor preview); joining never loosens the workshop. | Could |
 | SETUP-9 | Setup recorded: `setup.step_completed` and the step's own events begin the workshop record. | Must |
-| SETUP-10 | **Spec Kit**: `kiln doctor` checks `specify` (pinned range, `uv`, Python); setup **adopts** an existing `.specify/` (version, integration, templates against the manifest, existing `specs/`) or **adds** it (`specify init --here --ai pi`) only with approval — as a pull request in team codebases; the Pi integration installed for KILN's roles. | Must |
+| SETUP-10 | **Spec Kit**: `kiln doctor` checks `specify` (pinned range, `uv`, Python); setup **adopts** an existing `.specify/` (version, integration, templates against the manifest, existing `specs/`) or **adds** it (`specify init --here --ai pi`) only with approval — as a pull request in team codebases; the Pi integration installed for KILN's roles; other agents' integrations coexist and are never touched; a new pinned Spec Kit version is offered at the next Roadmap gate, never applied automatically. | Must |
 | SETUP-11 | **The constitution**: adopted as is, edited, or drafted with `speckit.constitution` from the repository's docs and conventions, approved before the first roadmap; briefs cite its principles. | Must |
 
 ### 6.19 Existing codebases
