@@ -158,9 +158,10 @@ its **invariants**; the gates' questions, artifacts, judges and moves are specif
 - **Built-in gates are never removed.** A flow may only **add** gates, by a recorded decision of an Operator (or the team
   quorum for team-shared flows); every added gate keeps the full gate contract — durable, waiting, settled only by a
   committed move, recorded.
-- **A closed set of move kinds.** Every move is one of a closed set of kinds with a known consequence (*approve*,
-  *revise*, *reject*, *restart*, *split*, and the Roadmap gate's row edits); teams may label moves in their own words but
-  not invent new kinds. Changing the set is a constitutional amendment.
+- **A closed set of move kinds.** Every move is one of a closed set of kinds with a known consequence — *approve*,
+  *revise*, *reject*, *restart*, *split+revise*, *mitigate* (bounded automatic fix rounds; never a person's move and never
+  a settlement), and the Roadmap gate's row edits; teams may label moves in their own words but not invent new kinds.
+  Changing the set is a constitutional amendment.
 - **One feature at a time per factory.** A feature walks its flow from the Roadmap gate to Merge; the Roadmap gate admits
   one feature only and re-opens after it; there is no unattended chaining between features.
 - **A flow is chosen per feature** at the Roadmap gate, from the factory's default.
@@ -222,6 +223,9 @@ a feature that violates it is "fired in the wrong atmosphere" — the defect is 
 
 ## Amendment record
 
+**2.0.1 (2026-10-21)** — PATCH: the closed set of move kinds names `split+revise` and `mitigate` as the flow and the PRD
+(FLOW-3) do; no change in meaning.
+
 **2.0.0 (2026-10-21)** — the restart: KILN moves from a Pi extension with a terminal UI to a local web front door on Pi
 and Pi Durable, with many factories per host, an event-based record, knowledge per factory and teams of sovereign
 workshops (`docs/prd/kiln-prd.md` §15, `docs/concepts/web-front-door.md` §11). Redefines II, III, VII, VIII and IX; scopes
@@ -236,4 +240,4 @@ loopback front door replaces the three terminal layers).
 
 **1.0.0 (2026-09-12)** — ratified with the first program.
 
-**Version**: 2.0.0 | **Ratified**: 2026-09-12 | **Last Amended**: 2026-10-21
+**Version**: 2.0.1 | **Ratified**: 2026-09-12 | **Last Amended**: 2026-10-21
