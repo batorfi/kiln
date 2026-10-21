@@ -86,7 +86,7 @@
   },
   {
    "id": "r20",
-   "short": "Gates on the web — the ten-part gate brief with its headline, moves bound to the state version they were made against, the brief recorded as seen, and Needs you; a person decides every gate of a real feature in the browser",
+   "short": "Gates on the web — the ten-part gate brief with its headline, moves bound to the state version they were made against, the brief recorded as seen, and Needs you; a person decides every gate of a real feature in the browser, and the same gates from the kiln CLI (status, needs, gate brief as text, moves)",
    "deps": [
     "r18",
     "r19"
@@ -330,7 +330,7 @@
 | r17 | Workers | **Configuration as files** | r16 | CFG-1, 3, 4, 6 (local), 7 (roles), 8 | a weaker judge binding is refused; a config change applies from the next step and is recorded with before/after |
 | r18 | Director | **The director** | r14, r17 | DIR-1…5 | the same situation yields the same next step every time; planner drafts that fail checks never reach a person |
 | r19 | Front door | **Web front door, read-only** | r15 | WEB-1, 2, 4, OBS-1 (basic) | a second browser tab without the secret sees nothing; a reconnect resumes from its last seq with no polling |
-| r20 | Front door | **Gates on the web** | r18, r19 | BRIEF-1…4, WEB-3 (core), DIR-6 | a person decides every gate of a real feature in the browser; a move on a stale state version is refused |
+| r20 | Front door | **Gates on the web** | r18, r19 | BRIEF-1…4, WEB-3 (core), WEB-6, DIR-6 | a person decides every gate of a real feature in the browser and from the CLI; a move on a stale state version is refused |
 | r21 | Front door | **Stepping in** | r20 | HITL-1/2, GATE-4, WEB-5 | an armed tail crosses clean gates as *delegated*, and stops at the first objection; a judge cannot be steered |
 | r22 | Front door | **Shaping the roadmap together** | r20 | DIR-7 | a roadmap shaped from inputs, conversation and pinned edits; approve admits exactly the version read |
 | r23 | Knowledge | **The factory knowledge base** | r20 | KNOW-1 (factory), 2, 3, 4, BRIEF-5 | a wiki that opens cleanly in Obsidian and Zed; briefs cite pages and flag stale ones |
@@ -390,7 +390,7 @@ From PRD §14, placed at the row that needs them:
 
 | Before | Decision |
 |---|---|
-| **r12** | keep a terminal surface (the r9 work) or retire it — decides what `legacy/` keeps alive (PRD §14.1) |
+| **r12** | ~~keep a terminal surface (the r9 work) or retire it~~ — **decided 2026-10-21: retired**; `legacy/` is frozen and retired, the terminal surface is the `kiln` CLI (PRD §14.1, WEB-6) |
 | **r19** | user-facing words: Factory / Feature / Step; *Knowledge* versus *wiki* (§14.5) |
 | **r20** | whether KILN may recommend a move at a gate; limits on *request more evidence* (§14.6) |
 | **r23** | wiki keeper as its own role or the researcher with a schema; review age before a brief flags a page; how much code implementation pages reproduce (§14.2–4) |
@@ -407,7 +407,8 @@ Proposals awaiting review in the concept docs also land at specific rows: the fl
 
 1. **The program** — the rows, their order and dependencies, and the `kiln-v1` line at r32.
 2. **The first row** — on approval, **r12** is the admitted next row; nothing else is chained (`chain_unattended=false`).
-3. **The open decision before r12** — terminal surface kept or retired.
+3. ~~**The open decision before r12** — terminal surface kept or retired.~~ Decided 2026-10-21: retired; the CLI is the
+   terminal surface. Also enacted before this gate: **constitution v2.0.0**, under which this program is admitted.
 4. **Optional reshaping** — for example: pull **r27 Health** earlier (right after r19) if broken-guarantee signals should
    watch the durable core from the start; or move **r30/r31 Existing codebases** ahead of **r29 New codebases** if KILN's
    first real users bring existing repositories.

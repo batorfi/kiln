@@ -212,6 +212,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | WEB-3 | Surfaces (from the mockups): workshop overview and *Needs you*; factory live view; **gate brief**; coming back; record and feature record; knowledge; insights; models & policy; hosts; health; people. | Must (core) / Should (rest) |
 | WEB-4 | A reconnecting browser resumes from its last `seq`; no polling. | Must |
 | WEB-5 | Notifications are information only — never decisions. | Must |
+| WEB-6 | **The CLI is the terminal surface**: `kiln status`, `kiln needs` and `kiln gate` show the same projections as the browser, the gate brief as plain text, and make moves through the same move intake under the same rules — a move only where the full brief has been shown, bound to the state version it was made against. | Must |
 
 ### 6.8 The gate brief
 
@@ -464,7 +465,7 @@ kiln/
     bench/         notebook, capture, promotion, research steps, spikes and spike reports
     server/        HTTP, auth, read models, push, intake
     web/           the front door (prebuilt assets)
-    cli/           kiln init · kiln doctor · kiln health · kiln serve · kiln host (join, measure) · kiln check (config, model) · kiln agents try · kiln replay
+    cli/           kiln status · kiln needs · kiln gate (brief, move) · kiln init · kiln doctor · kiln health · kiln serve · kiln host (join, measure) · kiln check (config, model) · kiln agents try · kiln replay
   agents/          role instructions (*.md)
   checks/          readiness probes and network checks (the *-ready pattern)
   fixtures/        committed event streams and replays
@@ -531,8 +532,8 @@ retire code tied to the Pi-extension host or the terminal UI.** Existing tests t
 
 | Existing | Decision |
 |---|---|
-| `pi/` (r8 extension), `pi/ui/` (r9 real UI), `index.ts` extension entry | **frozen in `legacy/`**; retired unless the Roadmap gate keeps a terminal surface (open decision) |
-| `ui/hud.ts`, `ui/popup.ts`, `ui/overlay.ts`, `ui/gate0-face.ts`, `ui/live-tui.ts`, `ui/twin.ts`, `ui/keymap.ts` | text renderers may survive for a `kiln check` / CLI summary; the terminal surface itself retires |
+| `pi/` (r8 extension), `pi/ui/` (r9 real UI), `index.ts` extension entry | **frozen in `legacy/`, then retired** (decided 2026-10-21, §14.1); the terminal surface is the `kiln` CLI (WEB-6) |
+| `ui/hud.ts`, `ui/popup.ts`, `ui/overlay.ts`, `ui/gate0-face.ts`, `ui/live-tui.ts`, `ui/twin.ts`, `ui/keymap.ts` | text renderers may be reused by the CLI (WEB-6) for status, Needs you and gate briefs as text; the Pi-hosted layers retire |
 | `tests/pi`, `tests/live-tui`, `tests/ui`, `tests/overlay*`, `tests/gate0-face` | retire with their code |
 
 ## 11. Phasing — candidate roadmap
@@ -594,7 +595,9 @@ From the vision, made measurable:
 
 Consolidated from the concept docs; each needs an answer before the milestone that depends on it.
 
-1. Keep a terminal surface (r9) or retire it — before M4.
+1. ~~Keep a terminal surface (r9) or retire it — before M4.~~ **Decided 2026-10-21 (human@batorfi): retired.** The
+   Pi-embedded surface (`pi/`, `pi/ui/`) is frozen in `legacy/` and retired; the terminal surface is the `kiln` CLI
+   (WEB-6). r9 closes as *superseded*.
 2. Wiki keeper: dedicated role or researcher with a schema — before M7.
 3. How long a knowledge page may go unreviewed before a brief flags it — M7.
 4. How much code implementation pages reproduce versus reference — M7.

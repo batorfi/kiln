@@ -672,8 +672,8 @@ Collected for review; each needs a decision before the interaction design phase.
 6. How much of the kiln metaphor reaches the experience (§10).
 7. Direct versus neutral voice (§11).
 8. Whether KILN offers its own recommended move at a gate, and the limits on requesting more evidence (§8).
-9. Whether the Pi-integrated terminal experience (r9) remains a supported secondary surface, and how this concept
-   applies to it.
+9. ~~Whether the Pi-integrated terminal experience (r9) remains a supported secondary surface.~~ Decided 2026-10-21 —
+   see decision 14.
 10. Accessibility and language commitments to make at the concept level (for example: everything readable without
    colour; all text localisable).
 
@@ -694,7 +694,8 @@ Collected for review; each needs a decision before the interaction design phase.
 | 11 | 2026-10-17 | Teams work in **personal workshops joined by a team space** (git repository first; team roadmap by quorum; advisory claims; required reviews mirrored in the code host; coordination publishing by default; personal keys plus identity provider) | §4, §7.17 | human |
 | 12 | 2026-10-18 | The **bench** — notebook, research steps and spikes — is adopted | §4, §7.18–7.20 | human |
 | 13 | 2026-10-18 | The bench feeds roadmaps through a **candidate list**, evidence and **readiness** at the Roadmap gate, and *what we learned since the last approval* | §7.21, §8.5 | human |
-| 14 | | *(your decisions from this review)* | | |
+| 14 | 2026-10-21 | The Pi-integrated terminal surface (r9) is **retired**; the terminal surface is the **`kiln` CLI** — status, Needs you, the gate brief as text and moves, under the same rules as the browser | §14 Q9 | human |
+| 15 | | *(your decisions from this review)* | | |
 
 ## 16. One sentence
 

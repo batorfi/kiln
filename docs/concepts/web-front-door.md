@@ -1080,8 +1080,8 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
   reproduce (`factory-wiki.md` §14).
 - **Event schema evolution**: upcasting old event versions on replay versus keeping every version's
   consumer logic.
-- **r9 and the Pi extension**: `kiln/pi/` remains an alternate surface or is retired — decided at the Roadmap gate,
-  not silently.
+- ~~**r9 and the Pi extension**: `kiln/pi/` remains an alternate surface or is retired.~~ **Decided 2026-10-21: retired**;
+  the terminal surface is the `kiln` CLI (PRD WEB-6), and r9 closes as superseded.
 - **Positioning**: from "a factory *for Pi*" to "a factory *built on* Pi's durable substrate, with its own
   surface".
 
@@ -1089,7 +1089,8 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 
 Not a decision — the shape the Roadmap gate would be asked to consider:
 
-- **r9** closes as a TUI surface (kept as an alternative) or is trimmed.
+- **r9** closes as *superseded* — the Pi-embedded TUI is retired; the `kiln` CLI is the terminal surface (decided
+  2026-10-21).
 - **Constitution amendment** — VII, VIII and IX MAJOR, II strengthened, IV scoped, VI renamed to the
   Roadmap gate, runtime-dependency stance.
 - **Durable core** — the harness behind one seam; roadmap, row, unit, gate and lane tasks; the gate contract.
