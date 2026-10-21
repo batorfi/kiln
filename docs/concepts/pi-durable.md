@@ -194,9 +194,10 @@ The human accepted Pi Durable's experimental status; KILN evolves with it. To ke
 
 ## 12. Open questions
 
-- **Completing a waiting task from outside.** KILN's gate contract needs a human's move to complete a gate's decision
-  task in one commit. The published material does not describe this directly; it is the first thing to settle, and
-  the first candidate for an upstream contribution.
+- ~~**Completing a waiting task from outside.**~~ **Decided 2026-10-21** (human@batorfi): settled by a time-boxed
+  go/no-go spike before the durable core (roadmap r42). Natively if Pi Durable allows it; otherwise an upstream proposal
+  and, until it lands, a KILN decision table committed in the same SQLite transaction as the task store, behind the
+  seam. A no-go re-opens the Roadmap gate.
 - **Local models through `pi-ai`.** Tool calling, streaming, usage reporting and context-limit behaviour on Ollama
   models need to be established for each model KILN supports.
 - **Model residency.** How the lane's explicit loading and pinning composes with requests issued by the harness.

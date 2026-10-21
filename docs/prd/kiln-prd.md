@@ -148,7 +148,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | CORE-3 | **Gate contract**: opening commits the gate document, the brief *as it will be shown*, and `gate.opened`; the move and the gate's completion are **one atomic commit**, keyed exactly-once; first move wins; stale moves are refused; no durable timer settles a gate. | Must |
 | CORE-4 | Restart resumes every task from its last checkpoint; a waiting gate resumes as waiting; a half-done step never commits its result. | Must |
 | CORE-5 | Exactly-once commands and moves via idempotency keys. | Must |
-| CORE-6 | The "complete a waiting task from outside" primitive is settled with Pi Durable (upstream preferred); the gate contract does not depend on its exact API. | Must (early) |
+| CORE-6 | The "complete a waiting task from outside" primitive is settled with Pi Durable **in a time-boxed go/no-go spike before the durable core** (roadmap r42): natively if the library allows it; otherwise an upstream proposal and, until it lands, a KILN decision table committed in the same SQLite transaction as the task store, behind the seam. A no-go re-opens the Roadmap gate. The gate contract does not depend on its exact API. | Must (early) |
 
 ### 6.3 Workers and roles
 
@@ -538,7 +538,7 @@ retire code tied to the Pi-extension host or the terminal UI.** Existing tests t
 
 ## 11. Phasing — candidate roadmap
 
-*Concepts: [design §21 roadmap consequences](../concepts/web-front-door.md) · [the roadmap proposal, r12–r41](../../specs/ROADMAP.md) (cut from these milestones into feature-sized rows).*
+*Concepts: [design §21 roadmap consequences](../concepts/web-front-door.md) · [the roadmap proposal, r12–r42](../../specs/ROADMAP.md) (cut from these milestones into feature-sized rows).*
 
 Each milestone is a candidate roadmap row with its own gates. Every milestone ends usable and checked.
 
@@ -584,7 +584,7 @@ From the vision, made measurable:
 | Risk | Mitigation |
 |---|---|
 | Pi Durable is experimental and moves | one seam; pinned versions; contract outlives API; RPC fallback driver |
-| External completion of a waiting task is not a published primitive | settle in M1, upstream first |
+| External completion of a waiting task is not a published primitive | go/no-go spike before M1 (r42); upstream first, local decision table as the named fallback |
 | Local-model capability (tool calling, streaming) varies | per-model readiness probes; measured, recorded |
 | Scope: the concepts describe a lot | strict Must/Should; `kiln-v1` ends at M8 |
 | Two products during the transition | `legacy/` frozen; no feature work there |

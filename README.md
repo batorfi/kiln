@@ -168,7 +168,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 |---|---|
 | **The design** | complete as concepts: [vision](./docs/concepts/vision.md), [the flow](./docs/concepts/the-flow.md), [the web front door](./docs/concepts/web-front-door.md), [user experience](./docs/concepts/user-experience.md) and companions in [`docs/concepts/`](./docs/concepts) |
 | **The product definition** | the [PRD](./docs/prd/kiln-prd.md): principles, requirements, architecture, what to keep from today's code, milestones |
-| **The roadmap** | a [proposal](./specs/ROADMAP.md) of 30 feature-sized rows (r12–r41), `kiln-v1` at r32 — **pending the Roadmap gate** |
+| **The roadmap** | a [proposal](./specs/ROADMAP.md) of 31 feature-sized rows (r12–r42, with the r42 spike before r13), `kiln-v1` at r32 — **pending the Roadmap gate** |
 | **The code** | the **foundation from the first program** (rows r1–r8, KILN as a Pi extension): the single-lane runtime, the gate and log machinery, a real local-model worker, KILN loading into Pi, validators and readiness probes, and the test suite — reused by the restart (PRD §10) |
 
 The first program's roadmap and decision log are archived in

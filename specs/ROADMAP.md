@@ -27,10 +27,19 @@
    "status": "queued"
   },
   {
+   "id": "r42",
+   "short": "Spike: completing a waiting task from outside — a time-boxed go/no-go on the pinned Pi Durable: a move committed from outside the gate task completes its decision task in one atomic commit, keyed exactly-once, first move wins, proven by kill-at-every-step tests; natively, or else an upstream proposal plus the named fallback (a KILN decision table in the same SQLite transaction as the task store, behind the seam); a spike report decides go, go-with-fallback or no-go, and a no-go re-opens the Roadmap gate before r13",
+   "deps": [
+    "r12"
+   ],
+   "status": "queued"
+  },
+  {
    "id": "r13",
    "short": "Durable core — the Pi Durable seam and the gate contract: roadmap, row, unit, gate and lane tasks; a move and its gate's completion in one atomic commit, first move wins, no clock settles a gate, headless means waiting; proven by kill-and-resume with nothing approved by a restart",
    "deps": [
-    "r12"
+    "r12",
+    "r42"
    ],
    "status": "queued"
   },
@@ -279,6 +288,7 @@
  ],
  "ordering": [
   "r12",
+  "r42",
   "r13",
   "r14",
   "r15",
@@ -323,7 +333,8 @@
 | id | phase | feature | deps | PRD requirements | acceptance (what proves the row) |
 |----|-------|---------|------|------------------|----------------------------------|
 | r12 | Foundation | **Foundations reset** | — | GATE-1/2, WORK-2, LANE-2, EVT-5 (validators) | new layout builds; legacy frozen; every ported test green; `kiln check` runs the network check |
-| r13 | Durable core | **Durable core and the gate contract** | r12 | CORE-1…6, LANE-1 | kill the server at every step of a gate task: it resumes, waits, and settles only on a committed move |
+| r42 | Durable core | **Spike: completing a waiting task from outside** | r12 | CORE-6 | go / go-with-fallback / no-go decided by a spike report; kill-at-every-step tests show one atomic move + completion, first move wins; a no-go re-opens the Roadmap gate |
+| r13 | Durable core | **Durable core and the gate contract** | r12, r42 | CORE-1…6, LANE-1 | kill the server at every step of a gate task: it resumes, waits, and settles only on a committed move |
 | r14 | Durable core | **Gates as data, walked headless** | r13 | GATE-3/4/5, FLOW-1/2/3, FLOW-7 (default) | a scripted feature walks ten gates from the CLI; `kiln check flow` refuses every invalid flow in its negative suite |
 | r15 | Durable core | **The record** | r14 | EVT-1…5 | factory-log rebuilt byte-identical from events; the committed r1–r11 walks replay as streams |
 | r16 | Workers | **Real local workers** | r13, r15 | WORK-1, 3–5, LANE-3 | a feature walks with real local workers and judges on Ollama; a crash mid-generation resumes without double-charging a tool |
@@ -361,12 +372,14 @@ still split it (`split+revise` at the Implementation gate exists for exactly thi
 **Principles used.** Every row ends usable and checked (PRD §11). Each row is one reviewable feature, not a milestone; the
 PRD's larger milestones are split where one feature would be too big to review (M1 → r13/r14, M3 → r16/r17, M5 → r20–r22,
 M7 → r23/r24, M8 → r25–r27, M13 → r34/r35, M12 → r38/r39, M15 → r30/r31/r40, M16 → r29/r41). Riskiest foundations first:
-the durable gate contract (r13) and the record (r15) are what every later promise rests on.
+the durable gate contract (r13) and the record (r15) are what every later promise rests on — and the one unproven
+primitive under the contract is spiked first (r42, id out of sequence because ids are never reused), so a no-go surfaces
+before anything is built on it.
 
 | Phase | Rows | Ends with |
 |---|---|---|
 | **Foundation** | r12 | the new layout with every kept rule ported and tested |
-| **Durable core** | r13–r15 | a feature walks ten gates headless, survives any crash, and is fully recorded |
+| **Durable core** | r42, r13–r15 | a feature walks ten gates headless, survives any crash, and is fully recorded |
 | **Workers** | r16–r17 | real local models doing the work and judging it, configured as files |
 | **Director** | r18 | deterministic orchestration with a checked planner |
 | **Front door** | r19–r22 | a person runs a real feature from the browser — gates, briefs, delegation, steering, roadmap shaping |
@@ -391,6 +404,7 @@ From PRD §14, placed at the row that needs them:
 | Before | Decision |
 |---|---|
 | **r12** | ~~keep a terminal surface (the r9 work) or retire it~~ — **decided 2026-10-21: retired**; `legacy/` is frozen and retired, the terminal surface is the `kiln` CLI (PRD §14.1, WEB-6) |
+| **r42** | ~~how external completion of a waiting task is settled~~ — **decided 2026-10-21**: a time-boxed spike row before r13 with a go/no-go; default fallback an upstream proposal plus a KILN decision table in the same SQLite transaction (PRD CORE-6) |
 | **r19** | user-facing words: Factory / Feature / Step; *Knowledge* versus *wiki* (§14.5) |
 | **r20** | whether KILN may recommend a move at a gate; limits on *request more evidence* (§14.6) |
 | **r23** | wiki keeper as its own role or the researcher with a schema; review age before a brief flags a page; how much code implementation pages reproduce (§14.2–4) |
