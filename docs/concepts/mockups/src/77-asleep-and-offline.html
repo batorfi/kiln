@@ -1,0 +1,76 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — asleep and offline</title><link rel="stylesheet" href="kiln-mock.css"><style>.canvas{min-height:100vh;padding:34px 40px;background:#EFEBE6}
+.ctitle{font-size:24px;font-weight:700;letter-spacing:-.01em}.csub{color:var(--muted);font-size:13.5px;margin-top:4px;max-width:1300px}
+.phones{display:flex;gap:34px;margin-top:26px;align-items:flex-start}
+.phone{width:340px;height:720px;border-radius:46px;background:#111;padding:12px;box-shadow:0 20px 50px rgba(30,20,10,.25);flex:none}
+.scr{width:100%;height:100%;border-radius:36px;background:#F5F2EE;overflow:hidden;position:relative;display:flex;flex-direction:column}
+.notch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:110px;height:28px;border-radius:16px;background:#111;z-index:5}
+.sb{display:flex;justify-content:space-between;padding:14px 26px 6px;font-size:12px;font-weight:650}
+.ph-h{padding:10px 18px 8px;display:flex;align-items:center;gap:8px}.ph-h b{font-size:18px}
+.ph-h .mk{width:22px;height:22px;background:url(../../../brand/kiln-mark.svg) center/contain no-repeat}
+.ph-body{padding:0 12px;flex:1;overflow:hidden;display:flex;flex-direction:column;gap:8px}
+.pc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:12px}
+.pc b{font-size:13px}.pc .m{color:var(--muted);font-size:11px}
+.tabbar{display:flex;justify-content:space-around;padding:8px 0 18px;border-top:1px solid var(--line);background:#fff;font-size:10.5px;color:var(--muted)}
+.tabbar .on{color:var(--ember);font-weight:700}
+.cap{font-size:12.5px;color:var(--ink-2);margin-top:12px;width:340px;text-align:center}
+.cap b{display:block;font-size:13.5px;color:var(--ink);margin-bottom:2px}
+.lock{background:linear-gradient(160deg,#3B2A20,#1A1714 60%);color:#fff}
+.lock .time{text-align:center;font-size:64px;font-weight:300;margin-top:60px}.lock .date{text-align:center;font-size:15px;opacity:.85}
+.notif{margin:30px 12px 0;background:rgba(255,255,255,.88);color:#1C1814;border-radius:18px;padding:11px 13px;font-size:12.5px;backdrop-filter:blur(8px)}
+.notif .nh{display:flex;align-items:center;gap:7px;font-size:11px;color:#756C62;margin-bottom:3px}
+.notif .nh i{width:18px;height:18px;border-radius:5px;background:#1A1714 url(../../../brand/kiln-mark.svg) center/70% no-repeat}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:24px 24px 0 0;padding:16px 18px 26px;box-shadow:0 -10px 30px rgba(0,0,0,.18);z-index:4}
+.dim{position:absolute;inset:0;background:rgba(20,15,10,.35);z-index:3}
+.bigbtn{display:block;text-align:center;border-radius:12px;padding:11px;font-weight:650;font-size:13.5px}
+.bigbtn.ok{background:var(--ok);color:#fff}.bigbtn.gh{border:1px solid var(--line);background:#fff}
+.lay{display:flex;justify-content:space-between;align-items:center;padding:8px 2px;border-top:1px solid var(--line-2);font-size:12px}
+.lay span:last-child{color:var(--faint)}
+.stale{background:var(--wait-soft);color:var(--wait);border:1px solid var(--wait-line);border-radius:10px;padding:8px 10px;font-size:11.5px}
+
+.explain{width:440px;flex:none;display:flex;flex-direction:column;gap:12px}
+.explain .card h2{font-size:14px}
+.step{display:grid;grid-template-columns:26px 1fr;gap:8px;font-size:12.5px;margin-top:8px}.step i{font-style:normal;width:24px;height:24px;border-radius:50%;background:var(--ink-2);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+</style></head><body><div class="canvas">
+<div class="ctitle">When the workshop sleeps, or a device is offline — delayed, never decided</div>
+<div class="csub">Yesterday evening. studio-m5 went to sleep at 23:10 with every factory waiting at a gate. On the train home, Zsolt reads from the phone’s cache and queues a move; when the workshop wakes, the move is checked against the gate as it is now.</div>
+<div class="phones">
+ <div><div class="phone"><div class="scr"><div class="notch"></div><div class="sb"><span>23:24</span><span>●●○ 4G</span></div>
+  <div class="ph-h"><div class="mk"></div><b>Needs you</b></div>
+  <div class="ph-body">
+   <div class="stale"><b>Workshop asleep since 23:10</b> · last synced 23:08<br>showing cached state · moves will be queued</div>
+   <div class="pc"><b>Verification gate · d4</b><div>docs-site · fix rounds exhausted</div><div class="m">cached brief · complete · read it all</div></div>
+   <div class="pc"><b>Documentation gate · b2</b><div>billing-service</div><div class="m">cached brief · complete</div></div>
+   <div class="pc" style="border-style:dashed"><b>Wake studio-m5?</b><div class="m">through gpu-01 on the same network · recorded</div><div class="row" style="margin-top:6px"><span class="btn" style="padding:4px 10px">Wake</span><span class="btn" style="padding:4px 10px">Let it sleep</span></div></div>
+  </div><div class="tabbar"><span class="on">Needs you</span><span>Factories</span><span>Capture</span><span>Knowledge</span></div>
+ </div></div><div class="cap"><b>1 · Asleep is visible</b>cached briefs stay readable; nothing pretends to be live</div></div>
+
+ <div><div class="phone"><div class="scr"><div class="notch"></div><div class="sb"><span>23:26</span><span>●○○ 3G</span></div>
+  <div class="ph-h"><span style="color:var(--muted)">‹</span><b>Verification · d4</b></div>
+  <div class="ph-body">
+   <div class="stale">offline · cached 23:08</div>
+   <div class="pc"><b>Reject — with note</b><div style="margin-top:4px;font-size:12px">“FR-4’s 60 s target was never measured. Revise the specification: measure, then set the target.”</div></div>
+   <div class="pc" style="border-color:var(--wait-line);background:var(--wait-soft)"><b>Queued — not decided</b><div style="font-size:12px;margin-top:3px">will be submitted when the workshop is reachable, against <b>state version 412</b>. If the gate has changed, it will be <b>refused</b> and you will see what changed.</div></div>
+   <div class="m" style="text-align:center">High-stakes moves cannot be queued offline.</div>
+  </div><div style="padding:10px 12px 22px"><span class="bigbtn gh">Cancel queued move</span></div>
+ </div></div><div class="cap"><b>2 · A queued move</b>bound to the version that was read — never applied to something else</div></div>
+
+ <div><div class="phone"><div class="scr"><div class="notch"></div><div class="sb"><span>07:31</span><span>●●● Wi-Fi</span></div>
+  <div class="ph-h"><span style="color:var(--muted)">‹</span><b>Verification · d4</b></div>
+  <div class="ph-body">
+   <div class="pc" style="border-color:var(--bad-line);background:var(--bad-soft)"><b>Your queued move was refused — the gate changed</b><div style="font-size:12px;margin-top:4px">At 07:12 the evidence you had requested arrived: the verifier re-measured on an idle machine — <b>FR-4 now passes at 58 s</b>. The brief is now version 415.</div></div>
+   <div class="pc"><b>What changed since you read it</b><div style="font-size:12px">5 · evidence: FR-4 ✓ 58 s idle (was ✕ 94 s under load)<br>6 · risks: the machine-load caveat resolved</div></div>
+   <div class="pc"><b>Nothing was decided.</b><div class="m">The gate still waits for you — read version 415 and decide again.</div></div>
+  </div><div style="padding:10px 12px 22px"><span class="bigbtn ok">Read the new brief</span></div>
+ </div></div><div class="cap"><b>3 · Refused when stale</b>a decision applies only to what was read; the record keeps both</div></div>
+
+ <div class="explain">
+  <div class="card"><h2>What happened, in the record</h2>
+   <div class="step"><i>1</i><span><span class="mono">host.slept</span> studio-m5 · 23:10 · all factories waiting at gates</span></div>
+   <div class="step"><i>2</i><span><span class="mono">move.queued_offline</span> iPhone · reject · against v412 · 23:26</span></div>
+   <div class="step"><i>3</i><span><span class="mono">workshop.wake_requested</span> iPhone via gpu-01 · 07:05 · <span class="mono">host.woke</span> 07:06</span></div>
+   <div class="step"><i>4</i><span><span class="mono">gate.evidence_added</span> d4 · v415 · 07:12</span></div>
+   <div class="step"><i>5</i><span><span class="mono">move.refused_stale</span> iPhone · v412 ≠ v415 · 07:31</span></div></div>
+  <div class="card"><h2>What never happens</h2><div style="font-size:12.5px;line-height:1.7">a sleeping workshop deciding · a device going quiet deciding · a queued move applied to a gate that changed · a lost phone still able to move (revoked: its key is rejected)</div></div>
+ </div>
+</div></div><div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

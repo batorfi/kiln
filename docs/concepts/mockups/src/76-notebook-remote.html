@@ -1,0 +1,65 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — notebook, remote</title><link rel="stylesheet" href="kiln-mock.css"><style>
+.conn{display:flex;align-items:center;gap:12px;background:#1F2A44;color:#E5ECFF;border-radius:10px;padding:9px 14px;font-size:12.5px}
+.conn .d{width:9px;height:9px;border-radius:50%;background:#4ADE80;box-shadow:0 0 0 3px rgba(74,222,128,.25)}
+.cont{display:flex;align-items:center;gap:14px;border:1.5px solid var(--ember-line);background:var(--ember-soft);border-radius:12px;padding:12px 14px;font-size:13px}
+.cont .ic{font-size:26px}
+.term{font-family:var(--mono);font-size:11.5px;background:#1F1B17;color:#E9E2D9;border-radius:9px;padding:10px 12px;line-height:1.7;white-space:pre}
+.term .c{color:#8C8279}.term .g{color:#86EFAC}
+.dl td{font-size:12.5px}
+</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · on studio-m5 · remote</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a class="on">Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a>People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a class="on"><span class="fac"><span class="dot run"></span>kiln-v1</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>MacBook Air</b> · trusted device<div style="margin-top:6px">connected over your private network · 38 ms</div></div>
+</aside>
+<main class="main">
+  <div class="conn"><span class="d"></span><b>Connected to Zsolt’s workshop</b><span>on studio-m5 · private network (WireGuard mesh) · 38 ms · TLS · device key ✓</span><span class="grow"></span><span>Lisbon · client site · today 10:02</span></div>
+  <div class="cont"><span class="ic">📲 → 💻</span><div class="grow"><b>Continue where you left off?</b> Last night on the iPad you were reading <b>r10 · Code review · round 2</b> and drafted a note from your annotations — not sent.</div><span class="btn">Dismiss</span><span class="btn primary">Continue on this notebook</span></div>
+  <div class="grid" style="grid-template-columns:1.2fr 1fr;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>kiln-v1 · live</h2><span class="pill ok">implementation · round 3 · 19 min</span></div>
+        <div style="font-size:12.5px;line-height:1.6">Working from your restart note at 10:05 — <i>“The hold flag must be checked inside the lane, not by callers. Fix both majors.”</i> — sent from this notebook, drafted on the iPad.</div>
+        <div class="kv2" style="grid-template-columns:130px 1fr;margin-top:10px"><span>Runs on</span><span>studio-m5 · worker on qwen3-coder:30b</span><span>On this device</span><span>live view and steering · <span class="sub">nothing runs locally</span></span></div></div>
+      <div class="card"><div class="card-h"><h2>A spike — on the workshop’s host</h2><span class="sub">bench · ungated</span></div>
+        <div class="term"><span class="c"># your editor's remote workspace on studio-m5, worktree spike/pi-durable-0.4</span>
+$ npm test -- durable/gate-task
+<span class="g">✓ first move wins (3 ms)</span>
+<span class="g">✓ waiting survives restart (41 ms)</span>
+<span class="c"># the spike's machine time is on studio-m5; its code never merges</span></div>
+        <div class="sub" style="margin-top:6px">Alternatively, work in a local worktree on the notebook and push to the spike branch — the report is written either way.</div></div>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Knowledge on this notebook</h2></div>
+        <table class="dl"><tr><td>kiln-v1 wiki</td><td>local clone · Obsidian</td><td><span class="pill ok">pulled 10:02</span></td></tr>
+          <tr><td>workshop wiki</td><td>local clone</td><td><span class="pill ok">pulled 10:02</span></td></tr>
+          <tr><td>your notebook</td><td>2 notes written offline on the flight</td><td><span class="pill">merged</span></td></tr></table>
+        <div class="sub" style="margin-top:6px">Edits are commits, pushed to the workshop and recorded like any edit.</div></div>
+      <div class="card"><div class="card-h"><h2>While you were flying</h2><span class="sub">06:40–09:55 · offline</span></div>
+        <div style="font-size:12.5px;line-height:1.7">read 3 briefs from the encrypted cache · stale since 06:38<br>wrote 2 notes · merged on reconnect<br>queued no moves</div></div>
+      <div class="card"><div class="kv2" style="grid-template-columns:130px 1fr"><span>Content policy</span><span>trusted device · everything you may see</span><span>Session</span><span>expires after 12 h idle · step-up for high stakes</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>

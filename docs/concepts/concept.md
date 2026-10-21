@@ -1,3 +1,6 @@
+> **⚠ Superseded in part (2026-10-20).** The Pi-native terminal UI and "no website" stance in this doc are retired; KILN's
+> surfaces are the web front door and the CLI (`web-front-door.md`; constitution 2.0.0). Kept unchanged as history (P-VII).
+
 > Status: ground-up concept (v2, 2026-09-11)
 > Type: concept
 >

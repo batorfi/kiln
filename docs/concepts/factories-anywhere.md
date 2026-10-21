@@ -13,6 +13,7 @@
 >   - The user experience:               `user-experience.md` (and `mockups/33`–`35`)
 >   - How KILN uses Pi Durable:          `pi-durable.md`
 >   - The wikis:                         `factory-wiki.md`
+>   - Devices and remote work:    `devices-and-remote-work.md` (§5.2 moving the workshop itself to an always-on host)
 
 # KILN — factories anywhere
 

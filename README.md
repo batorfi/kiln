@@ -104,7 +104,7 @@ Everything waiting on you is in one place, **[Needs you](./docs/concepts/the-dir
 
 ### Where it runs
 
-On your machine by default — a 128 GB workstation can run several factories, one lane each. Factories can also run on
+On your machine by default — **macOS, Windows or Linux** — and a 128 GB workstation can run several factories, one lane each. Factories can also run on
 team servers or rented machines, placed by people at the Roadmap gate ([factories anywhere](./docs/concepts/factories-anywhere.md)). Models are local through
 [Ollama](https://ollama.com) by default; private or cloud models only where a factory's policy allows
 ([models beyond the machine](./docs/concepts/web-front-door.md)).
@@ -121,7 +121,7 @@ team servers or rented machines, placed by people at the Roadmap gate ([factorie
 
 <p align="center"><img src="./docs/concepts/mockups/02-gate-brief-code-review.png" alt="A Code review gate brief" width="820"><br>
 <sub>A Code review gate brief — the judge's findings, the yardstick, the options and their consequences.
-<a href="./docs/concepts/mockups/README.md">See all 72 mockups</a> (illustrative, not design decisions).</sub></p>
+<a href="./docs/concepts/mockups/README.md">See all 77 mockups</a> (illustrative, not design decisions).</sub></p>
 
 ## What KILN is not
 
@@ -152,10 +152,11 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | | [The bench](./docs/concepts/the-bench.md) | notebook, research steps and spikes, and how they feed the roadmap |
 | **Scale and teams** | [Factories anywhere](./docs/concepts/factories-anywhere.md) | hosts, placement, moves, sleeping hosts |
 | | [The team space](./docs/concepts/team-space.md) | personal workshops on one codebase: team roadmap, claims, reviews, merging |
+| | [Devices and remote work](./docs/concepts/devices-and-remote-work.md) | workstation, notebook, tablet and phone as paired windows onto one workshop, over your own network |
 | **Getting started** | [First run](./docs/concepts/first-run.md) | from install to a first Roadmap gate: models, workshop, Spec Kit, constitution, knowledge |
 | | [New codebases](./docs/concepts/greenfield.md) | greenfield: product brief, decisions, walking skeleton, vertical slices |
 | | [Existing codebases](./docs/concepts/brownfield.md) | brownfield: full scan into knowledge, baseline, territory, adoption in stages |
-| **Visuals** | [Mockups](./docs/concepts/mockups/README.md) · [infographics](./docs/concepts/infographic/README.md) | 72 illustrative screens; KILN at a glance; the engineer at the center |
+| **Visuals** | [Mockups](./docs/concepts/mockups/README.md) · [infographics](./docs/concepts/infographic/README.md) | 77 illustrative screens; KILN at a glance; the engineer at the center |
 
 **From the first program** — kept as history and original rationale: [the original concept](./docs/concepts/concept.md) ·
 [the kiln analogy](./docs/concepts/kiln-analogy.md) · [the nine gates — why, how, what](./docs/concepts/gates-why-how-what.md) ·
@@ -168,7 +169,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 |---|---|
 | **The design** | complete as concepts: [vision](./docs/concepts/vision.md), [the flow](./docs/concepts/the-flow.md), [the web front door](./docs/concepts/web-front-door.md), [user experience](./docs/concepts/user-experience.md) and companions in [`docs/concepts/`](./docs/concepts) |
 | **The product definition** | the [PRD](./docs/prd/kiln-prd.md): principles, requirements, architecture, what to keep from today's code, milestones |
-| **The roadmap** | a [proposal](./specs/ROADMAP.md) of 30 feature-sized rows (r12–r41), `kiln-v1` at r32 — **pending the Roadmap gate** |
+| **The roadmap** | a [proposal](./specs/ROADMAP.md) of 31 feature-sized rows (r12–r42), `kiln-v1` at r32 — **pending the Roadmap gate**; an [explainer for every row](./specs/roadmap/README.md) |
 | **The code** | the **foundation from the first program** (rows r1–r8, KILN as a Pi extension): the single-lane runtime, the gate and log machinery, a real local-model worker, KILN loading into Pi, validators and readiness probes, and the test suite — reused by the restart (PRD §10) |
 
 The first program's roadmap and decision log are archived in

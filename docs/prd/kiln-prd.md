@@ -1,16 +1,16 @@
-> Status: product requirements — draft for review (rev 4, 2026-10-18) — **not admitted**
+> Status: product requirements — draft for review (rev 5, 2026-10-21, consolidated) — **not admitted**
 > Type: PRD (high level)
 >
 > Scope note: this document defines **the new KILN codebase** — what it must do, how it is organised, and which of the
 > existing code it keeps — as the basis for a new roadmap. It consolidates the vision and the recent concepts into
 > requirements; it does not repeat their reasoning. Where this PRD and a concept doc disagree on *intent*, the concept
-> doc governs; where they disagree on *scope*, this PRD governs. Adopting it needs the Roadmap-gate decision and the
-> constitution amendments listed in §15.
+> doc governs; where they disagree on *scope*, this PRD governs. Adopting it needs the Roadmap-gate decision; the
+> constitution amendments listed in §15 were **adopted as constitution 2.0.0 on 2026-10-20**.
 >
 > Sources (concept docs govern intent):
 >   - [Vision](../concepts/vision.md) (rev 6) — why and where to
 >   - [The web front door — the design](../concepts/web-front-door.md) (rev 14) — the overall design; the map of all concepts
->   - [User experience](../concepts/user-experience.md) (rev 10) and [the mockups](../concepts/mockups/README.md) (51 illustrations)
+>   - [User experience](../concepts/user-experience.md) (rev 10) and [the mockups](../concepts/mockups/README.md) (77 illustrations)
 >   - [KILN on Pi Durable](../concepts/pi-durable.md) — the durable substrate
 >   - [The record](../concepts/the-record.md) — the event stream in depth
 >   - [The director and Needs you](../concepts/the-director.md) — deterministic core, planner drafts, the inbox
@@ -25,9 +25,16 @@
 >   - [The flow](../concepts/the-flow.md) — the default flow gate by gate, and where every move leads
 >   - [KILN in an existing codebase](../concepts/brownfield.md) — brownfield adoption: profile, baseline, stages, territory
 >   - [KILN in a new codebase](../concepts/greenfield.md) — greenfield: product brief, decisions, walking skeleton, slices
+>   - [Devices and remote work](../concepts/devices-and-remote-work.md) — paired devices, private networks, step-up, offline
 >   - [Health](../concepts/health.md) — the watcher, signals, broken guarantees, observe-never-act
->   - [The original concept](../concepts/concept.md) and [the gates — why, how, what](../concepts/gates-why-how-what.md)
->   - the existing codebase under [`kiln/`](../../kiln/) (r1–r9, ~5,900 lines of source, 98 test files)
+>   - [The constitution](../../.specify/memory/constitution.md) (2.0.0, 2026-10-20) — the binding principles
+>   - [The roadmap proposal](../../specs/ROADMAP.md) (r12–r42) — this PRD cut into feature-sized rows
+>   - history: [the original concept](../concepts/concept.md) and [the gates — why, how, what](../concepts/gates-why-how-what.md)
+>   - the existing codebase under [`kiln/`](../../kiln/) (r1–r9, ~5,900 lines of source, 85 test files)
+>
+> Rev 5 consolidates rev 4 with everything added since: first run and Spec Kit, the flow, brownfield and greenfield,
+> health, devices, shaping the roadmap together, the constitution 2.0.0 and the retired terminal surface. It closes the
+> traceability between requirements, milestones (§11) and roadmap rows, and lists what is still undecided (§14).
 
 # KILN — product requirements for the new codebase
 
@@ -36,9 +43,9 @@
 KILN is a **self-run software factory**: AI agents do the work of building features, independent judges check it, and
 a human decides at every one of ten gates — from *which features do we build?* to *do we ship this?*. Factories run
 **local by default** and anywhere you choose — your machine, a team server, a cloud machine in your account — and are
-reached through a **web front door**. Every piece of work is **durable** (it survives crashes, moves and sleeping
+reached through a **web front door** — from the workstation or any paired device. Every piece of work is **durable** (it survives crashes, moves and sleeping
 machines), every change is an **event** in an ordered record, and every factory keeps a **knowledge base** that
-explains how its code was built. The rules that make it trustworthy — *no silent approval, no model approves its own
+explains how its code was built. Features follow **GitHub Spec Kit** and are measured against the project's **constitution**. The rules that make it trustworthy — *no silent approval, no model approves its own
 work, one step at a time per factory, everything recorded* — are enforced by the codebase, not by convention.
 
 ## 2. Why a restart
@@ -56,6 +63,8 @@ an in-memory runtime, a hand-written log, one machine and one factory. The new c
 | One factory, one machine | many factories, a workshop, **hosts anywhere** |
 | Local models only | local by default; private and cloud models by recorded choice |
 | No knowledge base | factory and workshop **knowledge** (LLM wikis), including how the code was built |
+| One person at one terminal | personal workshops in a **team space**; any paired device |
+| Spec Kit used to build KILN | Spec Kit artifacts are **every factory's feature format**, new or existing codebase |
 
 A restart lets the codebase be organised around these foundations from the start, while **keeping every part of the
 old code that still expresses a rule we keep** (§10).
@@ -74,6 +83,8 @@ old code that still expresses a rule we keep** (§10).
    configured, recorded, policy-checked choice.
 6. **Grows without redesign** — one factory → several → several hosts → a team of personal workshops sharing a team
    space, with the same concepts.
+7. **Fits any codebase** — starts a new one with intent and a walking skeleton, or joins an existing one by scanning it
+   into knowledge and earning trust in stages.
 
 ### 3.2 Non-goals
 
@@ -82,6 +93,7 @@ old code that still expresses a rule we keep** (§10).
 - Replacing engineering judgment, or optimising approval speed.
 - Building its own agent harness, model server or knowledge viewer — KILN uses Pi Durable, Ollama/`pi-ai` providers,
   and Obsidian-compatible vaults.
+- A terminal UI inside Pi (retired, constitution 2.0.0) or a KILN cloud relay for remote devices.
 
 ## 4. Users
 
@@ -93,30 +105,35 @@ old code that still expresses a rule we keep** (§10).
 | **Operator** | set up hosts, models, policies, budgets | §6.10, §6.12, §6.13 |
 | **Curator** | keep a factory's knowledge current and traceable | §6.11 |
 | **Engineer at the bench** | research, prototype and understand the code while factories run, and keep what they learn | §6.15 |
+| **Teammate** | see who builds what, avoid collisions, review each other's work, agree a team roadmap | §6.14 |
+| **Engineer on the go** | triage, answer and decide from a notebook, tablet or phone, safely | §6.21 |
 | **Observer** | see where things stand | read access to everything live |
 | **Auditor** | reconstruct what happened, and on what evidence | the record, briefs *as seen*, time travel |
 | **Evaluator** | judge models and policies by outcomes | insights, model and locality comparisons |
 
 ## 5. Product principles (requirements on every module)
 
-*Concepts: [vision §3 what we believe](../concepts/vision.md) · [constitution](../../.specify/memory/constitution.md).*
+*Concepts: [vision §3 what we believe](../concepts/vision.md) · [constitution 2.0.0](../../.specify/memory/constitution.md).*
 
-| ID | Principle | Enforced by |
-|---|---|---|
-| **P1** | **No silent approval.** A gate is settled only by a human move, or by a recorded delegation on a clean path. Absence, a clock, a restart, a move, a sleeping host or a lost network never settles a gate. | gate task contract (§6.2); record validator (§6.5) |
-| **P2** | **No model approves its own work.** Judges are separate roles; only the director creates conversations; steering never reaches a judge mid-verdict. | worker module (§6.3); director (§6.4) |
-| **P3** | **One step at a time per factory**, on one host at a time. | lane task (§6.6) |
-| **P4** | **Judges on the strongest model** available to the factory; never silently downgraded. | tier map (§6.3); fallback rules (§6.10) |
-| **P5** | **Affinity is the local cost lever** — swap only when a tier demands it. | per-host scheduler (§6.6) |
-| **P6** | **The Roadmap gate is human-only**, per factory; delegation never crosses features or factories. | roadmap task (§6.2) |
-| **P7** | **Everything is recorded** in an ordered event stream committed with the state it describes; every view is a rebuildable projection. | event backbone (§6.5) |
-| **P8** | **Local by default** — egress, remote models and remote hosts only by configured, recorded, policy-checked choice; a `local-only` factory provably makes no outbound call. | egress policy (§6.10); network checks (§7) |
-| **P9** | **The front door is a window, never the source of truth** — surfaces are driven by events, never by polling. | server (§6.7) |
-| **P10** | **Knowledge is context, never authority** — every claim traceable to a source; no page settles a gate. | knowledge module (§6.11) |
-| **P11** | **A factory is portable** — moving it never changes a decision. | hosts (§6.12) |
-| **P12** | **Workshops are sovereign** — no act from a team space or another workshop settles a gate; every act between workshops is signed by a person. | team space (§6.14) |
-| **P13** | **Ungated means ungated** — bench output never settles a gate; spike code never reaches `main`; only promoted knowledge is cited in a brief; capture is always explicit. | bench (§6.15) |
-| **P14** | **Every gate keeps the gate contract** — whoever defines a gate, it is a durable task, settled only by a committed move from the closed set of move kinds, with a full brief and an independent judge where it judges work; the Roadmap gate is first, the Merge gate last, and no built-in gate can be removed. | flow (§6.17) |
+Each product principle restates a constitution principle as a requirement on the code; where they differ, the
+constitution governs.
+
+| ID | Principle | Enforced by | Constitution |
+|---|---|---|---|
+| **P1** | **No silent approval.** A gate is settled only by a human move, or by a recorded delegation on a clean path. Absence, a clock, a restart, a move, a sleeping host or a lost network never settles a gate. | gate task contract (§6.2); record validator (§6.5) | V |
+| **P2** | **No model approves its own work.** Judges are separate roles; only the director creates conversations; steering never reaches a judge mid-verdict. | worker module (§6.3); director (§6.4) | I |
+| **P3** | **One step at a time per factory**, on one host at a time. | lane task (§6.6) | III |
+| **P4** | **Judges on the strongest model** available to the factory; never silently downgraded. | tier map (§6.3); fallback rules (§6.10) | II |
+| **P5** | **Affinity is the local cost lever** — swap only when a tier demands it. | per-host scheduler (§6.6) | IV |
+| **P6** | **The Roadmap gate is human-only**, per factory; delegation never crosses features or factories. | roadmap task (§6.2) | VI |
+| **P7** | **Everything is recorded** in an ordered event stream committed with the state it describes; every view is a rebuildable projection. | event backbone (§6.5) | VII |
+| **P8** | **Local by default** — egress, remote models, remote hosts and paired devices only by configured, recorded, policy-checked choice; no KILN cloud; a `local-only` factory provably makes no outbound call. | egress policy (§6.10); network checks (§7) | VIII |
+| **P9** | **Surfaces are windows, never the source of truth** — the web front door (on any paired device) and the CLI are driven by events, never by polling; the terminal surface is retired. | server (§6.7) | IX |
+| **P10** | **Knowledge is context, never authority** — every claim traceable to a source; no page settles a gate. | knowledge module (§6.11) | X |
+| **P11** | **A factory is portable** — moving it never changes a decision. | hosts (§6.12) | XI |
+| **P12** | **Workshops are sovereign** — no act from a team space or another workshop settles a gate; every act between workshops is signed by a person. | team space (§6.14) | XII |
+| **P13** | **Ungated means ungated** — bench output never settles a gate; spike code never reaches `main`; only promoted knowledge is cited in a brief; capture is always explicit. | bench (§6.15) | — |
+| **P14** | **Every gate keeps the gate contract** — whoever defines a gate, it is a durable task, settled only by a committed move from the closed set of move kinds, with a full brief and an independent judge where it judges work; the Roadmap gate is first, the Merge gate last, and no built-in gate can be removed. | flow (§6.17) | Default flow |
 
 ## 6. Capabilities
 
@@ -157,7 +174,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | ID | Requirement | |
 |---|---|---|
 | WORK-1 | Each step is a durable **conversation** with its role's instructions (`agents/*.md`), its tier's model and only its permitted tools. | Must |
-| WORK-2 | **Tier map**: roles bound to models in one place; judges (architecture critic, code reviewer, verifier, docs synthesizer) bind only to the strongest model; a weaker binding fails closed. | Must |
+| WORK-2 | **Tier map**: roles bound to models in one place; judges (architecture critic, code reviewer, verifier, and the judges of added gates) bind only to the strongest model; a weaker binding fails closed. | Must |
 | WORK-3 | Only the director creates conversations; workers have no subagent tool. | Must |
 | WORK-4 | **Replay discipline**: read-only tools are replay-safe; writes and commands are not — the model is told of an interruption. | Must |
 | WORK-5 | Deterministic `requestId` per step (feature, gate, step, attempt). | Must |
@@ -208,8 +225,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | ID | Requirement | |
 |---|---|---|
 | WEB-1 | A local server (Node, no runtime framework required) serving read models and a live event push; moves and commands as requests. | Must |
-| WEB-2 | **Session security**: loopback bind, per-launch secret, Host/Origin checks, CSRF protection; `decided_by` from the session. Network-shared workshop: TLS and the team's identity provider. | Must / Should |
-| WEB-3 | Surfaces (from the mockups): workshop overview and *Needs you*; factory live view; **gate brief**; coming back; record and feature record; knowledge; insights; models & policy; hosts; health; people. | Must (core) / Should (rest) |
+| WEB-2 | **Session security**: loopback bind, per-launch secret, Host/Origin checks, CSRF protection; `decided_by` from the session. Network-shared workshop: TLS and the team's identity provider; paired devices per DEV-2. | Must / Should |
+| WEB-3 | Surfaces (from the mockups): workshop overview and *Needs you*; factory live view; **gate brief**; coming back; record and feature record; knowledge; insights; models & policy; agents; flows; hosts; health; people and devices; first run. | Must (core) / Should (rest) |
 | WEB-4 | A reconnecting browser resumes from its last `seq`; no polling. | Must |
 | WEB-5 | Notifications are information only — never decisions. | Must |
 
@@ -284,9 +301,9 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | OBS-1 | **Metrics** derived from events (human loop, quality, cost, throughput, model behaviour). | Must (core) |
 | OBS-2 | **Traces**: one per feature (row → gate → unit → model request → tool call), linked to events; opt-in OTLP export to an allowed collector. | Should |
 | OBS-3 | **Health watcher** per host, observe-never-act: domains of `health.md` §4 (steps and lane, models, hosts, record and views, gates, policy and security, knowledge, configuration and dependencies, teams, bench); signals with headline, subject, severity, since, why it matters, evidence, likely cause, what a person could do, what the director already did, clearing condition; auto-resolve, acknowledge, snooze; baselines learned per host; thresholds in `health.yaml`. | Should |
+| OBS-4 | **Insights**: evidence for people, never automatic change — measure families and definitions per `insights.md`; counts and sample sizes always shown; traceable to events; personal figures private to the person, no rankings of people; shown in context (briefs, Roadmap gate, candidates, configuration); **few-cases rule** (< 5 list cases · 5–19 rate with count · 20+ trends); **targets** only on system behaviour, never on human decision time, people or volume, with no automatic consequences; **team comparison** opt-in, system measures only, ≥ 3 contributing workshops, ranges not rankings. | Should |
 | OBS-5 | **Broken-guarantee signals** (gate settled without a move, judge off the strongest model, disallowed egress reached, non-identical projection rebuild, two store owners): always critical, never snoozed or configurable, kept as domain events; the director's fail-closed checks stop the affected factory, attributed separately. | Must |
 | OBS-6 | **Watching the watcher and diagnostics**: heartbeats, *unknown since* instead of healthy, recovery reports; `kiln health`; a local, content-free diagnostic bundle on request. | Should |
-| OBS-4 | **Insights**: evidence for people, never automatic change — measure families and definitions per `insights.md`; counts and sample sizes always shown; traceable to events; personal figures private to the person, no rankings of people; shown in context (briefs, Roadmap gate, candidates, configuration); **few-cases rule** (< 5 list cases · 5–19 rate with count · 20+ trends); **targets** only on system behaviour, never on human decision time, people or volume, with no automatic consequences; **team comparison** opt-in, system measures only, ≥ 3 contributing workshops, ranges not rankings. | Should |
 | PPL-1 | **People and roles** per factory: Decider, Operator, Curator, Observer, Auditor; identity on every decision. | Must (single user) / Should (team) |
 
 ### 6.14 Teams and the team space
@@ -370,7 +387,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | SETUP-7 | **First roadmap**: a goal or open issues → a planner draft citing knowledge → the first Roadmap gate; a read-only **demo factory** from a committed replay. | Must (gate) / Should (demo) |
 | SETUP-8 | **Team at setup**: start (team-space repository, quorum, invite) or join (invite, key registration, team floor preview); joining never loosens the workshop. | Could |
 | SETUP-9 | Setup recorded: `setup.step_completed` and the step's own events begin the workshop record. | Must |
-| SETUP-10 | **Spec Kit**: `kiln doctor` checks `specify` (pinned range, `uv`, Python); setup **adopts** an existing `.specify/` (version, integration, templates against the manifest, existing `specs/`) or **adds** it (`specify init --here --ai pi`) only with approval — as a pull request in team codebases; the Pi integration installed for KILN's roles. | Must |
+| SETUP-10 | **Spec Kit**: `kiln doctor` checks `specify` (pinned range, `uv`, Python); setup **adopts** an existing `.specify/` (version, integration, templates against the manifest, existing `specs/`) or **adds** it (`specify init --here --ai pi`, with `--script ps` on Windows) only with approval — as a pull request in team codebases; the Pi integration installed for KILN's roles. | Must |
 | SETUP-11 | **The constitution**: adopted as is, edited, or drafted with `speckit.constitution` from the repository's docs and conventions, approved before the first roadmap; briefs cite its principles. | Must |
 
 ### 6.19 Existing codebases
@@ -408,21 +425,41 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | GREEN-8 | **Growing into brownfield**: director suggestions, decided at a Roadmap gate, to switch on full scan, preserved behaviour and baseline, territories, code map when their triggers are met. | Should |
 | GREEN-9 | **Starting as a team**: brief, constitution and decisions agreed in the team space; skeleton by one workshop; claims after it merges. | Could |
 
+### 6.21 Devices and remote work
+
+*Concepts: [devices and remote work](../concepts/devices-and-remote-work.md) · [web front door §19 security](../concepts/web-front-door.md) · [factories anywhere](../concepts/factories-anywhere.md)*
+
+| ID | Requirement | |
+|---|---|---|
+| DEV-1 | **Pairing**: from a trusted device by one-time QR and code phrase; each device generates its own key (secure storage where available), vouched for by the person's signing key; class (primary · trusted · companion · read-only), limits and expiry; recorded. | Should |
+| DEV-2 | **Remote access** off by default; loopback always; LAN and private overlay networks only when switched on; TLS with the workshop's certificate and mutual authentication by device key; never exposed to the public internet by default; no KILN relay. | Should |
+| DEV-3 | **Moves from any device** only with the full brief (layered for small screens); **step-up** for high-stakes moves; the device id and class recorded with every move; the brief as seen on that device recorded. | Should |
+| DEV-4 | **Revocation** ends sessions, rejects the key and erases cached data on next contact; session expiry by class. | Should |
+| DEV-5 | **Notifications** content-free by default, through channels the person chooses (installed web app push with encrypted payloads, self-hosted service, e-mail, none); rules, quiet and focus hours as files; never a decision. | Should |
+| DEV-6 | **Offline**: encrypted per-device cache under the content policy; stale state always visible; only notebook capture and **queued moves** offline, bound to a state version and refused if stale; no high-stakes moves queued. | Could |
+| DEV-7 | **Continuity**: reading position, drafts and Needs you follow the person across devices; drafts never sent until the person sends them. | Could |
+| DEV-8 | **Per-device content policy** enforced by the workshop; factory policy wins; caches follow policy. | Should |
+| DEV-9 | **A sleeping workshop**: shown on every device; wake on request where the network allows; moving the workshop to an always-on host as a recorded handover. | Could |
+
 ## 7. Non-functional requirements
 
 | Area | Requirement |
 |---|---|
-| **Runtime** | Node `^22.18.0 || >=23.6.0`, TypeScript run directly where possible; macOS first, Linux next. |
+| **Runtime** | Node `^22.18.0 || >=23.6.0`, TypeScript run directly where possible. |
+| **Platforms** | **macOS, Windows and Linux are all in scope for `kiln-v1`** (decided 2026-10-21) — for the workshop, hosts and the CLI. Every check and test runs on all three in CI; no feature is "done" on one platform only. Platform differences sit behind small adapters: the OS secret store (macOS Keychain, Windows Credential Manager, Linux Secret Service), local IPC (Unix sockets or Windows named pipes), paths and line endings, running as a background service (launchd, Windows service, systemd), and Spec Kit scripts (`sh` on macOS and Linux, `ps` on Windows). |
 | **Dependencies** | Runtime dependencies are allowed and **pinned** (Pi Durable, `pi-ai`, `chord`, approved 2026-10-16; **GitHub Spec Kit** — the `specify` CLI, its templates and `speckit.*` commands for the Pi integration — for spec-driven artifacts, 2026-10-20); each new one is a recorded decision; experimental ones sit behind one seam. The web frontend may use build-time-only tooling, shipped prebuilt. |
 | **Local-first** | A `local-only` factory on a single machine makes **no outbound connection**; a network check proves it per host from the configured allowlist. |
 | **Durability** | Crash at any point: no lost decision, no double-applied move, no half-committed step. |
 | **Determinism and replay** | Committed event streams replay through every projection to the same result; replays are regression fixtures. |
 | **Performance** | Targets set by measurement, not assumption (swap cost, tokens per second, time to brief); recorded per model and host. |
-| **Security** | Loopback by default; authenticated, encrypted channels beyond it; secrets never in the record, store, browser or logs. |
+| **Security** | Loopback by default on every platform; authenticated, encrypted channels beyond it (hosts, paired devices); step-up for high-stakes moves from remote devices; secrets never in the record, store, browser or logs. |
 | **Privacy** | No prompt or answer content in events, metrics, traces or exports; restricted content never leaves its host. |
 | **Portability** | Wikis are plain git + Obsidian vaults; factory stores move between hosts. |
 | **Accessibility** | Everything readable without colour; text localisable. |
 | **Testability** | Every principle in §5 has a named, falsifiable check (the existing `*-ready` pattern); checks never pass vacuously. |
+| **Licences** | Every dependency's licence is compatible with Apache-2.0 and recorded with the decision that admits it; vendored files keep their notices (`THIRD-PARTY-NOTICES.md`). |
+| **Migration** | The first program's factory-logs and committed walks are replayed as event streams and kept as fixtures; no other data is migrated; legacy code is frozen, never extended. |
+| **Quality of KILN itself** | KILN is built by its own process: every roadmap row passes all ten gates under the constitution, leaves its spec, plan, tasks, code review and verification reports in `specs/NNN-name/`, and ends with its acceptance check passing. A release requires every `kiln-v1` Must with its check, and the clean-install acceptance test (roadmap r32). |
 
 ## 8. Architecture
 
@@ -457,8 +494,8 @@ kiln/
     lane/          lane task, affinity scheduler, model pool, residency (Ollama)
     workers/       conversations, role instructions, tool sets, replay policy, providers, egress checks
     director/      roadmap & row tasks, planning, fix rounds, digests
-    knowledge/     wikis: ingest / query / lint, vault contract, implementation knowledge
-    workshop/      registry, people & roles, policies, placement, gate inbox
+    knowledge/     wikis: ingest / query / lint, vault contract, implementation knowledge, codebase scans
+    workshop/      registry, people & roles, policies, placement, Needs you, paired devices & sessions
     host/          host runtime, host channel, moves, sleep
     team/          team-space repository: subscribe/publish, signatures, claims, requests, team rules
     bench/         notebook, capture, promotion, research steps, spikes and spike reports
@@ -468,7 +505,7 @@ kiln/
   agents/          role instructions (*.md)
   checks/          readiness probes and network checks (the *-ready pattern)
   fixtures/        committed event streams and replays
-  legacy/          r1–r9 code, frozen, until each part is ported or retired
+  legacy/          r1–r9 code, frozen until each part is ported; the Pi extension and terminal UI retired
 ```
 
 **Dependency direction:** `contracts` ← `record` ← `durable` ← `lane`, `workers` ← `director` ← `workshop`, `host` ←
@@ -531,38 +568,42 @@ retire code tied to the Pi-extension host or the terminal UI.** Existing tests t
 
 | Existing | Decision |
 |---|---|
-| `pi/` (r8 extension), `pi/ui/` (r9 real UI), `index.ts` extension entry | **frozen in `legacy/`**; retired unless the Roadmap gate keeps a terminal surface (open decision) |
-| `ui/hud.ts`, `ui/popup.ts`, `ui/overlay.ts`, `ui/gate0-face.ts`, `ui/live-tui.ts`, `ui/twin.ts`, `ui/keymap.ts` | text renderers may survive for a `kiln check` / CLI summary; the terminal surface itself retires |
+| `pi/` (r8 extension), `pi/ui/` (r9 real UI), `index.ts` extension entry | **frozen in `legacy/` and retired** — the terminal surface is retired (decided 2026-10-20; constitution 2.0.0, Principle IX) |
+| `ui/hud.ts`, `ui/popup.ts`, `ui/overlay.ts`, `ui/gate0-face.ts`, `ui/live-tui.ts`, `ui/twin.ts`, `ui/keymap.ts` | **retired** with the terminal surface; pure text renderers may be reused for `kiln check` / CLI summaries |
 | `tests/pi`, `tests/live-tui`, `tests/ui`, `tests/overlay*`, `tests/gate0-face` | retire with their code |
 
 ## 11. Phasing — candidate roadmap
 
-*Concepts: [design §21 roadmap consequences](../concepts/web-front-door.md) · [the roadmap proposal, r12–r41](../../specs/ROADMAP.md) (cut from these milestones into feature-sized rows).*
+*Concepts: [design §21 roadmap consequences](../concepts/web-front-door.md) · [the roadmap proposal, r12–r42](../../specs/ROADMAP.md).*
 
-Each milestone is a candidate roadmap row with its own gates. Every milestone ends usable and checked.
+Milestones group requirements; the roadmap cuts them into feature-sized rows, each one walk of the flow (last column).
+Every milestone ends usable and checked. A requirement appears in exactly one milestone's key requirements (split
+priorities, such as *Must (local) / Should (remote)*, may appear twice).
 
-| # | Milestone | Delivers | Depends on | Key requirements |
-|---|---|---|---|---|
-| **M0** | **Foundations reset** | new layout; legacy frozen; contracts, schemas, validators, scheduler, roles and network check ported with their tests green | — | GATE-1/2, WORK-2, LANE-2, EVT-5 (validators) |
-| **M1** | **Durable core, headless** | Pi Durable seam; roadmap/row/unit/gate/lane tasks; the gate contract; a scripted feature walks ten gates from the CLI, survives kill-and-resume; **gates as data** with the default flow | M0 | CORE-1…6, LANE-1, GATE-3/4/5, FLOW-1/2/3, FLOW-7 (default) |
-| **M2** | **Record** | outbox, envelope, catalog, backbone, cursors; factory-log projection byte-identical on rebuild; old walks replayed as event streams | M1 | EVT-1…5 |
-| **M3** | **Real workers** | conversations on local models via `pi-ai`; tier map; tool sets; replay discipline; residency manager; model pool (one host); `kiln.config/` with roles, tier map and `kiln check config` / `kiln check model` | M1, M2 | WORK-1…5, LANE-3, CFG-1, CFG-3, CFG-4, CFG-6 (local), CFG-7 (roles), CFG-8 |
-| **M4** | **Front door, read-only** | server, session security, read models, live push; overview, factory live, record views | M2 | WEB-1/2/4, OBS-1 (basic) |
-| **M5** | **Gates on the web** | full gate brief, moves, delegation, steering, risky-action approvals | M3, M4 | BRIEF-1…4, HITL-1/2, WEB-3/5 |
-| **M6** | **Director** | deterministic planning, affinity ordering, fix rounds, director conversation, shaping the roadmap together | M3 | DIR-1…4, DIR-7 |
-| **M7** | **Knowledge** | factory wiki (ingest/query/lint, vault contract), knowledge in briefs; then workshop wiki and implementation knowledge | M5, M6 | KNOW-1…6, BRIEF-5 |
-| **M8** | **Workshop** | several factories, gate inbox, host scheduler, people and roles; Agents screen and role try-runs; **added gates and flows**, per-feature flow choice, gate try-runs | M5 | HOST-1, LANE-4, PPL-1, CFG-2, CFG-7 (try-runs), FLOW-4…9 |
-| **M9** | **Observability** | metrics, traces, health, insights, time travel | M2, M4 | OBS-1…6, EVT-6 |
-| **M10** | **Models beyond the machine** | catalog, profiles, routing, egress policy, budgets, fallback, policy stops | M3, M5 | MOD-1…5, HITL-3, CFG-6 (remote) |
-| **M11** | **Factories anywhere** | host runtime and channel, placement, moves, sleeping hosts, network failure | M8 | HOST-2…7, WEB-2 (network), CFG-5 |
-| **M12** | **Team space** | team-space repository, signed acts and keys, team roadmap by quorum, claims and overlap, requests and mirrored reviews, team-aware Merge gate, team knowledge | M7, M8 | TEAM-1…9 |
-| **M13** | **The bench** | notebook and capture, keeper suggestions, promotion; research steps; spikes, spike reports, propose as feature; origin and maturity labels; candidate list and roadmap evidence | M3, M7 | BENCH-1…12 |
-| **M14** | **`kiln-v1` release** | installer, `kiln init` and `kiln doctor` (SETUP-1…11), newcomer docs, demo mode from committed replays | M0–M8 and the *Must* items of M9, M15, M16 | §3.1 goals |
-| **M15** | **Existing codebases** | profile, **full scan into the knowledge base**, baseline, territory, team-process fit and base drift (the Musts, built alongside M5–M8); then preserved behaviour, adoption stages and rehearsal, brownfield knowledge | M3, M5, M7 | BROWN-1…12 |
-| **M16** | **New codebases** | start empty, product brief, constitution from the brief, technology decisions, walking skeleton on the foundation flow (the Musts, alongside M5–M8; research and spike evidence for decisions once M13 lands); then conventions enforcement, slices, growing into brownfield, team start | M3, M5, M7 | GREEN-1…9 |
+| # | Milestone | Delivers | Depends on | Key requirements | Roadmap rows |
+|---|---|---|---|---|---|
+| **M0** | **Foundations reset** | new layout; legacy frozen; contracts, schemas, validators, scheduler, roles and network check ported with their tests green | — | GATE-1/2, WORK-2, LANE-2, EVT-5 (validators) | r12 |
+| **M1** | **Durable core, headless** | Pi Durable seam; roadmap/row/unit/gate/lane tasks; the gate contract; a scripted feature walks ten gates from the CLI, survives kill-and-resume; **gates as data** with the default flow | M0 | CORE-1…6, LANE-1, GATE-3/4/5, FLOW-1/2/3, FLOW-7 (default) | r13, r14 |
+| **M2** | **Record** | outbox, envelope, catalog, backbone, cursors; factory-log projection byte-identical on rebuild; old walks replayed as event streams | M1 | EVT-1…5 | r15 |
+| **M3** | **Real workers** | conversations on local models via `pi-ai`; tier map; tool sets; replay discipline; residency manager; model pool (one host); `kiln.config/` with roles, tier map and `kiln check config` / `kiln check model` | M1, M2 | WORK-1…5, LANE-3, CFG-1, CFG-3, CFG-4, CFG-6 (local), CFG-7 (roles), CFG-8 | r16, r17 |
+| **M4** | **Front door, read-only** | server, session security, read models, live push; overview, factory live, record views | M2 | WEB-1/2/4, OBS-1 (basic) | r19 |
+| **M5** | **Gates on the web** | full gate brief, moves, delegation, steering, risky-action approvals | M3, M4 | BRIEF-1…4, HITL-1/2, WEB-3/5, DIR-6, GATE-6 (pending `the-flow.md` §11) | r20, r21 |
+| **M6** | **Director** | deterministic planning, affinity ordering, fix rounds, director conversation, shaping the roadmap together | M3 | DIR-1…5, DIR-7 | r18, r22 |
+| **M7** | **Knowledge** | factory wiki (ingest/query/lint, vault contract), knowledge in briefs; then workshop wiki and implementation knowledge | M5, M6 | KNOW-1…6, BRIEF-5 | r23, r24 |
+| **M8** | **Workshop** | several factories, gate inbox, host scheduler, people and roles; Agents screen and role try-runs; **added gates and flows**, per-feature flow choice, gate try-runs | M5 | HOST-1, LANE-4, WORK-6, PPL-1, HITL-4, CFG-2, CFG-7 (try-runs), FLOW-4…9 | r25, r26 |
+| **M9** | **Observability** | metrics, traces, health, insights, time travel | M2, M4 | OBS-1…6, EVT-6, GATE-7 | r27 (Musts), r36 |
+| **M10** | **Models beyond the machine** | catalog, profiles, routing, egress policy, budgets, fallback, policy stops | M3, M5 | MOD-1…5, HITL-3, CFG-6 (remote) | r33 |
+| **M11** | **Factories anywhere** | host runtime and channel, placement, moves, sleeping hosts, network failure | M8 | HOST-2…7, WEB-2 (network), CFG-5 | r37 |
+| **M12** | **Team space** | team-space repository, signed acts and keys, team roadmap by quorum, claims and overlap, requests and mirrored reviews, team-aware Merge gate, team knowledge | M7, M8 | TEAM-1…9 | r38, r39 |
+| **M13** | **The bench** | notebook and capture, keeper suggestions, promotion; research steps; spikes, spike reports, propose as feature; origin and maturity labels; candidate list and roadmap evidence | M3, M7 | BENCH-1…12 | r34, r35 |
+| **M14** | **`kiln-v1` release** | installer, `kiln init` and `kiln doctor` (SETUP-1…11), newcomer docs, demo mode from committed replays | M0–M8 and the *Must* items of M9, M15, M16 | SETUP-1…11, §3.1 goals | r28, r32 |
+| **M15** | **Existing codebases** | profile, **full scan into the knowledge base**, baseline, territory, team-process fit and base drift (the Musts, after M7 and first run); then preserved behaviour, adoption stages and rehearsal, brownfield knowledge | M3, M5, M7 | BROWN-1…12 | r30, r31, r40 |
+| **M16** | **New codebases** | start empty, product brief, constitution from the brief, technology decisions, walking skeleton on the foundation flow (the Musts, after M8 and first run; research and spike evidence for decisions once M13 lands); then conventions enforcement, slices, growing into brownfield, team start | M3, M5, M7 | GREEN-1…9 | r29, r41 |
+| **M17** | **Devices and remote work** (`kiln-v1.x`) | pairing and device keys, remote access over private networks, step-up, revocation, content-free notifications, per-device content policy; then offline and queued moves, continuity, waking a sleeping workshop | M5, M11 | DEV-1…9 | r42 |
 
-**`kiln-v1`** = M0–M8 plus the *Must* items of M9, M15 and M16; M10–M13 can follow as `kiln-v1.x` without changing
-anything built before them, because the single-machine, local-only, single-person workshop is their degenerate case.
+**`kiln-v1`** = M0–M8 plus the *Must* items of M9, M15 and M16, released by M14 — roadmap rows **r12–r32**. M10–M13 and
+M17 follow as `kiln-v1.x` (r33–r42) without changing anything built before them, because the single-machine, local-only,
+single-person workshop is their degenerate case. Whether `kiln-v1` keeps all of r29–r31 is an open decision (§14).
 
 ## 12. Success measures
 
@@ -585,43 +626,72 @@ From the vision, made measurable:
 | Pi Durable is experimental and moves | one seam; pinned versions; contract outlives API; RPC fallback driver |
 | External completion of a waiting task is not a published primitive | settle in M1, upstream first |
 | Local-model capability (tool calling, streaming) varies | per-model readiness probes; measured, recorded |
-| Scope: the concepts describe a lot | strict Must/Should; `kiln-v1` ends at M8 |
+| Scope: the concepts describe a lot; `kiln-v1` is 21 rows and 83 Musts | strict Must/Should; `kiln-v1` ends at r32; candidates to defer named in §14 |
 | Two products during the transition | `legacy/` frozen; no feature work there |
 | Security surface grows with servers and hosts | loopback default; network modes opt-in, behind M11 |
 | Teams collide on shared code | claims and overlap detection from the Work plan gate; protected paths; base drift at merge |
+| Spec Kit changes its templates or commands | pinned version range; adopt or upgrade as a recorded decision per factory; KILN never forks Spec Kit |
+| Local models too weak to judge well | measured by `kiln check model` and insights; profiles allow a stronger private or remote judge by policy |
+| Three platforms from the start: Pi, Pi Durable, Ollama and Spec Kit behave differently, and Windows is the least proven for the substrate | verify the substrate on all three in r12–r13 before building on it; a CI matrix from the first row; platform adapters behind one seam each |
+| Remote device access widens the attack surface | off by default; private networks only; device keys, step-up, revocation (M17, after `kiln-v1`) |
 
 ## 14. Open decisions
 
-Consolidated from the concept docs; each needs an answer before the milestone that depends on it.
+Consolidated from the concept docs. **Blocking** items must be decided before the roadmap is admitted; the others before
+the milestone or row named.
 
-1. Keep a terminal surface (r9) or retire it — before M4.
-2. Wiki keeper: dedicated role or researcher with a schema — before M7.
-3. How long a knowledge page may go unreviewed before a brief flags it — M7.
-4. How much code implementation pages reproduce versus reference — M7.
-5. User-facing words: Factory / Feature / Step; *Knowledge* versus *wiki* in docs — before M4.
-6. Whether KILN may recommend a move at a gate, and limits on *request more evidence* — M5.
-7. Several Deciders collaborating on one gate — M8.
-8. Hosts in several workshops; how workspaces move; workshop failover; container forms — M11.
-9. Egress policy language and model-family identity — M10.
-10. Exact quorum rules, exclusive-claim expiry, publishing levels beyond coordination — M12.
-11. Research and spike capacity on shared hosts; switching off keeper suggestions; archived spike retention — M13.
-12. Added gates as delegation arming points; `applies_when` on the diff; post-merge gates when they come into scope — M8.
+**Decided**
+- ~~Keep a terminal surface (r9) or retire it~~ — **retired** (2026-10-20); surfaces are the web front door and the CLI.
+- ~~Constitution amendments~~ — **adopted as 2.0.0** (2026-10-20; §15).
+- ~~Platforms~~ — **macOS, Windows and Linux** are all in scope for `kiln-v1` (2026-10-21; §7).
 
-## 15. Constitution amendments required
+**Blocking — before the Roadmap gate admits the program**
+1. **The flow proposals P1–P6** (`the-flow.md` §11): where reject goes, re-crossing, the fix-round cap as a factory
+   setting, Documentation and Merge kept separate, the designer's answer round, "leave the lane" not a move kind — shape
+   r14 and r20 (GATE-6).
+2. **Broken-guarantee response** (`health.md` §4.1): the director's fail-closed checks stop the affected factory at its
+   next step boundary (OBS-5) — confirm.
+3. **`kiln-v1` scope**: keep r12–r32 as proposed, or move r26 (agents and flows), r29 (new codebases) or r31 (existing
+   codebases, part 2) to `kiln-v1.x`.
 
-*Concepts: [design §11 constitution impact](../concepts/web-front-door.md) · [constitution](../../.specify/memory/constitution.md).*
+**Before a milestone or row**
 
-| Principle | Change |
-|---|---|
-| III Single lane | one lane **per factory**; resident models bounded per host (MAJOR) |
-| IV Affinity | the cost lever for local models, per host; remote spend governed by budgets |
-| VI Gate 0 | renamed **the Roadmap gate** (PATCH) |
-| VII Everything recorded | the ordered event stream is the primary record; the factory-log is a projection (MAJOR) |
-| VIII Local-first | local by default; egress, remote models and hosts only by configured, recorded, policy-checked choice; authenticated, encrypted connections beyond loopback (MAJOR) |
-| IX No dashboard | a web front door that is never a source of truth; real authentication when shared over a network (MAJOR) |
-| *Gate rail* | a **default flow** with fixed anchors (Roadmap gate first, Merge gate last, built-in gates kept), extensible by recorded decision; every gate keeps the gate contract (MINOR) |
-| *new* | knowledge is context, never authority (MINOR) · a factory is portable — moving it never changes a decision (MINOR) · workshops are sovereign — no act from a team space or another workshop settles a gate (MINOR) |
-| *dependency stance* | runtime dependencies allowed, pinned, recorded |
+| # | Decision | Before |
+|---|---|---|
+| 4 | The Pi Durable primitive for completing a waiting task from outside (CORE-6) — upstream first | M1 · r13 |
+| 5 | User-facing words: Factory / Feature / Step; *Knowledge* versus *wiki* in docs | M4 · r19 |
+| 6 | Whether KILN may recommend a move at a gate; limits on *request more evidence* | M5 · r20 |
+| 7 | Whether the planner runs on the strongest model by default | M6 · r18 |
+| 8 | Wiki keeper as its own role or the researcher with a schema; when a page counts as stale; how much code pages reproduce | M7 · r23 |
+| 9 | Several Deciders on one gate; added gates as delegation arming points; `applies_when` on the diff | M8 · r26 |
+| 10 | Spec Kit upgrades: at the next Roadmap gate as a recorded decision, or only on request; other agent integrations beside Pi | M14 · r28 |
+| 11 | Full-scan depth outside the territory; how far back history is read; whether review discussions are read | M15 · r30 |
+| 12 | Egress policy language and model-family identity | M10 · r33 |
+| 13 | Research and spike capacity on shared hosts; keeper suggestions off-switch; spike retention | M13 · r35 |
+| 14 | Hosts in several workshops; workspace moves; workshop failover; container forms | M11 · r37 |
+| 15 | Quorum rules, claim expiry, publishing levels; whether the team space shares `kiln.config/` | M12 · r38 |
+| 16 | A KILN-shipped private network or only the engineer's own; a native mobile app; moves impossible from companion devices | M17 · r42 |
+
+## 15. Constitution amendments
+
+**Adopted as constitution 2.0.0 on 2026-10-20** by decision of human@batorfi (`.specify/memory/constitution.md`; 1.0.0
+archived unchanged in `.specify/memory/archive/`). The constitution's amendment history records each change, its level
+and the migration note; in summary:
+
+| Principle | Change | Level |
+|---|---|---|
+| I · author/judge separation | role names; "only the director creates conversations" testable | PATCH |
+| II · strongest judges | strongest model *available to the factory*, possibly remote; cross-family where required; never silently downgraded; line of defense = judges of the judged and added gates (the docs synthesizer is no longer one) | MAJOR |
+| III · single lane | one lane **per factory**; resident models bounded per host | MAJOR |
+| IV · affinity | local models, within and across factories; remote spend by budgets | MINOR |
+| V · nothing approves by absence | the durable gate contract: first move wins, stale moves refused, no clock | MINOR |
+| VI · the Roadmap gate | renamed from Gate 0; shaped together, admits the version read | PATCH |
+| VII · everything recorded | the event stream is the record; the factory-log is a projection | MAJOR |
+| VIII · local by default | remote models, hosts, devices and networks only by recorded, policy-checked choice; no KILN cloud | MAJOR |
+| IX · surfaces are views | the web front door and the CLI; the terminal surface retired | MAJOR |
+| X · XI · XII (new) | knowledge is context, never authority · a factory is portable · workshops are sovereign | MINOR |
+| Default flow | plain names, fixed anchors, added gates, closed move kinds, the full brief | MINOR |
+| Roles & substrate | Pi Durable, `pi-ai`, Ollama, Spec Kit; dependencies pinned and recorded; configuration as code | MINOR |
 
 ## 16. Glossary
 
@@ -636,7 +706,7 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 | Bench | bench | a person's place for notes, research steps and spikes |
 | Notebook | notebook | a private vault where notes mature into knowledge by promotion |
 | Spike | spike | an ungated, time-boxed experiment that ends in a measured report |
-| Factory | flow | one roadmap, one lane, one record |
+| Factory | factory (*flow* in the design doc §12) | one roadmap, one lane, one record |
 | Feature | row | one roadmap item, walked through nine gates |
 | Step | unit | one piece of work by one role |
 | Gate | gate task | a stop that waits for a human move |
@@ -647,3 +717,14 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 | Record | event stream | everything that happened, in order |
 | Knowledge | factory / workshop wiki | LLM-written, people-curated knowledge |
 | Curator | Curator | keeper of a factory's knowledge |
+| Needs you | inbox | everything waiting on a person, across factories, workshop and team space |
+| Roadmap brief | roadmap inputs | the engineer's goals, constraints and own rows the planner reads first |
+| Constitution | constitution | the principles every gate and every Spec Kit command measures work against |
+| Feature directory | `specs/NNN-name/` | a feature's Spec Kit artifacts plus KILN's concept, design and judges' reports |
+| Territory | territory | the paths a factory may change in an existing codebase |
+| Baseline | baseline | what the build and tests do before a factory changes anything |
+| Full scan | scan | reading a whole existing codebase and its history into knowledge |
+| Product brief | product brief | the intent a new codebase starts from |
+| Walking skeleton | skeleton | the first feature of a new codebase: thin, end to end, built, tested, in CI |
+| Paired device | device | a notebook, tablet or phone with its own revocable key, a window onto the workshop |
+| Step-up | step-up | an on-device confirmation required for high-stakes moves |

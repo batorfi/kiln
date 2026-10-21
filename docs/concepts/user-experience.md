@@ -28,7 +28,8 @@
 >   - In an existing codebase:           `brownfield.md`
 >   - In a new codebase:                 `greenfield.md`
 >   - Health:                            `health.md`
->   - Illustrative mockups:              `mockups/` — seventy-two high-resolution illustrations covering every capability below. They
+>   - Devices and remote work:           `devices-and-remote-work.md`
+>   - Illustrative mockups:              `mockups/` — seventy-seven high-resolution illustrations covering every capability below. They
 >     are discussion aids, not design decisions; this doc governs where they differ.
 
 # KILN — the user experience, as a concept
@@ -471,6 +472,20 @@ proposals.
 - the first real act is a decision at the Roadmap gate — or, first, a read-only demo of a whole feature; a team can be
   started or joined at the end or any time after, and joining never loosens the workshop.
 
+### 7.25 Working from any device
+
+*Purpose:* let the engineer triage, decide and build wherever they are, on whatever device they have
+(`devices-and-remote-work.md`).
+*Guarantees:*
+- one workshop stays the authority; every other device is a paired, revocable window onto it, over the engineer's own
+  network — never a KILN cloud;
+- a move can be made on any device only with the full brief, layered for the screen; high-stakes moves ask for step-up;
+- decisions are the person's, recorded with the device; the first move wins on any device; a move made on a stale view is
+  refused;
+- notifications are content-free and never decide; offline devices read from an encrypted cache and may only queue moves,
+  which are refused if the gate changed;
+- a sleeping workshop, an unreachable device or a lost phone can delay a decision, never make one.
+
 ## 8. The gate brief: rich context at every gate
 
 A gate is the moment KILN hands a decision to a human. The quality of that decision depends on what the human
@@ -672,8 +687,8 @@ Collected for review; each needs a decision before the interaction design phase.
 6. How much of the kiln metaphor reaches the experience (§10).
 7. Direct versus neutral voice (§11).
 8. Whether KILN offers its own recommended move at a gate, and the limits on requesting more evidence (§8).
-9. Whether the Pi-integrated terminal experience (r9) remains a supported secondary surface, and how this concept
-   applies to it.
+9. ~~Whether the Pi-integrated terminal experience (r9) remains a supported secondary surface~~ — **decided 2026-10-20:
+   retired.** The surfaces are the web front door and the CLI (constitution 2.0.0, Principle IX).
 10. Accessibility and language commitments to make at the concept level (for example: everything readable without
    colour; all text localisable).
 

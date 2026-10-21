@@ -57,7 +57,8 @@ the terminal (`kiln init --no-browser`); both write the same files.
 
 ## 4. Install
 
-- **One command** installs the KILN CLI and the host runtime; KILN needs Node (`^22.18 || >=23.6`) and git.
+- **One command** installs the KILN CLI and the host runtime on **macOS, Windows or Linux**; KILN needs Node
+  (`^22.18 || >=23.6`) and git.
 - **Spec Kit** — the `specify` CLI (Python ≥ 3.11, installed with `uv`) — is a required dependency, pinned to a supported
   range (today 1.0.x). If it is missing, setup shows the exact install command and runs it only when the person confirms.
 - **Ollama is not bundled**: if it is missing, setup says so, links to it, and waits — KILN never installs system software
@@ -154,7 +155,7 @@ workers are Pi sessions. Setup finds one of three cases:
 |---|---|
 | **Spec Kit already initialised** (`.specify/` present) | **adopt**: reads the version, integration, feature numbering and the constitution; checks the templates against Spec Kit's manifest and shows any local changes (allowed, never overwritten); lists existing `specs/` features and `ROADMAP.md` as history and knowledge sources; offers to add the Pi integration if another one is installed |
 | **Initialised with an unsupported version** | shows the gap and the upgrade Spec Kit would make, file by file; nothing changes without approval; the factory can still be created read-only |
-| **No Spec Kit** | **add**: prepares what `specify init --here --ai pi --script sh` would write — `.specify/` and `.pi/prompts/speckit.*.md` — in the factory's worktree, shows every file, and commits it on the factory branch only when the person approves; in an existing team codebase it is proposed as a pull request instead (`brownfield.md` §11) |
+| **No Spec Kit** | **add**: prepares what `specify init --here --ai pi --script sh` (`--script ps` on Windows) would write — `.specify/` and `.pi/prompts/speckit.*.md` — in the factory's worktree, shows every file, and commits it on the factory branch only when the person approves; in an existing team codebase it is proposed as a pull request instead (`brownfield.md` §11) |
 
 How the gates use it:
 

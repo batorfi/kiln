@@ -56,6 +56,7 @@
 >   - The flow, gate by gate:          `the-flow.md`
 >   - In an existing codebase:          `brownfield.md`
 >   - In a new codebase:                `greenfield.md`
+>   - Devices and remote work:          `devices-and-remote-work.md`
 >   - Health:                          `health.md`
 
 # KILN — the web front door, on durable agents and durable gates
@@ -587,6 +588,9 @@ The webapp reads only committed state, through the server, and never polls:
 
 ## 11. Constitution impact
 
+*Adopted as constitution 2.0.0 on 2026-10-20 (`.specify/memory/constitution.md`), including the retirement of the
+terminal surface.*
+
 | Principle | Impact |
 |---|---|
 | I. Author/judge separation | Unchanged; enforced structurally — only the row task creates conversations (§7). |
@@ -668,7 +672,7 @@ event stream replays without reference to any other flow.
   per flow). A crash, a runaway tool or a store failure in one flow cannot take down another; the
   supervisor restarts the flow, and the flow resumes from its own durable state (§5.4).
 - **One workshop supervisor.** It owns the web surface, the model pool and the host scheduler. It holds no
-  flow's state; it talks to flow processes over a local, authenticated channel (a Unix socket or loopback).
+  flow's state; it talks to flow processes over a local, authenticated channel (a Unix socket, a Windows named pipe, or loopback).
 - **The workshop is durable too.** Its own small store holds the flow registry, the model pool's resident
   set and its leases, and the host event stream — so a host restart re-establishes which models were
   resident and which flows held them.
@@ -793,7 +797,7 @@ KILN keeps a **model catalog**. Every model a flow may use has an entry with:
 | **endpoint** | the one host the model is reached at; the network allowlist is derived from these entries |
 
 Model access already goes through `pi-ai`, which supports local and remote providers alike; KILN adds the
-catalog and the policy around it. Credentials live in the operating system's keychain — never in the durable
+catalog and the policy around it. Credentials live in the operating system's secret store (Keychain, Windows Credential Manager, Secret Service) — never in the durable
 store, events, logs, the factory-log or the browser.
 
 ### 13.2 Profiles
@@ -1033,7 +1037,9 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 ## 19. Security posture
 
 - bind to `127.0.0.1` only — unless the workshop is deliberately shared over a network (§15), in which case it uses
-  TLS and the team's identity provider;
+  TLS and the team's identity provider; **paired devices** (a notebook, a tablet, a phone) reach it only when remote access is
+  switched on, only over a local or private network the engineer controls, with per-device keys, mutual TLS, step-up for
+  high-stakes moves and instant revocation — never through a KILN cloud (`devices-and-remote-work.md`);
 - hosts and workshop authenticate each other and encrypt all traffic; host identities are revocable (§15);
 - every act in a team space is signed with a member's personal key; keys are registered through the team's identity
   provider where one exists and revoked there (§16);
@@ -1085,7 +1091,7 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 
 Not a decision — the shape the Roadmap gate would be asked to consider:
 
-- **r9** closes as a TUI surface (kept as an alternative) or is trimmed.
+- **r9** — **decided 2026-10-20:** the terminal surface is retired; r9's work is frozen in `legacy/` and not completed.
 - **Constitution amendment** — VII, VIII and IX MAJOR, II strengthened, IV scoped, VI renamed to the
   Roadmap gate, runtime-dependency stance.
 - **Durable core** — the harness behind one seam; roadmap, row, unit, gate and lane tasks; the gate contract.

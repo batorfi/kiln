@@ -5,7 +5,7 @@
 > layout, control and colour here is open; what they are meant to show is the *content and the guarantees* the
 > UX concept asks for.
 
-All seventy-two share one scenario: one person (Zsolt) runs a **workshop** on a 128 GB Mac Studio-class machine (host
+All seventy-seven share one scenario: one person (Zsolt) runs a **workshop** on a 128 GB Mac Studio-class machine (host
 `studio-m5`, joined by a team server, a cloud machine and a spare server in 33–35) with four
 factories — `kiln-v1` and `docs-site` (local-only), `billing-service` (hybrid, cloud judges) and `handbook` (new,
 waiting for its first roadmap). Most mockups show the same morning after an overnight crash; those marked
@@ -100,6 +100,19 @@ journey. 68–70 are moments from r10's record; 71 is later today; 72 is the sam
 | 70 | [Work plan gate](70-work-plan-gate.png) *(as it was, Oct 15)* | tasks traced to requirements; deterministic checks instead of a judge; the model order the plan implies, machine time and swaps; claims |
 | 71 | [Documentation gate](71-documentation-gate.png) *(later today, 12:37)* | doc changes; what was built mapped to where it is documented; an open question documented as built; what the feature added to the knowledge base |
 | 72 | [A feature's journey](72-feature-journey.png) | r10 gate by gate — rounds, moves, who decided, machine time versus waiting; two restarts to the same restorable commit; one objection traced from Design to Code review to the code being written now |
+
+### Devices and remote work
+
+*Concept: `../devices-and-remote-work.md`. 73 and 74 are today; 75 and 77 begin yesterday evening; 76 is this morning,
+working remotely from a client site.*
+
+| # | Mockup | Illustrates |
+|---|---|---|
+| 73 | [Your devices](73-devices.png) | paired devices with classes (primary, trusted, companion, read-only), how each reaches the workshop, last seen; remote access on, private network only, never the public internet; pairing by QR and code phrase; high-stakes moves with step-up; content-free notifications; recent sessions |
+| 74 | [On the phone](74-phone.png) | a content-free notification with no approve button; Needs you the same on every device; the Merge gate brief layered for a small screen; Face ID step-up, the move recorded with the device |
+| 75 | [On the tablet](75-tablet.png) | a Code review brief beside the diff; highlights and margin notes becoming the draft note, synced and never sent until the person sends it |
+| 76 | [Notebook, remote](76-notebook-remote.png) | the connection bar over a private network; continuing on the notebook what was read on the tablet; a spike running on the workshop's host; knowledge as local clones; what happened while offline on a flight |
+| 77 | [Asleep and offline](77-asleep-and-offline.png) | a sleeping workshop seen from the phone with cached briefs; a queued move bound to the version read; waking the workshop; the move refused because the gate changed — and what never happens |
 
 ### Gate briefs — one for each kind of gate
 
@@ -218,6 +231,7 @@ and where it is illustrated:
 | Team space: team roadmap by quorum, claims and protected paths, overlap, requests, mirrored reviews, merge queue, publishing | 36 · 37 · 38 · 39 |
 | First run: machine check, models, workshop and storage, first factory, knowledge bootstrap, first roadmap, team start or join | 61 · 62 · 63 · 64 · 65 · 66 |
 | Loopback-only session security | 20 |
+| Many devices and remote work: pairing, classes, private networks, step-up, content-free notifications, offline and queued moves, continuity, a sleeping workshop | 73 · 74 · 75 · 76 · 77 |
 
 ## Regenerating
 

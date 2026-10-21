@@ -1,3 +1,6 @@
+> **⚠ Retired (2026-10-20).** The terminal surfaces described here are retired: KILN's surfaces are the web front door and
+> the CLI (`web-front-door.md`; constitution 2.0.0, Principle IX). This text is kept unchanged as history (P-VII).
+
 # KILN — the UI layers, in depth
 
 <!-- r8-correction -->

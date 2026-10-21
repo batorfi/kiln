@@ -75,3 +75,8 @@ render 69-design-gate                    1600,1140
 render 70-work-plan-gate                 1600,1190
 render 71-documentation-gate             1600,1050
 render 72-feature-journey                1600,960
+render 73-devices                        1600,980
+render 74-phone                          1600,990
+render 75-tablet                         1600,940
+render 76-notebook-remote                1600,900
+render 77-asleep-and-offline             1600,990

@@ -55,6 +55,8 @@ kiln.config/                ← a git repository (or a folder in one)
     budgets.yaml            ← spend and research caps
     tools.yaml              ← risky-action rules
   health.yaml               ← health thresholds, reminders, notifications, quiet hours (health.md §7)
+  devices.yaml              ← paired devices: classes, limits, content policy (devices-and-remote-work.md)
+  notifications.yaml        ← channels, rules, quiet and focus hours
   factories/<name>.yaml     ← per factory: profile, policy, budget, placement, tier overrides
 ```
 

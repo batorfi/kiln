@@ -1,0 +1,74 @@
+<!doctype html><html><head><meta charset="utf-8"><title>KILN — devices</title><link rel="stylesheet" href="kiln-mock.css"><style>
+.dv td{font-size:12.5px;vertical-align:top;padding:9px 8px}.dv .nm{font-weight:650}.dv .ic{font-size:20px}
+.cls{font-size:11px;font-weight:700;border-radius:6px;padding:1px 7px}
+.cls.p{background:var(--ink-2);color:#fff}.cls.t{background:var(--info-soft);color:var(--info)}.cls.c{background:var(--ember-soft);color:var(--ember)}.cls.r{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.qr{width:150px;height:150px;border-radius:12px;background:
+ repeating-linear-gradient(90deg,#1C1814 0 8px,transparent 8px 14px),repeating-linear-gradient(0deg,#1C1814 0 6px,transparent 6px 15px);opacity:.85;border:8px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.path{font-family:var(--mono);font-size:11.5px}
+.ses td{font-size:12px;padding:6px 8px}
+</style></head><body>
+<div class="app">
+<aside class="side">
+  <div class="brand"><div class="mark"></div><div><b>KILN</b><small>Workshop · studio-m5</small></div></div>
+  <div class="nav"><div class="nav-h">Workshop</div>
+    <a>Needs you <span class="n">3</span></a>
+    <a>Factories <span class="s">4</span></a>
+    <a>Team space</a>
+    <a>Record</a>
+    <a>Knowledge</a>
+    <a>Bench</a>
+    <a>Insights</a>
+    <a>Models &amp; policy</a>
+    <a>Agents</a>
+    <a>Flows</a>
+    <a>Hosts</a>
+    <a>Health</a>
+    <a class="on">People</a>
+  </div>
+  <div class="nav"><div class="nav-h">Factories</div>
+    <a><span class="fac"><span class="dot wait"></span>kiln-v1</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot run"></span>billing-service</span><span class="s">working</span></a>
+    <a><span class="fac"><span class="dot wait"></span>docs-site</span><span class="s">waiting</span></a>
+    <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
+  </div>
+  <div class="machine"><b>studio-m5</b> · this host · 128 GB
+    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div><b>81 GB</b> of 104 GB budget in use</div></div>
+</aside>
+<main class="main">
+  <div class="top"><div><div class="crumb">People · Zsolt Bátorfi · devices</div><h1>Your devices</h1>
+    <div class="sub">One workshop, many windows. Every device is paired once, holds its own key, and can be revoked at any time. There is no KILN cloud — devices reach the workshop over your own network.</div></div>
+    <span class="btn primary">Pair a device</span></div>
+  <div class="grid" style="grid-template-columns:1.6fr 1fr;align-items:start">
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Paired devices</h2><span class="sub">4 · the person decides, the device is recorded</span></div>
+        <table class="dv"><tr><th></th><th>Device</th><th>Class</th><th>Reaches the workshop</th><th>Last seen</th><th></th></tr>
+          <tr><td class="ic">🖥</td><td><div class="nm">studio-m5</div><div class="sub">runs the workshop</div></td><td><span class="cls p">primary</span></td><td class="path">loopback</td><td>now</td><td></td></tr>
+          <tr><td class="ic">💻</td><td><div class="nm">MacBook Air</div><div class="sub">everything, remotely · config changes with step-up</div></td><td><span class="cls t">trusted</span></td><td class="path">private network · 38 ms</td><td>09:02</td><td><span class="btn">Manage</span></td></tr>
+          <tr><td class="ic">📱</td><td><div class="nm">iPhone</div><div class="sub">triage, answers, gates · high stakes with Face ID · no full diffs for billing-service</div></td><td><span class="cls c">companion</span></td><td class="path">private network · 41 ms</td><td>14:12</td><td><span class="btn">Manage</span></td></tr>
+          <tr><td class="ic">📲</td><td><div class="nm">iPad Pro</div><div class="sub">reading and deciding · annotations become notes</div></td><td><span class="cls c">companion</span></td><td class="path">home network</td><td>yesterday 21:46</td><td><span class="btn">Manage</span></td></tr>
+          <tr style="opacity:.55"><td class="ic">🖥</td><td><div class="nm">Conference room display</div><div class="sub">read-only · expired Oct 15</div></td><td><span class="cls r">read-only</span></td><td class="path">—</td><td>Oct 15</td><td><span class="sub">expired</span></td></tr></table></div>
+      <div class="card"><div class="card-h"><h2>Recent sessions</h2><span class="sub">every session recorded · no location, no content</span></div>
+        <table class="ses"><tr><th>When</th><th>Device</th><th>Path</th><th>What happened</th></tr>
+          <tr><td>14:12</td><td>iPhone</td><td class="path">overlay</td><td>Merge gate b2 · approve · <b>step-up confirmed</b></td></tr>
+          <tr><td>13:20</td><td>iPhone</td><td class="path">overlay</td><td>answered a step question · kiln-v1</td></tr>
+          <tr><td>09:02</td><td>MacBook Air</td><td class="path">overlay</td><td>Roadmap gate · approve v3 · step-up confirmed</td></tr>
+          <tr><td>yesterday 21:46</td><td>iPad Pro</td><td class="path">LAN</td><td>read r10 Code review brief · drafted a note (not sent)</td></tr>
+          <tr><td>07:31</td><td>iPhone</td><td class="path">LAN</td><td><span class="wt3">queued move refused — stale</span> · Verification d4 changed after it was queued offline last night</td></tr></table></div>
+    </div>
+    <div class="grid">
+      <div class="card"><div class="card-h"><h2>Remote access</h2><span class="pill ok">on · private network only</span></div>
+        <div class="kv2" style="grid-template-columns:120px 1fr"><span>Loopback</span><span>always</span><span>Home LAN</span><span>TLS · paired devices only</span><span>Overlay</span><span>your WireGuard mesh · <span class="mono">studio-m5.mesh</span></span><span>Public internet</span><span><b>never</b></span><span>Workshop key</span><span class="mono">SHA256:7c1e…a90b</span></div>
+        <div class="sub" style="margin-top:8px">Off by default; switched on Oct 12 by you, recorded.</div></div>
+      <div class="card"><div class="card-h"><h2>Pair a device</h2><span class="sub">valid 4:52</span></div>
+        <div class="row" style="gap:16px;align-items:center"><div class="qr"></div><div style="font-size:12.5px;line-height:1.6">Scan with the new device.<br>Code phrase: <b>ember · arch · lantern</b><br>It creates its own key and shows this workshop’s fingerprint to confirm.<br><span class="sub">Default class: companion</span></div></div></div>
+      <div class="card"><div class="card-h"><h2>High-stakes moves</h2><span class="sub">step-up on every device</span></div>
+        <div style="font-size:12.5px;line-height:1.7">admit at the Roadmap gate · approve at Merge · arm delegation · approve with an accepted failure · change profile or egress · pair a device · change who may decide</div>
+        <div class="sub" style="margin-top:6px">Team floor: none stricter yet. A team may require <i>Merge only from trusted devices</i>.</div></div>
+      <div class="card"><div class="card-h"><h2>Notifications</h2></div>
+        <div class="kv2" style="grid-template-columns:110px 1fr"><span>Content</span><span><b>content-free</b> — never code, findings or file names</span><span>Channels</span><span>installed web app push · iPhone, iPad</span><span>Quiet hours</span><span>22:00–07:30 · health criticals still notify</span></div></div>
+    </div>
+  </div>
+</main></div>
+<div class="watermark">KILN UX concept · illustrative mockup, not a design decision</div>
+</body></html>
