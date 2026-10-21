@@ -175,8 +175,8 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | DIR-3 | Commands — start a row, arm delegation, pause after step, abort step, accept/reject a proposal, move a factory — are idempotent commits. | Must |
 | DIR-4 | A conversational interface to the director answers from the record with citations; talking never moves a gate. | Should |
 | DIR-5 | The **planner** is an LLM role run as a step; its drafts (roadmap proposals, work plans, splits, synthesis answers) are labelled, checked by deterministic rules before display, and decided by people. The planner runs on the **strongest** model by default (an Operator may bind it lower, recorded), and it never changes a row the engineer wrote — it may only propose a change. | Must |
-| DIR-6 | **Needs you**: one inbox per person across factories, workshop and team space, in three sections — waiting on you, suggestions, worth knowing — each item with its headline and what it blocks; ordered by stakes, blocking others, then waiting time; never decides or expires anything. | Must |
-| DIR-7 | **Shaping the roadmap together**: a per-factory **roadmap brief** of the engineer's inputs (goals, must-haves, constraints, order preferences, appetite, own rows, pointers) read first by the planner; a recorded shaping conversation (planner questions, why/what-if, alternatives side by side); direct edits with **pins** the planner must respect and never silently change; versioned drafts with diffs; deterministic checks on every version; row origin shown in the Roadmap gate brief; approve bound to the version read; shaping possible at any time, never altering work in progress. | Must |
+| DIR-6 | **Needs you**: one inbox per person across factories, workshop and team space, in three sections — waiting on you, suggestions, worth knowing — each item with its headline and what it blocks; ordered by stakes, blocking others, then waiting time; never decides or expires anything. Each person may choose the order (oldest first by default, teammates first, by factory); ordering never hides an item. | Must |
+| DIR-7 | **Shaping the roadmap together**: a per-factory **roadmap brief** of the engineer's inputs (goals, must-haves, constraints, order preferences, appetite, own rows, pointers) read first by the planner; a recorded shaping conversation (planner questions, why/what-if, alternatives side by side); direct edits with **pins** the planner must respect and never silently change; versioned drafts with diffs; deterministic checks on every version; row origin shown in the Roadmap gate brief; approve bound to the version read; shaping possible at any time, never altering work in progress. Alternatives are drafted one at a time, each with its estimated machine time shown before it runs. | Must |
 
 ### 6.5 Event backbone and record
 
@@ -425,7 +425,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | **Security** | Loopback by default; authenticated, encrypted channels beyond it; secrets never in the record, store, browser or logs. |
 | **Privacy** | No prompt or answer content in events, metrics, traces or exports; restricted content never leaves its host. |
 | **Portability** | Wikis are plain git + Obsidian vaults; factory stores move between hosts. |
-| **Accessibility** | Everything readable without colour; text localisable. |
+| **Accessibility** | Everything readable without colour; full keyboard operation; WCAG 2.2 AA for the front door; a screen-reader-friendly CLI; all text localisable (English first, no strings in code). |
 | **Testability** | Every principle in §5 has a named, falsifiable check (the existing `*-ready` pattern); checks never pass vacuously. |
 
 ## 8. Architecture

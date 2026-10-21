@@ -636,8 +636,8 @@ What the human must be able to rely on, as properties of the experience itself:
   "error", "processing".
 - **One language across product, docs and record.** A word in the experience means the same in the record.
 
-> **Review:** Should the experience address the human directly ("waiting for you") or neutrally ("waiting for a
-> decision")? Direct address is warmer for one person and awkward for teams.
+> **Decided 2026-10-21** (decision 25): **direct and plain** — second person, short sentences, active voice (*Code review
+> is waiting for you*), no hedging and no cheerleading. In a team, *you* is always the person reading; others are named.
 
 ## 12. Experience across scales
 
@@ -676,16 +676,15 @@ Collected for review; each needs a decision before the interaction design phase.
 2. ~~User-facing vocabulary: Factory, Feature, Step (§4).~~ Decided 2026-10-21 — decisions 15 and 16.
 3. ~~Whether waiting gates ever escalate, and whether interruptions are configurable per gate (§6).~~ Decided 2026-10-21 —
    decision 24.
-4. Onboarding and the very first factory as its own core experience (§7).
+4. ~~Onboarding and the very first factory as its own core experience (§7).~~ Answered by `first-run.md`.
 5. ~~Several Deciders collaborating on one gate.~~ Decided 2026-10-21 — decision 22.
 6. ~~How much of the kiln metaphor reaches the experience (§10).~~ Decided 2026-10-21 — decision 17.
-7. Direct versus neutral voice (§11).
+7. ~~Direct versus neutral voice (§11).~~ Decided 2026-10-21 — decision 25.
 8. ~~Whether KILN offers its own recommended move at a gate, and the limits on requesting more evidence (§8).~~ Decided
    2026-10-21 — decisions 18–21.
 9. ~~Whether the Pi-integrated terminal experience (r9) remains a supported secondary surface.~~ Decided 2026-10-21 —
    see decision 14.
-10. Accessibility and language commitments to make at the concept level (for example: everything readable without
-   colour; all text localisable).
+10. ~~Accessibility and language commitments.~~ Decided 2026-10-21 — decision 26.
 
 ## 15. Decision log
 
@@ -715,7 +714,9 @@ Collected for review; each needs a decision before the interaction design phase.
 | 22 | 2026-10-21 | **One decision per gate**: the first committed move wins and later moves are refused with *decided by …*; when several people must agree, that is a set of **required reviews** — recorded evidence that must exist before *approve* is offered — never several settling moves; no quorum gates in `kiln-v1` | §7, §8.4, §12 | human |
 | 23 | 2026-10-21 | The primary user is an engineer in a **small team**: personal workshops joined by a team space, both parts of which are in `kiln-v1` (roadmap r38, r39); shared hosts and team bench work stay in `kiln-v1.x` | §2 | human |
 | 24 | 2026-10-21 | Waiting gates **never escalate** and never time out; each person chooses which gate kinds may interrupt them; Needs you shows how long each has waited; Health may note unusually long waits as information | §6 | human |
-| 25 | | *(your decisions from this review)* | | |
+| 25 | 2026-10-21 | The voice is **direct and plain**: second person, active, no hedging or cheerleading; in a team *you* is the reader and others are named | §11 | human |
+| 26 | 2026-10-21 | **Accessibility and language**: everything readable without colour, full keyboard operation, WCAG 2.2 AA for the front door, a screen-reader-friendly CLI, all text localisable (English first, no strings in code) | §14 Q10 | human |
+| 27 | | *(your decisions from this review)* | | |
 
 ## 16. One sentence
 
