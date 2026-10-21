@@ -138,7 +138,8 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 
 | Area | Document | What it covers |
 |---|---|---|
-| **Overview** | [Decisions](./docs/concepts/open-decisions.md) | every design decision settled on 2026-10-21, and what is still open, by roadmap row |
+| **Overview** | [What `kiln-v1` delivers](./docs/architecture/explainers/kiln-v1.md) | the release in one place: what ships, what does not, the 23 rows that build it, and when it is done |
+| | [Decisions](./docs/concepts/open-decisions.md) | every design decision settled on 2026-10-21, and what is still open, by roadmap row |
 | | [Vision](./docs/concepts/vision.md) | why KILN exists, what it believes, the human's role, the pillars, where it is going |
 | | [The web front door](./docs/concepts/web-front-door.md) | the main design: Pi 1.0 and Pi Durable, the factory as a durable task graph, events, many factories, models beyond the machine |
 | | [The user experience](./docs/concepts/user-experience.md) | personas, vocabulary, core experiences, the ten-part gate brief, trust and safety |
@@ -172,7 +173,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | **The design** | **final** (2026-10-21) as concepts: [vision](./docs/concepts/vision.md), [the flow](./docs/concepts/the-flow.md), [the web front door](./docs/concepts/web-front-door.md), [user experience](./docs/concepts/user-experience.md) and companions in [`docs/concepts/`](./docs/concepts); [decisions settled and still open](./docs/concepts/open-decisions.md) |
 | **The product definition** | the [PRD](./docs/prd/kiln-prd.md), **final**: principles, requirements, architecture, what to keep from today's code, milestones |
 | **The law** | the [constitution](./.specify/memory/constitution.md) **v2.0.1**, amended for the restart on 2026-10-21 — [explained for engineers](./docs/architecture/explainers/kiln-constitution.md) |
-| **The roadmap** | a [proposal](./specs/ROADMAP.md) of 31 feature-sized rows (r12–r42, with the r42 spike before r13 and the team space in `kiln-v1`), `kiln-v1` at r32 — **pending the Roadmap gate** |
+| **The roadmap** | a [proposal](./specs/ROADMAP.md) ([what `kiln-v1` delivers](./docs/architecture/explainers/kiln-v1.md)) of 31 feature-sized rows (r12–r42, with the r42 spike before r13 and the team space in `kiln-v1`), `kiln-v1` at r32 — **pending the Roadmap gate** |
 | **The code** | the **foundation from the first program** (rows r1–r8, KILN as a Pi extension): the single-lane runtime, the gate and log machinery, a real local-model worker, KILN loading into Pi, validators and readiness probes, and the test suite — reused by the restart (PRD §10) |
 
 The first program's roadmap and decision log are archived in
@@ -214,7 +215,7 @@ Any run that executes **zero** tests fails, so a mistyped path cannot pass silen
 | Path | What is in it |
 |---|---|
 | [`docs/concepts/`](./docs/concepts) | the design: vision, the flow, the front door, user experience, and one doc per area — with [mockups](./docs/concepts/mockups/README.md) and the [infographics](./docs/concepts/infographic/README.md) (KILN at a glance, the engineer at the center) |
-| [`docs/architecture/`](./docs/architecture) | the [architecture explainer](./docs/architecture/explainers/kiln-architecture.md), the [constitution explainer](./docs/architecture/explainers/kiln-constitution.md) and the [platform architecture infographic](./docs/architecture/visualisations/README.md) |
+| [`docs/architecture/`](./docs/architecture) | the [architecture explainer](./docs/architecture/explainers/kiln-architecture.md), the [constitution explainer](./docs/architecture/explainers/kiln-constitution.md), the [`kiln-v1` explainer](./docs/architecture/explainers/kiln-v1.md) and the [platform architecture infographic](./docs/architecture/visualisations/README.md) |
 | [`docs/prd/`](./docs/prd/kiln-prd.md) | the product requirements for the restart |
 | [`docs/brand/`](./docs/brand/README.md) | the KILN mark and logos |
 | [`specs/`](./specs) | [`ROADMAP.md`](./specs/ROADMAP.md) (the program, admitted by a person at the Roadmap gate), one directory per feature with its spec, plan, tasks and evidence, and the archived first program |

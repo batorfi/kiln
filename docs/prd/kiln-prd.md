@@ -593,7 +593,7 @@ From the vision, made measurable:
 | Pi Durable is experimental and moves | one seam; pinned versions; contract outlives API; RPC fallback driver |
 | External completion of a waiting task is not a published primitive | go/no-go spike before M1 (r42); upstream first, local decision table as the named fallback |
 | Local-model capability (tool calling, streaming) varies | per-model readiness probes; measured, recorded |
-| Scope: the concepts describe a lot | strict Must/Should; `kiln-v1` ends at M8 |
+| Scope: the concepts describe a lot | strict Must/Should; `kiln-v1` is M0–M8 and M12 plus the *Must* items of M9, M15, M16 — everything else is `kiln-v1.x` |
 | Two products during the transition | `legacy/` frozen; no feature work there |
 | Security surface grows with servers and hosts | loopback default; network modes opt-in, behind M11 |
 | Teams collide on shared code | claims and overlap detection from the Work plan gate; protected paths; base drift at merge |
