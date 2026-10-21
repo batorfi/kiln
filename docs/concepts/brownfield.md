@@ -325,15 +325,21 @@ Continuing from `first-run.md` Step 4, with an existing repository:
 ## 15. Open questions
 
 1. Should **Rehearse** be required before **Contribute**, or a recommendation?
-2. How far back should the full scan read history in very old repositories — all of it, or summarised beyond a horizon?
-3. Should KILN offer to **fix pre-existing flaky tests** as candidates, or only report them?
-4. When a team member edits a KILN pull request during review, does the factory adopt the edit as a note, a new round, or
-   simply record it?
-5. How deep should the full scan go outside the territory by default — map only, or deep for every module a feature
-   might touch?
-6. Should the scan read pull request and issue discussions when the code host is connected, or only titles, labels and
-   links?
-7. Should the territory be enforced at the tool level (writes refused outside it) as well as checked at Code review?
+2. ~~How far back does the scan read history?~~ **Decided 2026-10-21** (human@batorfi): the last **2 years in detail** (configurable per factory);
+   older history **summarised per module** — authors, churn, major changes, reverts.
+3. ~~Fix pre-existing flaky tests?~~ **Decided 2026-10-21** (human@batorfi): **reported in the baseline, and offered as candidate features** labelled
+   *from the baseline* — on the candidate list once the bench has it, until then as a planner proposal at the Roadmap gate.
+   A person decides; nothing is fixed silently inside another feature.
+4. ~~A teammate edits a KILN pull request?~~ **Decided 2026-10-21** (human@batorfi): **recorded and re-verified** — the edit is shown in the Merge
+   gate brief as a person's change with its author, and checks (and Verification, if code changed) re-run before Merge can
+   be approved. No new feature round.
+5. ~~How deep outside the territory?~~ **Decided 2026-10-21** (human@batorfi): **deep inside, a map outside** (structure, interfaces, owners,
+   dependencies); a feature that will touch a mapped module gets a deep scan of it before its Design gate.
+6. ~~PR and issue discussions?~~ **Decided 2026-10-21** (human@batorfi): **titles, labels, states and links by default**; full discussions only by a
+   recorded opt-in, and always under the egress policy when the code host is remote.
+7. ~~Territory at the tool level?~~ **Decided 2026-10-21** (human@batorfi): **yes** — workers' write tools refuse paths outside the territory; the
+   refusal arrives as a risky-action request a person may allow once (recorded) or answer by widening the territory at the
+   next gate. Code review still checks the diff.
 
 ## 16. One sentence
 
