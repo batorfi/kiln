@@ -259,11 +259,11 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | ID | Requirement | |
 |---|---|---|
 | KNOW-1 | A **factory wiki** per factory and a **workshop wiki**, following Karpathy's LLM Wiki: immutable `raw/`, keeper-written `pages/`, `AGENTS.md` schema, `index.md`; `log.md` projected from events. | Must (factory) / Should (workshop) |
-| KNOW-2 | **Ingest** (discussed, then written directly, one commit, revertible), **query** (cited; answers filed back), **lint** (strongest model, other family; findings, never edits). | Must |
+| KNOW-2 | **Ingest** (discussed, then written directly, one commit, revertible), **query** (cited; answers filed back), **lint** (strongest model, other family; findings, never edits). Ingest, query and digests run as a **dedicated keeper role**; lint on a different model than the keeper. | Must |
 | KNOW-3 | **Vault contract**: every wiki is a valid Obsidian vault — wikilinks, unique names, YAML properties, no plugin dependencies, readable in Zed; checked by lint. | Must |
 | KNOW-4 | **Edit rights**: Curators edit factory wikis; anyone edits the workshop wiki; every change attributed, recorded, linted. | Must |
-| KNOW-5 | **Implementation knowledge**: automatic implementation digests per gate; feature story, overview, explainers, how-tos, reference, learnings — grounded in code at a commit; drift and claim checks; explore by code. | Should |
-| KNOW-6 | Workshop wiki included read-only in each factory vault (`workshop/`). | Should |
+| KNOW-5 | **Implementation knowledge**: automatic implementation digests per gate; feature story, overview, explainers, how-tos, reference, learnings — grounded in code at a commit; drift and claim checks; explore by code. Code appears as short excerpts with path, lines and commit; **reference pages are generated from code** on merge; briefs flag a cited page unreviewed for 90 days (configurable) or drifted, contradicted or changed during the gate. | Should |
+| KNOW-6 | Workshop wiki included read-only in each factory vault (`workshop/`), **pinned per feature** as of its admission; briefs note newer versions of cited pages. | Should |
 
 ### 6.12 Workshop and hosts
 
@@ -603,9 +603,11 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 1. ~~Keep a terminal surface (r9) or retire it — before M4.~~ **Decided 2026-10-21 (human@batorfi): retired.** The
    Pi-embedded surface (`pi/`, `pi/ui/`) is frozen in `legacy/` and retired; the terminal surface is the `kiln` CLI
    (WEB-6). r9 closes as *superseded*.
-2. Wiki keeper: dedicated role or researcher with a schema — before M7.
-3. How long a knowledge page may go unreviewed before a brief flags it — M7.
-4. How much code implementation pages reproduce versus reference — M7.
+2. ~~Wiki keeper: dedicated role or researcher with a schema — before M7.~~ **Decided 2026-10-21:** a dedicated keeper role.
+3. ~~How long a knowledge page may go unreviewed before a brief flags it — M7.~~ **Decided:** 90 days (configurable), and
+   always on drift, contradiction or change during the gate.
+4. ~~How much code implementation pages reproduce versus reference — M7.~~ **Decided:** short cited excerpts; reference
+   pages generated from code. Also: the workshop wiki is pinned per feature (KNOW-6).
 5. ~~User-facing words: Factory / Feature / Step; *Knowledge* versus *wiki* in docs — before M4.~~ **Decided 2026-10-21:**
    Factory, Feature, Step; *flow* means only the gate sequence; people see *Knowledge*, *wiki* names the format; the kiln
    metaphor stays in the name and docs (`user-experience.md` decisions 15–17).

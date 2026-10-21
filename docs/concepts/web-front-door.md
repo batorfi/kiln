@@ -1093,9 +1093,8 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
   a floor, extras by choice (`team-space.md` decisions 11–14).
 - **Factories anywhere**: hosts in more than one workshop (answered for team spaces: yes, `team-space.md` §13); how workspaces move; workshop failover; which container
   forms to support; other Pi Durable storage adapters (`factories-anywhere.md` §13).
-- **Wikis**: a dedicated wiki keeper role or the researcher with a schema; how long a page may go unreviewed before a
-  gate brief flags it; how often a factory's copy of the workshop wiki is updated; how much code implementation pages
-  reproduce (`factory-wiki.md` §14).
+- ~~**Wikis**~~ — **decided 2026-10-21**: a dedicated keeper role; stale at 90 days unreviewed or on drift; the workshop
+  wiki pinned per feature; short cited excerpts, reference pages generated from code (`factory-wiki.md` §14).
 - ~~**Event schema evolution**~~: **Decided 2026-10-21** (human@batorfi) — upcast on read; stored events never change (`the-record.md` §18).
 - ~~**r9 and the Pi extension**: `kiln/pi/` remains an alternate surface or is retired.~~ **Decided 2026-10-21: retired**;
   the terminal surface is the `kiln` CLI (PRD WEB-6), and r9 closes as superseded.

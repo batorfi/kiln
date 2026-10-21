@@ -420,7 +420,7 @@ From PRD §14, placed at the row that needs them:
 | **r18** | ~~the planner's limits~~ — **decided 2026-10-21**: strongest model by default; only proposes changes to rows the engineer wrote (PRD DIR-5) |
 | **r19** | ~~user-facing words~~ — **decided 2026-10-21**: Factory / Feature / Step; *flow* = gate sequence only; people see *Knowledge*; metaphor in name and docs only (§14.5) |
 | **r20** | ~~recommending a move; limits on more evidence~~ — **decided 2026-10-21**: no recommendation in the brief, only on request and labelled; more evidence additive, costed, policy-bound (§14.6, BRIEF-6) |
-| **r23** | wiki keeper as its own role or the researcher with a schema; review age before a brief flags a page; how much code implementation pages reproduce (§14.2–4) |
+| **r23** | ~~wiki keeper, review age, code reproduction~~ — **decided 2026-10-21**: dedicated keeper role; 90 days or drift; short excerpts, generated reference pages; workshop wiki pinned per feature (§14.2–4) |
 | **r26** | added gates as delegation arming points; `applies_when` on the diff (§14.12) · ~~several Deciders on one gate~~ — **decided 2026-10-21**: one decision per gate; agreement as required reviews that condition *approve* (§14.7) |
 | **r33** | egress policy language and model-family identity (§14.9) |
 | **r35** | research and spike capacity on shared hosts; keeper suggestions off-switch; spike retention (§14.11) |
