@@ -544,11 +544,16 @@ of them settles the gate:
   does this test cover?"). An answer that needs an agent to do work runs as a step of its own, visible and
   recorded, and the gate keeps waiting.
 - **Request more evidence** — ask for an additional check, a second judge, or a judge from another model family,
-  where the factory's policy allows it. The gate stays open; the brief is updated when the evidence arrives,
-  and the update is marked as such.
+  where the factory's policy allows it. The estimated time and cost are shown before it runs; it runs as a recorded
+  step within the factory's budget. The gate stays open; the brief is updated when the evidence arrives, and the update
+  is marked as such. **Evidence is additive**: a new verdict never replaces or hides an earlier one, so asking again can
+  add a *yes* but never erase a *no*. Only models the factory's policy allows are used; a request that would need egress
+  becomes a policy stop, and changing the profile is a Roadmap-gate decision.
+- **Ask what KILN would do** — only on request: the answer runs as a recorded planner step, labelled as the planner's
+  opinion, shown apart from the evidence and never in the headline. The brief itself never recommends a move.
 - **Leave it waiting** — decide later. Waiting has no penalty and no deadline that decides for the human.
-- **Hand it over** — in a team, pass the decision to another person allowed to decide this factory's gates, with a
-  note.
+- **Hand it over** — pass the decision to another person allowed to decide this factory's gates, with a note.
+  Available once a workshop has more than one person; hidden in a one-person workshop.
 - **Pause or stop the factory** — when the issue is bigger than this gate.
 
 Every one of these actions is recorded, and the brief shows what was done while the gate was open.
@@ -581,9 +586,9 @@ The structure is fixed; the emphasis follows the gate's question.
 - **Overwhelm by default** — depth is available, not imposed.
 - **Change after the decision** — the brief recorded with the move is the one the human saw.
 
-> **Review:** Should KILN ever offer its own recommended move (beyond the judges' verdicts), or would that bias
-> the Decider? Should "request more evidence" be bounded per gate, and should it ever be allowed to reach a
-> cloud model when the factory is `local-only`? Is "hand it over" in scope before the team case?
+> **Decided 2026-10-21** (decisions 18–21): the brief never recommends a move — KILN gives its opinion only when asked,
+> labelled and apart from the evidence; requests for more evidence are additive, costed and policy-bound, never capped by
+> count; they never reach a model the factory's policy forbids; hand-over arrives with multi-person workshops.
 
 ## 9. Trust and safety in the experience
 
@@ -674,7 +679,8 @@ Collected for review; each needs a decision before the interaction design phase.
 5. Several Deciders collaborating on one gate: supported, deferred, or out of scope (§7, §8.4, §12).
 6. ~~How much of the kiln metaphor reaches the experience (§10).~~ Decided 2026-10-21 — decision 17.
 7. Direct versus neutral voice (§11).
-8. Whether KILN offers its own recommended move at a gate, and the limits on requesting more evidence (§8).
+8. ~~Whether KILN offers its own recommended move at a gate, and the limits on requesting more evidence (§8).~~ Decided
+   2026-10-21 — decisions 18–21.
 9. ~~Whether the Pi-integrated terminal experience (r9) remains a supported secondary surface.~~ Decided 2026-10-21 —
    see decision 14.
 10. Accessibility and language commitments to make at the concept level (for example: everything readable without
@@ -701,7 +707,11 @@ Collected for review; each needs a decision before the interaction design phase.
 | 15 | 2026-10-21 | **Factory, Feature, Step** are the user-facing words; internally *flow* means only the sequence of gates, *row* only the roadmap field, *unit* only code | §4.1 | human |
 | 16 | 2026-10-21 | People see **Knowledge** (knowledge page, workshop knowledge); *wiki* names the format in docs and technical names | §4.1 | human |
 | 17 | 2026-10-21 | The kiln metaphor stays in the **name, brand and docs**; the product speaks plainly | §10 | human |
-| 18 | | *(your decisions from this review)* | | |
+| 18 | 2026-10-21 | The brief **never recommends a move**; KILN's opinion only when asked, as a labelled planner step shown apart from the evidence | §8.4 | human |
+| 19 | 2026-10-21 | **Request more evidence** is additive (never erases a verdict), costed before it runs, bounded by budget and policy, not by a count | §8.4 | human |
+| 20 | 2026-10-21 | Extra evidence uses only models the factory's policy allows; egress becomes a policy stop | §8.4 | human |
+| 21 | 2026-10-21 | **Hand it over** arrives with multi-person workshops, hidden in a one-person workshop | §8.4 | human |
+| 22 | | *(your decisions from this review)* | | |
 
 ## 16. One sentence
 

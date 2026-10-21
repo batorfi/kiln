@@ -227,6 +227,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | BRIEF-3 | Honest about gaps; complete before presentation; **recorded as seen** with the move. | Must |
 | BRIEF-4 | Per-gate emphasis (Roadmap gate: proposal, knowledge context, profile, policy, budget, **host**; Merge gate: end-to-end story and what the feature added to knowledge). | Must |
 | BRIEF-5 | *Context from the knowledge base* with citations, flagging stale, drifted or recently changed pages. | Should |
+| BRIEF-6 | **No recommended move**: the brief never recommends or pre-selects a move; KILN's opinion only when asked, as a labelled planner step shown apart from the evidence. **Request more evidence** is additive — no verdict is ever replaced or hidden — costed before it runs, bounded by budget and policy (no count cap), and limited to models the policy allows; needing egress is a policy stop. | Must |
 
 ### 6.9 Human in the loop beyond gates
 
@@ -237,7 +238,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | HITL-1 | **Steering** of work steps (never judges), recorded under the person's name. | Must |
 | HITL-2 | **Risky-action approvals**: tool calls held by policy until a person allows or refuses; answers remembered across restarts; never a gate move. | Must |
 | HITL-3 | **Policy stops** — blocked egress, budget reached, judge unavailable — arrive as decisions, never as workarounds. | Should |
-| HITL-4 | **Hand-over** of a waiting decision to another permitted Decider. | Should |
+| HITL-4 | **Hand-over** of a waiting decision to another permitted Decider; available once a workshop has more than one person (PPL-1 team), hidden otherwise. | Should |
 
 ### 6.10 Models beyond the machine
 
@@ -606,7 +607,8 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 5. ~~User-facing words: Factory / Feature / Step; *Knowledge* versus *wiki* in docs — before M4.~~ **Decided 2026-10-21:**
    Factory, Feature, Step; *flow* means only the gate sequence; people see *Knowledge*, *wiki* names the format; the kiln
    metaphor stays in the name and docs (`user-experience.md` decisions 15–17).
-6. Whether KILN may recommend a move at a gate, and limits on *request more evidence* — M5.
+6. ~~Whether KILN may recommend a move at a gate, and limits on *request more evidence* — M5.~~ **Decided 2026-10-21:**
+   no recommendation in the brief, only on request and labelled; more evidence additive, costed and policy-bound (BRIEF-6).
 7. Several Deciders collaborating on one gate — M8.
 8. Hosts in several workshops; how workspaces move; workshop failover; container forms — M11.
 9. Egress policy language and model-family identity — M10.
