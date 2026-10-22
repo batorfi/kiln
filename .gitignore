@@ -23,3 +23,6 @@ Thumbs.db
 kiln/factory-log/*.jsonl
 kiln/factory-log/*.log
 !kiln/factory-log/.gitkeep
+
+# Spec Kit catalog cache (written by `specify integration list/info/search`) — machine-local
+.specify/integrations/.cache/
