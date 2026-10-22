@@ -8,7 +8,7 @@
 
 # KILN — decisions, settled and open
 
-## 1. Settled on 2026-10-21
+## 1. Settled on 2026-10-21 and 2026-10-22
 
 Decided by human@batorfi, in order of priority. The PRD (§14, and the requirement named) and the roadmap's *Decisions
 needed before rows fire* table carry the same decisions.
@@ -37,6 +37,12 @@ needed before rows fire* table carry the same decisions.
 | 20 | New codebases: **no starter templates**; a minimal library skeleton; no built-in Decisions gate | PRD GREEN-4, 5 · [greenfield](./greenfield.md) §17 | r29 |
 | 21 | Existing codebases: **territory enforced at the tool level**; deep scan inside, a map outside; 2 years of history in detail; teammates' PR edits re-verified; flaky tests offered as candidates | PRD BROWN-2, 3, 5, 11 · [brownfield](./brownfield.md) §15 | r30, r31 |
 | 22 | Experience: waiting gates **never escalate**; a **direct, plain** voice; **WCAG 2.2 AA** and localisable text; Needs you order per person; one roadmap alternative at a time | [user-experience](./user-experience.md) 24–26 · [the-director](./the-director.md) §8 | r19–r22 |
+| 23 | **Proposals into the roadmap proposal** (2026-10-22): the minimal **explore space** (r43) and **KILN in Zed, phase 1** (r44) join `kiln-v1`; **remote judges** (r45) open `kiln-v1.x`; the rest of Explore (r46–r49) and Zed phases 2–4 (r50–r52) follow | PRD §6.21–6.22, MOD-6, M17, M18 · [code-exploration](./code-exploration.md) · [zed-integration](./zed-integration.md) · [hybrid-deployments](./hybrid-deployments.md) | r43–r52 |
+| 24 | **Explore defaults**: the explore space is its own lightweight kind; knowledge shared as the vault and through the team space; MCP access via r44; as-is specifications drift-flagged like knowledge; legacy languages chosen by demand; the readiness report exportable with restricted content redacted; no separate early release | [code-exploration](./code-exploration.md) §15 | r43, r46–r49 |
+| 25 | **Zed defaults**: moves from Zed in phase 3, Code review first; factory worktree for factory work, the engineer's clone for knowledge; Zed first on editor-neutral protocols; adapter identity a session token in the OS keychain; MCP only for allowed clients; browser fallback if elicitation falls short | [zed-integration](./zed-integration.md) §12 | r44, r50–r52 |
+| 26 | **Hybrid and router defaults**: judges-only first; the planner stays local unless bound remote; judge fallback only to a second provider of the same model; judge context = diff, specification, design, touched files and their direct dependents' interfaces (configurable); insights compare judges, never recommend; routers allowed pinned, provider identity recorded on every request; router model fallback for work roles only when the policy names it | [hybrid-deployments](./hybrid-deployments.md) §10 · [model-routers](./model-routers.md) §7 · PRD MOD-6 | r45, r33 |
+| 27 | **Ollama `:cloud` safeguards**: `:cloud` tags recorded as remote and refused under `local-only`; `kiln doctor` checks Ollama's cloud features; the network allowlist excludes `ollama.com` | PRD CFG-6, SETUP-2 · [model-routers](./model-routers.md) §5.6 | r17, r28 |
+| 28 | **Legacy live-Pi tests**: the suite skips with a printed reason on a Pi version it has not measured (Pi 1.1.0 installed vs 0.85.1 measured) instead of failing | PRD §10.3 | r12 |
 
 ## 2. Still open
 
@@ -48,17 +54,12 @@ None of these blocks a `kiln-v1` row. Each is decided at, or measured in, the ro
 | Multi-factory host sizing — memory budget, per-model concurrency, factory limit | [web-front-door](./web-front-door.md) §20 | **measured** in r25 |
 | The factory-to-workshop channel and how leases survive a supervisor restart | [web-front-door](./web-front-door.md) §20 | designed in r25 |
 | How many factual question templates before a question falls through to an explain step | [the-director](./the-director.md) §8 Q3 | designed in r18 |
-| Egress policy language; model-family identity for cross-family judging | [web-front-door](./web-front-door.md) §20 · PRD §14.9 | r33 (`kiln-v1.x`) |
-| Hybrid deployments — a minimal judges-only hybrid before full r33; planner placement; judge fallback rules; judge-context egress | [hybrid-deployments](./hybrid-deployments.md) §9–10 | r33 or earlier (proposal) |
-| Routers and gateways (OpenRouter, a team-run LiteLLM): supported in r33 or later, and under which pinning rules; model fallback for work roles; recording provider identity | [model-routers](./model-routers.md) §7 | r33 (`kiln-v1.x`) |
-| Refusing Ollama `:cloud` tags under `local-only` (catalog locality, `kiln doctor` check, network allowlist) | [model-routers](./model-routers.md) §5.6 | proposed for r17 and r28 (`kiln-v1`) |
+| Egress policy language; model-family identity for cross-family judging | [web-front-door](./web-front-door.md) §20 · PRD §14.9 | r45 for judge context, r33 in full (`kiln-v1.x`) |
 | Research and spike capacity on shared hosts; switching off keeper suggestions; archived spike retention; importing an Obsidian vault as the notebook | [the-bench](./the-bench.md) §11 · [first-run](./first-run.md) §15 Q3 | r34–r35 (`kiln-v1.x`) |
 | How a factory's workspace moves; workshop failover; container forms; other Pi Durable storage adapters | [factories-anywhere](./factories-anywhere.md) §13 · PRD §14.8 | r37 (`kiln-v1.x`) |
 | Rehearse required before Contribute, or recommended | [brownfield](./brownfield.md) §15 Q1 | r40 (`kiln-v1.x`) |
 | When a greenfield factory revisits an early decision suggested by evidence | [greenfield](./greenfield.md) §17 Q4 | r41 (`kiln-v1.x`) |
 | Migrating a workshop created by an earlier KILN version | [first-run](./first-run.md) §15 Q4 | the first release after `kiln-v1` |
-| **Explore first** — an explore space before any factory; as-is specifications and a discovered constitution; adoption stages 0–2; whether to cut an early `kiln-explore` release | [code-exploration](./code-exploration.md) §13, §15 | a future Roadmap gate (proposal) |
-| **KILN in Zed** — phase 1 (links, tasks, knowledge, read-only MCP) near `kiln-v1`; moves from Zed; checkout mapping; adapter identity; MCP clients | [zed-integration](./zed-integration.md) §10, §12 | a future Roadmap gate (proposal) |
 | Post-merge gates and the Merge gate's authority | [extensible-flow](./extensible-flow.md) §14 Q3 · PRD §14.12 | out of scope until post-merge gates are admitted |
 | A standard, content-free audit export (CloudEvents JSONL) | [the-record](./the-record.md) §18 Q3 | not yet placed |
 | A mature wiki as training data for a smaller local model | [factory-wiki](./factory-wiki.md) §14 Q5 | not yet placed |

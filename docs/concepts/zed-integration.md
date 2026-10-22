@@ -1,5 +1,6 @@
-> Status: concept — **proposal** (2026-10-22) — **not admitted**. Integration directions accepted for a concept by
-> human@batorfi on 2026-10-22; nothing is on the roadmap until a person admits it at a Roadmap gate. Zed's capabilities
+> Status: concept — **in the roadmap proposal** (2026-10-22): phase 1 is row **r44** in `kiln-v1`; phases 2–4 are rows
+> **r50–r52** in `kiln-v1.x` (PRD §6.22, M18). The roadmap itself awaits the Roadmap gate. The proposed defaults in §12
+> were adopted on 2026-10-22. Zed's capabilities
 > are as researched on that date.
 > Type: concept
 >
@@ -267,7 +268,8 @@ KILN's vaults — but the integration is an **editor surface**, not a Zed depend
 
 ## 12. Open questions
 
-Each has a proposed default, to be confirmed when the first phase is admitted.
+*All adopted with the defaults below on 2026-10-22 (`open-decisions.md` 25); for (5) the session token in the OS keychain,
+for (6) allowed clients only.*
 
 1. **Moves from Zed** — propose them (D3) once the read-only surface is proven? *Proposed: yes, phase 3, Code review
    first.*

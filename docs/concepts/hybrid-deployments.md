@@ -1,5 +1,6 @@
-> Status: concept — **proposal and research snapshot** (2026-10-22) — **not admitted**. Hybrid deployment needs the
-> `kiln-v1.x` row *Models beyond the machine* (r33); `kiln-v1` is local-only. Prices are list prices found on that date;
+> Status: concept — **research snapshot; in the roadmap proposal** (2026-10-22): remote judges are row **r45**, the first
+> `kiln-v1.x` row (PRD MOD-6); the rest of hybrid comes with r33. `kiln-v1` itself stays local-only. Open questions
+> answered with this doc's defaults (§10). Prices are list prices found on that date;
 > per-feature costs are this doc's own estimates (*est.*) from stated assumptions — check both before relying on them.
 > Type: concept (research)
 >
@@ -304,6 +305,10 @@ one — **pulling r33 earlier**, or shipping a minimal hybrid (direct providers,
 release, is worth considering at a future Roadmap gate. That is a proposal, not a decision.
 
 ## 10. Open questions
+
+*Answered 2026-10-22 (`open-decisions.md` 26): (1) yes — judges-only first, as r45; (2) the planner stays local unless an
+Operator binds it remote; (3) only a second provider of the same model; (4) the diff, specification, design, touched
+files and their direct dependents' interfaces, configurable; (5) insights show the comparison, never recommend.*
 
 1. Should a minimal hybrid — remote **judges only**, direct providers, no router — come before full r33?
 2. May the **planner** run remotely by default in a hybrid factory (it is strongest-by-default), or stay local unless an

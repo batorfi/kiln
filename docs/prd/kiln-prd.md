@@ -27,6 +27,10 @@
 >   - [The flow](../concepts/the-flow.md) — the default flow gate by gate, and where every move leads
 >   - [KILN in an existing codebase](../concepts/brownfield.md) — brownfield adoption: profile, baseline, stages, territory
 >   - [KILN in a new codebase](../concepts/greenfield.md) — greenfield: product brief, decisions, walking skeleton, slices
+>   - [Explore first](../concepts/code-exploration.md) — exploring existing codebases before adopting the factory
+>   - [KILN in Zed](../concepts/zed-integration.md) — the editor surface: ACP agent, MCP server, deep links, language server
+>   - [Hybrid deployments](../concepts/hybrid-deployments.md) and [routers](../concepts/model-routers.md) — remote judges, local workers
+>   - [The model landscape](../concepts/model-landscape.md) and [dev machines](../concepts/dev-machines.md) — research snapshots (2026-10)
 >   - [Health](../concepts/health.md) — the watcher, signals, broken guarantees, observe-never-act
 >   - [The original concept](../concepts/concept.md) and [the gates — why, how, what](../concepts/gates-why-how-what.md)
 >   - the existing codebase under [`kiln/`](../../kiln/) (r1–r9, ~5,900 lines of source, 98 test files)
@@ -76,6 +80,8 @@ old code that still expresses a rule we keep** (§10).
    configured, recorded, policy-checked choice.
 6. **Grows without redesign** — one factory → several → several hosts → a team of personal workshops sharing a team
    space, with the same concepts.
+7. **An on-ramp before the factory** — a team can explore and understand an existing codebase with KILN before it changes
+   anything about how it builds software, and work where its code is: in the editor as well as the browser.
 
 ### 3.2 Non-goals
 
@@ -253,6 +259,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | MOD-3 | **Per-role routing**, cross-family judging where policy requires it. | Should |
 | MOD-4 | **Egress policy** per factory: what may go to which locality; checks before every request (secrets scan, redaction); a violation blocks, never trims. | Should |
 | MOD-5 | **Budgets** that pause, never skip or downgrade; **fallback** only by policy; a judge never silently falls back. | Should |
+| MOD-6 | **Remote judges first** (judges-only hybrid, roadmap r45): the judge roles on a remote model through a direct provider or OpenRouter **pinned** — `only` approved providers, `allow_fallbacks: false`, `data_collection: deny`, `zdr` where required, `require_parameters: true`; no automatic model choice for judges; fallback only to a second provider of the **same** model; judge-context egress (diff, specification, design, touched files and their direct dependents' interfaces, configurable); requested and served model, provider and cost recorded per request, a served-model mismatch on a judge a broken-guarantee signal; workers and the planner stay local unless an Operator binds them remote. | Should |
 
 ### 6.11 Knowledge
 
@@ -341,7 +348,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | CFG-3 | **`kiln check config`**: all-or-nothing validation before apply — bindings, judge rules, capabilities, pins, allowlists, floors, no secrets; never vacuous. | Must |
 | CFG-4 | **Applies from the next step**; host changes affect new leases only. | Must |
 | CFG-5 | **Hosts**: join with Operator approval, `kiln host measure`, capacity, pins, sleep, `serves`, revoke. | Should |
-| CFG-6 | **Providers and models**: provider entries via `pi-ai`; catalog with pinned versions and families; **`kiln check model`** measures capabilities and re-checks on version change. | Must (local) / Should (remote) |
+| CFG-6 | **Providers and models**: provider entries via `pi-ai`; catalog with pinned versions and families; **`kiln check model`** measures capabilities and re-checks on version change. Ollama **`:cloud` / `-cloud` tags are recorded as remote** and refused under `local-only`; the per-host network allowlist excludes `ollama.com`. | Must (local) / Should (remote) |
 | CFG-7 | **Agents**: role files with kind, line of defense, tools, replay, gate, version; version recorded per step; **try on a past feature** as an ungated replay; judge and team-shared role changes need an Operator and, if shared, the team quorum. A **judge** instruction change applies only after a try-run on a past feature (enforced from r26); old role versions are kept forever. | Must (roles, versions, judge try-runs) / Should (other try-runs) |
 | CFG-8 | **History**: every change recorded with who, before and after; config events in the workshop record. | Must |
 
@@ -368,7 +375,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | ID | Requirement | |
 |---|---|---|
 | SETUP-1 | **`kiln init`**: guided setup in the browser (loopback, one-time secret) or the terminal (`--no-browser`), writing the same files; resumable after interruption; any step rerunnable (`--step`). | Must |
-| SETUP-2 | **`kiln doctor`**: hardware, Node, git, Ollama, network and disk checks with fixes named; a measured recommendation (factories, model sizes, memory budget, concurrency) against a **32 GB minimum / 64 GB recommended** for local-only; never installs system software. | Must |
+| SETUP-2 | **`kiln doctor`**: hardware, Node, git, Ollama, network and disk checks with fixes named; a measured recommendation (factories, model sizes, memory budget, concurrency) against a **32 GB minimum / 64 GB recommended** for local-only; never installs system software. On `local-only` hosts it checks that Ollama's cloud features are off. | Must |
 | SETUP-3 | **Models at setup**: recommendations from hardware, installed models first, background downloads, `kiln check model` on each, `tiers.yaml` written; setup does not finish without a judge bound to the strongest checked model; remote providers off by default. | Must |
 | SETUP-4 | **Workshop and storage**: name, owner, roles, a personal signing key; one KILN home shown before creation; disk budget, backups (off by default), retention defaults. | Must |
 | SETUP-5 | **First factory** from a local clone, a remote or an empty repository; always a KILN-managed worktree; `local-only` and the standard flow by default; the repository read locally and never changed. | Must |
@@ -413,6 +420,38 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | GREEN-7 | **Slices and risk**: the planner proposes vertical slices, riskiest assumptions first; tests-first work plans by default. | Should |
 | GREEN-8 | **Growing into brownfield**: director suggestions, decided at a Roadmap gate, to switch on full scan, preserved behaviour and baseline, territories, code map when their triggers are met. | Should |
 | GREEN-9 | **Starting as a team**: brief, constitution and decisions agreed in the team space; skeleton by one workshop; claims after it merges. | Could |
+
+### 6.21 Explore first
+
+*Concept: [Explore first](../concepts/code-exploration.md).*
+
+| ID | Requirement | Priority |
+|---|---|---|
+| EXPL-1 | **Explore space**: a lightweight space with a durable store, record, lane and knowledge base but **no roadmap and no gates**; it writes nothing to the team's repository, branches or CI; its knowledge, scan and baseline become a factory's starting point. | Must |
+| EXPL-2 | **Maps and signals**: architecture map, hot spots, test landscape (core); change coupling, ownership per module (never per person), dead-code candidates, dependencies and licences. | Must (core) / Should (rest) |
+| EXPL-3 | **Ask and trace**: questions answered with citations to file, line and commit, labelled measured or inferred; traces of a request, job or event end to end; data lineage; good answers filed back as knowledge. | Must (ask, trace) / Should (lineage) |
+| EXPL-4 | **Tours**: drafted by KILN, reviewed and annotated by an expert; tours per role. | Should |
+| EXPL-5 | **Archaeology**: why-it-is-like-this narratives per module; recovered decisions drafted as ADRs for a person to confirm, correct or reject. | Should |
+| EXPL-6 | **As-is specifications**: what the code does today in Spec Kit's format — requirements and business rules cited to their code, open questions, characterization-test proposals — confirmed or corrected by a person, drift-flagged like knowledge; added to the repository only through the team's own pull request. | Should |
+| EXPL-7 | **Discovered constitution** from the code and interviews, each principle citing evidence; **past changes replayed** as spec-driven worked examples. | Should |
+| EXPL-8 | **Spec coverage and readiness**: a spec-coverage map; adoption stages 0–2 (explore, understand, specify as-is) recorded with evidence; a factory readiness report (build and test health, understanding, specification, process fit, candidate territories, first features, gaps), exportable with restricted content redacted, scoring no person. | Should |
+| EXPL-9 | **Legacy languages**: deterministic parsing for the first legacy languages chosen by demand; model reading labelled inferred elsewhere; scan reports that say exactly what was parsed and what was only inferred. | Should |
+| EXPL-10 | **Change sizing**: *what would it take* for a considered change — modules, interfaces, data, tests, owners, risks, unknowns — as a candidate with evidence. | Should |
+
+### 6.22 Editor integration (Zed)
+
+*Concept: [KILN in Zed](../concepts/zed-integration.md).*
+
+| ID | Requirement | Priority |
+|---|---|---|
+| EDIT-1 | **Deep links both ways**: every citation KILN shows opens in Zed at its line (the factory's worktree for factory-produced work, the engineer's clone for knowledge, with a drift warning); task templates and keybindings for the `kiln` CLI. | Must |
+| EDIT-2 | **Vaults and specifications as Zed projects**: per-vault project settings with wikilink navigation; tours as Zed-openable links. | Should |
+| EDIT-3 | **KILN MCP server**, read-only: knowledge search, ask, trace, module for file, claims, territory, status; filtered by the factory's egress policy; every response recorded; only clients the workshop has allowed. | Must |
+| EDIT-4 | **KILN in Zed's Agent Panel** (ACP), read-only: talk to the director, Needs you and notices, full gate briefs with citations as followed locations, diffs, explore questions, risky-action approvals as permission requests. | Should |
+| EDIT-5 | **Decide in Zed**: Code review, then Verification and Implementation, decided through ACP elicitation only after the full brief is shown; the same move intake, bound to the state version, `decided_by` from a session token in the OS keychain; browser fallback if elicitation falls short. | Should |
+| EDIT-6 | **Watch and steer**: follow a worker in the factory's worktree read-only; steer a worker step (never a judge) from the KILN thread. | Should |
+| EDIT-7 | **KILN language server**: territory and claims, knowledge on hover, drift, preserved behaviour, judges' findings, code actions. | Could |
+| EDIT-8 | **Team review in Zed**: a teammate's required review given from a shared Zed workspace and mirrored into the owner's record. | Could |
 
 ## 7. Non-functional requirements
 
@@ -539,11 +578,11 @@ retire code tied to the Pi-extension host or the terminal UI.** Existing tests t
 |---|---|
 | `pi/` (r8 extension), `pi/ui/` (r9 real UI), `index.ts` extension entry | **frozen in `legacy/`, then retired** (decided 2026-10-21, §14.1); the terminal surface is the `kiln` CLI (WEB-6) |
 | `ui/hud.ts`, `ui/popup.ts`, `ui/overlay.ts`, `ui/gate0-face.ts`, `ui/live-tui.ts`, `ui/twin.ts`, `ui/keymap.ts` | text renderers may be reused by the CLI (WEB-6) for status, Needs you and gate briefs as text; the Pi-hosted layers retire |
-| `tests/pi`, `tests/live-tui`, `tests/ui`, `tests/overlay*`, `tests/gate0-face` | retire with their code |
+| `tests/pi`, `tests/live-tui`, `tests/ui`, `tests/overlay*`, `tests/gate0-face` | retire with their code; until then the live-Pi suite **skips with a printed reason** on a Pi version it has not measured (decided 2026-10-22: Pi 1.1.0 is installed, the suite measured 0.85.1) |
 
 ## 11. Phasing — candidate roadmap
 
-*Concepts: [design §21 roadmap consequences](../concepts/web-front-door.md) · [the roadmap proposal, r12–r42](../../specs/ROADMAP.md) (cut from these milestones into feature-sized rows).*
+*Concepts: [design §21 roadmap consequences](../concepts/web-front-door.md) · [the roadmap proposal, r12–r52](../../specs/ROADMAP.md) (cut from these milestones into feature-sized rows).*
 
 Each milestone is a candidate roadmap row with its own gates. Every milestone ends usable and checked.
 
@@ -559,16 +598,19 @@ Each milestone is a candidate roadmap row with its own gates. Every milestone en
 | **M7** | **Knowledge** | factory wiki (ingest/query/lint, vault contract), knowledge in briefs; then workshop wiki and implementation knowledge | M5, M6 | KNOW-1…6, BRIEF-5 |
 | **M8** | **Workshop** | several factories, gate inbox, host scheduler, people and roles; Agents screen and role try-runs; **added gates and flows**, per-feature flow choice, gate try-runs | M5 | HOST-1, HOST-2 (in-process), LANE-4, WORK-6, PPL-1, CFG-2, CFG-7 (try-runs), FLOW-4…9 |
 | **M9** | **Observability** | metrics, traces, health, insights, time travel | M2, M4 | OBS-1…6, EVT-6, GATE-7 |
-| **M10** | **Models beyond the machine** | catalog, profiles, routing, egress policy, budgets, fallback, policy stops | M3, M5 | MOD-1 (remote), MOD-2…5, HITL-3, CFG-6 (remote) |
+| **M10** | **Models beyond the machine** | remote judges first (MOD-6), then catalog, profiles, routing, egress policy, budgets, fallback, policy stops | M3, M5 | MOD-1 (remote), MOD-2…6, HITL-3, CFG-6 (remote) |
 | **M11** | **Factories anywhere** | host runtime and channel, placement, moves, sleeping hosts, network failure | M8 | HOST-2 (separate), HOST-3…7, WEB-2 (network), CFG-5, TEAM-9 |
 | **M12** | **Team space** | team-space repository, signed acts and keys, team roadmap by quorum, claims and overlap, requests and mirrored reviews, hand-over to a named teammate, team-aware Merge gate, team knowledge (shared hosts move to M11) | M7, M8 | TEAM-1…8, HITL-4 |
 | **M13** | **The bench** | notebook and capture, keeper suggestions, promotion; research steps; spikes, spike reports, propose as feature; origin and maturity labels; candidate list and roadmap evidence | M3, M7 | BENCH-1…12 |
-| **M14** | **`kiln-v1` release** | installer, `kiln init` and `kiln doctor` (SETUP-1…11), newcomer docs, demo mode from committed replays | M0–M8, M12 and the *Must* items of M9, M15, M16 | §3.1 goals |
+| **M14** | **`kiln-v1` release** | installer, `kiln init` and `kiln doctor` (SETUP-1…11), newcomer docs, demo mode from committed replays | M0–M8, M12 and the *Must* items of M9, M15, M16, M17, M18 | §3.1 goals |
 | **M15** | **Existing codebases** | profile, **full scan into the knowledge base**, baseline, territory, team-process fit and base drift (the Musts, built alongside M5–M8); then preserved behaviour, adoption stages and rehearsal, brownfield knowledge | M3, M5, M7 | BROWN-1…12 |
 | **M16** | **New codebases** | start empty, product brief, constitution from the brief, technology decisions, walking skeleton on the foundation flow (the Musts, alongside M5–M8; research and spike evidence for decisions once M13 lands); then conventions enforcement, slices, growing into brownfield, team start | M3, M5, M7 | GREEN-1…9 |
+| **M17** | **Explore first** | the explore space with maps and ask and trace (the Musts, in `kiln-v1`); then as-is specifications, a discovered constitution, tours, archaeology, readiness and legacy languages | M7, M15 (full scan) | EXPL-1…10 |
+| **M18** | **Editor integration (Zed)** | deep links, tasks, vault projects and a read-only MCP server (the Musts, in `kiln-v1`); then the Agent Panel, deciding in Zed, watch and steer, a language server, team review | M5, M7 | EDIT-1…8 |
 
-**`kiln-v1`** = M0–M8 and **M12 (the team space, without shared hosts)** plus the *Must* items of M9, M15 and M16 —
-M12 joined on 2026-10-21, when a small team became the primary user. M10, M11 and M13 (and TEAM-9, shared hosts) can follow
+**`kiln-v1`** = M0–M8 and **M12 (the team space, without shared hosts)** plus the *Must* items of M9, M15, M16, **M17 and
+M18** — M12 joined on 2026-10-21, when a small team became the primary user; the Musts of M17 (the explore space) and M18
+(links, tasks, vaults, read-only MCP) joined on 2026-10-22. M10, M11 and M13 (and TEAM-9, shared hosts) can follow
 as `kiln-v1.x` without changing anything built before them, because the single-machine, local-only workshop is their
 degenerate case.
 
@@ -593,7 +635,7 @@ From the vision, made measurable:
 | Pi Durable is experimental and moves | one seam; pinned versions; contract outlives API; RPC fallback driver |
 | External completion of a waiting task is not a published primitive | go/no-go spike before M1 (r42); upstream first, local decision table as the named fallback |
 | Local-model capability (tool calling, streaming) varies | per-model readiness probes; measured, recorded |
-| Scope: the concepts describe a lot | strict Must/Should; `kiln-v1` is M0–M8 and M12 plus the *Must* items of M9, M15, M16 — everything else is `kiln-v1.x` |
+| Scope: the concepts describe a lot | strict Must/Should; `kiln-v1` is M0–M8 and M12 plus the *Must* items of M9, M15, M16, M17, M18 — everything else is `kiln-v1.x` |
 | Two products during the transition | `legacy/` frozen; no feature work there |
 | Security surface grows with servers and hosts | loopback default; network modes opt-in, behind M11 |
 | Teams collide on shared code | claims and overlap detection from the Work plan gate; protected paths; base drift at merge |
@@ -628,6 +670,10 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 11. Research and spike capacity on shared hosts; switching off keeper suggestions; archived spike retention — M13.
 12. ~~Added gates as delegation arming points; `applies_when` on the diff~~ — **Decided 2026-10-21:** Specification only;
    deterministic diff predicates allowed. Still open: post-merge gates when they come into scope — M8.
+
+13. ~~Proposals admitted to the roadmap proposal and their open questions~~ — **Decided 2026-10-22:** the explore space (r43)
+    and Zed phase 1 (r44) join `kiln-v1`; remote judges (r45) open `kiln-v1.x`; the rest of Explore (r46–r49) and Zed
+    phases 2–4 (r50–r52) follow; the proposals' default answers are adopted (`open-decisions.md`).
 
 ## 15. Constitution amendments required
 

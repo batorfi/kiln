@@ -18,11 +18,11 @@
 {
  "deliverable": "kiln-v1 — the new KILN (local web front door on Pi Durable), per docs/prd/kiln-prd.md",
  "owner": "human@batorfi",
- "updated": "2026-10-20T12:00:00Z",
+ "updated": "2026-10-22T12:00:00Z",
  "rows": [
   {
    "id": "r12",
-   "short": "Foundations reset — the new codebase layout (packages: contracts, durable, record, lane, workers, director, server, web, cli, checks), the legacy Pi extension frozen in legacy/, and the keep-list ported with its tests green: standard flow and move kinds as data, schemas, validators, affinity scheduler, strongest-judge tier policy, the never-vacuous network check",
+   "short": "Foundations reset — the new codebase layout (packages: contracts, durable, record, lane, workers, director, server, web, cli, checks), the legacy Pi extension frozen in legacy/, and the keep-list ported with its tests green: standard flow and move kinds as data, schemas, validators, affinity scheduler, strongest-judge tier policy, the never-vacuous network check; the legacy live-Pi suite skips with a printed reason on a Pi version it has not measured (Pi 1.1.0 today, measured 0.85.1) instead of failing",
    "deps": [],
    "status": "queued"
   },
@@ -70,7 +70,7 @@
   },
   {
    "id": "r17",
-   "short": "Configuration as files — kiln.config/ with role files (agents/*.md), the tier map with judges bound to the strongest model, kiln check config and kiln check model, changes recorded with before and after and applied from the next step",
+   "short": "Configuration as files — kiln.config/ with role files (agents/*.md), the tier map with judges bound to the strongest model, kiln check config and kiln check model, changes recorded with before and after and applied from the next step; Ollama :cloud tags recorded as remote and refused under local-only",
    "deps": [
     "r16"
    ],
@@ -162,7 +162,7 @@
   },
   {
    "id": "r28",
-   "short": "First run — kiln init (browser or terminal) and kiln doctor: machine check, models recommended and checked, workshop and storage, a first factory from a repository with Spec Kit adopted or added and the constitution confirmed, knowledge bootstrap, and the first roadmap shaped together",
+   "short": "First run — kiln init (browser or terminal) and kiln doctor: machine check, models recommended and checked, workshop and storage, a first factory from a repository with Spec Kit adopted or added and the constitution confirmed, knowledge bootstrap, and the first roadmap shaped together; kiln doctor checks that Ollama's cloud features are off on local-only hosts",
    "deps": [
     "r17",
     "r22",
@@ -185,6 +185,24 @@
    "deps": [
     "r24",
     "r28"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r43",
+   "short": "Explore space — explore an existing codebase before adopting the factory: a lightweight space with no roadmap and no gates, on top of the profile and full scan, with the architecture map, hot spots and test landscape, and questions and traces answered with citations labelled measured or inferred and filed back as knowledge; it writes nothing to the repository and becomes a factory's starting point",
+   "deps": [
+    "r30"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r44",
+   "short": "KILN in Zed, phase 1 — deep links both ways (every citation opens in Zed at its line, factory worktree for factory work and the engineer's clone for knowledge), task templates and keybindings for the kiln CLI, vaults and specifications as Zed projects, and a read-only KILN MCP server (knowledge, ask, trace, module for file, claims, territory, status) filtered by egress policy, every response recorded, allowed clients only",
+   "deps": [
+    "r20",
+    "r24",
+    "r43"
    ],
    "status": "queued"
   },
@@ -225,15 +243,25 @@
     "r27",
     "r29",
     "r31",
-    "r39"
+    "r39",
+    "r43",
+    "r44"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r45",
+   "short": "Remote judges (kiln-v1.x) — a judges-only hybrid: architecture critic, code reviewer and verifier on a remote frontier model through a direct provider or OpenRouter pinned (only, allow_fallbacks false, data_collection deny, zdr where required, require_parameters), judge-context egress policy, budgets that pause, model served and provider recorded with a mismatch as a broken guarantee; workers and the planner stay local",
+   "deps": [
+    "r32"
    ],
    "status": "queued"
   },
   {
    "id": "r33",
-   "short": "Models beyond the machine (kiln-v1.x) — the model catalog with locality, profiles, per-role routing with cross-family judging, egress policy checked before sending, budgets, fallback as policy, policy stops in Needs you",
+   "short": "Models beyond the machine (kiln-v1.x) — building on r45's remote judges: the model catalog with locality, profiles, per-role routing with cross-family judging, egress policy checked before sending, budgets, fallback as policy, policy stops in Needs you",
    "deps": [
-    "r32"
+    "r45"
    ],
    "status": "queued"
   },
@@ -270,11 +298,45 @@
    "status": "queued"
   },
   {
+   "id": "r46",
+   "short": "Explore: as-is specifications (kiln-v1.x) — specifications of what the code does today in Spec Kit's format, business rules cited to their code, open questions and characterization-test proposals, confirmed or corrected by a person and drift-flagged like knowledge; a constitution discovered from the code; past changes replayed as spec-driven worked examples",
+   "deps": [
+    "r32"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r47",
+   "short": "Explore: tours and archaeology (kiln-v1.x) — guided tours drafted by KILN and reviewed by an expert, tours per role, why-it-is-like-this narratives per module, and recovered decisions drafted as ADRs for a person to confirm, correct or reject",
+   "deps": [
+    "r32"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r48",
+   "short": "Explore: readiness (kiln-v1.x) — the spec-coverage map, adoption stages 0–2 (explore, understand, specify as-is) recorded with their evidence, change sizing as candidates, and the factory readiness report — candidate territories and first features with evidence, no person scored",
+   "deps": [
+    "r46",
+    "r35"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r49",
+   "short": "Explore: legacy languages (kiln-v1.x) — deterministic parsing for the first legacy languages chosen by demand, model reading labelled inferred elsewhere, and scan reports that say exactly what was parsed and what was only inferred",
+   "deps": [
+    "r32"
+   ],
+   "status": "queued"
+  },
+  {
    "id": "r40",
    "short": "Existing codebases, the rest (kiln-v1.x) — preserved behaviour and characterization tests, adoption stages with rehearsal on past changes, brownfield knowledge from history and interviews, incremental re-scans, issues as candidates",
    "deps": [
     "r31",
-    "r35"
+    "r35",
+    "r48"
    ],
    "status": "queued"
   },
@@ -285,6 +347,30 @@
     "r29",
     "r35",
     "r39"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r50",
+   "short": "KILN in Zed, phase 2 (kiln-v1.x) — the KILN agent in Zed's Agent Panel over ACP, read-only: talk to the director, Needs you and notices, full gate briefs with every citation followed in the editor, diffs in Zed's diff view, explore questions, and risky-action approvals as permission requests",
+   "deps": [
+    "r32"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r51",
+   "short": "KILN in Zed, phase 3 (kiln-v1.x) — decide where the code is: Code review, then Verification and Implementation, decided in Zed through ACP elicitation after the full brief, through the same move intake with decided_by from a session token kept in the OS keychain (browser fallback if elicitation falls short); follow and steer workers",
+   "deps": [
+    "r50"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r52",
+   "short": "KILN in Zed, phase 4 (kiln-v1.x) — ambient awareness through a KILN language server (territory and claims, knowledge on hover, drift, preserved behaviour, judges' findings, code actions) and teammates' required reviews given from a shared Zed workspace and mirrored into the owner's record",
+   "deps": [
+    "r51"
    ],
    "status": "queued"
   }
@@ -310,17 +396,27 @@
   "r28",
   "r29",
   "r30",
+  "r43",
+  "r44",
   "r31",
   "r38",
   "r39",
   "r32",
+  "r45",
   "r33",
   "r34",
   "r35",
   "r36",
   "r37",
+  "r46",
+  "r47",
+  "r48",
+  "r49",
   "r40",
-  "r41"
+  "r41",
+  "r50",
+  "r51",
+  "r52"
  ],
  "chain_unattended": false,
  "gate0": {
@@ -355,17 +451,27 @@
 | r28 | Getting started | **First run** | r17, r22, r23 | SETUP-1…11 | from install to a first Roadmap gate in under an hour on a fresh machine, nothing leaving it |
 | r29 | Getting started | **New codebases** | r26, r28 | GREEN-1…5 | an empty repository reaches a merged walking skeleton that builds and passes from a clean clone |
 | r30 | Getting started | **Existing codebases, part 1: profile and full scan** | r24, r28 | BROWN-1, BROWN-11 | a full scan of this repository writes module pages, a coverage report and open questions; a crash mid-scan resumes |
+| r43 | Explore | **Explore space** | r30 | EXPL-1, EXPL-2 (core), EXPL-3 (ask, trace) | an explore space answers a new joiner's questions with citations and draws the architecture map — and writes nothing to the repository |
+| r44 | Editor | **KILN in Zed, phase 1** | r20, r24, r43 | EDIT-1, EDIT-2, EDIT-3 | every citation in a brief opens at its line in Zed; KILN tasks run from Zed; an engineer's own agent asks KILN's MCP server who is building a path, and the response is recorded |
 | r31 | Getting started | **Existing codebases, part 2: baseline, territory, process** | r30, r21 | BROWN-2, 3, 5, 8 | a feature outside its territory is flagged at Code review; pre-existing failures never block on their own |
 | r38 | Team | **Team space, part 1** | r24, r25 | TEAM-1, 2, 3, 8 | a team roadmap change takes effect only when the quorum has signed |
 | r39 | Team | **Team space, part 2** | r38, r31 | TEAM-4…7, HITL-4 | overlapping claims surface at the Work plan gate; a required teammate review conditions *approve*; the Merge gate uses the code host's queue |
-| r32 | Release | **Cut the kiln-v1 release** | r21, r24, r26, r27, r29, r31, r39 | §3.1 goals, M14 | a newcomer installs KILN, runs first setup on a real repository and decides its first Roadmap gate in under an hour |
-| r33 | kiln-v1.x | **Models beyond the machine** | r32 | MOD-1 (remote), MOD-2…5, HITL-3, CFG-6 (remote) | a hybrid factory's cloud judge sees only what policy allows; a local-only factory reaches nothing beyond loopback |
+| r32 | Release | **Cut the kiln-v1 release** | r21, r24, r26, r27, r29, r31, r39, r43, r44 | §3.1 goals, M14 | a newcomer installs KILN, runs first setup on a real repository and decides its first Roadmap gate in under an hour |
+| r45 | kiln-v1.x | **Remote judges (judges-only hybrid)** | r32 | MOD-6, MOD-1 (remote), HITL-3 | a code reviewer runs on a pinned remote model; a provider outage makes the judged step wait; the egress audit lists each request with model served, provider and cost |
+| r33 | kiln-v1.x | **Models beyond the machine** | r45 | MOD-1 (remote), MOD-2…5, HITL-3, CFG-6 (remote) | a hybrid factory's cloud judge sees only what policy allows; a local-only factory reaches nothing beyond loopback |
 | r34 | kiln-v1.x | **The bench, part 1: notebook and research** | r32 | BENCH-1…4, BENCH-7 | a notebook entry promoted to knowledge keeps its origin; research results are cited |
 | r35 | kiln-v1.x | **The bench, part 2: spikes and candidates** | r34 | BENCH-5, 6, 8, 9, 10–12 | a spike's report becomes evidence on a candidate shown at the Roadmap gate; spike code never merges |
 | r36 | kiln-v1.x | **Observability in full** | r32 | OBS-2, OBS-4, EVT-6, GATE-7 | one trace per feature; insights with counts and sample sizes; time travel to any moment |
 | r37 | kiln-v1.x | **Factories anywhere** | r32 | HOST-2 (separate), HOST-3…7, WEB-2 (network), CFG-5, TEAM-9 | a factory moves between hosts with handover; a network failure approves nothing |
-| r40 | kiln-v1.x | **Existing codebases, the rest** | r31, r35 | BROWN-4, 6, 7, 9, 10, 12 | a rehearsal on a past change compares the judges' findings with what the team merged |
+| r46 | kiln-v1.x | **Explore: as-is specifications** | r32 | EXPL-6, EXPL-7 | a module's as-is specification cites every requirement to code; a person confirms or corrects each; characterization-test proposals pin the confirmed ones |
+| r47 | kiln-v1.x | **Explore: tours and archaeology** | r32 | EXPL-4, EXPL-5 | an expert-reviewed tour opens every stop at its line; recovered decisions are confirmed, corrected or rejected by a person |
+| r48 | kiln-v1.x | **Explore: readiness** | r46, r35 | EXPL-8, EXPL-10 | the readiness report names candidate territories and first features with evidence and scores no person; adoption stages 0–2 are recorded |
+| r49 | kiln-v1.x | **Explore: legacy languages** | r32 | EXPL-9 | a scan of a legacy-language repository reports exactly which files were parsed and which only inferred |
+| r40 | kiln-v1.x | **Existing codebases, the rest** | r31, r35, r48 | BROWN-4, 6, 7, 9, 10, 12 | a rehearsal on a past change compares the judges' findings with what the team merged |
 | r41 | kiln-v1.x | **New codebases, the rest** | r29, r35, r39 | GREEN-6…9 | conventions written by the skeleton are enforced from feature two; a team starts a product together |
+| r50 | kiln-v1.x | **KILN in Zed, phase 2: the Agent Panel** | r32 | EDIT-4 | a full gate brief read in Zed's Agent Panel with every citation followed in the editor; a held risky action approved there |
+| r51 | kiln-v1.x | **KILN in Zed, phase 3: decide where the code is** | r50 | EDIT-5, EDIT-6 | a Code review gate decided in Zed on the full brief through the same intake as the browser; a stale move from Zed is refused |
+| r52 | kiln-v1.x | **KILN in Zed, phase 4: ambient and team** | r51 | EDIT-7, EDIT-8 | editing a claimed path warns in the buffer; a teammate's required review given from a shared Zed workspace is mirrored into the owner's record |
 
 All rows: status **queued**. One row = one feature through the ten gates; each row's Concept or Specification gate may
 still split it (`split+revise` at the Implementation gate exists for exactly this).
@@ -389,17 +495,20 @@ before anything is built on it.
 | **Knowledge** | r23–r24 | a factory wiki and implementation knowledge readable in Obsidian and Zed |
 | **Workshop** | r25–r27 | several factories, added gates and flows, health with broken-guarantee signals |
 | **Getting started** | r28–r31 | first run, new codebases, existing codebases with a full scan |
+| **Explore and editor** | r43, r44 | exploring a codebase before adopting the factory; KILN in Zed — links, tasks, vaults and a read-only MCP server |
 | **Team** | r38–r39 | a small team of personal workshops sharing one codebase through a team space — roadmap, claims, reviews, merging |
 | **Release** | r32 | **`kiln-v1`** |
-| **kiln-v1.x** | r33–r37, r40–r41 | models beyond the machine, the bench, full observability, factories anywhere (with shared hosts), the rest of brownfield and greenfield |
+| **kiln-v1.x** | r45, r33–r37, r46–r49, r40–r41, r50–r52 | remote judges first, then models beyond the machine, the bench, full observability, factories anywhere (with shared hosts), the rest of Explore, brownfield and greenfield, and KILN in Zed phases 2–4 |
 
-**The `kiln-v1` line.** r12–r32 (with r42, r38 and r39) deliver the PRD's definition of `kiln-v1`: M0–M8 and **M12 (the team
+**The `kiln-v1` line.** r12–r32 (with r42, r38, r39, r43 and r44) deliver the PRD's definition of `kiln-v1`: M0–M8 and **M12 (the team
 space)** plus the *Must* items of M9, M15 and M16, and M14's release. M12 joined `kiln-v1` on 2026-10-21, when a **small
 team** became the primary user (`user-experience.md` decision 23); shared hosts (TEAM-9) stay with factories anywhere in
-`kiln-v1.x`, and team bench work (BENCH-9) with the bench. The release depends on every `kiln-v1` row (r21, r24, r26, r27, r29, r31, r39 and, through them, the rest), matching
-PRD M14.
+`kiln-v1.x`, and team bench work (BENCH-9) with the bench. The release depends on every `kiln-v1` row (r21, r24, r26, r27, r29, r31, r39, r43, r44 and, through them, the rest), matching
+PRD M14. r43 (the explore space) and r44 (KILN in Zed, phase 1) joined `kiln-v1` on 2026-10-22 as the minimal parts of
+the Explore and editor proposals.
 
-**After `kiln-v1`.** r33–r37, r40 and r41 follow as `kiln-v1.x`. Each depends only on the release (or on its own earlier part), so their
+**After `kiln-v1`.** r45, r33–r37, r46–r52, r40 and r41 follow as `kiln-v1.x`; **r45 (remote judges) comes first**, and r33
+builds on it. Each depends only on the release (or on its own earlier part), so their
 order can be reshaped freely at later Roadmap gates without touching anything built before. r40 and r41 wait for the bench
 (r35) because their evidence comes from research and spikes.
 
@@ -414,6 +523,11 @@ From PRD §14, placed at the row that needs them:
 | **r28** | ~~first-run choices~~ — **decided 2026-10-21**: demo downloaded on request; 32 GB minimum, 64 GB recommended; Spec Kit upgrades offered at the Roadmap gate; other integrations coexist (SETUP-2, 7, 10) |
 | **r30 / r31** | ~~scan depth, history, discussions, territory, PR edits, flaky tests~~ — **decided 2026-10-21**: deep inside the territory and a map outside; 2 years of history in detail; titles and links unless opted in; territory enforced at the tool level; teammates' PR edits recorded and re-verified; flaky tests offered as candidates (BROWN-2, 3, 5, 11) |
 | **r29** | ~~starter templates, library skeleton, Decisions gate~~ — **decided 2026-10-21**: no templates; a library skeleton is build, test, CI, packaging and one public function; no built-in Decisions gate (GREEN-4, 5) |
+| **r12** | ~~the legacy live-Pi tests failing on Pi 1.1.0~~ — **decided 2026-10-22**: the suite skips with a printed reason on an unmeasured Pi version; re-measuring is a legacy chore |
+| **r17 / r28** | ~~Ollama `:cloud` tags under `local-only`~~ — **decided 2026-10-22**: recorded as remote and refused; `kiln doctor` checks Ollama's cloud features; the network allowlist excludes `ollama.com` (CFG-6, SETUP-2) |
+| **r43 / r46–r49** | ~~Explore's open questions~~ — **decided 2026-10-22** (defaults): the explore space is its own lightweight kind; knowledge shared as the vault and through the team space; MCP access via r44; as-is specifications drift-flagged like knowledge; legacy languages chosen by demand at r49; the readiness report exportable with restricted content redacted; no separate early release (`code-exploration.md` §15) |
+| **r44 / r50–r52** | ~~Zed's open questions~~ — **decided 2026-10-22** (defaults): moves from Zed in phase 3, Code review first; factory worktree for factory work, the engineer's clone for knowledge; Zed first on editor-neutral protocols; adapter identity a session token in the OS keychain; MCP only for allowed clients; browser fallback if elicitation falls short (`zed-integration.md` §12) |
+| **r45** | ~~hybrid's open questions~~ — **decided 2026-10-22** (defaults): judges-only first; the planner stays local unless an Operator binds it remote; judge fallback only to a second provider of the same model; judge context = the diff, specification, design, touched files and their direct dependents' interfaces, configurable; insights show judge comparisons, never recommend; routers allowed pinned, provider identity recorded on every request (`hybrid-deployments.md` §10, `model-routers.md` §7) |
 | **r42** | ~~how external completion of a waiting task is settled~~ — **decided 2026-10-21**: a time-boxed spike row before r13 with a go/no-go; default fallback an upstream proposal plus a KILN decision table in the same SQLite transaction (PRD CORE-6) |
 | **r13 / r15** | ~~store lifetime~~ — **decided 2026-10-21**: one store per factory; closed features archived beside it; the record unsegmented in `kiln-v1`, measured in r15 (PRD CORE-7) |
 | **r15** | ~~event schema evolution~~ — **decided 2026-10-21**: upcast on read; stored events immutable (PRD EVT-3a) |

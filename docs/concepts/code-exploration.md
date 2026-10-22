@@ -1,6 +1,7 @@
-> Status: concept — **proposal** (2026-10-22) — **not admitted**. An exploration of future opportunities; nothing here is
-> decided or on the roadmap until a person admits it at a Roadmap gate. It extends `brownfield.md`, which stays the
-> reference for bringing a factory into an existing codebase.
+> Status: concept — **in the roadmap proposal** (2026-10-22): the minimal explore space is row **r43** in `kiln-v1`; as-is
+> specifications, tours and archaeology, readiness and legacy languages are rows **r46–r49** in `kiln-v1.x` (PRD §6.21,
+> M17). The roadmap itself awaits the Roadmap gate. Open questions answered with this doc's defaults (§15). It extends
+> `brownfield.md`, which stays the reference for bringing a factory into an existing codebase.
 > Type: concept
 >
 > Scope note: this doc explores how KILN can help software engineers **explore and understand existing and legacy
@@ -337,6 +338,11 @@ Measured honestly, per the insights rules — about the codebase and the process
 - **Exploration to adoption** — how many explore spaces become factories, and how long that takes.
 
 ## 15. Open questions
+
+*Answered 2026-10-22 with these defaults (`open-decisions.md` 24): (1) its own lightweight kind; (2) the vault and the team
+space — no hosted view yet; (3) yes, through r44's MCP server under egress policy; (4) the same drift flags as knowledge
+pages; (5) chosen by demand at r49; (6) exportable with restricted content redacted; (7) no separate early release — the
+minimal explore space ships in `kiln-v1` instead.*
 
 1. Should an explore space be its own kind of thing, or a factory with no roadmap admitted yet?
 2. How much of the knowledge base should be shareable with people who do not run KILN — a static export, a hosted read
