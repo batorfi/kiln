@@ -4,8 +4,8 @@
 
 **Created**: 2026-10-22
 
-**Status**: **Draft — 2 clarifications open** (NC1, NC2 below); `/speckit.clarify` or the human's answers come before
-`/speckit.plan`. Roadmap row **`r12`** was admitted as the **next row** at the Roadmap gate (`human@batorfi`,
+**Status**: **Draft — CLARIFIED (2026-10-22); ready for `/speckit.plan`.** NC1 and NC2 were resolved by the human on
+2026-10-22 and each landed on the recommended option — see *Clarifications* below. Roadmap row **`r12`** was admitted as the **next row** at the Roadmap gate (`human@batorfi`,
 2026-10-22T12:20:22Z, entry 1 of `gate0.note` in [specs/ROADMAP.md](../ROADMAP.md)). It stays `queued` — never `active` —
 until its own first gate opens (`chain_unattended=false`). **Nothing here admits a program, advances a gate, decides a gate
 or edits the roadmap** (constitution VI).
@@ -43,11 +43,11 @@ Two facts shape it:
 
 ## Clarifications
 
-### Session 2026-10-22 (open)
+### Session 2026-10-22 (resolved by human@batorfi)
 
 - **NC1 — Historical records versus the new rules.** The ported move vocabulary and role policy follow constitution v2.0.1;
   the committed walks (`fixtures/r7-*`, the r1–r8 evidence) were made under v1.0.0 and would fail a v2.0.1-only validator.
-  [NEEDS CLARIFICATION: how do the ported validators treat records made under the old rules?]
+  **Resolved: option A — versioned flow definitions.**
 
   | Option | Answer | Implications |
   |---|---|---|
@@ -56,7 +56,7 @@ Two facts shape it:
   | C | **Migrate the fixtures** to the v2 vocabulary. | One rule set — but it rewrites committed evidence, which the program has refused to do since r1. Not recommended. |
 
 - **NC2 — Moving or copying the kept code.** The keep-list is used by both the new packages and the frozen legacy code.
-  [NEEDS CLARIFICATION: is the kept code moved (one home) or copied (legacy keeps its own frozen copy)?]
+  **Resolved: option A — copy.**
 
   | Option | Answer | Implications |
   |---|---|---|
@@ -131,7 +131,7 @@ and the PRD.
 2. **Given** the role policy, **When** a judge role (architecture critic, code reviewer, verifier) is bound to a model weaker
    than the strongest available, **Then** the binding is refused by name; `docs-synthesizer` is not a judge.
 3. **Given** a record made by the first program (for example the committed r7 walk), **When** it is validated, **Then** it is
-   judged by the rules it was made under, as decided in NC1, and passes.
+   judged against flow v1, the version it was made under, and passes; a new record is judged against v2.
 4. **Given** the ten gates, **When** their names are read, **Then** they are the plain names of GATE-1 with internal ids
    unchanged (`gate0`, `1-concept` … `9-pr`).
 
@@ -177,8 +177,10 @@ management API, only `server` and `host` open listeners) — without reading eve
 
 - **A kept test depended on its old location** (a relative path, a fixture lookup): it must be fixed to resolve from its
   own module, never by keeping a copy of the old tree around.
-- **A legacy module imports kept code**: under NC2-A it imports its own frozen copy; it must never import from the new
-  packages.
+- **A legacy module imports kept code**: it imports its own frozen copy (NC2-A); it must never import from the new packages,
+  and a boundary check says so.
+- **The two copies drift on purpose**: the legacy copy never changes, the ported copy follows v2.0.1. The duplication is
+  recorded (which files, since which commit) and ends when legacy is retired.
 - **A run that executes zero tests** must still fail, as today, from the new layout too.
 - **The empty shipped `ROADMAP.md` fixture** (`kiln/ROADMAP.md`) and the firing-ready probe that reads it move to legacy
   together; the admitted program stays at `specs/ROADMAP.md` and is untouched by this row.
@@ -199,14 +201,17 @@ management API, only `server` and `host` open listeners) — without reading eve
   no tests (the existing runner's guarantee).
 
 **Legacy**
-- **FR-004**: Everything of the first program that is not ported in this row MUST move to a `legacy/` tree, byte-identical,
-  with no feature work there; a test MUST prove the byte-identity against the pre-move tree.
+- **FR-004**: The whole first-program tree MUST live under `legacy/`, byte-identical to its pre-move original — including a
+  frozen **copy** of every module that is also ported (NC2-A) — with no feature work there; a test MUST prove the byte-identity
+  against the pre-move tree, and a record MUST list the duplicated files.
 - **FR-005**: Legacy tests MUST keep running in the default suite until their code is retired.
 - **FR-006**: The live-Pi tier MUST skip, printing the installed and measured versions, when the installed Pi version is not in
   its measured list; when the tier is demanded explicitly it MUST fail by name instead of skipping.
 
 **The keep-list (PRD §10.1)**
-- **FR-007**: The standard flow MUST be data: ten gates with GATE-1's plain names and one question each, internal ids unchanged.
+- **FR-007**: The standard flow MUST be data and **versioned**: **v1** reproduces the first program's rail exactly (for verifying
+  its records); **v2** is constitution v2.0.1 — ten gates with GATE-1's plain names and one question each, internal ids unchanged.
+  All new work uses v2.
 - **FR-008**: Each gate MUST offer only its own moves from the closed set of move kinds (approve, revise, reject, restart,
   split+revise, mitigate, and the Roadmap gate's row edits), per GATE-2 and constitution v2.0.1 — including Code review
   `approve · revise · restart`.
@@ -216,7 +221,8 @@ management API, only `server` and `host` open listeners) — without reading eve
   swap priced and recorded (LANE-2, constitution IV).
 - **FR-011**: The factory-log and roadmap schemas, the log and roadmap validators and their report formatting MUST be
   ported, and the validators MUST run on the factory-log as before (EVT-5, validators part).
-- **FR-012**: Records made under the first program's rules MUST remain verifiable as decided in NC1.
+- **FR-012**: A record MUST be validated against the flow version it was made under (NC1-A): the first program's committed walks
+  against v1, new records against v2; a record that names no version is treated as v1; nothing in a committed record is rewritten.
 - **FR-013**: The deterministic clock MUST be ported for replays.
 - **FR-014**: The committed real walks (`fixtures/r7-*`) MUST be kept as regression fixtures, unmodified.
 - **FR-015**: Every ported module MUST travel with its tests; no kept test case is dropped, and any changed expectation MUST
@@ -261,7 +267,8 @@ management API, only `server` and `host` open listeners) — without reading eve
   accepted as a judge.
 - **SC-006**: `kiln check` detects **every** disallowed destination in its negative suite and fails when it observed nothing.
 - **SC-007**: The boundary check catches **every** forbidden import in its negative suite.
-- **SC-008**: The first program's committed walks validate **unchanged** under the rules decided in NC1.
+- **SC-008**: The first program's committed walks validate **unchanged** against flow v1, and the same walks fail flow v2 by
+  name (*flow-version-mismatch*) — proving the two versions differ where constitution v2.0.1 says they do.
 
 ## Assumptions
 
