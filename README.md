@@ -240,7 +240,7 @@ Any run that executes **zero** tests fails, so a mistyped path cannot pass silen
 | [`docs/architecture/`](./docs/architecture) | the [architecture explainer](./docs/architecture/explainers/kiln-architecture.md), the [constitution explainer](./docs/architecture/explainers/kiln-constitution.md), the [`kiln-v1`](./docs/architecture/explainers/kiln-v1.md) and [`kiln-v1.x`](./docs/architecture/explainers/kiln-v1x.md) explainers, and the [platform architecture infographic](./docs/architecture/visualisations/README.md) |
 | [`docs/prd/`](./docs/prd/kiln-prd.md) | the product requirements for the restart |
 | [`docs/brand/`](./docs/brand/README.md) | the KILN mark and logos |
-| [`specs/`](./specs) | [`ROADMAP.md`](./specs/ROADMAP.md) (the program, admitted by a person at the Roadmap gate), one directory per feature with its spec, plan, tasks and evidence, and the archived first program |
+| [`specs/`](./specs) | [`ROADMAP.md`](./specs/ROADMAP.md) (the program, admitted by a person at the Roadmap gate), [one explainer per roadmap row](./specs/explainers/README.md), one directory per feature with its spec, plan, tasks and evidence, and the archived first program |
 | [`kiln/`](./kiln) | the foundation's code: runtime, gate and log machinery, validators and probes, schemas and contracts, tests, and committed fixtures of real runs |
 | [`.specify/`](./.specify), [`.pi/`](./.pi) | the Spec Kit scaffolding and Pi prompts the project is built with, and KILN's constitution |
 
@@ -265,7 +265,7 @@ what was right.
 7. [The web front door](./docs/concepts/web-front-door.md) — the design on Pi Durable, events and the record
 8. [First run](./docs/concepts/first-run.md) — from install to a first Roadmap gate
 9. [What `kiln-v1` delivers](./docs/architecture/explainers/kiln-v1.md) and [the constitution, explained](./docs/architecture/explainers/kiln-constitution.md) — the release and the rules it keeps
-10. [The PRD](./docs/prd/kiln-prd.md) and [the roadmap proposal](./specs/ROADMAP.md)
+10. [The PRD](./docs/prd/kiln-prd.md), [the roadmap proposal](./specs/ROADMAP.md) and [one explainer per roadmap row](./specs/explainers/README.md)
 11. [Dev machines](./docs/concepts/dev-machines.md), [the model landscape](./docs/concepts/model-landscape.md) and [hybrid deployments](./docs/concepts/hybrid-deployments.md) — what to run KILN on
 
 ## Contributing

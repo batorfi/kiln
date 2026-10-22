@@ -5,7 +5,8 @@
 > without changing it. **Status:** describes the `kiln-v1.x` rows of the [roadmap proposal](../../../specs/ROADMAP.md)
 > (r45, r33–r37, r46–r52, r40, r41) and the PRD requirements they carry ([PRD](../../prd/kiln-prd.md), final 2026-10-21;
 > rows r43–r52 added 2026-10-22). None of it is
-> admitted: each row is decided at its own Roadmap gate, after `kiln-v1` ships. Where this explainer and the PRD or
+> admitted: each row is decided at its own Roadmap gate, after `kiln-v1` ships. Each row has its own explainer in
+> [`specs/explainers/`](../../../specs/explainers/README.md). Where this explainer and the PRD or
 > roadmap differ, they govern.
 >
 > Companions: [what `kiln-v1` delivers](./kiln-v1.md) · [architecture explainer](./kiln-architecture.md) ·
@@ -33,7 +34,7 @@
 ## 1. `kiln-v1.x` in one paragraph
 
 `kiln-v1` is a factory for a small team, each engineer with a workshop on their own machine, running local models only.
-**`kiln-v1.x` widens that in nine directions**, over fourteen roadmap rows: factories may use **remote judges** first
+**`kiln-v1.x` widens that in nine directions**, over fifteen roadmap rows: factories may use **remote judges** first
 (r45) and then **private and cloud models** for any role under a recorded egress policy; engineers get **a bench** — a private notebook, research steps and throwaway spikes that
 feed the roadmap with evidence; the record gains **traces, insights and time travel**; factories can run **on any host**
 — a team GPU server, a cloud machine — and move between hosts or sleep while they wait; and KILN gets deeper at **existing
@@ -388,7 +389,7 @@ Some ideas are designed or discussed in the concept docs but have **no row**, no
 ## 14. Questions engineers usually ask
 
 **Is `kiln-v1.x` one release?**
-No. It is fourteen rows, each admitted at its own Roadmap gate after `kiln-v1`. There may be several point
+No. It is fifteen rows, each admitted at its own Roadmap gate after `kiln-v1`. There may be several point
 releases, in whatever order the deciders choose.
 
 **Do I need to prepare for these while building `kiln-v1`?**

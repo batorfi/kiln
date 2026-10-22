@@ -429,6 +429,9 @@
 
 ## Rendered table (projection of the head — a human view only)
 
+*One explainer per row — what it delivers, its PRD requirements in full, how it is proven, the decisions that shape it —
+is in [`explainers/`](./explainers/README.md).*
+
 | id | phase | feature | deps | PRD requirements | acceptance (what proves the row) |
 |----|-------|---------|------|------------------|----------------------------------|
 | r12 | Foundation | **Foundations reset** | — | GATE-1/2, WORK-2, LANE-2, EVT-5 (validators) | new layout builds; legacy frozen; every ported test green; `kiln check` runs the network check |

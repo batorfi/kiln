@@ -275,6 +275,9 @@ the team rows r38 and r39, and the explore and editor rows r43 and r44. Row ids 
 
 ### 7.1 The rows, in order
 
+*Each row has its own explainer — what it delivers, the PRD requirements it carries in full, how it is proven and the
+decisions that shape it — in [`specs/explainers/`](../../../specs/explainers/README.md).*
+
 | # | Row | What it delivers | Proven when |
 |---|---|---|---|
 | 1 | **r12** Foundations reset | the package layout; legacy frozen; the keep-list ported with tests green | every ported test passes; `kiln check` runs the network check |
