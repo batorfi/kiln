@@ -9,8 +9,12 @@ Durable, recorded, local by default — one feature at a time, in your own works
 > and teams of personal workshops. The concept documents, the PRD and the [constitution](./.specify/memory/constitution.md)
 > (v2.0.1) were **finalized on 2026-10-21**, with every decision that shapes `kiln-v1` made and
 > [recorded](./docs/concepts/open-decisions.md). The implementation has **not started yet** — its roadmap is a
-> [proposal](./specs/ROADMAP.md) waiting for a human decision at the Roadmap gate. What runs today is the **foundation from the first program** (KILN as a Pi extension), which the
-> restart reuses. See [Where things stand](#where-things-stand).
+> [proposal](./specs/ROADMAP.md) waiting for a human decision at the Roadmap gate. Since then, research snapshots of
+> [models](./docs/concepts/model-landscape.md) and [dev machines](./docs/concepts/dev-machines.md) and proposals for
+> [exploring codebases before adoption](./docs/concepts/code-exploration.md) and
+> [hybrid deployments](./docs/concepts/hybrid-deployments.md) have been added (2026-10-22). What runs today is the
+> **foundation from the first program** (KILN as a Pi extension), which the restart reuses. See
+> [Where things stand](#where-things-stand).
 
 <p align="center"><a href="./docs/concepts/infographic/kiln-at-a-glance.png"><img src="./docs/concepts/infographic/kiln-at-a-glance.png" alt="KILN at a glance — the process, the architecture, the human's role, workshop and team, knowledge, the record, and the main journeys" width="820"></a><br>
 <sub>KILN at a glance — click for the full-size infographic</sub></p>
