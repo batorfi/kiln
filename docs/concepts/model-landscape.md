@@ -9,6 +9,7 @@
 >
 > Companion docs:
 >   - Dev machines and prices:          `dev-machines.md`
+>   - Routers and gateways:             `model-routers.md`
 >   - Configuration (tier map, roles):  `configuration.md`
 >   - Models beyond the machine (v1.x): `web-front-door.md` §13
 >   - The rules models must satisfy:    `../../.specify/memory/constitution.md` (II, III, IV, VIII)
@@ -67,6 +68,10 @@ judges (or any role) to a remote model with every request checked and recorded.
 
 *Leaderboard picture (directional — leaderboards disagree and change weekly):* Anthropic's Claude 5-series models lead the
 coding leaderboards in mid-October 2026, with OpenAI's GPT-6 series and Gemini 4 Argon close behind.
+
+**Routers.** The same closed models — and many open-weight ones hosted by others — are also reachable through routers
+such as OpenRouter. How a factory could use one without weakening its rules is in [`model-routers.md`](./model-routers.md).
+**Note for `kiln-v1`:** Ollama's `:cloud` tags look local but run remotely; a local-only factory must never bind one.
 
 ### 3.2 Frontier open-weight models (256 GB+ or a server)
 
@@ -246,7 +251,9 @@ architecture-critic: gpt-6.1-sol
 planner: strongest
 ```
 
-Not available in `kiln-v1`. The design is in `web-front-door.md` §13.
+Not available in `kiln-v1`. The design is in `web-front-door.md` §13. A remote judge can also be reached through a
+**router** such as OpenRouter or a team-run gateway — always pinned to one model and an approved provider list; see
+[`model-routers.md`](./model-routers.md).
 
 ### Choosing a scenario
 
