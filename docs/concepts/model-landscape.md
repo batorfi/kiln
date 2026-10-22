@@ -251,7 +251,8 @@ architecture-critic: gpt-6.1-sol
 planner: strongest
 ```
 
-Not available in `kiln-v1`. The design is in `web-front-door.md` §13. A remote judge can also be reached through a
+Not available in `kiln-v1`. The design is in `web-front-door.md` §13; hybrid scenarios on Apple silicon, with costs, are in
+[`hybrid-deployments.md`](./hybrid-deployments.md). A remote judge can also be reached through a
 **router** such as OpenRouter or a team-run gateway — always pinned to one model and an approved provider list; see
 [`model-routers.md`](./model-routers.md).
 

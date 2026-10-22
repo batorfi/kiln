@@ -9,6 +9,7 @@
 >
 > Companion docs:
 >   - The model landscape and scenarios: `model-landscape.md` (S6, hybrid)
+>   - Hybrid deployments on Apple silicon: `hybrid-deployments.md`
 >   - Models beyond the machine:         `web-front-door.md` §13
 >   - Configuration (catalog, tier map): `configuration.md`
 >   - The rules:                         `../../.specify/memory/constitution.md` (II, VII, VIII)

@@ -229,6 +229,10 @@ above can still be a good KILN machine:
 Radeon AI PRO R9700): that is scenario S2 — a real, independent judge beside a fast worker — at the lowest price that does
 it well. Move to 128 GB when you want a 120B-class judge or several factories at once.
 
+**With remote judges** (`kiln-v1.x`), the machine only has to hold workers: a 32–64 GB Mac with a frontier judge through
+OpenRouter out-reviews any local judge, for a few dollars of judge tokens per feature — see
+[`hybrid-deployments.md`](./hybrid-deployments.md).
+
 ## 7. What this means for KILN
 
 - **`kiln doctor` (r28)** measures memory, bandwidth and disk, then recommends a scenario and a tier map from

@@ -158,6 +158,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | **Scale and teams** | [Factories anywhere](./docs/concepts/factories-anywhere.md) | hosts, placement, moves, sleeping hosts |
 | | [The team space](./docs/concepts/team-space.md) | personal workshops on one codebase: team roadmap, claims, reviews, merging |
 | **Models and machines** | [The model landscape](./docs/concepts/model-landscape.md) | open and closed models for KILN's roles, and local deployment scenarios S1–S6 (research snapshot, 2026-10) |
+| | [Hybrid deployments](./docs/concepts/hybrid-deployments.md) | remote judges through OpenRouter or providers, local workers — scenarios H1–H5 on Apple silicon, with costs (proposal, needs r33) |
 | | [Routers and gateways](./docs/concepts/model-routers.md) | OpenRouter, LiteLLM and other gateways — what they offer and how KILN could use them without weakening its rules (proposal) |
 | | [Dev machines](./docs/concepts/dev-machines.md) | Apple silicon and Linux/PC configurations — cheap, medium, high end — with price estimates (research snapshot, 2026-10) |
 | **Getting started** | [First run](./docs/concepts/first-run.md) | from install to a first Roadmap gate: models, workshop, Spec Kit, constitution, knowledge |

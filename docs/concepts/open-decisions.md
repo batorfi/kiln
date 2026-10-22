@@ -49,6 +49,7 @@ None of these blocks a `kiln-v1` row. Each is decided at, or measured in, the ro
 | The factory-to-workshop channel and how leases survive a supervisor restart | [web-front-door](./web-front-door.md) §20 | designed in r25 |
 | How many factual question templates before a question falls through to an explain step | [the-director](./the-director.md) §8 Q3 | designed in r18 |
 | Egress policy language; model-family identity for cross-family judging | [web-front-door](./web-front-door.md) §20 · PRD §14.9 | r33 (`kiln-v1.x`) |
+| Hybrid deployments — a minimal judges-only hybrid before full r33; planner placement; judge fallback rules; judge-context egress | [hybrid-deployments](./hybrid-deployments.md) §9–10 | r33 or earlier (proposal) |
 | Routers and gateways (OpenRouter, a team-run LiteLLM): supported in r33 or later, and under which pinning rules; model fallback for work roles; recording provider identity | [model-routers](./model-routers.md) §7 | r33 (`kiln-v1.x`) |
 | Refusing Ollama `:cloud` tags under `local-only` (catalog locality, `kiln doctor` check, network allowlist) | [model-routers](./model-routers.md) §5.6 | proposed for r17 and r28 (`kiln-v1`) |
 | Research and spike capacity on shared hosts; switching off keeper suggestions; archived spike retention; importing an Obsidian vault as the notebook | [the-bench](./the-bench.md) §11 · [first-run](./first-run.md) §15 Q3 | r34–r35 (`kiln-v1.x`) |
