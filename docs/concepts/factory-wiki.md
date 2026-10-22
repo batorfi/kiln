@@ -1,4 +1,6 @@
-> Status: concept (proposal, rev 5, 2026-10-18) — **not admitted**
+> Status: concept — **final** (2026-10-21, human@batorfi; previously a proposal, rev 5, 2026-10-18). Open decisions were
+> settled on 2026-10-21 and are recorded where they apply; what remains open is listed in
+> [`open-decisions.md`](./open-decisions.md). Building it is admitted only at the Roadmap gate.
 > Type: concept
 >
 > Scope note: this doc introduces **KILN's wikis**: a dedicated, LLM-maintained knowledge base for every factory, and
@@ -188,7 +190,8 @@ quotes are reproduced in the page instead.
 **Editors such as Zed.** Zed and other editors show every page as clean markdown with readable front-matter; wikilinks
 read naturally because a link's text *is* the target file's name. Editors that use a markdown language server which
 understands wikilinks (Marksman, for example) also get link navigation, completion and broken-link warnings. KILN
-does not require any particular editor or plugin.
+does not require any particular editor or plugin. A proposal for ready-made Zed projects per vault, Zed-openable tours
+and knowledge served to editor agents is in `zed-integration.md` (D4, D7).
 
 **Editing in KILN, Obsidian or Zed.** People who may edit a wiki can do it anywhere. KILN picks up a change when it next
 reads the repository: the change is attributed to whoever committed it, recorded as `wiki.page_edited` (with where it
@@ -451,12 +454,17 @@ Following Karpathy means no approval step, so the safeguards move from *before* 
 
 ## 14. Open questions
 
-1. Should the wiki keeper be a dedicated role in the tier map, or the researcher with a wiki schema?
-2. How long may a page go unreviewed before a gate brief flags it as stale?
-3. How often should KILN update a factory's included copy of the workshop wiki — on every change, or at the start of
-   each feature?
-4. How much of the code should implementation pages reproduce, versus point at — and should reference pages be
-   generated from the code itself rather than written by the keeper?
+1. ~~Dedicated keeper role or the researcher?~~ **Decided 2026-10-21** (human@batorfi): a **dedicated keeper role** (`kind: keeper`, its own role
+   file and tier binding, tools limited to the vault); lint runs on a different model than the keeper.
+2. ~~How long may a page go unreviewed?~~ **Decided 2026-10-21** (human@batorfi): a brief flags a cited page whose `reviewed` date is older than
+   **90 days** (factory-configurable) — and always, regardless of age, when its cited code drifted, it is contradicted, or
+   it changed while the gate was open.
+3. ~~How often is a factory's copy of the workshop wiki updated?~~ **Decided 2026-10-21** (human@batorfi): **pinned per feature** — each feature reads
+   the workshop wiki as of its admission at the Roadmap gate, so its briefs are reproducible; a brief notes when a cited
+   workshop page has a newer version; the copy updates between features.
+4. ~~How much code do implementation pages reproduce?~~ **Decided 2026-10-21** (human@batorfi): **short excerpts** (about 15 lines) with path, lines
+   and commit; pages explain and point. **Reference pages** (APIs, config keys, CLI commands) are **generated
+   deterministically from the code** on merge, not written by the keeper.
 5. Should a mature wiki, as Karpathy suggests, become training data for a smaller local model that knows the factory?
 
 ## 15. One sentence

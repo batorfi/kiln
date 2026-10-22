@@ -4,12 +4,18 @@
 Agents research, design, write, review and verify. Independent judges check the work. <b>People decide at every gate.</b><br>
 Durable, recorded, local by default — one feature at a time, in your own workshop.</p>
 
-> **Status: concept and restart.** KILN is being rebuilt around a new design: a local **web front door** on
+> **Status: design final, restart pending.** KILN is being rebuilt around a new design: a local **web front door** on
 > **[Pi](https://pi.dev) and Pi Durable**, with gates as durable tasks, an event-based record, a knowledge base per factory,
-> and teams of personal workshops. The design is complete as concept documents, a PRD and illustrative mockups; the
-> implementation has **not started yet** — its roadmap is a [proposal](./specs/ROADMAP.md) waiting for a human decision
-> at the Roadmap gate. What runs today is the **foundation from the first program** (KILN as a Pi extension), which the
-> restart reuses. See [Where things stand](#where-things-stand).
+> and teams of personal workshops. The concept documents, the PRD and the [constitution](./.specify/memory/constitution.md)
+> (v2.0.1) were **finalized on 2026-10-21**, with every decision that shapes `kiln-v1` made and
+> [recorded](./docs/concepts/open-decisions.md). The implementation has **not started yet** — its roadmap is a
+> [proposal](./specs/ROADMAP.md) waiting for a human decision at the Roadmap gate. Since then, research snapshots of
+> [models](./docs/concepts/model-landscape.md) and [dev machines](./docs/concepts/dev-machines.md) and proposals for
+> [exploring codebases before adoption](./docs/concepts/code-exploration.md),
+> [hybrid deployments](./docs/concepts/hybrid-deployments.md) and [KILN in the Zed editor](./docs/concepts/zed-integration.md)
+> have been added (2026-10-22). What runs today is the
+> **foundation from the first program** (KILN as a Pi extension), which the restart reuses. See
+> [Where things stand](#where-things-stand).
 
 <p align="center"><a href="./docs/concepts/infographic/kiln-at-a-glance.png"><img src="./docs/concepts/infographic/kiln-at-a-glance.png" alt="KILN at a glance — the process, the architecture, the human's role, workshop and team, knowledge, the record, and the main journeys" width="820"></a><br>
 <sub>KILN at a glance — click for the full-size infographic</sub></p>
@@ -80,7 +86,9 @@ own — a threat model, a security review — without removing any. → [`the-fl
 - **[Configure](./docs/concepts/configuration.md)** — hosts, models, roles, flows and policies, as plain files.
 - **[Work with the team](./docs/concepts/team-space.md)** — a team roadmap, claims on code, reviews across workshops.
 
-Everything waiting on you is in one place, **[Needs you](./docs/concepts/the-director.md)**. Nothing decides itself.
+Everything waiting on you is in one place, **[Needs you](./docs/concepts/the-director.md)**. Nothing decides itself. You
+work in the browser or the terminal — and, as proposed, inside the **[Zed editor](./docs/concepts/zed-integration.md)**,
+where briefs, findings and moves sit next to the code.
 
 <p align="center"><a href="./docs/concepts/infographic/kiln-engineer-at-the-center.png"><img src="./docs/concepts/infographic/kiln-engineer-at-the-center.png" alt="The engineer at the center — six roles, KILN's actors and the team, one real day, and the full agentic lifecycle" width="820"></a><br>
 <sub>The engineer at the center — your roles, your crew and your team, one real day, and one feature's full lifecycle. Click for full size.</sub></p>
@@ -104,10 +112,14 @@ Everything waiting on you is in one place, **[Needs you](./docs/concepts/the-dir
 
 ### Where it runs
 
-On your machine by default — a 128 GB workstation can run several factories, one lane each. Factories can also run on
-team servers or rented machines, placed by people at the Roadmap gate ([factories anywhere](./docs/concepts/factories-anywhere.md)). Models are local through
-[Ollama](https://ollama.com) by default; private or cloud models only where a factory's policy allows
-([models beyond the machine](./docs/concepts/web-front-door.md)).
+On your machine by default — 32 GB is the minimum, 64 GB the recommended start, and a 128 GB workstation runs several
+factories, one lane each ([dev machines and prices](./docs/concepts/dev-machines.md)). Factories can also run on team
+servers or rented machines, placed by people at the Roadmap gate ([factories anywhere](./docs/concepts/factories-anywhere.md)).
+Models are local through [Ollama](https://ollama.com) by default — which open models fill which roles on which machine is
+in [the model landscape](./docs/concepts/model-landscape.md). Private or cloud models run only where a factory's policy
+allows ([models beyond the machine](./docs/concepts/web-front-door.md)): for example frontier **judges** through
+OpenRouter with **workers** kept local ([hybrid deployments](./docs/concepts/hybrid-deployments.md),
+[routers and gateways](./docs/concepts/model-routers.md)).
 
 ### New and existing codebases
 
@@ -116,6 +128,9 @@ team servers or rented machines, placed by people at the Roadmap gate ([factorie
 - **Existing codebase** — KILN arrives as a careful newcomer: a **full scan** of the code and its history into the
   knowledge base, a baseline of what is already broken, a territory it may change, and trust earned in stages through the
   team's own review process. → [`brownfield.md`](./docs/concepts/brownfield.md)
+- **Explore first** *(proposal)* — before adopting the factory at all, KILN as a guide to existing and legacy code: maps,
+  tours, answers with citations, recovered **as-is specifications** — the on-ramp for teams new to spec-driven work.
+  → [`code-exploration.md`](./docs/concepts/code-exploration.md)
 
 ## What it looks like
 
@@ -137,13 +152,18 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 
 | Area | Document | What it covers |
 |---|---|---|
-| **Overview** | [Vision](./docs/concepts/vision.md) | why KILN exists, what it believes, the human's role, the pillars, where it is going |
+| **Overview** | [What `kiln-v1` delivers](./docs/architecture/explainers/kiln-v1.md) | the release in one place: what ships, what does not, the 23 rows that build it, and when it is done |
+| | [After `kiln-v1`](./docs/architecture/explainers/kiln-v1x.md) | what `kiln-v1.x` adds — cloud models, the bench, observability, factories anywhere, deeper brownfield and greenfield — and why it changes nothing built before |
+| | [Decisions](./docs/concepts/open-decisions.md) | every design decision settled on 2026-10-21, and what is still open, by roadmap row |
+| | [Vision](./docs/concepts/vision.md) | why KILN exists, what it believes, the human's role, the pillars, where it is going |
 | | [The web front door](./docs/concepts/web-front-door.md) | the main design: Pi 1.0 and Pi Durable, the factory as a durable task graph, events, many factories, models beyond the machine |
 | | [The user experience](./docs/concepts/user-experience.md) | personas, vocabulary, core experiences, the ten-part gate brief, trust and safety |
+| | [KILN in Zed](./docs/concepts/zed-integration.md) | briefs, moves and knowledge inside the Zed editor — an ACP agent, an MCP server, deep links, Code review decided where the code is (proposal) |
 | **The process** | [The flow](./docs/concepts/the-flow.md) | the ten gates in depth, what runs between them, where every move leads |
 | | [An extensible flow](./docs/concepts/extensible-flow.md) | gates teams add to the default flow, with the same guarantees |
 | | [The director and Needs you](./docs/concepts/the-director.md) | deterministic orchestration, the planner, shaping the roadmap together, the one inbox |
-| **Foundations** | [KILN on Pi Durable](./docs/concepts/pi-durable.md) | why durable tasks and conversations are the key enabler |
+| **Foundations** | [The constitution, explained](./docs/architecture/explainers/kiln-constitution.md) | the twelve principles, the flow's invariants and governance — what each rule means for the code you write |
+| | [KILN on Pi Durable](./docs/concepts/pi-durable.md) | why durable tasks and conversations are the key enabler |
 | | [The record](./docs/concepts/the-record.md) | events, the envelope, projections, replay and audit |
 | | [Configuration](./docs/concepts/configuration.md) | hosts, providers, models and roles as files, checked and recorded |
 | | [Health](./docs/concepts/health.md) | the watcher that observes and never acts; broken-guarantee signals |
@@ -152,9 +172,14 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | | [The bench](./docs/concepts/the-bench.md) | notebook, research steps and spikes, and how they feed the roadmap |
 | **Scale and teams** | [Factories anywhere](./docs/concepts/factories-anywhere.md) | hosts, placement, moves, sleeping hosts |
 | | [The team space](./docs/concepts/team-space.md) | personal workshops on one codebase: team roadmap, claims, reviews, merging |
+| **Models and machines** | [The model landscape](./docs/concepts/model-landscape.md) | open and closed models for KILN's roles, and local deployment scenarios S1–S6 (research snapshot, 2026-10) |
+| | [Hybrid deployments](./docs/concepts/hybrid-deployments.md) | remote judges through OpenRouter or providers, local workers — scenarios H1–H5 on Apple silicon, with costs (proposal, needs r33) |
+| | [Routers and gateways](./docs/concepts/model-routers.md) | OpenRouter, LiteLLM and other gateways — what they offer and how KILN could use them without weakening its rules (proposal) |
+| | [Dev machines](./docs/concepts/dev-machines.md) | Apple silicon and Linux/PC configurations — cheap, medium, high end — with price estimates (research snapshot, 2026-10) |
 | **Getting started** | [First run](./docs/concepts/first-run.md) | from install to a first Roadmap gate: models, workshop, Spec Kit, constitution, knowledge |
 | | [New codebases](./docs/concepts/greenfield.md) | greenfield: product brief, decisions, walking skeleton, vertical slices |
 | | [Existing codebases](./docs/concepts/brownfield.md) | brownfield: full scan into knowledge, baseline, territory, adoption in stages |
+| | [Explore first](./docs/concepts/code-exploration.md) | exploring existing and legacy codebases before adopting the factory — maps, tours, recovered specs, the road into spec-driven work (proposal) |
 | **Visuals** | [Mockups](./docs/concepts/mockups/README.md) · [infographics](./docs/concepts/infographic/README.md) | 72 illustrative screens; KILN at a glance; the engineer at the center |
 
 **From the first program** — kept as history and original rationale: [the original concept](./docs/concepts/concept.md) ·
@@ -166,9 +191,11 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 
 | | State |
 |---|---|
-| **The design** | complete as concepts: [vision](./docs/concepts/vision.md), [the flow](./docs/concepts/the-flow.md), [the web front door](./docs/concepts/web-front-door.md), [user experience](./docs/concepts/user-experience.md) and companions in [`docs/concepts/`](./docs/concepts) |
-| **The product definition** | the [PRD](./docs/prd/kiln-prd.md): principles, requirements, architecture, what to keep from today's code, milestones |
-| **The roadmap** | a [proposal](./specs/ROADMAP.md) of 30 feature-sized rows (r12–r41), `kiln-v1` at r32 — **pending the Roadmap gate** |
+| **The design** | **final** (2026-10-21) as concepts: [vision](./docs/concepts/vision.md), [the flow](./docs/concepts/the-flow.md), [the web front door](./docs/concepts/web-front-door.md), [user experience](./docs/concepts/user-experience.md) and companions in [`docs/concepts/`](./docs/concepts); [decisions settled and still open](./docs/concepts/open-decisions.md) |
+| **The product definition** | the [PRD](./docs/prd/kiln-prd.md), **final**: principles, requirements, architecture, what to keep from today's code, milestones |
+| **The law** | the [constitution](./.specify/memory/constitution.md) **v2.0.1**, amended for the restart on 2026-10-21 — [explained for engineers](./docs/architecture/explainers/kiln-constitution.md) |
+| **The roadmap** | a [proposal](./specs/ROADMAP.md) ([what `kiln-v1` delivers](./docs/architecture/explainers/kiln-v1.md)) of 31 feature-sized rows (r12–r42, with the r42 spike before r13 and the team space in `kiln-v1`), `kiln-v1` at r32 — **pending the Roadmap gate** |
+| **Beyond `kiln-v1`** | [what `kiln-v1.x` adds](./docs/architecture/explainers/kiln-v1x.md); proposals for [exploring codebases before adoption](./docs/concepts/code-exploration.md), [hybrid deployments](./docs/concepts/hybrid-deployments.md) and [KILN in Zed](./docs/concepts/zed-integration.md); research snapshots of [models](./docs/concepts/model-landscape.md), [routers](./docs/concepts/model-routers.md) and [dev machines](./docs/concepts/dev-machines.md) (2026-10) |
 | **The code** | the **foundation from the first program** (rows r1–r8, KILN as a Pi extension): the single-lane runtime, the gate and log machinery, a real local-model worker, KILN loading into Pi, validators and readiness probes, and the test suite — reused by the restart (PRD §10) |
 
 The first program's roadmap and decision log are archived in
@@ -209,8 +236,8 @@ Any run that executes **zero** tests fails, so a mistyped path cannot pass silen
 
 | Path | What is in it |
 |---|---|
-| [`docs/concepts/`](./docs/concepts) | the design: vision, the flow, the front door, user experience, and one doc per area — with [mockups](./docs/concepts/mockups/README.md) and the [infographics](./docs/concepts/infographic/README.md) (KILN at a glance, the engineer at the center) |
-| [`docs/architecture/`](./docs/architecture) | the [architecture explainer](./docs/architecture/explainers/kiln-architecture.md) and the [platform architecture infographic](./docs/architecture/visualisations/README.md) |
+| [`docs/concepts/`](./docs/concepts) | the design: vision, the flow, the front door, user experience, and one doc per area; research snapshots on models, routers and machines; the [decisions index](./docs/concepts/open-decisions.md) — with [mockups](./docs/concepts/mockups/README.md) and the [infographics](./docs/concepts/infographic/README.md) (KILN at a glance, the engineer at the center) |
+| [`docs/architecture/`](./docs/architecture) | the [architecture explainer](./docs/architecture/explainers/kiln-architecture.md), the [constitution explainer](./docs/architecture/explainers/kiln-constitution.md), the [`kiln-v1`](./docs/architecture/explainers/kiln-v1.md) and [`kiln-v1.x`](./docs/architecture/explainers/kiln-v1x.md) explainers, and the [platform architecture infographic](./docs/architecture/visualisations/README.md) |
 | [`docs/prd/`](./docs/prd/kiln-prd.md) | the product requirements for the restart |
 | [`docs/brand/`](./docs/brand/README.md) | the KILN mark and logos |
 | [`specs/`](./specs) | [`ROADMAP.md`](./specs/ROADMAP.md) (the program, admitted by a person at the Roadmap gate), one directory per feature with its spec, plan, tasks and evidence, and the archived first program |
@@ -237,7 +264,9 @@ what was right.
 6. [Platform architecture](./docs/architecture/visualisations/kiln-platform-architecture.png) and the [architecture explainer](./docs/architecture/explainers/kiln-architecture.md) — how KILN is built, and why
 7. [The web front door](./docs/concepts/web-front-door.md) — the design on Pi Durable, events and the record
 8. [First run](./docs/concepts/first-run.md) — from install to a first Roadmap gate
-9. [The PRD](./docs/prd/kiln-prd.md) and [the roadmap proposal](./specs/ROADMAP.md)
+9. [What `kiln-v1` delivers](./docs/architecture/explainers/kiln-v1.md) and [the constitution, explained](./docs/architecture/explainers/kiln-constitution.md) — the release and the rules it keeps
+10. [The PRD](./docs/prd/kiln-prd.md) and [the roadmap proposal](./specs/ROADMAP.md)
+11. [Dev machines](./docs/concepts/dev-machines.md), [the model landscape](./docs/concepts/model-landscape.md) and [hybrid deployments](./docs/concepts/hybrid-deployments.md) — what to run KILN on
 
 ## Contributing
 

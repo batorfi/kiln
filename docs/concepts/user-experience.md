@@ -1,4 +1,6 @@
-> Status: concept draft for review (rev 10, 2026-10-18) — **not admitted**
+> Status: concept — **final** (2026-10-21, human@batorfi; previously a proposal, rev 10, 2026-10-18). Open decisions were
+> settled on 2026-10-21 and are recorded where they apply; what remains open is listed in
+> [`open-decisions.md`](./open-decisions.md). Building it is admitted only at the Roadmap gate.
 > Type: concept
 >
 > Scope note: this doc describes the **KILN user experience at the conceptual level** — who uses KILN, what they
@@ -61,9 +63,9 @@ Personas are framed by the **job** a person does in KILN, not by their title. On
 The primary persona is the **Decider**. Every other persona's needs are served without competing with the
 Decider's attention.
 
-> **Review:** Is the Decider the right primary persona? For a solo engineer the Decider and the Operator are
-> the same person; for a team they may not be. Should "several Deciders in one factory" be a first-class case,
-> or an edge case?
+> **Decided 2026-10-21** (decisions 22–23): the primary user of `kiln-v1` is an engineer in a **small team** — each
+> engineer a Decider in their own sovereign workshop, the team meeting in a team space (`team-space.md`), which is part of
+> `kiln-v1`. Several Deciders never share one gate: one decision per gate, with teammates' agreement as required reviews.
 
 ## 3. The human's jobs
 
@@ -109,7 +111,7 @@ The experience stands or falls on a small, stable set of ideas the human can hol
 | **Spike** | an ungated, time-boxed experiment in real code that ends in a measured report | spike |
 | **Claim** | *this feature is being built by this factory, touching these files* — visible to the whole team | claim |
 | **Host** | a machine a factory runs on — this machine, a team server, a cloud machine, a container — with its own models; online, sleeping or offline | host (`factories-anywhere.md`) |
-| **Factory** | one independent line of work with its own roadmap, its own record and its own deciders | flow |
+| **Factory** | one independent line of work with its own roadmap, its own record and its own deciders | factory (*flow* means only the sequence of gates) |
 | **Roadmap** | the ordered list of features a factory will build, approved at the Roadmap gate | roadmap |
 | **Feature** | one item on the roadmap, walked through the nine feature gates | row |
 | **Gate** | a point where the factory stops until a human decides; each asks one question | gate task |
@@ -120,10 +122,10 @@ The experience stands or falls on a small, stable set of ideas the human can hol
 | **Director** | the factory's orchestrator: plans steps, orders them, keeps the line moving; never decides a gate | row and roadmap tasks |
 | **The lane** | the factory's single line of work: one step at a time | lane |
 | **The record** | everything that happened, in order, with who caused it and why | event stream |
-| **Wiki** | a factory's knowledge: pages an LLM writes and Curators shape, every claim traced to a source | factory wiki (`factory-wiki.md`) |
-| **Workshop wiki** | knowledge every factory shares — models, tools, conventions — that anyone can improve | workshop wiki |
-| **Source** | a document the wiki is built from — added by a Curator, never changed afterwards | raw source |
-| **Curator** | the person responsible for a factory's wiki | Curator |
+| **Knowledge** | a factory's knowledge: pages an LLM writes and Curators shape, every claim traced to a source — kept as a wiki | factory wiki (`factory-wiki.md`) |
+| **Workshop knowledge** | knowledge every factory shares — models, tools, conventions — that anyone can improve | workshop wiki |
+| **Source** | a document the knowledge is built from — added by a Curator, never changed afterwards | raw source |
+| **Curator** | the person responsible for a factory's knowledge | Curator |
 
 ### 4.2 The ideas behind the nouns
 
@@ -137,9 +139,11 @@ The experience stands or falls on a small, stable set of ideas the human can hol
 - **The record is the truth.** What KILN shows is derived from what KILN recorded. If it is not in the record, it
   did not happen; if it happened, it is in the record.
 
-> **Review:** User-facing words are the main choice here. Are **Factory** (not "flow"), **Feature** (not
-> "row") and **Step** (not "unit" or "task") right? "Task" was avoided because it collides with work-plan tasks
-> and durable tasks.
+> **Decided 2026-10-21** (decision 15): **Factory**, **Feature** and **Step** are the words people read. Internally,
+> *flow* means only the sequence of gates (`extensible-flow.md`); *row* survives only as the roadmap's data field and
+> ids; *unit* only in code. "Task" stays avoided because it collides with work-plan tasks and durable tasks.
+> **Knowledge** is what people see (*knowledge page*, *workshop knowledge*); *wiki* names how it is kept — an LLM wiki
+> readable as an Obsidian vault — in docs and in technical names (decision 16).
 
 ## 5. Experience principles
 
@@ -222,6 +226,9 @@ carried out.
 - sending work back requires saying why, and that note becomes the next step's instruction;
 - the decision is deliberate: it cannot be made by accident, by default or by timeout;
 - after deciding, the human knows what the factory will do next.
+
+*Proposed (2026-10-22):* the same brief, findings and moves inside the Zed editor, next to the code — read-only first,
+then the Code review gate decided in Zed on the full brief (`zed-integration.md`).
 
 ### 7.3 Staying oriented
 
@@ -542,11 +549,16 @@ of them settles the gate:
   does this test cover?"). An answer that needs an agent to do work runs as a step of its own, visible and
   recorded, and the gate keeps waiting.
 - **Request more evidence** — ask for an additional check, a second judge, or a judge from another model family,
-  where the factory's policy allows it. The gate stays open; the brief is updated when the evidence arrives,
-  and the update is marked as such.
+  where the factory's policy allows it. The estimated time and cost are shown before it runs; it runs as a recorded
+  step within the factory's budget. The gate stays open; the brief is updated when the evidence arrives, and the update
+  is marked as such. **Evidence is additive**: a new verdict never replaces or hides an earlier one, so asking again can
+  add a *yes* but never erase a *no*. Only models the factory's policy allows are used; a request that would need egress
+  becomes a policy stop, and changing the profile is a Roadmap-gate decision.
+- **Ask what KILN would do** — only on request: the answer runs as a recorded planner step, labelled as the planner's
+  opinion, shown apart from the evidence and never in the headline. The brief itself never recommends a move.
 - **Leave it waiting** — decide later. Waiting has no penalty and no deadline that decides for the human.
-- **Hand it over** — in a team, pass the decision to another person allowed to decide this factory's gates, with a
-  note.
+- **Hand it over** — pass the decision to another person allowed to decide this factory's gates, with a note.
+  Available once a workshop has more than one person; hidden in a one-person workshop.
 - **Pause or stop the factory** — when the issue is bigger than this gate.
 
 Every one of these actions is recorded, and the brief shows what was done while the gate was open.
@@ -566,7 +578,7 @@ The structure is fixed; the emphasis follows the gate's question.
 | **Specification gate** | what "done" means, requirement by requirement; how each will be verified; that this is where the unattended tail can be armed, and what arming it would cover |
 | **Work plan gate** | the pieces and their order; the model order this implies and its expected cost in time and swaps; **overlap with teammates' claims** |
 | **Implementation gate** | the restorable starting point; the size of the work ahead; whether it is still one feature, and what a split would look like |
-| **Code review gate** | the changes, mapped to the specification; the code reviewer's findings by severity; that `restart` is the only corrective move, and what it rebuilds |
+| **Code review gate** | the changes, mapped to the specification; the code reviewer's findings by severity; what `revise` (workers fix on the current code) and `restart` (rebuild from the restorable commit) would each redo |
 | **Verification gate** | requirement-by-requirement results; the automatic fix rounds already attempted and what they changed; the verifier's diagnosis |
 | **Documentation gate** | what the documentation now says, compared with what was built |
 | **Merge gate** | the whole feature end to end — every gate's decision and by whom; open risks carried forward; what left the machine; what merging will do; **what the feature added to the wiki**, starting with its feature story; in a team: **required reviews and checks, base drift, the code host's merge-queue position, and what will be published** |
@@ -579,9 +591,9 @@ The structure is fixed; the emphasis follows the gate's question.
 - **Overwhelm by default** — depth is available, not imposed.
 - **Change after the decision** — the brief recorded with the move is the one the human saw.
 
-> **Review:** Should KILN ever offer its own recommended move (beyond the judges' verdicts), or would that bias
-> the Decider? Should "request more evidence" be bounded per gate, and should it ever be allowed to reach a
-> cloud model when the factory is `local-only`? Is "hand it over" in scope before the team case?
+> **Decided 2026-10-21** (decisions 18–21): the brief never recommends a move — KILN gives its opinion only when asked,
+> labelled and apart from the evidence; requests for more evidence are additive, costed and policy-bound, never capped by
+> count; they never reach a model the factory's policy forbids; hand-over arrives with multi-person workshops.
 
 ## 9. Trust and safety in the experience
 
@@ -614,8 +626,9 @@ What the human must be able to rely on, as properties of the experience itself:
 | **Respectful** | of the human's time, judgment and words | presumptuous — deciding "for convenience" |
 | **Crafted** | the kiln metaphor gives a sense of care and patience | whimsical or cute at the cost of clarity |
 
-> **Review:** How much of the kiln metaphor should reach the experience itself (firing, chamber, heat, workshop)
-> versus staying in the docs? The risk is charm over clarity.
+> **Decided 2026-10-21** (decision 17): the metaphor stays in the **name, the brand and the docs** (`kiln-analogy.md`).
+> The product speaks plainly — factory, gate, step, record; no *firing*, *chamber* or *heat* in the UI or in briefs.
+> *Workshop* stays: it is a plain word for the place where people work.
 
 ## 11. Language and voice
 
@@ -628,8 +641,8 @@ What the human must be able to rely on, as properties of the experience itself:
   "error", "processing".
 - **One language across product, docs and record.** A word in the experience means the same in the record.
 
-> **Review:** Should the experience address the human directly ("waiting for you") or neutrally ("waiting for a
-> decision")? Direct address is warmer for one person and awkward for teams.
+> **Decided 2026-10-21** (decision 25): **direct and plain** — second person, short sentences, active voice (*Code review
+> is waiting for you*), no hedging and no cheerleading. In a team, *you* is always the person reading; others are named.
 
 ## 12. Experience across scales
 
@@ -664,18 +677,19 @@ The experience deliberately does **not**:
 
 Collected for review; each needs a decision before the interaction design phase.
 
-1. Primary persona and the solo-versus-team balance (§2, §9, §12).
-2. User-facing vocabulary: Factory, Feature, Step (§4).
-3. Whether waiting gates ever escalate, and whether interruptions are configurable per gate (§6).
-4. Onboarding and the very first factory as its own core experience (§7).
-5. Several Deciders collaborating on one gate: supported, deferred, or out of scope (§7, §8.4, §12).
-6. How much of the kiln metaphor reaches the experience (§10).
-7. Direct versus neutral voice (§11).
-8. Whether KILN offers its own recommended move at a gate, and the limits on requesting more evidence (§8).
-9. Whether the Pi-integrated terminal experience (r9) remains a supported secondary surface, and how this concept
-   applies to it.
-10. Accessibility and language commitments to make at the concept level (for example: everything readable without
-   colour; all text localisable).
+1. ~~Primary persona and the solo-versus-team balance (§2, §9, §12).~~ Decided 2026-10-21 — decision 23.
+2. ~~User-facing vocabulary: Factory, Feature, Step (§4).~~ Decided 2026-10-21 — decisions 15 and 16.
+3. ~~Whether waiting gates ever escalate, and whether interruptions are configurable per gate (§6).~~ Decided 2026-10-21 —
+   decision 24.
+4. ~~Onboarding and the very first factory as its own core experience (§7).~~ Answered by `first-run.md`.
+5. ~~Several Deciders collaborating on one gate.~~ Decided 2026-10-21 — decision 22.
+6. ~~How much of the kiln metaphor reaches the experience (§10).~~ Decided 2026-10-21 — decision 17.
+7. ~~Direct versus neutral voice (§11).~~ Decided 2026-10-21 — decision 25.
+8. ~~Whether KILN offers its own recommended move at a gate, and the limits on requesting more evidence (§8).~~ Decided
+   2026-10-21 — decisions 18–21.
+9. ~~Whether the Pi-integrated terminal experience (r9) remains a supported secondary surface.~~ Decided 2026-10-21 —
+   see decision 14.
+10. ~~Accessibility and language commitments.~~ Decided 2026-10-21 — decision 26.
 
 ## 15. Decision log
 
@@ -694,7 +708,20 @@ Collected for review; each needs a decision before the interaction design phase.
 | 11 | 2026-10-17 | Teams work in **personal workshops joined by a team space** (git repository first; team roadmap by quorum; advisory claims; required reviews mirrored in the code host; coordination publishing by default; personal keys plus identity provider) | §4, §7.17 | human |
 | 12 | 2026-10-18 | The **bench** — notebook, research steps and spikes — is adopted | §4, §7.18–7.20 | human |
 | 13 | 2026-10-18 | The bench feeds roadmaps through a **candidate list**, evidence and **readiness** at the Roadmap gate, and *what we learned since the last approval* | §7.21, §8.5 | human |
-| 14 | | *(your decisions from this review)* | | |
+| 14 | 2026-10-21 | The Pi-integrated terminal surface (r9) is **retired**; the terminal surface is the **`kiln` CLI** — status, Needs you, the gate brief as text and moves, under the same rules as the browser | §14 Q9 | human |
+| 15 | 2026-10-21 | **Factory, Feature, Step** are the user-facing words; internally *flow* means only the sequence of gates, *row* only the roadmap field, *unit* only code | §4.1 | human |
+| 16 | 2026-10-21 | People see **Knowledge** (knowledge page, workshop knowledge); *wiki* names the format in docs and technical names | §4.1 | human |
+| 17 | 2026-10-21 | The kiln metaphor stays in the **name, brand and docs**; the product speaks plainly | §10 | human |
+| 18 | 2026-10-21 | The brief **never recommends a move**; KILN's opinion only when asked, as a labelled planner step shown apart from the evidence | §8.4 | human |
+| 19 | 2026-10-21 | **Request more evidence** is additive (never erases a verdict), costed before it runs, bounded by budget and policy, not by a count | §8.4 | human |
+| 20 | 2026-10-21 | Extra evidence uses only models the factory's policy allows; egress becomes a policy stop | §8.4 | human |
+| 21 | 2026-10-21 | **Hand it over** arrives with multi-person workshops, hidden in a one-person workshop | §8.4 | human |
+| 22 | 2026-10-21 | **One decision per gate**: the first committed move wins and later moves are refused with *decided by …*; when several people must agree, that is a set of **required reviews** — recorded evidence that must exist before *approve* is offered — never several settling moves; no quorum gates in `kiln-v1` | §7, §8.4, §12 | human |
+| 23 | 2026-10-21 | The primary user is an engineer in a **small team**: personal workshops joined by a team space, both parts of which are in `kiln-v1` (roadmap r38, r39); shared hosts and team bench work stay in `kiln-v1.x` | §2 | human |
+| 24 | 2026-10-21 | Waiting gates **never escalate** and never time out; each person chooses which gate kinds may interrupt them; Needs you shows how long each has waited; Health may note unusually long waits as information | §6 | human |
+| 25 | 2026-10-21 | The voice is **direct and plain**: second person, active, no hedging or cheerleading; in a team *you* is the reader and others are named | §11 | human |
+| 26 | 2026-10-21 | **Accessibility and language**: everything readable without colour, full keyboard operation, WCAG 2.2 AA for the front door, a screen-reader-friendly CLI, all text localisable (English first, no strings in code) | §14 Q10 | human |
+| 27 | | *(your decisions from this review)* | | |
 
 ## 16. One sentence
 

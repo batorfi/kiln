@@ -1,4 +1,6 @@
-> Status: concept (proposal, 2026-10-20) — **not admitted**
+> Status: concept — **final** (2026-10-21, human@batorfi; previously a proposal, 2026-10-20). Open decisions were
+> settled on 2026-10-21 and are recorded where they apply; what remains open is listed in
+> [`open-decisions.md`](./open-decisions.md). Building it is admitted only at the Roadmap gate.
 > Type: concept
 >
 > Scope note: this doc describes **how KILN starts a codebase from nothing** — a new product, service or library with no
@@ -209,7 +211,7 @@ There are no adoption stages to climb: the factory has owned the repository from
 
 Continuing from `first-run.md` Step 4 with *Start empty*:
 
-1. **Create the repository** — local `git init`, optionally a remote; worktree mode; local-only by default.
+1. **Create the repository** — local `git init`, optionally a remote; KILN works in its own worktree; local-only by default.
 2. **Add Spec Kit** — `specify init --here --ai pi`; the files are shown before the first commit.
 3. **Product brief** — written by the person, or drafted in conversation with the planner; approved.
 4. **Constitution** — drafted from the brief with `speckit.constitution`; edited and approved.
@@ -238,12 +240,12 @@ Continuing from `first-run.md` Step 4 with *Start empty*:
 
 ## 17. Open questions
 
-1. Should KILN offer **starter templates** for common stacks (as recorded decisions with their evidence), or always start
-   from open choices?
-2. How small may a walking skeleton be for a library with no runtime or storage — is *build, test, CI, one public function
-   end to end* enough?
-3. Should the foundation flow add a **Decisions gate** before Design for the skeleton, or are decision pages and the
-   Design gate enough?
+1. ~~Starter templates?~~ **Decided 2026-10-21** (human@batorfi): **no** — technology choices start open and are decided by a person with
+   researched evidence; prior decisions in workshop knowledge may be cited as evidence, never pre-filled as defaults.
+2. ~~How small may a library's skeleton be?~~ **Decided 2026-10-21** (human@batorfi): **build, test, CI, packaging and one public function exercised
+   end to end through the public API** is enough for a library; a service still needs its full path.
+3. ~~A Decisions gate before Design?~~ **Decided 2026-10-21** (human@batorfi): **no** — decision pages a person approves, shown in the Design gate
+   brief; a team that wants a Decisions gate adds it as an added gate.
 4. When should a greenfield factory **revisit** an early decision automatically suggested by evidence (for example, a
    spike-backed choice that later features keep fighting)?
 

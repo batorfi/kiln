@@ -1,4 +1,6 @@
-> Status: concept (proposal, 2026-10-18) — **not admitted**
+> Status: concept — **final** (2026-10-21, human@batorfi; previously a proposal, 2026-10-18). Open decisions were
+> settled on 2026-10-21 and are recorded where they apply; what remains open is listed in
+> [`open-decisions.md`](./open-decisions.md). Building it is admitted only at the Roadmap gate.
 > Type: concept
 >
 > Scope note: this doc explains **the director** — what it is, which parts are deterministic and which use an LLM — and
@@ -253,11 +255,18 @@ only more visible. People can sort, filter by factory or kind, or hand an item t
 
 ## 8. Open questions
 
-1. Should people be able to tune Needs you's default order (for example *teammates first*)?
-2. Should the planner run on the strongest model by default, given that its drafts shape roadmaps?
+1. ~~Tune Needs you's order?~~ **Decided 2026-10-21** (human@batorfi): **yes, per person** — oldest first by default, or teammates first, or by
+   factory; ordering never hides an item and never changes what a gate needs.
+2. ~~Should the planner run on the strongest model by default?~~ **Decided 2026-10-21** (human@batorfi): **yes, by default.** Its drafts shape the
+   most expensive decisions, and its steps are rare and often run while the strongest model is already pinned for judges.
+   An Operator may bind it lower in `tiers.yaml` (recorded); it stays a producer, so the judges' never-downgraded rule
+   does not apply.
 3. How many factual question templates should exist before a question falls through to an explain step?
-4. Should the planner be allowed to **re-order rows the engineer wrote** when dependencies require it, or only propose it?
-5. Should a shaping session limit how many alternatives are drafted at once, given that each costs machine time?
+4. ~~Should the planner be allowed to re-order rows the engineer wrote?~~ **Decided 2026-10-21** (human@batorfi): **only propose.** The
+   deterministic check flags the broken dependency on the engineer's edit; the planner may propose a re-order with its
+   reason; only the engineer applies it (§4.3).
+5. ~~Limit alternatives per shaping session?~~ **Decided 2026-10-21** (human@batorfi): **one at a time, cost shown** — each alternative is a planner
+   step with its estimated machine time shown before it runs; several asked for at once queue below feature work.
 
 ## 9. One sentence
 

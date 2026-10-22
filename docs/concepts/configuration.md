@@ -1,4 +1,6 @@
-> Status: concept (proposal, 2026-10-18) — **not admitted**
+> Status: concept — **final** (2026-10-21, human@batorfi; previously a proposal, 2026-10-18). Open decisions were
+> settled on 2026-10-21 and are recorded where they apply; what remains open is listed in
+> [`open-decisions.md`](./open-decisions.md). Building it is admitted only at the Roadmap gate.
 > Type: concept
 >
 > Scope note: this doc describes **how engineers configure KILN** — hosts, LLM providers and models, and agents (roles,
@@ -175,7 +177,7 @@ You review the diff for security issues against the specification…
 # tiers.yaml
 worker: qwen3-coder:30b
 researcher: qwen3-coder:30b
-planner: gemma4:27b
+planner: strongest                # default; an Operator may bind it lower (decided 2026-10-21)
 code-reviewer: strongest           # resolved per host and profile
 verifier: strongest
 security-reviewer: strongest
@@ -277,9 +279,11 @@ Every UI change writes the same files, runs the same check and records the same 
 
 ## 13. Open questions
 
-1. Should `kiln.config/` live in the same repository as the team space for teams, or always per workshop?
-2. Should *try on a past feature* be required before a judge instruction change can apply?
-3. How long are old role versions kept?
+1. ~~Where does `kiln.config/` live for teams?~~ **Decided 2026-10-21** (human@batorfi): **always per workshop**; team-shared role instructions,
+   required gates and policy floors come from the team space as a floor the workshop configuration must satisfy.
+2. ~~Must a judge instruction change be tried first?~~ **Decided 2026-10-21** (human@batorfi): **yes, for judges** — a change to a judge role's
+   instructions applies only after a try-run on at least one past feature, shown with the change; optional for producers.
+3. ~~How long are old role versions kept?~~ **Decided 2026-10-21** (human@batorfi): **forever** — small files in git, referenced by the record.
 
 ## 14. One sentence
 

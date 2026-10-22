@@ -1,4 +1,6 @@
-> Status: concept (proposal, 2026-10-17) — **not admitted**
+> Status: concept — **final** (2026-10-21, human@batorfi; previously a proposal, 2026-10-17). Open decisions were
+> settled on 2026-10-21 and are recorded where they apply; what remains open is listed in
+> [`open-decisions.md`](./open-decisions.md). Building it is admitted only at the Roadmap gate.
 > Type: concept
 >
 > Scope note: this doc describes **KILN factories that run anywhere** — on the machine in front of you, on a team
@@ -110,7 +112,7 @@ anything, because everything it is lives in its durable store, its workspace and
 1. **Request.** A person with the right to place the factory asks to move it; the move is a recorded command.
 2. **Fit check.** The new host is checked as in §5; a failing check stops the move before anything changes.
 3. **Quiesce.** The factory finishes its current step (or the move waits for the next gate). It never moves mid-step.
-4. **Hand over.** The old host closes the store; the store, the workspace and the wiki repository are transferred to
+4. **Hand over.** The old host closes the store; the store, its feature archives, the workspace and the wiki repository are transferred to
    the new host over the host channel; the new host opens the store and becomes its single owner (`pi-durable.md`).
 5. **Resume.** The new host resumes the factory's tasks: a waiting gate is still waiting, with the same brief; the lane
    re-establishes its models on the new host's pool; the record shows the move as one event with both hosts.

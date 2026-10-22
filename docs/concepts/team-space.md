@@ -1,4 +1,6 @@
-> Status: concept (proposal, rev 2, 2026-10-17) — **not admitted**
+> Status: concept — **final** (2026-10-21, human@batorfi; previously a proposal, rev 2, 2026-10-17). Open decisions were
+> settled on 2026-10-21 and are recorded where they apply; what remains open is listed in
+> [`open-decisions.md`](./open-decisions.md). Building it is admitted only at the Roadmap gate.
 > Type: concept
 >
 > Scope note: this doc describes how **a team works on the same codebase while each person runs their own workshop
@@ -15,6 +17,16 @@
 >   8. Merge order uses **the code host's merge queue when the team has one**, mirrored in KILN; otherwise a suggestion.
 >   9. A **shared workshop can join** a team space as one member; every act in it is signed by a person.
 >  10. Identity uses **both** personal signing keys and the team's identity provider.
+
+> Decided by the human (2026-10-21), when the team space joined `kiln-v1`:
+>  11. The default **quorum** is a **majority** of the named roadmap deciders (a team may set any threshold at or above
+>      majority); a proposal that never reaches it never takes effect and is marked expired after 14 days.
+>  12. Team rules, the decider list and the threshold change **only by the current quorum**; the founder's first list is
+>      the team space's genesis act.
+>  13. Claims are **renewed by activity**; advisory claims are stale after 3 quiet days and expire after 7; exclusive claims
+>      expire after 48 hours. Expiry releases the claim only.
+>  14. **Coordination is a floor** for team-roadmap features, not just a default; anything richer is published per item
+>      by the author's choice; no further publishing levels in `kiln-v1`.
 >
 > Companion docs:
 >   - Factories anywhere (a shared workshop, hosts): `factories-anywhere.md`
@@ -115,7 +127,9 @@ writes signed files and pushes. Every publish and every pull is recorded on the 
 - **One program for the team.** The team roadmap lists features with their order, dependencies, owners and status. It is
   changed by the people the team names for it, through its own human decision — the **team Roadmap gate** — recorded in
   the team space with signatures. **Decided:** a **quorum** — the team names its roadmap deciders and how many of them
-  must sign (for example 2 of 3); a change takes effect when the quorum of signatures is present in the repository.
+  must sign; by default a **majority** (2 of 3, 3 of 5; a one-decider team is 1), and never fewer. A change takes effect
+  when the quorum of signatures is present in the repository; a proposal that never reaches it changes nothing and is
+  marked expired after 14 days. Missing signatures are never counted as agreement.
 - **Factories adopt features.** A workshop's own Roadmap gate shows the team roadmap beside its factory's roadmap. Adopting
   a team feature into a factory's roadmap **creates a claim** (§7). A factory can also carry private features the team
   roadmap does not list.
@@ -130,12 +144,15 @@ A **claim** says which feature a factory is building and which parts of the code
 
 - **Made at the Roadmap gate** when a feature is adopted; **refined at the Work plan gate**, when the plan names the
   files and modules it will change; **released** at merge or when the feature stops.
-- **Signed and visible** to the whole team; renewed while the factory works, and **expiring** if its workshop goes quiet
-  for longer than the team allows — so abandoned claims do not block anyone.
+- **Signed and visible** to the whole team; **renewed automatically by activity** — every publish from its workshop (a step, a gate,
+  a pull) renews it, so a factory waiting on its own person still holds its claims while its workshop is online. An
+  advisory claim shows as **stale after 3 quiet days** and **expires after 7**; the team may change these by quorum.
+  Expiry releases the claim and nothing else — it never touches the work or any gate — so abandoned claims do not block
+  anyone.
 - **Advisory by default.** A claim never stops another workshop from working; it makes overlap visible early.
 - **Exclusive only on protected paths.** The team rules (§11) may name protected paths — shared contracts, schemas, a public
   API. A claim on a protected path is exclusive: another factory whose work plan touches it is told *blocked by Anna's
-  claim — ask or wait* at its Roadmap or Work plan gate. Exclusive claims expire quickly unless renewed. If two workshops
+  claim — ask or wait* at its Roadmap or Work plan gate. Exclusive claims expire after **48 hours** without renewal. If two workshops
   take the same exclusive claim while offline, the one that reached the team space first holds it, and the other is told at
   its next gate.
 - **Overlap detection** — across workshops, from claims, work plans and published diffs: *Anna's kiln-ui and Zsolt's
@@ -174,10 +191,11 @@ Each workshop's record stays in the workshop. What it shares is **chosen and sum
 - **Provenance with every pull request**: a signed summary of the feature's gates, deciders, judges and models, linked from
   the pull request, so a reviewer anywhere can see how the change came to be.
 
-**Default: coordination** (decided). Unless a workshop's owner chooses otherwise, it publishes claims, their release, gate
-outcomes for team-roadmap features (which gate, passed or sent back, by whom — no content), and provenance for pull
-requests to the shared `main`. Feature stories and learnings are shared by the author's choice. Private features — not on
-the team roadmap — publish nothing.
+**Coordination is the floor** (decided; a floor since 2026-10-21). For every team-roadmap feature a workshop publishes at
+least its claims, their release, gate outcomes (which gate, passed or sent back, by whom — no content), and provenance for
+pull requests to the shared `main`; it cannot publish less. Anything richer — feature stories, learnings, summaries of
+judges' findings — is published **per item, by the author's choice**. There are no further publishing levels in `kiln-v1`.
+Private features — not on the team roadmap — publish nothing.
 
 Publishing follows the workshop's policy: what may be published, at what level of detail, and what never leaves (restricted
 features, code excerpts, transcripts — the latter never). Every publish is an event in the workshop's record.
@@ -215,7 +233,8 @@ The team can set rules every member workshop honours for work on the shared code
   team shares; changed by the quorum (`extensible-flow.md` §8).
 - **Claim expiry** and **publishing minimums** (for example, gate outcomes for adopted features are always published).
 
-Rules live in the team space, change by the team's own decision, and are recorded. A workshop that would break a floor is
+Rules live in the team space and are recorded. They — and the list of roadmap deciders and the quorum threshold — change
+**only with the current quorum's signatures**; the founder's first list of deciders is the team space's genesis act. A workshop that would break a floor is
 told so at the Roadmap gate, before any work starts.
 
 ## 12. Merging into the same `main`

@@ -1,4 +1,6 @@
-> Status: concept (proposal, 2026-10-17) — **not admitted**
+> Status: concept — **final** (2026-10-21, human@batorfi; previously a proposal, 2026-10-17). Open decisions were
+> settled on 2026-10-21 and are recorded where they apply; what remains open is listed in
+> [`open-decisions.md`](./open-decisions.md). Building it is admitted only at the Roadmap gate.
 > Type: concept
 >
 > Scope note: this doc explains **how KILN uses Pi Durable** and **why it is a key enabler** of the direction in
@@ -194,15 +196,25 @@ The human accepted Pi Durable's experimental status; KILN evolves with it. To ke
 
 ## 12. Open questions
 
-- **Completing a waiting task from outside.** KILN's gate contract needs a human's move to complete a gate's decision
-  task in one commit. The published material does not describe this directly; it is the first thing to settle, and
-  the first candidate for an upstream contribution.
+- ~~**Completing a waiting task from outside.**~~ **Decided 2026-10-21** (human@batorfi): settled by a time-boxed
+  go/no-go spike before the durable core (roadmap r42). Natively if Pi Durable allows it; otherwise an upstream proposal
+  and, until it lands, a KILN decision table committed in the same SQLite transaction as the task store, behind the
+  seam. A no-go re-opens the Roadmap gate.
 - **Local models through `pi-ai`.** Tool calling, streaming, usage reporting and context-limit behaviour on Ollama
   models need to be established for each model KILN supports.
-- **Model residency.** How the lane's explicit loading and pinning composes with requests issued by the harness.
-- **Store lifetime.** One store per factory is the starting point; how closed features are archived, and how large a
-  long-lived SQLite store may grow, need deciding.
-- **Session reuse.** Whether consecutive steps of the same role may share a conversation, or always start fresh.
+- ~~**Model residency.**~~ **Decided 2026-10-21** (human@batorfi): every model request — including the harness's own, such as compaction — goes through a KILN provider
+  in front of Ollama, must hold the lane lease and targets the resident model; a request for another model is refused
+  or becomes an explicit, recorded swap. Harness housekeeping runs on the step's resident model. Only KILN sets
+  `keep_alive` and loads or unloads; a model loaded behind its back is a broken-guarantee signal.
+- ~~**Store lifetime.**~~ **Decided 2026-10-21** (human@batorfi): **one store per factory**. When a feature closes (merged or abandoned), its
+  conversations and checkpoints are exported to a checksummed, compressed **feature archive** on the factory's host —
+  beside the store, never in git — a `feature.archived` event records its reference and hash, and they are compacted out
+  of the live store. Archives travel with the factory on a move. They are kept forever unless an Operator sets an age-out
+  (recorded; `transcript.aged_out`). The record is never archived or aged out; it is not segmented in `kiln-v1` (see
+  `the-record.md` §18).
+- ~~**Session reuse.**~~ **Decided 2026-10-21** (human@batorfi): **a fresh conversation per step**, with explicit inputs (approved artifacts,
+  the step's task, knowledge pages) referenced in the record. The only continuation is `revise`. A shared preamble may
+  come from forking a prepared base conversation. Judges are always fresh.
 
 ## 13. One sentence
 

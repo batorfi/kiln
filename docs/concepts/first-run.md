@@ -1,4 +1,6 @@
-> Status: concept (proposal, 2026-10-19) — **not admitted**
+> Status: concept — **final** (2026-10-21, human@batorfi; previously a proposal, 2026-10-19). Open decisions were
+> settled on 2026-10-21 and are recorded where they apply; what remains open is listed in
+> [`open-decisions.md`](./open-decisions.md). Building it is admitted only at the Roadmap gate.
 > Type: concept
 >
 > Scope note: this doc describes **KILN's first-use experience** — how an engineer goes from nothing to a first factory
@@ -138,7 +140,8 @@ Setup shows and lets the person choose:
 ## 8. Step 4 — the first factory, Spec Kit and the constitution
 
 - **Point at a repository** — an existing local clone (most common), a remote to clone, or a new empty one.
-- **Workspace mode** — work in branches of this clone, or in a separate worktree KILN manages (recommended).
+- **Workspace** — KILN creates its own worktree of this repository and works only there, one branch per feature; it
+  never checks out branches or writes files in your clone (decided 2026-10-21, `web-front-door.md` §12.7).
 - **Profile** — `local-only` (default), with a one-line explanation of what that guarantees.
 - **Flow** — the standard flow; added gates come later (`extensible-flow.md`).
 - **Name** — suggested from the repository.
@@ -213,7 +216,7 @@ Bootstrap ingest runs while the person continues; the first roadmap can start be
   base, with readiness per feature and the inputs each row answers; it asks where the inputs are thin; the person edits,
   reorders, writes or pins rows and asks for alternatives, and every version is checked (`the-director.md` §4.3).
 - **The first Roadmap gate** opens — the first real decision, presented with a short guide to what a gate brief is.
-- **Or the demo** — *See a whole feature first*: a demo factory replays a committed walk through all ten gates, read-only,
+- **Or the demo** — *See a whole feature first*: downloaded on request, a demo factory replays a committed walk through all ten gates, read-only,
   so the person can see every gate, brief and the record before deciding anything real.
 
 ## 11. Step 7 — a team (optional)
@@ -260,14 +263,19 @@ the workshop was created.
 
 ## 15. Open questions
 
-1. Should the demo factory ship with KILN, or be downloaded on request?
-2. What is the minimum hardware for a useful local-only factory, and what does setup recommend below it?
+1. ~~Ship the demo factory or download it?~~ **Decided 2026-10-21** (human@batorfi): **downloaded on request** — a recorded, one-off download the
+   person asks for, which keeps the install small; the demo then runs offline from its committed replay.
+2. ~~Minimum hardware?~~ **Decided 2026-10-21** (human@batorfi): **32 GB** of (unified) memory runs one local-only factory with a ~12B judge;
+   **64 GB or more** is recommended; 128 GB runs several factories. Below 32 GB setup says plainly that local-only will be
+   slow or limited and suggests a smaller judge — or, once models beyond the machine arrive, a hybrid profile. `kiln doctor`
+   measures and records it. Machines and prices: [`dev-machines.md`](./dev-machines.md); models per machine class:
+   [`model-landscape.md`](./model-landscape.md).
 3. Should setup offer to import an existing Obsidian vault as the notebook?
 4. How should setup migrate a workshop created by an earlier KILN version?
-5. When Spec Kit releases a new version, does KILN upgrade a factory's templates at its next Roadmap gate (as a recorded
-   decision), or only on request?
-6. Should KILN support Spec Kit integrations other than Pi in the same repository (for teammates using other agents), and
-   keep their command files in step?
+5. ~~Spec Kit upgrades?~~ **Decided 2026-10-21** (human@batorfi): a new pinned version is **offered at a factory's next Roadmap gate** with what
+   changes in its templates; adopting it is a recorded decision, never automatic.
+6. ~~Other Spec Kit integrations?~~ **Decided 2026-10-21** (human@batorfi): **coexist, don't manage** — KILN manages only the Pi integration and
+   never breaks other agents' command files; the constitution and specifications are the common ground.
 
 ## 16. One sentence
 

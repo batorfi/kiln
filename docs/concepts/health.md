@@ -1,4 +1,6 @@
-> Status: concept (proposal, 2026-10-20) — **not admitted**
+> Status: concept — **final** (2026-10-21, human@batorfi; previously a proposal, 2026-10-20). Open decisions were
+> settled on 2026-10-21 and are recorded where they apply; what remains open is listed in
+> [`open-decisions.md`](./open-decisions.md). Building it is admitted only at the Roadmap gate.
 > Type: concept
 >
 > Scope note: this doc details **Health** — how KILN watches its own machinery and tells people when something looks wrong:
@@ -192,11 +194,17 @@ Health history feeds **insights** — recoveries per month, slow-load trends, ho
 
 ## 15. Open questions
 
-1. Should acknowledged warnings re-surface if they persist for long (for example, a day), or stay quiet until they change?
-2. Should a person be able to promote a warning to a **director rule** (for example, *pause a factory whose host disk is
-   above 95%*) — and is that still Health never acting, since the rule is the director's?
-3. Should baselines be per host only, or shared across hosts of the same kind?
-4. Should the diagnostic bundle have a standard format a team can share in an issue tracker?
+1. ~~Re-surface acknowledged warnings?~~ **Decided 2026-10-21** (human@batorfi): quiet unless the condition changes, plus **one digest line a day**
+   while it persists. Broken-guarantee signals can never be acknowledged into silence.
+2. ~~Promote a warning to a director rule?~~ **Decided 2026-10-21** (human@batorfi): **yes, pause-only.** An Operator may write a director rule
+   triggered by a health condition, recorded as configuration. A rule may only **pause a factory or hold new steps** —
+   never settle, skip or re-open a gate, change a model, or resume anything. Health still only observes; the rule and its
+   action are the director's, attributed to the Operator who wrote it.
+3. ~~Baselines per host or shared?~~ **Decided 2026-10-21** (human@batorfi): **per host**; a new host says it is still learning. Sharing by host
+   kind may come with factories anywhere.
+4. ~~A standard diagnostic bundle?~~ **Decided 2026-10-21** (human@batorfi): **yes** — a versioned, documented bundle (JSON in a zip: health state,
+   versions, configuration hashes, recent system events), content-free (no prompts, code, transcripts or secrets), shown
+   to the person before export.
 
 ## 16. One sentence
 

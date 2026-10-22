@@ -1,7 +1,8 @@
 # ROADMAP.md — empty shipped artifact (Q2=A fixture)
 
-> **➡ Canonically superseded 2026-09-13.** The *admitted* `kiln-v1` program now lives at
-> **`specs/ROADMAP.md`** (`gate0.status: approved`, `human@batorfi`). This file remains the
+> **➡ Canonically superseded 2026-09-13.** The `kiln-v1` program lives at **`specs/ROADMAP.md`** — since 2026-10-20 a
+> *proposal* for the restart (`gate0.status: pending`), awaiting human@batorfi at the Roadmap gate; the first program it
+> replaced is archived in `specs/archive/`. This file remains the
 > **shipped blank fixture** the scaffold ships (Q2=A: empty, `gate0.status: pending`, 0 rows) —
 > the thing a fresh install starts from and the validator/`firing-ready` fixture — and is kept
 > schema-valid; it is *not* a competing program, just the empty starting point.
