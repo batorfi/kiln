@@ -1,4 +1,5 @@
-> Status: product requirements — **final** (2026-10-21, human@batorfi; previously a proposal, rev 4, 2026-10-18). Open decisions were
+> Status: product requirements — **final** (2026-10-21, human@batorfi; previously a proposal, rev 4, 2026-10-18; **amended
+> 2026-10-22**: goal 7, §6.21 Explore, §6.22 Editor integration, MOD-6, M17–M18, §14.13). Open decisions were
 > settled on 2026-10-21 and are recorded where they apply; what remains open is listed in
 > [`open-decisions.md`](../concepts/open-decisions.md). Building it is admitted only at the Roadmap gate.
 > Type: PRD (high level)

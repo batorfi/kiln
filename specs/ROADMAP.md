@@ -1,7 +1,7 @@
 # ROADMAP.md — the `kiln-v1` firing program · **Roadmap gate: PENDING (proposal)**
 
-> **Proposed, not admitted.** This is a **draft** of the program for the new KILN, written from scratch on 2026-10-20 from
-> the PRD ([`docs/prd/kiln-prd.md`](../docs/prd/kiln-prd.md)) and the concept set in [`docs/concepts/`](../docs/concepts).
+> **Proposed, not admitted.** This is a **draft** of the program for the new KILN, written from scratch on 2026-10-20 and
+> revised on 2026-10-21 (decisions, team space, r42) and 2026-10-22 (r43–r52: explore, Zed, remote judges) from the PRD ([`docs/prd/kiln-prd.md`](../docs/prd/kiln-prd.md)) and the concept set in [`docs/concepts/`](../docs/concepts).
 > It admits nothing. Only **human@batorfi**, at the **Roadmap gate** (internal id `gate0`), can admit it — with the moves
 > **approve / revise / reject / edit-rows / add-row / drop-row**. Until then every row is `queued` and the gate is `pending`.
 >
@@ -544,7 +544,7 @@ From PRD §14, placed at the row that needs them:
 | **r26** | ~~added gates as arming points; `applies_when` on the diff~~ — **decided 2026-10-21**: Specification only; deterministic diff predicates; judge instruction changes need a try-run from r26 on (§14.12, CFG-7) · ~~several Deciders on one gate~~ — **decided 2026-10-21**: one decision per gate; agreement as required reviews that condition *approve* (§14.7) |
 | **r33** | egress policy language and model-family identity (§14.9) |
 | **r35** | research and spike capacity on shared hosts; keeper suggestions off-switch; spike retention (§14.11) |
-| **r37** | hosts in several workshops; workspace moves; failover; container forms (§14.8) |
+| **r37** | workspace moves; workshop failover; container forms; other storage adapters (§14.8 — hosts in several workshops already answered: yes) |
 | **r38** | ~~quorum rules, claim expiry, publishing levels~~ — **decided 2026-10-21**: majority quorum (rules and membership by the same quorum); activity-renewed claims, 7 days / 48 hours; coordination as a floor (§14.10) |
 
 Decided 2026-10-21, before r14 encodes them: the flow's proposals P1–P6 (`the-flow.md` §11) are accepted and its open
@@ -557,7 +557,7 @@ was decided the same day: pause-only rules written by an Operator (PRD OBS-6).
 1. **The program** — the rows, their order and dependencies, and the `kiln-v1` line at r32.
 2. **The first row** — on approval, **r12** is the admitted next row; nothing else is chained (`chain_unattended=false`).
 3. ~~**The open decision before r12** — terminal surface kept or retired.~~ Decided 2026-10-21: retired; the CLI is the
-   terminal surface. Also enacted before this gate: **constitution v2.0.0**, under which this program is admitted.
+   terminal surface. Also enacted before this gate: **constitution v2.0.1**, under which this program is admitted.
 4. **Optional reshaping** — for example: pull **r27 Health** earlier (right after r19) if broken-guarantee signals should
    watch the durable core from the start; or move **r30/r31 Existing codebases** ahead of **r29 New codebases** if KILN's
    first real users bring existing repositories.
