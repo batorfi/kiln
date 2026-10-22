@@ -255,7 +255,7 @@
   },
   {
    "id": "r36",
-   "short": "Observability in full (kiln-v1.x) — per-feature traces, insights with honest numbers, time travel in the record explorer, diagnostics bundle, the opt-in loopback OpenTelemetry export",
+   "short": "Observability in full (kiln-v1.x) — per-feature traces, insights with honest numbers, time travel in the record explorer, a feature's journey, the opt-in loopback OpenTelemetry export",
    "deps": [
     "r32"
    ],

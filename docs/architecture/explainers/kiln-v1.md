@@ -7,7 +7,8 @@
 > admits it, the order and cut of rows may still change. Where this explainer and the PRD or roadmap differ, they govern.
 >
 > Companions: [architecture explainer](./kiln-architecture.md) · [the constitution, explained](./kiln-constitution.md) ·
-> [the flow](../../concepts/the-flow.md) · [decisions, settled and open](../../concepts/open-decisions.md)
+> [the flow](../../concepts/the-flow.md) · [decisions, settled and open](../../concepts/open-decisions.md) ·
+> [after `kiln-v1`: `kiln-v1.x`](./kiln-v1x.md)
 
 ## Contents
 

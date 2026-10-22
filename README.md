@@ -139,6 +139,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | Area | Document | What it covers |
 |---|---|---|
 | **Overview** | [What `kiln-v1` delivers](./docs/architecture/explainers/kiln-v1.md) | the release in one place: what ships, what does not, the 23 rows that build it, and when it is done |
+| | [After `kiln-v1`](./docs/architecture/explainers/kiln-v1x.md) | what `kiln-v1.x` adds — cloud models, the bench, observability, factories anywhere, deeper brownfield and greenfield — and why it changes nothing built before |
 | | [Decisions](./docs/concepts/open-decisions.md) | every design decision settled on 2026-10-21, and what is still open, by roadmap row |
 | | [Vision](./docs/concepts/vision.md) | why KILN exists, what it believes, the human's role, the pillars, where it is going |
 | | [The web front door](./docs/concepts/web-front-door.md) | the main design: Pi 1.0 and Pi Durable, the factory as a durable task graph, events, many factories, models beyond the machine |
@@ -215,7 +216,7 @@ Any run that executes **zero** tests fails, so a mistyped path cannot pass silen
 | Path | What is in it |
 |---|---|
 | [`docs/concepts/`](./docs/concepts) | the design: vision, the flow, the front door, user experience, and one doc per area — with [mockups](./docs/concepts/mockups/README.md) and the [infographics](./docs/concepts/infographic/README.md) (KILN at a glance, the engineer at the center) |
-| [`docs/architecture/`](./docs/architecture) | the [architecture explainer](./docs/architecture/explainers/kiln-architecture.md), the [constitution explainer](./docs/architecture/explainers/kiln-constitution.md), the [`kiln-v1` explainer](./docs/architecture/explainers/kiln-v1.md) and the [platform architecture infographic](./docs/architecture/visualisations/README.md) |
+| [`docs/architecture/`](./docs/architecture) | the [architecture explainer](./docs/architecture/explainers/kiln-architecture.md), the [constitution explainer](./docs/architecture/explainers/kiln-constitution.md), the [`kiln-v1`](./docs/architecture/explainers/kiln-v1.md) and [`kiln-v1.x`](./docs/architecture/explainers/kiln-v1x.md) explainers, and the [platform architecture infographic](./docs/architecture/visualisations/README.md) |
 | [`docs/prd/`](./docs/prd/kiln-prd.md) | the product requirements for the restart |
 | [`docs/brand/`](./docs/brand/README.md) | the KILN mark and logos |
 | [`specs/`](./specs) | [`ROADMAP.md`](./specs/ROADMAP.md) (the program, admitted by a person at the Roadmap gate), one directory per feature with its spec, plan, tasks and evidence, and the archived first program |
