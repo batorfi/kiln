@@ -268,7 +268,8 @@ the workshop was created.
 2. ~~Minimum hardware?~~ **Decided 2026-10-21** (human@batorfi): **32 GB** of (unified) memory runs one local-only factory with a ~12B judge;
    **64 GB or more** is recommended; 128 GB runs several factories. Below 32 GB setup says plainly that local-only will be
    slow or limited and suggests a smaller judge — or, once models beyond the machine arrive, a hybrid profile. `kiln doctor`
-   measures and records it.
+   measures and records it. Machines and prices: [`dev-machines.md`](./dev-machines.md); models per machine class:
+   [`model-landscape.md`](./model-landscape.md).
 3. Should setup offer to import an existing Obsidian vault as the notebook?
 4. How should setup migrate a workshop created by an earlier KILN version?
 5. ~~Spec Kit upgrades?~~ **Decided 2026-10-21** (human@batorfi): a new pinned version is **offered at a factory's next Roadmap gate** with what

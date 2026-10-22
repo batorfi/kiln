@@ -157,6 +157,8 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | | [The bench](./docs/concepts/the-bench.md) | notebook, research steps and spikes, and how they feed the roadmap |
 | **Scale and teams** | [Factories anywhere](./docs/concepts/factories-anywhere.md) | hosts, placement, moves, sleeping hosts |
 | | [The team space](./docs/concepts/team-space.md) | personal workshops on one codebase: team roadmap, claims, reviews, merging |
+| **Models and machines** | [The model landscape](./docs/concepts/model-landscape.md) | open and closed models for KILN's roles, and local deployment scenarios S1–S6 (research snapshot, 2026-10) |
+| | [Dev machines](./docs/concepts/dev-machines.md) | Apple silicon and Linux/PC configurations — cheap, medium, high end — with price estimates (research snapshot, 2026-10) |
 | **Getting started** | [First run](./docs/concepts/first-run.md) | from install to a first Roadmap gate: models, workshop, Spec Kit, constitution, knowledge |
 | | [New codebases](./docs/concepts/greenfield.md) | greenfield: product brief, decisions, walking skeleton, vertical slices |
 | | [Existing codebases](./docs/concepts/brownfield.md) | brownfield: full scan into knowledge, baseline, territory, adoption in stages |
