@@ -5,8 +5,8 @@
 >
 > Scope note: this doc describes **developer machines for running KILN factories locally** — Apple silicon on macOS, and
 > Intel/AMD/NVIDIA machines on Linux (and what that means for Windows) — in **cheap, medium and high-end
-> configurations with price estimates**, each mapped to a deployment scenario. Which models run in each scenario is in
-> [`model-landscape.md`](./model-landscape.md).
+> configurations with price estimates**, each mapped to a deployment scenario (S1–S4, summarised in §2). Which models run
+> in each scenario is detailed in [`model-landscape.md`](./model-landscape.md) §4.
 >
 > Companion docs:
 >   - Models and deployment scenarios S1–S6: `model-landscape.md`
@@ -38,6 +38,53 @@ useful KILN machine costs from about **$1,300** (minimum) through **$2,700–3,2
 
 **Usable model memory** is less than total: on a Mac the GPU can wire roughly 70–75% of unified memory by default
 (adjustable); on a discrete-GPU PC it is the card's VRAM — models spilled into system RAM run far slower.
+
+### Deployment scenarios in brief
+
+The configurations below are mapped to **deployment scenarios S1–S4**. A scenario is a **memory budget plus a way of filling
+KILN's model roles** within it, always under the same three rules: the judge is the **strongest model that fits**
+(Principle II), the lane **swaps models as rarely as possible** (Principles III and IV), and lint runs on a **different model
+family** than the keeper. The full definitions, with illustrative tier maps, are in
+[`model-landscape.md`](./model-landscape.md) §4.
+
+**S1 — Minimum: one model does everything.** *32 GB unified memory, or a 24 GB GPU.*
+- There is room for one ~20 GB model with its context — for example **Qwen3.8 27B** or **Gemma 4 31B** — and it fills every
+  role: worker, judges, planner and keeper.
+- **No swaps** in normal work.
+- **Trade-off:** the judge reviews work written by the same weights. Principle I still holds — judge and author are separate
+  roles in separate conversations — but there is no second model's perspective, so more of the quality rests with the person
+  at the gate. Lint needs another family (for example Gemma 4 12B), so it costs a swap each pass.
+
+**S2 — Balanced: a strong judge beside a fast worker.** *64 GB unified memory, or 32–48 GB of VRAM.* **The recommended
+start.**
+- Two models stay resident: a **dense judge** (Gemma 4 31B or Qwen3.8 27B), **pinned** so judged gates never wait for a load,
+  and a **fast mixture-of-experts worker** (Qwen3.6 35B-A3B, about 3B parameters active per token) for the many worker steps.
+- Choose judge and worker from **different families** — a Gemma judge for a Qwen worker, or the other way round — and every
+  review is cross-family at no extra cost.
+- **What you get:** a genuinely independent judge and fast workers at the lowest price that does it well.
+
+**S3 — Workstation: a large judge and several factories.** *128 GB unified memory, or 96 GB of VRAM.*
+- A **120B-class mixture-of-experts judge** (8–12B active) stays resident — **gpt-oss 120B** (65 GB), **Laguna S 2.1** or
+  **Nemotron 3.5 Super** — while one or two ~20 GB workers rotate around it.
+- **Two or three factories** share the host's model pool: while one waits at a gate, another uses the machine.
+- **Trade-off:** on 128 GB AMD Ryzen AI Max and DGX Spark machines the models fit the same way, but decode is slower
+  (~250–275 GB/s) — fine for judges, noticeable for workers.
+
+**S4 — High end: a frontier-class open judge.** *256–512 GB unified memory, or two 96 GB GPUs.*
+- **DeepSeek V4 Flash** (284B total, 13B active, ~156 GB) is the pinned judge, with workers alongside; at 512 GB, **GLM-5.2**-class
+  models become possible.
+- The strongest local judge money can buy, several factories, and nothing leaving the machine.
+- **Trade-off:** price (from about $9,500) and availability.
+
+| | Memory | Judge | Swaps in normal work | Factories | Typical machines (§4–§5) |
+|---|---|---|---|---|---|
+| **S1** | 32 GB unified / 24 GB VRAM | the same model as the worker | none (lint swaps) | 1 | Mac mini M6 32 GB; desktop + used RTX 3090 |
+| **S2** | 64 GB unified / 32–48 GB VRAM | a 27–31B dense model, pinned | rare | 1 | Mac mini M5 Pro 64 GB; desktop + R9700 or 2 GPUs |
+| **S3** | 128 GB unified / 96 GB VRAM | a 120B-class MoE model, pinned | rare | 2–3 | Mac Studio / MacBook Pro M5 Max 128 GB; Ryzen AI Max+ 395; DGX Spark; RTX PRO 6000 |
+| **S4** | 256–512 GB unified / 192 GB VRAM | a frontier-class open model, pinned | rare | several | Mac Studio M5 Ultra 256–512 GB; 2× RTX PRO 6000 |
+
+`model-landscape.md` adds two more: **S5**, GPU workstations — the discrete-GPU speed variant of S1–S3 — and **S6**, a hybrid
+with a remote judge and local workers, which needs `kiln-v1.x` (r33).
 
 ### Platforms at a glance
 
