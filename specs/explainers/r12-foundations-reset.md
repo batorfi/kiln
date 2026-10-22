@@ -40,7 +40,7 @@ The restart reorganises the repository around the new design without throwing aw
 |---|---|---|
 | GATE-1 | The **default flow**: ten gates with plain names and one question each: **Roadmap gate**, Concept, Design, Specification, Work plan, **Implementation**, Code review, Verification, Documentation, **Merge**. Internal ids stay stable (`gate0`, `1-concept` … `9-pr`). | Must |
 | GATE-2 | Each gate offers only its own moves (the existing move vocabulary), including the special cases: Implementation `approve · split+revise`; Code review `approve · revise · restart` (revise goes to the workers); Verification `approve · reject` with **2** automatic fix rounds; Merge `approve · reject`. | Must |
-| WORK-2 | **Tier map**: roles bound to models in one place; judges (architecture critic, code reviewer, verifier, docs synthesizer) bind only to the strongest model; a weaker binding fails closed. | Must |
+| WORK-2 | **Tier map**: roles bound to models in one place; every judge role — architecture critic, code reviewer, verifier, and any judge on an added gate — binds only to the strongest model; a weaker binding fails closed (constitution v2.0.1, II: the Docs Synthesizer is no longer a judge). | Must |
 | LANE-2 | **Affinity scheduler** reused from the existing code: swap only on a genuine tier change; swaps are priced and recorded. | Must |
 | EVT-5 | **Factory-log projection** in the existing schema; the existing validators run on it; a rebuild must be byte-identical to the live projection. | Must |
 
