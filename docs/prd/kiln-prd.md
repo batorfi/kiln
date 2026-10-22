@@ -45,7 +45,9 @@ a human decides at every one of ten gates — from *which features do we build?*
 reached through a **web front door**. Every piece of work is **durable** (it survives crashes, moves and sleeping
 machines), every change is an **event** in an ordered record, and every factory keeps a **knowledge base** that
 explains how its code was built. The rules that make it trustworthy — *no silent approval, no model approves its own
-work, one step at a time per factory, everything recorded* — are enforced by the codebase, not by convention.
+work, one step at a time per factory, everything recorded* — are enforced by the codebase, not by convention. Before adopting the factory, a team can **explore** an existing codebase
+with KILN — maps and answers with citations, nothing written to it — and engineers can work from the **Zed** editor as well
+as the browser.
 
 ## 2. Why a restart
 
@@ -507,6 +509,8 @@ kiln/
     host/          host runtime, host channel, moves, sleep
     team/          team-space repository: subscribe/publish, signatures, claims, requests, team rules
     bench/         notebook, capture, promotion, research steps, spikes and spike reports
+    explore/       explore spaces: maps and signals, ask and trace, as-is specifications, tours, readiness
+    editor/        Zed: links and task templates, the MCP server, the ACP agent, the language server (stdio only)
     server/        HTTP, auth, read models, push, intake
     web/           the front door (prebuilt assets)
     cli/           kiln status · kiln needs · kiln gate (brief, move) · kiln init · kiln doctor · kiln health · kiln serve · kiln host (join, measure) · kiln check (config, model) · kiln agents try · kiln replay
@@ -517,7 +521,8 @@ kiln/
 ```
 
 **Dependency direction:** `contracts` ← `record` ← `durable` ← `lane`, `workers` ← `director` ← `workshop`, `host` ←
-`server` ← `web`/`cli`; `team` sits beside `workshop`. Only `durable` imports Pi Durable; only `workers` imports `pi-ai`; only `lane` talks to Ollama's
+`server` ← `web`/`cli`/`editor`; `team` and `explore` sit beside `workshop` (an explore space reuses `knowledge`, `record`,
+`durable` and `lane`, without `director` gates). Only `durable` imports Pi Durable; only `workers` imports `pi-ai`; only `lane` talks to Ollama's
 management API; only `server` and `host` open network listeners.
 
 ## 9. Data and storage

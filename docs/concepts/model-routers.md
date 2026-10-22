@@ -153,7 +153,7 @@ and prompts off the machine under a profile that promises `local-only`. **Propos
   (Ollama allows this);
 - the per-host network check's allowlist excludes `ollama.com`, so a missed case still fails by name.
 
-## 6. Integration options (proposals for r33)
+## 6. Integration options (for r45 and r33)
 
 | Option | How it works | Fits KILN when | Trade-offs |
 |---|---|---|---|
@@ -168,7 +168,7 @@ anywhere the policy has not allowed, or leave a request unrecorded.
 ### An illustrative binding
 
 ```yaml
-# kiln.config/ — illustrative only; the real schema is decided in r33
+# kiln.config/ — illustrative only; the real schema is decided in r45 and r33
 providers:
   openrouter:
     kind: openrouter                 # via pi-ai

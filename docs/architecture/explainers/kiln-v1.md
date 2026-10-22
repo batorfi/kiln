@@ -419,8 +419,8 @@ from the record alone; and the share of merged features with a complete feature 
 Yes. A solo engineer has a workshop and no team space; every team feature is additive.
 
 **Can I use Claude, GPT or another cloud model in `kiln-v1`?**
-No — `kiln-v1` is local-only. Private and cloud models, with per-role routing and egress policies, are row r33 in
-`kiln-v1.x`. The design already accounts for them, so nothing built in `kiln-v1` has to change when they arrive.
+No — `kiln-v1` is local-only. **Remote judges** come first in `kiln-v1.x` (r45) — a frontier judge through a provider or
+OpenRouter, workers kept local (`hybrid-deployments.md`); private and cloud models for every role follow in r33. The design already accounts for them, so nothing built in `kiln-v1` has to change when they arrive.
 
 **Does KILN touch my working copy?**
 No. Each factory works in its own KILN-managed git worktree, one branch per feature, and never checks out branches or

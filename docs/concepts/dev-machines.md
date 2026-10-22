@@ -84,7 +84,8 @@ start.**
 | **S4** | 256–512 GB unified / 192 GB VRAM | a frontier-class open model, pinned | rare | several | Mac Studio M5 Ultra 256–512 GB; 2× RTX PRO 6000 |
 
 `model-landscape.md` adds two more: **S5**, GPU workstations — the discrete-GPU speed variant of S1–S3 — and **S6**, a hybrid
-with a remote judge and local workers, which needs `kiln-v1.x` (r33).
+with a remote judge and local workers, which needs `kiln-v1.x` — r45 for remote judges, r33 for every role
+(`hybrid-deployments.md`).
 
 ### Platforms at a glance
 

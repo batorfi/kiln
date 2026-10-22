@@ -250,6 +250,9 @@ Zed ─┬─ Agent Panel ── ACP (stdio) ── kiln-acp ─┐
 
 ## 10. Phasing
 
+*Decided 2026-10-22 (in the roadmap proposal, pending the Roadmap gate):* phase 1 is **r44** in `kiln-v1`; phases 2, 3 and
+4 are **r50, r51 and r52** in `kiln-v1.x` (PRD §6.22, M18).
+
 | Phase | Directions | Depends on | Fits |
 |---|---|---|---|
 | **1. Links and context** | D1 deep links and tasks · D7 knowledge and specs in Zed · D4 MCP server, read-only | r19 front door, r20 CLI gates, r23 knowledge | small; a candidate to land near the `kiln-v1` release |
@@ -257,7 +260,7 @@ Zed ─┬─ Agent Panel ── ACP (stdio) ── kiln-acp ─┐
 | **3. Decide where the code is** | D3 — Code review (then Verification, Implementation) with moves through elicitation · D6 follow and steer | phase 2; r20, r21 | `kiln-v1.x` |
 | **4. Ambient and team** | D5 language server · D8 team review | r39 team space; Explore | later |
 
-Each phase is one or more roadmap rows, proposed for a future Roadmap gate; none is admitted.
+Each phase is one roadmap row (r44, r50–r52) in the roadmap proposal; none is admitted until the Roadmap gate.
 
 ## 11. Beyond Zed
 

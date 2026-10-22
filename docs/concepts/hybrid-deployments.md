@@ -298,11 +298,11 @@ hybrid one with heavy redaction.
 
 ## 9. Roadmap note
 
-Hybrid needs r33 (*Models beyond the machine*): the remote catalog, profiles, per-role routing, egress policy, budgets
-and — if routers are supported — the pinning rules of `model-routers.md`. It is listed in `kiln-v1.x` today. Because a
-hybrid factory lowers the hardware a team needs to try KILN with strong judges — from a 128–256 GB machine to a 32–64 GB
-one — **pulling r33 earlier**, or shipping a minimal hybrid (direct providers, judges only) close to the `kiln-v1`
-release, is worth considering at a future Roadmap gate. That is a proposal, not a decision.
+**Decided 2026-10-22** (in the roadmap proposal, pending the Roadmap gate): the scenarios of this doc arrive in two rows.
+**r45 — remote judges** is the first `kiln-v1.x` row: judges only, through direct providers or OpenRouter pinned, with
+judge-context egress, budgets and recording (PRD MOD-6). **r33 — models beyond the machine** follows and builds on it:
+the full catalog, profiles, per-role routing for every role, and fallback as policy. Because remote judges lower the
+hardware a team needs for strong review — from a 128–256 GB machine to a 32–64 GB one — r45 comes first.
 
 ## 10. Open questions
 

@@ -476,7 +476,9 @@ proposals.
 - the first knowledge base comes from the repository's own documents, readable in Obsidian or an IDE from its first page;
 - setup can be interrupted and resumed, and any step redone later; it is recorded as the start of the workshop's record;
 - the first real act is a decision at the Roadmap gate — or, first, a read-only demo of a whole feature; a team can be
-  started or joined at the end or any time after, and joining never loosens the workshop.
+  started or joined at the end or any time after, and joining never loosens the workshop;
+- a team not ready for the factory can start with an **explore space** instead — maps and answers with citations on an
+  existing codebase, nothing written to it (`code-exploration.md`, roadmap r43).
 
 ## 8. The gate brief: rich context at every gate
 

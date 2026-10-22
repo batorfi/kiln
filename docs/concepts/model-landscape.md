@@ -52,7 +52,7 @@ And from the machinery, for every model:
 
 ## 3. The landscape, October 2026
 
-### 3.1 Closed frontier models (API only — relevant from `kiln-v1.x`, r33)
+### 3.1 Closed frontier models (API only — relevant from `kiln-v1.x`: r45 for judges, r33 for every role)
 
 `kiln-v1` runs local models only. These matter for the **hybrid** profile in `kiln-v1.x`, where a policy can route
 judges (or any role) to a remote model with every request checked and recorded.
@@ -236,14 +236,14 @@ processing** — which matters when judges read long diffs and briefs.
 - **96 GB** (RTX PRO 6000 Blackwell): S3 with the speed of a discrete GPU.
 - System RAM can hold a model off the GPU, but offloaded layers run much slower — plan the tier map to fit VRAM.
 
-### S6 — Hybrid (from `kiln-v1.x`, r33)
+### S6 — Hybrid (from `kiln-v1.x`: r45 for judges, r33 for every role)
 
 When a local judge is not strong enough for the work, a policy may route **judges** to a remote frontier model while
 **workers stay local** — every request checked against the egress policy and recorded, and cross-family judging
 available by choosing, say, a Claude judge for Qwen-written code.
 
 ```yaml
-# tiers.yaml — S6 (illustrative; needs r33)
+# tiers.yaml — S6 (illustrative; judges need r45, other remote roles r33)
 worker: qwen3.6:35b             # local
 code-reviewer: claude-opus-5-5  # remote, under the factory's egress policy
 verifier: claude-opus-5-5
@@ -291,7 +291,8 @@ Not available in `kiln-v1`. The design is in `web-front-door.md` §13; hybrid sc
   "strongest judge" and lint's other-family rule.
 - **r28 — `kiln doctor` recommendations** follow the scenarios: measure memory and bandwidth, propose S1–S4 with a tier
   map, and say plainly below 32 GB that local-only will be slow or limited.
-- **r33 — hybrid** brings the closed models of §3.1 in, under policy.
+- **r45 and r33 — hybrid**: remote judges first (r45), then any role (r33), bringing the closed models of §3.1 in under
+  policy (`hybrid-deployments.md`).
 - **Keep this doc current.** It is a dated snapshot; refresh it when a new model family or generation lands, and before
   each release.
 

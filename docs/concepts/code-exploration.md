@@ -303,6 +303,10 @@ its code; KILN can help it understand its code *and then change how it builds so
 
 ## 13. Roadmap opportunity
 
+*Decided 2026-10-22 (in the roadmap proposal, pending the Roadmap gate):* the minimal explore space ships in `kiln-v1`
+as **r43**, right after the full scan; as-is specifications, tours and archaeology, readiness and legacy languages follow
+in `kiln-v1.x` as **r46–r49** (PRD §6.21, M17). The options below are kept as the record of what was considered.
+
 Explore is mostly built from parts `kiln-v1` already plans, but the current order delivers them late, inside the
 factory: the full scan is r30, after first run (r28), and the adoption stages are r40 in `kiln-v1.x`.
 

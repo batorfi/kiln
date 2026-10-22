@@ -396,7 +396,7 @@ Only by building the seams honestly: the policy check before every model request
 store that knows nothing about its host, knowledge with origins. §2 lists them. Don't build the `kiln-v1.x` features
 themselves early.
 
-**With r33, can a cloud model be the judge?**
+**With r45, can a cloud model be the judge?**
 Yes, if the factory's policy routes the judge role there and it is the strongest model available to that factory. It is
 still never silently downgraded: if it is unreachable, the judged step waits and says why. Remote judges advise; people
 still decide.
