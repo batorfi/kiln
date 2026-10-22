@@ -58,6 +58,7 @@ None of these blocks a `kiln-v1` row. Each is decided at, or measured in, the ro
 | When a greenfield factory revisits an early decision suggested by evidence | [greenfield](./greenfield.md) §17 Q4 | r41 (`kiln-v1.x`) |
 | Migrating a workshop created by an earlier KILN version | [first-run](./first-run.md) §15 Q4 | the first release after `kiln-v1` |
 | **Explore first** — an explore space before any factory; as-is specifications and a discovered constitution; adoption stages 0–2; whether to cut an early `kiln-explore` release | [code-exploration](./code-exploration.md) §13, §15 | a future Roadmap gate (proposal) |
+| **KILN in Zed** — phase 1 (links, tasks, knowledge, read-only MCP) near `kiln-v1`; moves from Zed; checkout mapping; adapter identity; MCP clients | [zed-integration](./zed-integration.md) §10, §12 | a future Roadmap gate (proposal) |
 | Post-merge gates and the Merge gate's authority | [extensible-flow](./extensible-flow.md) §14 Q3 · PRD §14.12 | out of scope until post-merge gates are admitted |
 | A standard, content-free audit export (CloudEvents JSONL) | [the-record](./the-record.md) §18 Q3 | not yet placed |
 | A mature wiki as training data for a smaller local model | [factory-wiki](./factory-wiki.md) §14 Q5 | not yet placed |

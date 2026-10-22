@@ -150,7 +150,8 @@ point; nothing is redone.
 ### 5.3 Where it is used
 
 - **In the browser** — the front door's knowledge, maps, tours and a question box.
-- **In the editor** — the knowledge base is an Obsidian vault readable in Obsidian or Zed; tours and answers link to
+- **In the editor** — see `zed-integration.md` for the Zed surface (Agent Panel, MCP server, language server). The
+  knowledge base is an Obsidian vault readable in Obsidian or Zed; tours and answers link to
   `file:line`.
 - **In the terminal** — `kiln explore ask`, `kiln explore trace`, `kiln explore tour`.
 - **Through other agents** — the knowledge base as context for the team's existing coding assistants (an MCP server is a

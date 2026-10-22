@@ -11,8 +11,9 @@ Durable, recorded, local by default — one feature at a time, in your own works
 > [recorded](./docs/concepts/open-decisions.md). The implementation has **not started yet** — its roadmap is a
 > [proposal](./specs/ROADMAP.md) waiting for a human decision at the Roadmap gate. Since then, research snapshots of
 > [models](./docs/concepts/model-landscape.md) and [dev machines](./docs/concepts/dev-machines.md) and proposals for
-> [exploring codebases before adoption](./docs/concepts/code-exploration.md) and
-> [hybrid deployments](./docs/concepts/hybrid-deployments.md) have been added (2026-10-22). What runs today is the
+> [exploring codebases before adoption](./docs/concepts/code-exploration.md),
+> [hybrid deployments](./docs/concepts/hybrid-deployments.md) and [KILN in the Zed editor](./docs/concepts/zed-integration.md)
+> have been added (2026-10-22). What runs today is the
 > **foundation from the first program** (KILN as a Pi extension), which the restart reuses. See
 > [Where things stand](#where-things-stand).
 
@@ -85,7 +86,9 @@ own — a threat model, a security review — without removing any. → [`the-fl
 - **[Configure](./docs/concepts/configuration.md)** — hosts, models, roles, flows and policies, as plain files.
 - **[Work with the team](./docs/concepts/team-space.md)** — a team roadmap, claims on code, reviews across workshops.
 
-Everything waiting on you is in one place, **[Needs you](./docs/concepts/the-director.md)**. Nothing decides itself.
+Everything waiting on you is in one place, **[Needs you](./docs/concepts/the-director.md)**. Nothing decides itself. You
+work in the browser or the terminal — and, as proposed, inside the **[Zed editor](./docs/concepts/zed-integration.md)**,
+where briefs, findings and moves sit next to the code.
 
 <p align="center"><a href="./docs/concepts/infographic/kiln-engineer-at-the-center.png"><img src="./docs/concepts/infographic/kiln-engineer-at-the-center.png" alt="The engineer at the center — six roles, KILN's actors and the team, one real day, and the full agentic lifecycle" width="820"></a><br>
 <sub>The engineer at the center — your roles, your crew and your team, one real day, and one feature's full lifecycle. Click for full size.</sub></p>
@@ -155,6 +158,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | | [Vision](./docs/concepts/vision.md) | why KILN exists, what it believes, the human's role, the pillars, where it is going |
 | | [The web front door](./docs/concepts/web-front-door.md) | the main design: Pi 1.0 and Pi Durable, the factory as a durable task graph, events, many factories, models beyond the machine |
 | | [The user experience](./docs/concepts/user-experience.md) | personas, vocabulary, core experiences, the ten-part gate brief, trust and safety |
+| | [KILN in Zed](./docs/concepts/zed-integration.md) | briefs, moves and knowledge inside the Zed editor — an ACP agent, an MCP server, deep links, Code review decided where the code is (proposal) |
 | **The process** | [The flow](./docs/concepts/the-flow.md) | the ten gates in depth, what runs between them, where every move leads |
 | | [An extensible flow](./docs/concepts/extensible-flow.md) | gates teams add to the default flow, with the same guarantees |
 | | [The director and Needs you](./docs/concepts/the-director.md) | deterministic orchestration, the planner, shaping the roadmap together, the one inbox |
@@ -191,7 +195,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | **The product definition** | the [PRD](./docs/prd/kiln-prd.md), **final**: principles, requirements, architecture, what to keep from today's code, milestones |
 | **The law** | the [constitution](./.specify/memory/constitution.md) **v2.0.1**, amended for the restart on 2026-10-21 — [explained for engineers](./docs/architecture/explainers/kiln-constitution.md) |
 | **The roadmap** | a [proposal](./specs/ROADMAP.md) ([what `kiln-v1` delivers](./docs/architecture/explainers/kiln-v1.md)) of 31 feature-sized rows (r12–r42, with the r42 spike before r13 and the team space in `kiln-v1`), `kiln-v1` at r32 — **pending the Roadmap gate** |
-| **Beyond `kiln-v1`** | [what `kiln-v1.x` adds](./docs/architecture/explainers/kiln-v1x.md); proposals for [exploring codebases before adoption](./docs/concepts/code-exploration.md) and [hybrid deployments](./docs/concepts/hybrid-deployments.md); research snapshots of [models](./docs/concepts/model-landscape.md), [routers](./docs/concepts/model-routers.md) and [dev machines](./docs/concepts/dev-machines.md) (2026-10) |
+| **Beyond `kiln-v1`** | [what `kiln-v1.x` adds](./docs/architecture/explainers/kiln-v1x.md); proposals for [exploring codebases before adoption](./docs/concepts/code-exploration.md), [hybrid deployments](./docs/concepts/hybrid-deployments.md) and [KILN in Zed](./docs/concepts/zed-integration.md); research snapshots of [models](./docs/concepts/model-landscape.md), [routers](./docs/concepts/model-routers.md) and [dev machines](./docs/concepts/dev-machines.md) (2026-10) |
 | **The code** | the **foundation from the first program** (rows r1–r8, KILN as a Pi extension): the single-lane runtime, the gate and log machinery, a real local-model worker, KILN loading into Pi, validators and readiness probes, and the test suite — reused by the restart (PRD §10) |
 
 The first program's roadmap and decision log are archived in

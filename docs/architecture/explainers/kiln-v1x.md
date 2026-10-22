@@ -321,6 +321,7 @@ Some ideas are designed or discussed in the concept docs but have **no row**, no
 | Idea | Status |
 |---|---|
 | **Gates after Merge** — deployment, release approval | out of scope; how they would relate to the Merge gate's authority is an open question |
+| **Editor integration** — KILN in the Zed editor over ACP, MCP and a language server (`zed-integration.md`) | a proposal; phased, not yet placed on the roadmap |
 | **An audit export** — the record as content-free CloudEvents JSONL for a team's own audit systems | not yet placed |
 | **A wiki as training data** — a mature factory wiki used to tune a smaller local model that knows the factory | not yet placed |
 | **Migrating a workshop** created by an earlier KILN version | the first release after `kiln-v1` will need it |

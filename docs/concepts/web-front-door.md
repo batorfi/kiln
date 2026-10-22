@@ -1100,6 +1100,8 @@ KILN accepts Pi Durable's experimental status and evolves with it. To keep that 
 - ~~**Event schema evolution**~~: **Decided 2026-10-21** (human@batorfi) — upcast on read; stored events never change (`the-record.md` §18).
 - ~~**r9 and the Pi extension**: `kiln/pi/` remains an alternate surface or is retired.~~ **Decided 2026-10-21: retired**;
   the terminal surface is the `kiln` CLI (PRD WEB-6), and r9 closes as superseded.
+- **Editor surfaces** (proposal): KILN in the Zed editor over ACP, MCP and a language server — a surface reading the same
+  projections and using the same move intake (`zed-integration.md`).
 - **Positioning**: from "a factory *for Pi*" to "a factory *built on* Pi's durable substrate, with its own
   surface".
 

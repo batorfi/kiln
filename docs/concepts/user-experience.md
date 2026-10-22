@@ -227,6 +227,9 @@ carried out.
 - the decision is deliberate: it cannot be made by accident, by default or by timeout;
 - after deciding, the human knows what the factory will do next.
 
+*Proposed (2026-10-22):* the same brief, findings and moves inside the Zed editor, next to the code — read-only first,
+then the Code review gate decided in Zed on the full brief (`zed-integration.md`).
+
 ### 7.3 Staying oriented
 
 *Purpose:* know where everything stands without asking.

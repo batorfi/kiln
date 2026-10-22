@@ -190,7 +190,8 @@ quotes are reproduced in the page instead.
 **Editors such as Zed.** Zed and other editors show every page as clean markdown with readable front-matter; wikilinks
 read naturally because a link's text *is* the target file's name. Editors that use a markdown language server which
 understands wikilinks (Marksman, for example) also get link navigation, completion and broken-link warnings. KILN
-does not require any particular editor or plugin.
+does not require any particular editor or plugin. A proposal for ready-made Zed projects per vault, Zed-openable tours
+and knowledge served to editor agents is in `zed-integration.md` (D4, D7).
 
 **Editing in KILN, Obsidian or Zed.** People who may edit a wiki can do it anywhere. KILN picks up a change when it next
 reads the repository: the change is attributed to whoever committed it, recorded as `wiki.page_edited` (with where it
