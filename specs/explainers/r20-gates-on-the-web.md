@@ -1,14 +1,14 @@
 # r20 — Gates on the web
 
 > **Type:** roadmap-row explainer — for understanding, not a specification. **Audience:** engineers who will build,
-> review or plan this row. **Status:** row **queued** in the [roadmap proposal](../ROADMAP.md), which awaits the Roadmap
-> gate; nothing here is admitted. The row's own `specs/NNN-…` directory (spec, plan, tasks) is written when it is admitted.
+> review or plan this row. **Status:** row **queued** on the [roadmap](../ROADMAP.md) admitted at the Roadmap gate on
+> 2026-10-22; it fires when the Roadmap gate admits it as the next feature. Its own `specs/NNN-…` directory (spec, plan, tasks) is written then.
 > Where this explainer and the roadmap or [PRD](../../docs/prd/kiln-prd.md) differ, they govern.
 
 | | |
 |---|---|
 | **Phase** | Front door |
-| **Release** | `kiln-v1` — position 10 of 41 in the proposed order |
+| **Release** | `kiln-v1` — position 10 of 41 in the committed order |
 | **Depends on** | [r18 — The director](./r18-the-director.md), [r19 — Web front door, read-only](./r19-web-front-door-read-only.md) |
 | **Unlocks** | [r21 — Stepping in](./r21-stepping-in.md), [r22 — Shaping the roadmap together](./r22-shaping-the-roadmap-together.md), [r23 — The factory knowledge base](./r23-the-factory-knowledge-base.md), [r25 — One workshop, several factories](./r25-one-workshop-several-factories.md), [r44 — KILN in Zed, phase 1](./r44-kiln-in-zed-phase-1.md) |
 | **PRD requirements** | BRIEF-1…4, BRIEF-6, WEB-3 (core), WEB-6, DIR-6 |
@@ -69,7 +69,7 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 - [The user experience §8 — the gate brief](../../docs/concepts/user-experience.md)
 - [The flow](../../docs/concepts/the-flow.md)
 - [PRD §6.8 and WEB-6](../../docs/prd/kiln-prd.md)
-- [The roadmap proposal](../ROADMAP.md) · [All row explainers](./README.md)
+- [The roadmap](../ROADMAP.md) · [All row explainers](./README.md)
 
 ---
 

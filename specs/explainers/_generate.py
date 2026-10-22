@@ -37,7 +37,7 @@ def req_ids(s):
     return out
 
 # decisions table
-dec = rm[rm.index("## Decisions needed before rows fire"): rm.index("## What the Roadmap gate is asked to decide")]
+dec = rm[rm.index("## Decisions needed before rows fire"): rm.index("## What the Roadmap gate decided")]
 DECISIONS = {}
 for m in re.finditer(r"^\| \*\*([^*]+)\*\* \| (.*) \|$", dec, re.M):
     key, text = m.group(1), m.group(2)
@@ -532,12 +532,12 @@ for i, rid in enumerate(ORDER):
     L = []
     L.append(f"# {rid} — {t['title']}\n")
     L.append("> **Type:** roadmap-row explainer — for understanding, not a specification. **Audience:** engineers who will build,")
-    L.append("> review or plan this row. **Status:** row **queued** in the [roadmap proposal](../ROADMAP.md), which awaits the Roadmap")
-    L.append("> gate; nothing here is admitted. The row's own `specs/NNN-…` directory (spec, plan, tasks) is written when it is admitted.")
+    L.append("> review or plan this row. **Status:** row **queued** on the [roadmap](../ROADMAP.md) admitted at the Roadmap gate on")
+    L.append("> 2026-10-22; it fires when the Roadmap gate admits it as the next feature. Its own `specs/NNN-…` directory (spec, plan, tasks) is written then.")
     L.append("> Where this explainer and the roadmap or [PRD](" + P + ") differ, they govern.\n")
     L.append("| | |\n|---|---|")
     L.append(f"| **Phase** | {t['phase']} |")
-    L.append(f"| **Release** | {rel} — position {i + 1} of {len(ORDER)} in the proposed order |")
+    L.append(f"| **Release** | {rel} — position {i + 1} of {len(ORDER)} in the committed order |")
     L.append(f"| **Depends on** | {deps} |")
     L.append(f"| **Unlocks** | {unl} |")
     L.append(f"| **PRD requirements** | {t['reqs']} |")
@@ -574,18 +574,18 @@ for i, rid in enumerate(ORDER):
     L.append(f"\n*See [the constitution]({K}) and [the constitution, explained]({X}kiln-constitution.md).*\n")
     L.append("## Where to read more\n")
     L += [f"- [{a}]({b})" for a, b in n["read"]]
-    L.append(f"- [The roadmap proposal](../ROADMAP.md) · [All row explainers](./README.md)\n")
+    L.append(f"- [The roadmap](../ROADMAP.md) · [All row explainers](./README.md)\n")
     L.append("---\n")
     L.append(f"← {prev_} · [index](./README.md) · {next_} →\n")
     open(os.path.join(OUT, FILE[rid]), "w").write("\n".join(L))
 
 # index
 I = ["# Roadmap row explainers\n",
-     "> **Type:** index. One explainer per row of the [roadmap proposal](../ROADMAP.md) — what each row delivers, why, what it",
-     "> carries from the [PRD](" + P + "), how it is proven and what shapes it. The roadmap awaits the Roadmap gate; nothing here is",
-     "> admitted. The roadmap and the PRD govern where an explainer differs. Generated from the roadmap and PRD on 2026-10-22;",
+     "> **Type:** index. One explainer per row of the [roadmap](../ROADMAP.md) — what each row delivers, why, what it",
+     "> carries from the [PRD](" + P + "), how it is proven and what shapes it. The roadmap was admitted at the Roadmap gate on",
+     "> 2026-10-22 (human@batorfi); r12 is the next row. The roadmap and the PRD govern where an explainer differs. Generated from the roadmap and PRD on 2026-10-22;",
      "> regenerate or edit them together when rows change.\n",
-     f"**{len(ORDER)} rows** in the proposed order — **{len(V1)} in `kiln-v1`** (ending with the release, r32) and **{len(ORDER) - len(V1)} in `kiln-v1.x`**.",
+     f"**{len(ORDER)} rows** in the committed order — **{len(V1)} in `kiln-v1`** (ending with the release, r32) and **{len(ORDER) - len(V1)} in `kiln-v1.x`**.",
      "Row ids are never reused, so they are not in numeric order.\n",
      "For the big picture, read [what `kiln-v1` delivers](" + X + "kiln-v1.md) and [what `kiln-v1.x` adds](" + X + "kiln-v1x.md).\n"]
 cur = None

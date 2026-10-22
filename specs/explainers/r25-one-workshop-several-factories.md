@@ -1,14 +1,14 @@
 # r25 — One workshop, several factories
 
 > **Type:** roadmap-row explainer — for understanding, not a specification. **Audience:** engineers who will build,
-> review or plan this row. **Status:** row **queued** in the [roadmap proposal](../ROADMAP.md), which awaits the Roadmap
-> gate; nothing here is admitted. The row's own `specs/NNN-…` directory (spec, plan, tasks) is written when it is admitted.
+> review or plan this row. **Status:** row **queued** on the [roadmap](../ROADMAP.md) admitted at the Roadmap gate on
+> 2026-10-22; it fires when the Roadmap gate admits it as the next feature. Its own `specs/NNN-…` directory (spec, plan, tasks) is written then.
 > Where this explainer and the roadmap or [PRD](../../docs/prd/kiln-prd.md) differ, they govern.
 
 | | |
 |---|---|
 | **Phase** | Workshop |
-| **Release** | `kiln-v1` — position 15 of 41 in the proposed order |
+| **Release** | `kiln-v1` — position 15 of 41 in the committed order |
 | **Depends on** | [r20 — Gates on the web](./r20-gates-on-the-web.md) |
 | **Unlocks** | [r26 — Agents and flows](./r26-agents-and-flows.md), [r38 — Team space, part 1](./r38-team-space-part-1.md) |
 | **PRD requirements** | HOST-1, HOST-2 (in-process), LANE-4, WORK-6, PPL-1 (single user) |
@@ -62,7 +62,7 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 
 - [The web front door §12 — many kilns on one machine](../../docs/concepts/web-front-door.md)
 - [PRD §6.12](../../docs/prd/kiln-prd.md)
-- [The roadmap proposal](../ROADMAP.md) · [All row explainers](./README.md)
+- [The roadmap](../ROADMAP.md) · [All row explainers](./README.md)
 
 ---
 

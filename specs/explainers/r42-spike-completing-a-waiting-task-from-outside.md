@@ -1,14 +1,14 @@
 # r42 — Spike: completing a waiting task from outside
 
 > **Type:** roadmap-row explainer — for understanding, not a specification. **Audience:** engineers who will build,
-> review or plan this row. **Status:** row **queued** in the [roadmap proposal](../ROADMAP.md), which awaits the Roadmap
-> gate; nothing here is admitted. The row's own `specs/NNN-…` directory (spec, plan, tasks) is written when it is admitted.
+> review or plan this row. **Status:** row **queued** on the [roadmap](../ROADMAP.md) admitted at the Roadmap gate on
+> 2026-10-22; it fires when the Roadmap gate admits it as the next feature. Its own `specs/NNN-…` directory (spec, plan, tasks) is written then.
 > Where this explainer and the roadmap or [PRD](../../docs/prd/kiln-prd.md) differ, they govern.
 
 | | |
 |---|---|
 | **Phase** | Durable core |
-| **Release** | `kiln-v1` — position 2 of 41 in the proposed order |
+| **Release** | `kiln-v1` — position 2 of 41 in the committed order |
 | **Depends on** | [r12 — Foundations reset](./r12-foundations-reset.md) |
 | **Unlocks** | [r13 — Durable core and the gate contract](./r13-durable-core-and-the-gate-contract.md) |
 | **PRD requirements** | CORE-6 |
@@ -61,7 +61,7 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 - [KILN on Pi Durable §12](../../docs/concepts/pi-durable.md)
 - [The web front door §5.2 — the gate contract](../../docs/concepts/web-front-door.md)
 - [PRD CORE-6](../../docs/prd/kiln-prd.md)
-- [The roadmap proposal](../ROADMAP.md) · [All row explainers](./README.md)
+- [The roadmap](../ROADMAP.md) · [All row explainers](./README.md)
 
 ---
 

@@ -297,7 +297,8 @@ KILN builds on Pi's durable substrate while it is still experimental, and evolve
 
 Adopting it needs deliberate, recorded human decisions. **As of 2026-10-21** the constitution amendments and the
 dependency stance are enacted (constitution v2.0.1), the future of the Pi-integrated UI is decided (retired; the `kiln`
-CLI is the terminal surface), and the Roadmap gate amendment is the one step still waiting:
+CLI is the terminal surface), and **on 2026-10-22 the Roadmap gate admitted the new program** (`specs/ROADMAP.md`). What was
+asked for:
 
 - **Constitution amendments**: local by default with egress only by configured, recorded choice
   (Principle VIII); one lane *per factory* with a machine-wide model budget (Principle III); the

@@ -1,14 +1,14 @@
 # r29 — New codebases
 
 > **Type:** roadmap-row explainer — for understanding, not a specification. **Audience:** engineers who will build,
-> review or plan this row. **Status:** row **queued** in the [roadmap proposal](../ROADMAP.md), which awaits the Roadmap
-> gate; nothing here is admitted. The row's own `specs/NNN-…` directory (spec, plan, tasks) is written when it is admitted.
+> review or plan this row. **Status:** row **queued** on the [roadmap](../ROADMAP.md) admitted at the Roadmap gate on
+> 2026-10-22; it fires when the Roadmap gate admits it as the next feature. Its own `specs/NNN-…` directory (spec, plan, tasks) is written then.
 > Where this explainer and the roadmap or [PRD](../../docs/prd/kiln-prd.md) differ, they govern.
 
 | | |
 |---|---|
 | **Phase** | Getting started |
-| **Release** | `kiln-v1` — position 19 of 41 in the proposed order |
+| **Release** | `kiln-v1` — position 19 of 41 in the committed order |
 | **Depends on** | [r26 — Agents and flows](./r26-agents-and-flows.md), [r28 — First run](./r28-first-run.md) |
 | **Unlocks** | [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md), [r41 — New codebases, the rest](./r41-new-codebases-the-rest.md) |
 | **PRD requirements** | GREEN-1…5 |
@@ -63,7 +63,7 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 
 - [New codebases](../../docs/concepts/greenfield.md)
 - [PRD §6.20](../../docs/prd/kiln-prd.md)
-- [The roadmap proposal](../ROADMAP.md) · [All row explainers](./README.md)
+- [The roadmap](../ROADMAP.md) · [All row explainers](./README.md)
 
 ---
 

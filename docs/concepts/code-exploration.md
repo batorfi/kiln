@@ -1,6 +1,6 @@
-> Status: concept — **in the roadmap proposal** (2026-10-22): the minimal explore space is row **r43** in `kiln-v1`; as-is
+> Status: concept — **on the admitted roadmap** (2026-10-22): the minimal explore space is row **r43** in `kiln-v1`; as-is
 > specifications, tours and archaeology, readiness and legacy languages are rows **r46–r49** in `kiln-v1.x` (PRD §6.21,
-> M17). The roadmap itself awaits the Roadmap gate. Open questions answered with this doc's defaults (§15). It extends
+> M17). The roadmap was admitted at the Roadmap gate on 2026-10-22. Open questions answered with this doc's defaults (§15). It extends
 > `brownfield.md`, which stays the reference for bringing a factory into an existing codebase.
 > Type: concept
 >
@@ -303,7 +303,7 @@ its code; KILN can help it understand its code *and then change how it builds so
 
 ## 13. Roadmap opportunity
 
-*Decided 2026-10-22 (in the roadmap proposal, pending the Roadmap gate):* the minimal explore space ships in `kiln-v1`
+*Decided 2026-10-22 (rows admitted with the roadmap on 2026-10-22):* the minimal explore space ships in `kiln-v1`
 as **r43**, right after the full scan; as-is specifications, tours and archaeology, readiness and legacy languages follow
 in `kiln-v1.x` as **r46–r49** (PRD §6.21, M17). The options below are kept as the record of what was considered.
 

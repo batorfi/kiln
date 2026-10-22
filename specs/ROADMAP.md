@@ -1,9 +1,12 @@
-# ROADMAP.md — the `kiln-v1` firing program · **Roadmap gate: PENDING (proposal)**
+# ROADMAP.md — the `kiln-v1` firing program · **Roadmap gate: APPROVED (2026-10-22, human@batorfi)**
 
-> **Proposed, not admitted.** This is a **draft** of the program for the new KILN, written from scratch on 2026-10-20 and
-> revised on 2026-10-21 (decisions, team space, r42) and 2026-10-22 (r43–r52: explore, Zed, remote judges) from the PRD ([`docs/prd/kiln-prd.md`](../docs/prd/kiln-prd.md)) and the concept set in [`docs/concepts/`](../docs/concepts).
-> It admits nothing. Only **human@batorfi**, at the **Roadmap gate** (internal id `gate0`), can admit it — with the moves
-> **approve / revise / reject / edit-rows / add-row / drop-row**. Until then every row is `queued` and the gate is `pending`.
+> **Admitted.** **human@batorfi** approved this program at the **Roadmap gate** (internal id `gate0`) on
+> **2026-10-22T12:20:22Z**, as proposed — written from scratch on 2026-10-20 and revised on 2026-10-21 (decisions, team
+> space, r42) and 2026-10-22 (r43–r52: explore, Zed, remote judges) from the PRD
+> ([`docs/prd/kiln-prd.md`](../docs/prd/kiln-prd.md)) and the concept set in [`docs/concepts/`](../docs/concepts). **r12 is the
+> admitted next row.** Every row stays `queued` until its own first gate opens; the Roadmap gate re-opens after every merged
+> or abandoned feature, where the program can be revised with **approve / revise / reject / edit-rows / add-row / drop-row**.
+> The decision and its context are logged in `gate0.note`.
 >
 > **What it replaces.** The previous approved program — r1–r11, KILN as a Pi extension with a terminal UI — is archived,
 > unchanged, at [`specs/archive/ROADMAP-2026-09-kiln-on-pi.md`](./archive/ROADMAP-2026-09-kiln-on-pi.md), with its full
@@ -18,7 +21,7 @@
 {
  "deliverable": "kiln-v1 — the new KILN (local web front door on Pi Durable), per docs/prd/kiln-prd.md",
  "owner": "human@batorfi",
- "updated": "2026-10-22T12:00:00Z",
+ "updated": "2026-10-22T12:20:22Z",
  "rows": [
   {
    "id": "r12",
@@ -420,10 +423,13 @@
  ],
  "chain_unattended": false,
  "gate0": {
-  "status": "pending",
-  "note": "PROPOSED, NOT ADMITTED. Drafted from the PRD (rev 4+) and the concept set on 2026-10-20 as a proposal for the Roadmap gate. Nothing here is admitted until human@batorfi decides at the Roadmap gate (approve / revise / reject / edit-rows / add-row / drop-row). The previous approved program (r1–r11, KILN as a Pi extension) is archived at specs/archive/ROADMAP-2026-09-kiln-on-pi.md; row ids continue from r12 so every id stays unique across the repository's history."
+  "status": "approved",
+  "rows": "r12..r52 (program, 41 rows in the committed ordering); next row: r12",
+  "decided_by": "human@batorfi",
+  "at": "2026-10-22T12:20:22Z",
+  "note": "ROADMAP GATE LOG (chronological, P-VII recorded):\n 1) 2026-10-22T12:20:22Z  human@batorfi  APPROVE  the kiln-v1 program as proposed — 41 rows, r12..r52, in the committed ordering; kiln-v1 = 26 rows ending with the release r32; kiln-v1.x = 15 rows. Admitted under constitution v2.0.1, with the PRD (final 2026-10-21, amended 2026-10-22) as the yardstick. r12 is the ADMITTED NEXT ROW; it stays 'queued' until its own first gate opens (M4: 'active' requires a live gate); chain_unattended=false — nothing else is chained, and the Roadmap gate re-opens after every merged or abandoned feature. No optional reshaping taken (r27 stays after r19's dependents; r29 stays before r30/r31). Recorded with the decision: the legacy live-Pi suite fails 8 tests on this host (Pi 1.1.0 vs the measured 0.85.1), identically on main — handled in r12; r42 is a go/no-go and a no-go re-opens this gate before r13. PROPOSED BY: the director (draft of 2026-10-20, revised 2026-10-21 and 2026-10-22). DECIDED BY: the human — P-VI/P-I: the program did not admit itself."
  },
- "trace": "P-VI (the Roadmap gate — gate0 — is the sole admission, human-only, always; this draft admits nothing), P-VII (recorded), P-IX (roadmap fields)"
+ "trace": "P-VI (the Roadmap gate — gate0 — is the sole admission, human-only, always; admitted by human@batorfi 2026-10-22), P-VII (recorded), P-IX (roadmap fields)"
 }
 ```
 
@@ -552,20 +558,23 @@ questions answered (§12) — Code review offers `approve · revise · restart`,
 no lighter re-crossing, no Documentation skip; the move kinds stay closed. Health's director-rule question (`health.md` §15)
 was decided the same day: pause-only rules written by an Operator (PRD OBS-6).
 
-## What the Roadmap gate is asked to decide
+## What the Roadmap gate decided (2026-10-22)
+
+*Approved as proposed; the items below are kept as the record of what was put to the gate.*
 
 1. **The program** — the rows, their order and dependencies, and the `kiln-v1` line at r32.
-2. **The first row** — on approval, **r12** is the admitted next row; nothing else is chained (`chain_unattended=false`).
+2. **The first row** — **r12** is the admitted next row; nothing else is chained (`chain_unattended=false`).
 3. ~~**The open decision before r12** — terminal surface kept or retired.~~ Decided 2026-10-21: retired; the CLI is the
    terminal surface. Also enacted before this gate: **constitution v2.0.1**, under which this program is admitted.
-4. **Optional reshaping** — for example: pull **r27 Health** earlier (right after r19) if broken-guarantee signals should
+4. **Optional reshaping** — *not taken.* For example: pull **r27 Health** earlier (right after r19) if broken-guarantee signals should
    watch the durable core from the start; or move **r30/r31 Existing codebases** ahead of **r29 New codebases** if KILN's
    first real users bring existing repositories.
 
-## Guardrails this draft keeps
+## Guardrails this program keeps
 
-- **It admits nothing.** `gate0.status` is `pending`; no row is `active` or `done`; the draft's author is not its decider.
+- **Admitted by a person.** `gate0.status` is `approved` with `decided_by: human@batorfi` and the time of the move; no row is
+  `active` or `done` yet; the draft's author was not its decider.
 - **History is kept.** The previous program is archived unchanged with its Gate 0 log; no closed row is rewritten.
 - **Ids are unique.** New rows start at r12; `specs/001–008` stay the record of the old rows.
 - **Valid by construction.** Every dependency names an existing row and appears earlier in the ordering, so the graph is
-  acyclic (M1); no approved state is claimed (M3); no row carries a gate or an outcome (M4).
+  acyclic (M1); the approved state carries a full human-decided record (M3); no row carries a gate or an outcome yet (M4).

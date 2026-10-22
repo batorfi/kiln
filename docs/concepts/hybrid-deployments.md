@@ -1,4 +1,4 @@
-> Status: concept — **research snapshot; in the roadmap proposal** (2026-10-22): remote judges are row **r45**, the first
+> Status: concept — **research snapshot; on the admitted roadmap** (2026-10-22): remote judges are row **r45**, the first
 > `kiln-v1.x` row (PRD MOD-6); the rest of hybrid comes with r33. `kiln-v1` itself stays local-only. Open questions
 > answered with this doc's defaults (§10). Prices are list prices found on that date;
 > per-feature costs are this doc's own estimates (*est.*) from stated assumptions — check both before relying on them.
@@ -298,7 +298,7 @@ hybrid one with heavy redaction.
 
 ## 9. Roadmap note
 
-**Decided 2026-10-22** (in the roadmap proposal, pending the Roadmap gate): the scenarios of this doc arrive in two rows.
+**Decided 2026-10-22** (rows admitted with the roadmap on 2026-10-22): the scenarios of this doc arrive in two rows.
 **r45 — remote judges** is the first `kiln-v1.x` row: judges only, through direct providers or OpenRouter pinned, with
 judge-context egress, budgets and recording (PRD MOD-6). **r33 — models beyond the machine** follows and builds on it:
 the full catalog, profiles, per-role routing for every role, and fallback as policy. Because remote judges lower the

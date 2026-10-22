@@ -1,14 +1,14 @@
 # r37 — Factories anywhere
 
 > **Type:** roadmap-row explainer — for understanding, not a specification. **Audience:** engineers who will build,
-> review or plan this row. **Status:** row **queued** in the [roadmap proposal](../ROADMAP.md), which awaits the Roadmap
-> gate; nothing here is admitted. The row's own `specs/NNN-…` directory (spec, plan, tasks) is written when it is admitted.
+> review or plan this row. **Status:** row **queued** on the [roadmap](../ROADMAP.md) admitted at the Roadmap gate on
+> 2026-10-22; it fires when the Roadmap gate admits it as the next feature. Its own `specs/NNN-…` directory (spec, plan, tasks) is written then.
 > Where this explainer and the roadmap or [PRD](../../docs/prd/kiln-prd.md) differ, they govern.
 
 | | |
 |---|---|
 | **Phase** | kiln-v1.x |
-| **Release** | `kiln-v1.x` — position 32 of 41 in the proposed order |
+| **Release** | `kiln-v1.x` — position 32 of 41 in the committed order |
 | **Depends on** | [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md) |
 | **Unlocks** | — |
 | **PRD requirements** | HOST-2 (separate), HOST-3…7, WEB-2 (network), CFG-5, TEAM-9 |
@@ -54,7 +54,7 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 
 ## Decisions that shape it
 
-- hosts in several workshops; workspace moves; failover; container forms (§14.8)
+- workspace moves; workshop failover; container forms; other storage adapters (§14.8 — hosts in several workshops already answered: yes)
 
 ## Rules it must keep
 
@@ -68,7 +68,7 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 
 - [Factories anywhere](../../docs/concepts/factories-anywhere.md)
 - [PRD §6.12](../../docs/prd/kiln-prd.md)
-- [The roadmap proposal](../ROADMAP.md) · [All row explainers](./README.md)
+- [The roadmap](../ROADMAP.md) · [All row explainers](./README.md)
 
 ---
 

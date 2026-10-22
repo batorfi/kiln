@@ -1,14 +1,14 @@
 # r17 — Configuration as files
 
 > **Type:** roadmap-row explainer — for understanding, not a specification. **Audience:** engineers who will build,
-> review or plan this row. **Status:** row **queued** in the [roadmap proposal](../ROADMAP.md), which awaits the Roadmap
-> gate; nothing here is admitted. The row's own `specs/NNN-…` directory (spec, plan, tasks) is written when it is admitted.
+> review or plan this row. **Status:** row **queued** on the [roadmap](../ROADMAP.md) admitted at the Roadmap gate on
+> 2026-10-22; it fires when the Roadmap gate admits it as the next feature. Its own `specs/NNN-…` directory (spec, plan, tasks) is written then.
 > Where this explainer and the roadmap or [PRD](../../docs/prd/kiln-prd.md) differ, they govern.
 
 | | |
 |---|---|
 | **Phase** | Workers |
-| **Release** | `kiln-v1` — position 7 of 41 in the proposed order |
+| **Release** | `kiln-v1` — position 7 of 41 in the committed order |
 | **Depends on** | [r16 — Real local workers](./r16-real-local-workers.md) |
 | **Unlocks** | [r18 — The director](./r18-the-director.md), [r28 — First run](./r28-first-run.md) |
 | **PRD requirements** | CFG-1, 3, 4, 6 (local), 7 (roles), 8, MOD-1 (local) |
@@ -69,7 +69,7 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 - [Configuration](../../docs/concepts/configuration.md)
 - [Routers and gateways §5.6 — the `:cloud` trap](../../docs/concepts/model-routers.md)
 - [PRD §6.16](../../docs/prd/kiln-prd.md)
-- [The roadmap proposal](../ROADMAP.md) · [All row explainers](./README.md)
+- [The roadmap](../ROADMAP.md) · [All row explainers](./README.md)
 
 ---
 

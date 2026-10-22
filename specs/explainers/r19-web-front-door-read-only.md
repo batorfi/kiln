@@ -1,14 +1,14 @@
 # r19 — Web front door, read-only
 
 > **Type:** roadmap-row explainer — for understanding, not a specification. **Audience:** engineers who will build,
-> review or plan this row. **Status:** row **queued** in the [roadmap proposal](../ROADMAP.md), which awaits the Roadmap
-> gate; nothing here is admitted. The row's own `specs/NNN-…` directory (spec, plan, tasks) is written when it is admitted.
+> review or plan this row. **Status:** row **queued** on the [roadmap](../ROADMAP.md) admitted at the Roadmap gate on
+> 2026-10-22; it fires when the Roadmap gate admits it as the next feature. Its own `specs/NNN-…` directory (spec, plan, tasks) is written then.
 > Where this explainer and the roadmap or [PRD](../../docs/prd/kiln-prd.md) differ, they govern.
 
 | | |
 |---|---|
 | **Phase** | Front door |
-| **Release** | `kiln-v1` — position 9 of 41 in the proposed order |
+| **Release** | `kiln-v1` — position 9 of 41 in the committed order |
 | **Depends on** | [r15 — The record](./r15-the-record.md) |
 | **Unlocks** | [r20 — Gates on the web](./r20-gates-on-the-web.md), [r27 — Health and broken guarantees](./r27-health-and-broken-guarantees.md) |
 | **PRD requirements** | WEB-1, 2, 4, OBS-1 (basic) |
@@ -63,7 +63,7 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 - [The web front door](../../docs/concepts/web-front-door.md)
 - [The user experience](../../docs/concepts/user-experience.md)
 - [PRD §6.7](../../docs/prd/kiln-prd.md)
-- [The roadmap proposal](../ROADMAP.md) · [All row explainers](./README.md)
+- [The roadmap](../ROADMAP.md) · [All row explainers](./README.md)
 
 ---
 

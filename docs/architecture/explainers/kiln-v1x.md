@@ -2,10 +2,10 @@
 
 > **Type:** explainer — for understanding, not a specification. **Audience:** software engineers who want to know what
 > comes after `kiln-v1`: what each later addition delivers, why it is shaped as it is, and how it builds on `kiln-v1`
-> without changing it. **Status:** describes the `kiln-v1.x` rows of the [roadmap proposal](../../../specs/ROADMAP.md)
+> without changing it. **Status:** describes the `kiln-v1.x` rows of the [roadmap](../../../specs/ROADMAP.md)
 > (r45, r33–r37, r46–r52, r40, r41) and the PRD requirements they carry ([PRD](../../prd/kiln-prd.md), final 2026-10-21;
-> rows r43–r52 added 2026-10-22). None of it is
-> admitted: each row is decided at its own Roadmap gate, after `kiln-v1` ships. Each row has its own explainer in
+> rows r43–r52 added 2026-10-22). The program, these rows included, was
+> **admitted on 2026-10-22**; each row still fires only when the Roadmap gate, re-opening after each feature, admits it next. Each row has its own explainer in
 > [`specs/explainers/`](../../../specs/explainers/README.md). Where this explainer and the PRD or
 > roadmap differ, they govern.
 >

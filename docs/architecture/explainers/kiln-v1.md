@@ -3,8 +3,8 @@
 > **Type:** explainer — for understanding, not a specification. **Audience:** software engineers who will build,
 > review or plan KILN and want a clear, high-level picture of exactly what `kiln-v1` delivers, what it leaves out, and
 > how it gets built. **Status:** describes the `kiln-v1` scope of the [PRD](../../prd/kiln-prd.md) (final, 2026-10-21)
-> and the [roadmap proposal](../../../specs/ROADMAP.md). The roadmap is **pending the Roadmap gate**: until a person
-> admits it, the order and cut of rows may still change. Where this explainer and the PRD or roadmap differ, they govern.
+> and the [roadmap](../../../specs/ROADMAP.md), **admitted at the Roadmap gate on 2026-10-22** (human@batorfi). The Roadmap
+> gate re-opens after every merged feature, where the order and cut of later rows may still be revised. Where this explainer and the PRD or roadmap differ, they govern.
 >
 > Companions: [architecture explainer](./kiln-architecture.md) · [the constitution, explained](./kiln-constitution.md) ·
 > [the flow](../../concepts/the-flow.md) · [decisions, settled and open](../../concepts/open-decisions.md) ·
@@ -439,9 +439,9 @@ The Roadmap gate re-opens before r13 and the program is re-planned. That is the 
 building on it.
 
 **Can the order change?**
-Yes, until and at the Roadmap gate. The roadmap itself suggests two reshapings worth considering — moving Health
-earlier so it watches the durable core from the start, or moving existing codebases ahead of new ones if the first users
-bring existing repositories.
+Yes — the program was admitted as proposed on 2026-10-22, and the Roadmap gate re-opens after every merged feature, where
+rows can be revised, added or dropped. Two reshapings were offered and not taken at admission — moving Health earlier, or
+existing codebases ahead of new ones — and remain options at a later gate.
 
 **Where do I find the detail?**
 The [PRD](../../prd/kiln-prd.md) for requirements, the [roadmap](../../../specs/ROADMAP.md) for rows and acceptance,

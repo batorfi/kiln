@@ -1,14 +1,14 @@
 # r16 — Real local workers
 
 > **Type:** roadmap-row explainer — for understanding, not a specification. **Audience:** engineers who will build,
-> review or plan this row. **Status:** row **queued** in the [roadmap proposal](../ROADMAP.md), which awaits the Roadmap
-> gate; nothing here is admitted. The row's own `specs/NNN-…` directory (spec, plan, tasks) is written when it is admitted.
+> review or plan this row. **Status:** row **queued** on the [roadmap](../ROADMAP.md) admitted at the Roadmap gate on
+> 2026-10-22; it fires when the Roadmap gate admits it as the next feature. Its own `specs/NNN-…` directory (spec, plan, tasks) is written then.
 > Where this explainer and the roadmap or [PRD](../../docs/prd/kiln-prd.md) differ, they govern.
 
 | | |
 |---|---|
 | **Phase** | Workers |
-| **Release** | `kiln-v1` — position 6 of 41 in the proposed order |
+| **Release** | `kiln-v1` — position 6 of 41 in the committed order |
 | **Depends on** | [r13 — Durable core and the gate contract](./r13-durable-core-and-the-gate-contract.md), [r15 — The record](./r15-the-record.md) |
 | **Unlocks** | [r17 — Configuration as files](./r17-configuration-as-files.md) |
 | **PRD requirements** | WORK-1, 3–5, LANE-3 |
@@ -71,7 +71,7 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 - [The web front door §7 — workers as durable conversations](../../docs/concepts/web-front-door.md)
 - [The model landscape](../../docs/concepts/model-landscape.md)
 - [PRD §6.3, §6.6](../../docs/prd/kiln-prd.md)
-- [The roadmap proposal](../ROADMAP.md) · [All row explainers](./README.md)
+- [The roadmap](../ROADMAP.md) · [All row explainers](./README.md)
 
 ---
 

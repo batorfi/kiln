@@ -4,7 +4,7 @@
 > Scope note: the one list of KILN's design decisions — what was settled when the concept set was finalized on
 > 2026-10-21, and what is still open, each placed at the roadmap row that needs it. Each decision is recorded in full in
 > the doc it belongs to; this page only points there. Nothing here admits a row: the program is admitted only at the
-> **Roadmap gate** (`specs/ROADMAP.md`).
+> **Roadmap gate** (`specs/ROADMAP.md`) — which admitted it on 2026-10-22.
 
 # KILN — decisions, settled and open
 
@@ -43,6 +43,7 @@ needed before rows fire* table carry the same decisions.
 | 26 | **Hybrid and router defaults**: judges-only first; the planner stays local unless bound remote; judge fallback only to a second provider of the same model; judge context = diff, specification, design, touched files and their direct dependents' interfaces (configurable); insights compare judges, never recommend; routers allowed pinned, provider identity recorded on every request; router model fallback for work roles only when the policy names it | [hybrid-deployments](./hybrid-deployments.md) §10 · [model-routers](./model-routers.md) §7 · PRD MOD-6 | r45, r33 |
 | 27 | **Ollama `:cloud` safeguards**: `:cloud` tags recorded as remote and refused under `local-only`; `kiln doctor` checks Ollama's cloud features; the network allowlist excludes `ollama.com` | PRD CFG-6, SETUP-2 · [model-routers](./model-routers.md) §5.6 | r17, r28 |
 | 28 | **Legacy live-Pi tests**: the suite skips with a printed reason on a Pi version it has not measured (Pi 1.1.0 installed vs 0.85.1 measured) instead of failing | PRD §10.3 | r12 |
+| 29 | **The Roadmap gate: the program admitted** (2026-10-22T12:20:22Z) — 41 rows, r12–r52, as proposed; `kiln-v1` = 26 rows ending with r32; r12 the admitted next row; no reshaping taken | [`specs/ROADMAP.md`](../../specs/ROADMAP.md) (`gate0`) | r12 next |
 
 ## 2. Still open
 

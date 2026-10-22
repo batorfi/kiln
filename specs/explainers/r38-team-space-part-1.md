@@ -1,14 +1,14 @@
 # r38 — Team space, part 1
 
 > **Type:** roadmap-row explainer — for understanding, not a specification. **Audience:** engineers who will build,
-> review or plan this row. **Status:** row **queued** in the [roadmap proposal](../ROADMAP.md), which awaits the Roadmap
-> gate; nothing here is admitted. The row's own `specs/NNN-…` directory (spec, plan, tasks) is written when it is admitted.
+> review or plan this row. **Status:** row **queued** on the [roadmap](../ROADMAP.md) admitted at the Roadmap gate on
+> 2026-10-22; it fires when the Roadmap gate admits it as the next feature. Its own `specs/NNN-…` directory (spec, plan, tasks) is written then.
 > Where this explainer and the roadmap or [PRD](../../docs/prd/kiln-prd.md) differ, they govern.
 
 | | |
 |---|---|
 | **Phase** | Team |
-| **Release** | `kiln-v1` — position 24 of 41 in the proposed order |
+| **Release** | `kiln-v1` — position 24 of 41 in the committed order |
 | **Depends on** | [r24 — Implementation knowledge and the workshop wiki](./r24-implementation-knowledge-and-the-workshop-wiki.md), [r25 — One workshop, several factories](./r25-one-workshop-several-factories.md) |
 | **Unlocks** | [r39 — Team space, part 2](./r39-team-space-part-2.md) |
 | **PRD requirements** | TEAM-1, 2, 3, 8 |
@@ -62,7 +62,7 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 
 - [The team space](../../docs/concepts/team-space.md)
 - [PRD §6.14](../../docs/prd/kiln-prd.md)
-- [The roadmap proposal](../ROADMAP.md) · [All row explainers](./README.md)
+- [The roadmap](../ROADMAP.md) · [All row explainers](./README.md)
 
 ---
 

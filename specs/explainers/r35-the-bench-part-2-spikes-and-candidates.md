@@ -1,14 +1,14 @@
 # r35 — The bench, part 2: spikes and candidates
 
 > **Type:** roadmap-row explainer — for understanding, not a specification. **Audience:** engineers who will build,
-> review or plan this row. **Status:** row **queued** in the [roadmap proposal](../ROADMAP.md), which awaits the Roadmap
-> gate; nothing here is admitted. The row's own `specs/NNN-…` directory (spec, plan, tasks) is written when it is admitted.
+> review or plan this row. **Status:** row **queued** on the [roadmap](../ROADMAP.md) admitted at the Roadmap gate on
+> 2026-10-22; it fires when the Roadmap gate admits it as the next feature. Its own `specs/NNN-…` directory (spec, plan, tasks) is written then.
 > Where this explainer and the roadmap or [PRD](../../docs/prd/kiln-prd.md) differ, they govern.
 
 | | |
 |---|---|
 | **Phase** | kiln-v1.x |
-| **Release** | `kiln-v1.x` — position 30 of 41 in the proposed order |
+| **Release** | `kiln-v1.x` — position 30 of 41 in the committed order |
 | **Depends on** | [r34 — The bench, part 1: notebook and research](./r34-the-bench-part-1-notebook-and-research.md) |
 | **Unlocks** | [r48 — Explore: readiness](./r48-explore-readiness.md), [r40 — Existing codebases, the rest](./r40-existing-codebases-the-rest.md), [r41 — New codebases, the rest](./r41-new-codebases-the-rest.md) |
 | **PRD requirements** | BENCH-5, 6, 8, 9, 10–12 |
@@ -65,7 +65,7 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 
 - [The bench](../../docs/concepts/the-bench.md)
 - [PRD BENCH-5…12](../../docs/prd/kiln-prd.md)
-- [The roadmap proposal](../ROADMAP.md) · [All row explainers](./README.md)
+- [The roadmap](../ROADMAP.md) · [All row explainers](./README.md)
 
 ---
 

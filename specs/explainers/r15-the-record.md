@@ -1,14 +1,14 @@
 # r15 — The record
 
 > **Type:** roadmap-row explainer — for understanding, not a specification. **Audience:** engineers who will build,
-> review or plan this row. **Status:** row **queued** in the [roadmap proposal](../ROADMAP.md), which awaits the Roadmap
-> gate; nothing here is admitted. The row's own `specs/NNN-…` directory (spec, plan, tasks) is written when it is admitted.
+> review or plan this row. **Status:** row **queued** on the [roadmap](../ROADMAP.md) admitted at the Roadmap gate on
+> 2026-10-22; it fires when the Roadmap gate admits it as the next feature. Its own `specs/NNN-…` directory (spec, plan, tasks) is written then.
 > Where this explainer and the roadmap or [PRD](../../docs/prd/kiln-prd.md) differ, they govern.
 
 | | |
 |---|---|
 | **Phase** | Durable core |
-| **Release** | `kiln-v1` — position 5 of 41 in the proposed order |
+| **Release** | `kiln-v1` — position 5 of 41 in the committed order |
 | **Depends on** | [r14 — Gates as data, walked headless](./r14-gates-as-data-walked-headless.md) |
 | **Unlocks** | [r16 — Real local workers](./r16-real-local-workers.md), [r19 — Web front door, read-only](./r19-web-front-door-read-only.md), [r27 — Health and broken guarantees](./r27-health-and-broken-guarantees.md) |
 | **PRD requirements** | EVT-1…5, EVT-3a, CORE-7 (archive; record size measured) |
@@ -69,7 +69,7 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 
 - [The record](../../docs/concepts/the-record.md)
 - [PRD §6.5 and CORE-7](../../docs/prd/kiln-prd.md)
-- [The roadmap proposal](../ROADMAP.md) · [All row explainers](./README.md)
+- [The roadmap](../ROADMAP.md) · [All row explainers](./README.md)
 
 ---
 

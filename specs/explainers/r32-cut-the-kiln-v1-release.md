@@ -1,14 +1,14 @@
 # r32 — Cut the kiln-v1 release
 
 > **Type:** roadmap-row explainer — for understanding, not a specification. **Audience:** engineers who will build,
-> review or plan this row. **Status:** row **queued** in the [roadmap proposal](../ROADMAP.md), which awaits the Roadmap
-> gate; nothing here is admitted. The row's own `specs/NNN-…` directory (spec, plan, tasks) is written when it is admitted.
+> review or plan this row. **Status:** row **queued** on the [roadmap](../ROADMAP.md) admitted at the Roadmap gate on
+> 2026-10-22; it fires when the Roadmap gate admits it as the next feature. Its own `specs/NNN-…` directory (spec, plan, tasks) is written then.
 > Where this explainer and the roadmap or [PRD](../../docs/prd/kiln-prd.md) differ, they govern.
 
 | | |
 |---|---|
 | **Phase** | Release |
-| **Release** | `kiln-v1` — position 26 of 41 in the proposed order |
+| **Release** | `kiln-v1` — position 26 of 41 in the committed order |
 | **Depends on** | [r21 — Stepping in](./r21-stepping-in.md), [r24 — Implementation knowledge and the workshop wiki](./r24-implementation-knowledge-and-the-workshop-wiki.md), [r26 — Agents and flows](./r26-agents-and-flows.md), [r27 — Health and broken guarantees](./r27-health-and-broken-guarantees.md), [r29 — New codebases](./r29-new-codebases.md), [r31 — Existing codebases, part 2: baseline, territory, process](./r31-existing-codebases-part-2-baseline-territory-process.md), [r39 — Team space, part 2](./r39-team-space-part-2.md), [r43 — Explore space](./r43-explore-space.md), [r44 — KILN in Zed, phase 1](./r44-kiln-in-zed-phase-1.md) |
 | **Unlocks** | [r45 — Remote judges (judges-only hybrid)](./r45-remote-judges.md), [r34 — The bench, part 1: notebook and research](./r34-the-bench-part-1-notebook-and-research.md), [r36 — Observability in full](./r36-observability-in-full.md), [r37 — Factories anywhere](./r37-factories-anywhere.md), [r46 — Explore: as-is specifications](./r46-explore-as-is-specifications.md), [r47 — Explore: tours and archaeology](./r47-explore-tours-and-archaeology.md), [r49 — Explore: legacy languages](./r49-explore-legacy-languages.md), [r50 — KILN in Zed, phase 2: the Agent Panel](./r50-kiln-in-zed-phase-2-the-agent-panel.md) |
 | **PRD requirements** | §3.1 goals, M14 |
@@ -65,7 +65,7 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 
 - [What `kiln-v1` delivers](../../docs/architecture/explainers/kiln-v1.md)
 - [PRD §3.1 and M14](../../docs/prd/kiln-prd.md)
-- [The roadmap proposal](../ROADMAP.md) · [All row explainers](./README.md)
+- [The roadmap](../ROADMAP.md) · [All row explainers](./README.md)
 
 ---
 

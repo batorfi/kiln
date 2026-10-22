@@ -1,14 +1,14 @@
 # r44 — KILN in Zed, phase 1
 
 > **Type:** roadmap-row explainer — for understanding, not a specification. **Audience:** engineers who will build,
-> review or plan this row. **Status:** row **queued** in the [roadmap proposal](../ROADMAP.md), which awaits the Roadmap
-> gate; nothing here is admitted. The row's own `specs/NNN-…` directory (spec, plan, tasks) is written when it is admitted.
+> review or plan this row. **Status:** row **queued** on the [roadmap](../ROADMAP.md) admitted at the Roadmap gate on
+> 2026-10-22; it fires when the Roadmap gate admits it as the next feature. Its own `specs/NNN-…` directory (spec, plan, tasks) is written then.
 > Where this explainer and the roadmap or [PRD](../../docs/prd/kiln-prd.md) differ, they govern.
 
 | | |
 |---|---|
 | **Phase** | Editor |
-| **Release** | `kiln-v1` — position 22 of 41 in the proposed order |
+| **Release** | `kiln-v1` — position 22 of 41 in the committed order |
 | **Depends on** | [r20 — Gates on the web](./r20-gates-on-the-web.md), [r24 — Implementation knowledge and the workshop wiki](./r24-implementation-knowledge-and-the-workshop-wiki.md), [r43 — Explore space](./r43-explore-space.md) |
 | **Unlocks** | [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md) |
 | **PRD requirements** | EDIT-1, EDIT-2, EDIT-3 |
@@ -62,7 +62,7 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 
 - [KILN in Zed](../../docs/concepts/zed-integration.md)
 - [PRD §6.22](../../docs/prd/kiln-prd.md)
-- [The roadmap proposal](../ROADMAP.md) · [All row explainers](./README.md)
+- [The roadmap](../ROADMAP.md) · [All row explainers](./README.md)
 
 ---
 

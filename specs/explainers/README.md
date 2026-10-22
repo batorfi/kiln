@@ -1,11 +1,11 @@
 # Roadmap row explainers
 
-> **Type:** index. One explainer per row of the [roadmap proposal](../ROADMAP.md) — what each row delivers, why, what it
-> carries from the [PRD](../../docs/prd/kiln-prd.md), how it is proven and what shapes it. The roadmap awaits the Roadmap gate; nothing here is
-> admitted. The roadmap and the PRD govern where an explainer differs. Generated from the roadmap and PRD on 2026-10-22;
+> **Type:** index. One explainer per row of the [roadmap](../ROADMAP.md) — what each row delivers, why, what it
+> carries from the [PRD](../../docs/prd/kiln-prd.md), how it is proven and what shapes it. The roadmap was admitted at the Roadmap gate on
+> 2026-10-22 (human@batorfi); r12 is the next row. The roadmap and the PRD govern where an explainer differs. Generated from the roadmap and PRD on 2026-10-22;
 > regenerate or edit them together when rows change.
 
-**41 rows** in the proposed order — **26 in `kiln-v1`** (ending with the release, r32) and **15 in `kiln-v1.x`**.
+**41 rows** in the committed order — **26 in `kiln-v1`** (ending with the release, r32) and **15 in `kiln-v1.x`**.
 Row ids are never reused, so they are not in numeric order.
 
 For the big picture, read [what `kiln-v1` delivers](../../docs/architecture/explainers/kiln-v1.md) and [what `kiln-v1.x` adds](../../docs/architecture/explainers/kiln-v1x.md).
