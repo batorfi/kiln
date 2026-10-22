@@ -14,6 +14,8 @@
 >
 > Companion docs:
 >   - First run:              `first-run.md` (setup; this doc continues from its Step 4 for an existing repository)
+>   - Explore first:          `code-exploration.md` (proposal: exploring before adopting — explore space, maps, tours,
+>                             as-is specifications, adoption stages 0–2 before Observe-to-Own)
 >   - New codebases:          `greenfield.md` (the counterpart; a greenfield factory grows into these practices)
 >   - The flow:               `the-flow.md` · An extensible flow: `extensible-flow.md`
 >   - Knowledge:              `factory-wiki.md` (§9 implementation knowledge, code grounded at a commit)

@@ -163,6 +163,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | **Getting started** | [First run](./docs/concepts/first-run.md) | from install to a first Roadmap gate: models, workshop, Spec Kit, constitution, knowledge |
 | | [New codebases](./docs/concepts/greenfield.md) | greenfield: product brief, decisions, walking skeleton, vertical slices |
 | | [Existing codebases](./docs/concepts/brownfield.md) | brownfield: full scan into knowledge, baseline, territory, adoption in stages |
+| | [Explore first](./docs/concepts/code-exploration.md) | exploring existing and legacy codebases before adopting the factory — maps, tours, recovered specs, the road into spec-driven work (proposal) |
 | **Visuals** | [Mockups](./docs/concepts/mockups/README.md) · [infographics](./docs/concepts/infographic/README.md) | 72 illustrative screens; KILN at a glance; the engineer at the center |
 
 **From the first program** — kept as history and original rationale: [the original concept](./docs/concepts/concept.md) ·
