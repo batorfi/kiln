@@ -2,9 +2,11 @@
 
 > **Type:** explainer — for understanding, not a specification. **Audience:** software engineers who want to know what
 > comes after `kiln-v1`: what each later addition delivers, why it is shaped as it is, and how it builds on `kiln-v1`
-> without changing it. **Status:** describes the `kiln-v1.x` rows of the [roadmap proposal](../../../specs/ROADMAP.md)
-> (r33–r37, r40, r41) and the PRD requirements they carry ([PRD](../../prd/kiln-prd.md), final 2026-10-21). None of it is
-> admitted: each row is decided at its own Roadmap gate, after `kiln-v1` ships. Where this explainer and the PRD or
+> without changing it. **Status:** describes the `kiln-v1.x` rows of the [roadmap](../../../specs/ROADMAP.md)
+> (r45, r33–r37, r46–r52, r40, r41) and the PRD requirements they carry ([PRD](../../prd/kiln-prd.md), final 2026-10-21;
+> rows r43–r52 added 2026-10-22). The program, these rows included, was
+> **admitted on 2026-10-22**; each row still fires only when the Roadmap gate, re-opening after each feature, admits it next. Each row has its own explainer in
+> [`specs/explainers/`](../../../specs/explainers/README.md). Where this explainer and the PRD or
 > roadmap differ, they govern.
 >
 > Companions: [what `kiln-v1` delivers](./kiln-v1.md) · [architecture explainer](./kiln-architecture.md) ·
@@ -14,28 +16,32 @@
 
 1. [`kiln-v1.x` in one paragraph](#1-kiln-v1x-in-one-paragraph)
 2. [Why it can come later without breaking anything](#2-why-it-can-come-later-without-breaking-anything)
-3. [The seven additions at a glance](#3-the-seven-additions-at-a-glance)
-4. [r33 — Models beyond the machine](#4-r33--models-beyond-the-machine)
+3. [The additions at a glance](#3-the-additions-at-a-glance)
+4. [r45 and r33 — Models beyond the machine](#4-r45-and-r33--models-beyond-the-machine)
 5. [r34 and r35 — The bench](#5-r34-and-r35--the-bench)
 6. [r36 — Observability in full](#6-r36--observability-in-full)
 7. [r37 — Factories anywhere](#7-r37--factories-anywhere)
 8. [r40 — Existing codebases, the rest](#8-r40--existing-codebases-the-rest)
 9. [r41 — New codebases, the rest](#9-r41--new-codebases-the-rest)
-10. [Order and dependencies](#10-order-and-dependencies)
-11. [Still not planned](#11-still-not-planned)
-12. [Questions engineers usually ask](#12-questions-engineers-usually-ask)
+10. [r46–r49 — Explore, beyond the explore space](#10-r46r49--explore-beyond-the-explore-space)
+11. [r50–r52 — KILN in Zed, phases 2–4](#11-r50r52--kiln-in-zed-phases-24)
+12. [Order and dependencies](#12-order-and-dependencies)
+13. [Still not planned](#13-still-not-planned)
+14. [Questions engineers usually ask](#14-questions-engineers-usually-ask)
 
 ---
 
 ## 1. `kiln-v1.x` in one paragraph
 
 `kiln-v1` is a factory for a small team, each engineer with a workshop on their own machine, running local models only.
-**`kiln-v1.x` widens that in seven directions**, one roadmap row each: factories may use **private and cloud models**
-under a recorded egress policy; engineers get **a bench** — a private notebook, research steps and throwaway spikes that
+**`kiln-v1.x` widens that in nine directions**, over fifteen roadmap rows: factories may use **remote judges** first
+(r45) and then **private and cloud models** for any role under a recorded egress policy; engineers get **a bench** — a private notebook, research steps and throwaway spikes that
 feed the roadmap with evidence; the record gains **traces, insights and time travel**; factories can run **on any host**
 — a team GPU server, a cloud machine — and move between hosts or sleep while they wait; and KILN gets deeper at **existing
 codebases** (adoption stages, rehearsal on past changes) and **new ones** (conventions enforcement, vertical slices, a team
-starting a product together). `kiln-v1.x` is **not one release**: it is a set of independent additions, each admitted at
+starting a product together); **Explore** grows from `kiln-v1`'s explore space into as-is specifications, tours,
+archaeology, readiness reports and legacy languages; and **KILN in Zed** grows from links and an MCP server into the Agent
+Panel, gate moves in the editor and a language server. `kiln-v1.x` is **not one release**: it is a set of independent additions, each admitted at
 its own Roadmap gate, in whatever order the people deciding find most valuable.
 
 ---
@@ -70,21 +76,36 @@ several of them (VIII local by default, XI a factory is portable) were written w
 
 ---
 
-## 3. The seven additions at a glance
+## 3. The additions at a glance
 
 | Row | Addition | In one sentence | Builds on | Open decisions before it |
 |---|---|---|---|---|
-| **r33** | Models beyond the machine | private and cloud models for the roles a policy names, with every request checked and recorded | r32 | egress policy language; model-family identity |
+| **r45** | Remote judges | the judge roles on a pinned remote frontier model; workers stay local — the first `kiln-v1.x` row | r32 | — (decided 2026-10-22: judge context, fallback, planner placement) |
+| **r33** | Models beyond the machine | private and cloud models for the roles a policy names, with every request checked and recorded | r45 | egress policy language; model-family identity |
 | **r34** | The bench, part 1 | a private notebook that matures into knowledge, and research steps on spare capacity | r32 | research capacity on shared hosts; keeper suggestions off-switch; Obsidian vault import |
 | **r35** | The bench, part 2 | throwaway spikes with measured reports, and evidence for the roadmap | r34 | archived spike retention |
 | **r36** | Observability in full | traces, insights with honest numbers, a feature's journey, time travel | r32 | — (retention of telemetry is decided: 90 days) |
 | **r37** | Factories anywhere | factories on any host, placed by people, moved without losing a step, sleeping while they wait | r32 | how workspaces move; workshop failover; container forms; other storage adapters |
-| **r40** | Existing codebases, the rest | adoption in stages, rehearsal on past changes, preserved behaviour, re-scans that keep knowledge true | r31, r35 | Rehearse required before Contribute, or recommended |
+| **r40** | Existing codebases, the rest | adoption in stages, rehearsal on past changes, preserved behaviour, re-scans that keep knowledge true | r31, r35, r48 | Rehearse required before Contribute, or recommended |
+| **r46–r49** | Explore, beyond the explore space | as-is specifications and business rules, tours and archaeology, spec coverage and readiness, legacy languages | r32 (r48 also r46, r35) | — (defaults adopted 2026-10-22) |
+| **r50–r52** | KILN in Zed, phases 2–4 | the KILN agent in Zed's Agent Panel, gate moves in the editor, a language server and team review | r32 → r50 → r51 → r52 | — (defaults adopted 2026-10-22) |
 | **r41** | New codebases, the rest | conventions enforced, slices riskiest first, growing into brownfield, starting as a team | r29, r35, r39 | when to revisit an early decision on evidence |
 
 ---
 
-## 4. r33 — Models beyond the machine
+## 4. r45 and r33 — Models beyond the machine
+
+### First: remote judges (r45)
+
+The first `kiln-v1.x` row moves only the **judges** — architecture critic, code reviewer, verifier — to a remote frontier
+model, through a direct provider or OpenRouter **pinned** (approved providers only, no fallbacks to other providers, data
+collection denied, zero data retention where required). Workers and the planner stay local. The judge reads only its
+**judge context** — the diff, specification, design, touched files and their direct dependents' interfaces — under the
+factory's egress policy; budgets pause; the model served and the provider are recorded on every request. It is the
+smallest change that gives a 32–64 GB machine a frontier judge (`hybrid-deployments.md`). r33 then generalises it.
+
+### Then: models beyond the machine for every role (r33)
+
 
 **What it adds.** A factory may use **private** models (a company's own inference server) and **remote** models (a cloud
 provider) — but only for the roles its policy names, decided by a person at the Roadmap gate.
@@ -288,22 +309,59 @@ example, a spike-backed technology choice that later features keep working aroun
 
 ---
 
-## 10. Order and dependencies
+## 10. r46–r49 — Explore, beyond the explore space
+
+`kiln-v1` ships the **explore space** (r43): exploring a codebase with no factory and no gates — maps, hot spots, the test
+landscape, and questions and traces answered with citations. These rows take it from understanding to specification
+(`code-exploration.md`):
+
+- **r46 — As-is specifications.** Specifications of what the code does today in Spec Kit's format, business rules cited to
+  their code, open questions and characterization-test proposals, confirmed or corrected by a person; a constitution
+  discovered from the code; past changes replayed as spec-driven worked examples.
+- **r47 — Tours and archaeology.** Tours drafted by KILN and reviewed by an expert; why-it-is-like-this narratives;
+  recovered decisions for a person to confirm.
+- **r48 — Readiness.** The spec-coverage map, adoption stages 0–2 (explore, understand, specify as-is), change sizing as
+  candidates, and the factory readiness report — evidence, never a score of a person. r40's adoption stages build on it.
+- **r49 — Legacy languages.** Deterministic parsing for the first legacy languages chosen by demand; honest coverage.
+
+**Guarantees it must keep.** Zero footprint until a team chooses its own pull request; every claim cited and labelled (X);
+recovered specifications are candidates until a person confirms them.
+
+## 11. r50–r52 — KILN in Zed, phases 2–4
+
+`kiln-v1` ships phase 1 (r44): deep links, task templates, vault projects and a read-only MCP server. These rows bring
+KILN into the editor itself (`zed-integration.md`):
+
+- **r50 — The Agent Panel.** The KILN agent over ACP, read-only: the director, Needs you, full gate briefs with every
+  citation followed in the editor, diffs, explore questions, risky-action approvals as permission requests.
+- **r51 — Decide where the code is.** Code review, then Verification and Implementation, decided in Zed only after the full
+  brief, through the same move intake, with identity from a session token in the OS keychain; following and steering
+  workers.
+- **r52 — Ambient and team.** A KILN language server (territory, claims, knowledge on hover, drift, preserved behaviour,
+  findings) and teammates' required reviews from a shared Zed workspace.
+
+**Guarantees it must keep.** Zed is a surface, never a source of truth (IX); a gate move needs the full brief (V, UX
+decision 4); MCP served to cloud agents is egress (VIII).
+
+## 12. Order and dependencies
 
 ```
-                     ┌─► r33 Models beyond the machine
-                     ├─► r34 The bench 1 ─► r35 The bench 2 ─┬─► r40 Existing codebases, the rest  (also r31)
- r32 kiln-v1 ────────┤                                       └─► r41 New codebases, the rest       (also r29, r39)
-                     ├─► r36 Observability in full
-                     └─► r37 Factories anywhere
+                     ┌─► r45 Remote judges ─► r33 Models beyond the machine
+                     ├─► r34 The bench 1 ─► r35 The bench 2 ─┬─► r48 Readiness (also r46) ─► r40 Existing codebases, the rest (also r31)
+                     │                                       └─► r41 New codebases, the rest (also r29, r39)
+ r32 kiln-v1 ────────┼─► r36 Observability in full
+                     ├─► r37 Factories anywhere
+                     ├─► r46 As-is specifications · r47 Tours and archaeology · r49 Legacy languages
+                     └─► r50 Zed: Agent Panel ─► r51 Zed: decide in the editor ─► r52 Zed: ambient and team
 ```
 
-- **r33, r34, r36 and r37 are independent** of each other and can be admitted in any order — or in parallel by different
-  people, since each is its own feature.
-- **r35 needs r34**; **r40 and r41 need the bench** (r35) because their evidence comes from research, spikes and the
-  candidate list.
+- **r45 comes first** in the proposed order — remote judges are the cheapest large gain — and **r33 builds on it**.
+- **r34, r36, r37, r46, r47, r49 and r50 are independent** of each other and can be admitted in any order — or in parallel
+  by different people, since each is its own feature.
+- **r35 needs r34**; **r48 needs r46 and the bench** (r35); **r40 needs r48** (its adoption stages continue r48's); **r41
+  needs the bench**; Zed's phases run **r50 → r51 → r52**.
 - The roadmap lists them in id order, but **the order is a Roadmap-gate decision** each time. Reasonable drivers:
-  - a team that needs a **stronger judge than its machines can run** → r33 first;
+  - a team that needs a **stronger judge than its machines can run** → r45 first;
   - a team with a **shared GPU server** → r37 first;
   - a team that wants **evidence-backed roadmaps** → r34 and r35 first;
   - a team **adopting KILN on a large existing codebase** → r35 then r40.
@@ -314,14 +372,13 @@ Each row also lands with its own open decisions (§3). They are listed in
 
 ---
 
-## 11. Still not planned
+## 13. Still not planned
 
 Some ideas are designed or discussed in the concept docs but have **no row**, not even in `kiln-v1.x`:
 
 | Idea | Status |
 |---|---|
 | **Gates after Merge** — deployment, release approval | out of scope; how they would relate to the Merge gate's authority is an open question |
-| **Editor integration** — KILN in the Zed editor over ACP, MCP and a language server (`zed-integration.md`) | a proposal; phased, not yet placed on the roadmap |
 | **An audit export** — the record as content-free CloudEvents JSONL for a team's own audit systems | not yet placed |
 | **A wiki as training data** — a mature factory wiki used to tune a smaller local model that knows the factory | not yet placed |
 | **Migrating a workshop** created by an earlier KILN version | the first release after `kiln-v1` will need it |
@@ -329,10 +386,10 @@ Some ideas are designed or discussed in the concept docs but have **no row**, no
 
 ---
 
-## 12. Questions engineers usually ask
+## 14. Questions engineers usually ask
 
 **Is `kiln-v1.x` one release?**
-No. It is seven independent rows, each admitted at its own Roadmap gate after `kiln-v1`. There may be several point
+No. It is fifteen rows, each admitted at its own Roadmap gate after `kiln-v1`. There may be several point
 releases, in whatever order the deciders choose.
 
 **Do I need to prepare for these while building `kiln-v1`?**
@@ -340,7 +397,7 @@ Only by building the seams honestly: the policy check before every model request
 store that knows nothing about its host, knowledge with origins. §2 lists them. Don't build the `kiln-v1.x` features
 themselves early.
 
-**With r33, can a cloud model be the judge?**
+**With r45, can a cloud model be the judge?**
 Yes, if the factory's policy routes the judge role there and it is the strongest model available to that factory. It is
 still never silently downgraded: if it is unreachable, the judged step waits and says why. Remote judges advise; people
 still decide.

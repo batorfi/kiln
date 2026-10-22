@@ -4,12 +4,12 @@
 Agents research, design, write, review and verify. Independent judges check the work. <b>People decide at every gate.</b><br>
 Durable, recorded, local by default — one feature at a time, in your own workshop.</p>
 
-> **Status: design final, restart pending.** KILN is being rebuilt around a new design: a local **web front door** on
+> **Status: design final, roadmap admitted, restart starting.** KILN is being rebuilt around a new design: a local **web front door** on
 > **[Pi](https://pi.dev) and Pi Durable**, with gates as durable tasks, an event-based record, a knowledge base per factory,
 > and teams of personal workshops. The concept documents, the PRD and the [constitution](./.specify/memory/constitution.md)
 > (v2.0.1) were **finalized on 2026-10-21**, with every decision that shapes `kiln-v1` made and
-> [recorded](./docs/concepts/open-decisions.md). The implementation has **not started yet** — its roadmap is a
-> [proposal](./specs/ROADMAP.md) waiting for a human decision at the Roadmap gate. Since then, research snapshots of
+> [recorded](./docs/concepts/open-decisions.md). The [roadmap](./specs/ROADMAP.md) was **admitted at the Roadmap gate on 2026-10-22**
+> (human@batorfi): 41 rows, r12 next. The implementation starts with r12. Since then, research snapshots of
 > [models](./docs/concepts/model-landscape.md) and [dev machines](./docs/concepts/dev-machines.md) and proposals for
 > [exploring codebases before adoption](./docs/concepts/code-exploration.md),
 > [hybrid deployments](./docs/concepts/hybrid-deployments.md) and [KILN in the Zed editor](./docs/concepts/zed-integration.md)
@@ -194,7 +194,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | **The design** | **final** (2026-10-21) as concepts: [vision](./docs/concepts/vision.md), [the flow](./docs/concepts/the-flow.md), [the web front door](./docs/concepts/web-front-door.md), [user experience](./docs/concepts/user-experience.md) and companions in [`docs/concepts/`](./docs/concepts); [decisions settled and still open](./docs/concepts/open-decisions.md) |
 | **The product definition** | the [PRD](./docs/prd/kiln-prd.md), **final**: principles, requirements, architecture, what to keep from today's code, milestones |
 | **The law** | the [constitution](./.specify/memory/constitution.md) **v2.0.1**, amended for the restart on 2026-10-21 — [explained for engineers](./docs/architecture/explainers/kiln-constitution.md) |
-| **The roadmap** | a [proposal](./specs/ROADMAP.md) ([what `kiln-v1` delivers](./docs/architecture/explainers/kiln-v1.md)) of 31 feature-sized rows (r12–r42, with the r42 spike before r13 and the team space in `kiln-v1`), `kiln-v1` at r32 — **pending the Roadmap gate** |
+| **The roadmap** | **admitted** at the Roadmap gate on 2026-10-22 by human@batorfi — [the program](./specs/ROADMAP.md) ([what `kiln-v1` delivers](./docs/architecture/explainers/kiln-v1.md)) of 41 feature-sized rows (r12–r52; `kiln-v1` is 26 of them, including the r42 spike, the team space, the explore space and Zed phase 1), `kiln-v1` at r32 — **r12 is the admitted next row** |
 | **Beyond `kiln-v1`** | [what `kiln-v1.x` adds](./docs/architecture/explainers/kiln-v1x.md); proposals for [exploring codebases before adoption](./docs/concepts/code-exploration.md), [hybrid deployments](./docs/concepts/hybrid-deployments.md) and [KILN in Zed](./docs/concepts/zed-integration.md); research snapshots of [models](./docs/concepts/model-landscape.md), [routers](./docs/concepts/model-routers.md) and [dev machines](./docs/concepts/dev-machines.md) (2026-10) |
 | **The code** | the **foundation from the first program** (rows r1–r8, KILN as a Pi extension): the single-lane runtime, the gate and log machinery, a real local-model worker, KILN loading into Pi, validators and readiness probes, and the test suite — reused by the restart (PRD §10) |
 
@@ -240,7 +240,7 @@ Any run that executes **zero** tests fails, so a mistyped path cannot pass silen
 | [`docs/architecture/`](./docs/architecture) | the [architecture explainer](./docs/architecture/explainers/kiln-architecture.md), the [constitution explainer](./docs/architecture/explainers/kiln-constitution.md), the [`kiln-v1`](./docs/architecture/explainers/kiln-v1.md) and [`kiln-v1.x`](./docs/architecture/explainers/kiln-v1x.md) explainers, and the [platform architecture infographic](./docs/architecture/visualisations/README.md) |
 | [`docs/prd/`](./docs/prd/kiln-prd.md) | the product requirements for the restart |
 | [`docs/brand/`](./docs/brand/README.md) | the KILN mark and logos |
-| [`specs/`](./specs) | [`ROADMAP.md`](./specs/ROADMAP.md) (the program, admitted by a person at the Roadmap gate), one directory per feature with its spec, plan, tasks and evidence, and the archived first program |
+| [`specs/`](./specs) | [`ROADMAP.md`](./specs/ROADMAP.md) (the program, admitted by a person at the Roadmap gate), [one explainer per roadmap row](./specs/explainers/README.md), one directory per feature with its spec, plan, tasks and evidence, and the archived first program |
 | [`kiln/`](./kiln) | the foundation's code: runtime, gate and log machinery, validators and probes, schemas and contracts, tests, and committed fixtures of real runs |
 | [`.specify/`](./.specify), [`.pi/`](./.pi) | the Spec Kit scaffolding and Pi prompts the project is built with, and KILN's constitution |
 
@@ -265,7 +265,7 @@ what was right.
 7. [The web front door](./docs/concepts/web-front-door.md) — the design on Pi Durable, events and the record
 8. [First run](./docs/concepts/first-run.md) — from install to a first Roadmap gate
 9. [What `kiln-v1` delivers](./docs/architecture/explainers/kiln-v1.md) and [the constitution, explained](./docs/architecture/explainers/kiln-constitution.md) — the release and the rules it keeps
-10. [The PRD](./docs/prd/kiln-prd.md) and [the roadmap proposal](./specs/ROADMAP.md)
+10. [The PRD](./docs/prd/kiln-prd.md), [the admitted roadmap](./specs/ROADMAP.md) and [one explainer per roadmap row](./specs/explainers/README.md)
 11. [Dev machines](./docs/concepts/dev-machines.md), [the model landscape](./docs/concepts/model-landscape.md) and [hybrid deployments](./docs/concepts/hybrid-deployments.md) — what to run KILN on
 
 ## Contributing

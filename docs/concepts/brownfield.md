@@ -65,6 +65,10 @@ own merges made it.
 
 ## 4. Adoption in stages
 
+*Before these stages:* a team can explore the codebase with no factory at all — an **explore space** (r43), then
+understanding and as-is specifications (stages 0–2 of `code-exploration.md` §7, rows r46–r48). Observe below can start
+from an explore space's knowledge and scan instead of redoing them.
+
 | Stage | KILN does | It does not | Exit evidence |
 |---|---|---|---|
 | **1. Observe** | builds the codebase profile, runs the **full scan** into the knowledge base, records the baseline; answers questions about the code | change any file | the team reads the scan's pages and its coverage report and corrects them; Curators accept the conventions page |

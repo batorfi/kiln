@@ -73,7 +73,7 @@ the terminal (`kiln init --no-browser`); both write the same files.
 | Check | Example |
 |---|---|
 | **Hardware** | 128 GB unified memory · Apple M5 Max · 1.6 TB free |
-| **Ollama** | found, 0.13, listening on 127.0.0.1:11434 |
+| **Ollama** | found, 0.13, listening on 127.0.0.1:11434 · cloud features off (a local-only host keeps them off; `:cloud` tags are refused) |
 | **git** | 2.47 · user and signing configured? |
 | **Node** | 24.1 — supported |
 | **Spec Kit** | `specify` 1.0.6 — in the supported range; `uv` and Python 3.12 found |

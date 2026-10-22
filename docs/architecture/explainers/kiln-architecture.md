@@ -327,6 +327,8 @@ kiln/
     host/        host runtime, host channel, moves, sleep
     team/        team space: subscribe and publish, signatures, claims, requests, team rules
     bench/       notebook, research steps, spikes
+    explore/     explore spaces: maps, ask and trace, as-is specifications, tours, readiness
+    editor/      Zed: links and tasks, MCP server, ACP agent, language server
     server/      HTTP, session security, read models, push, intake
     web/         the front door (prebuilt)
     cli/         kiln init · doctor · health · serve · host · check · agents try · replay

@@ -259,7 +259,9 @@ The path is a sequence of horizons, each admitted at the Roadmap gate in its own
 | **The bench** | a private notebook that matures into knowledge, research steps on spare capacity, ungated spikes with measured reports that can become features | this vision |
 | **The team space** | personal workshops on one codebase: team roadmap by quorum, claims and overlap, team knowledge, teammate reviews mirrored in the code host | in `kiln-v1` (r38–r39) — a small team is the primary user; shared hosts follow with factories anywhere |
 | **Factories anywhere** | one workshop, factories on any host — laptop, team server, cloud VM, container — placed by people, moved without losing a step, sleeping while they wait | this vision |
-| **Models beyond the machine** | private and cloud models when configured: per-role routing, egress policy, budgets, an audit of what left the machine | this vision |
+| **Explore first** | exploring an existing codebase before adopting the factory — maps, answers with citations, then as-is specifications and a readiness report | the explore space in `kiln-v1` (r43); the rest in `kiln-v1.x` (r46–r49) |
+| **KILN in the editor** | briefs, findings, knowledge and moves inside Zed, over open protocols | links, tasks and a read-only MCP server in `kiln-v1` (r44); the Agent Panel and moves in Zed in `kiln-v1.x` (r50–r52) |
+| **Models beyond the machine** | private and cloud models when configured: per-role routing, egress policy, budgets, an audit of what left the machine | remote judges first (r45), then every role (r33), in `kiln-v1.x` |
 | **The `kiln-v1` release** | a runnable factory a newcomer — or a small team — can install and point at a feature | the goal (r32) |
 
 KILN builds on Pi's durable substrate while it is still experimental, and evolves with it as it stabilises.
@@ -295,7 +297,8 @@ KILN builds on Pi's durable substrate while it is still experimental, and evolve
 
 Adopting it needs deliberate, recorded human decisions. **As of 2026-10-21** the constitution amendments and the
 dependency stance are enacted (constitution v2.0.1), the future of the Pi-integrated UI is decided (retired; the `kiln`
-CLI is the terminal surface), and the Roadmap gate amendment is the one step still waiting:
+CLI is the terminal surface), and **on 2026-10-22 the Roadmap gate admitted the new program** (`specs/ROADMAP.md`). What was
+asked for:
 
 - **Constitution amendments**: local by default with egress only by configured, recorded choice
   (Principle VIII); one lane *per factory* with a machine-wide model budget (Principle III); the

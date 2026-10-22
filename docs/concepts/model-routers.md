@@ -1,6 +1,6 @@
 > Status: concept — **research snapshot and proposal** (2026-10-22). Router features and fees change often; re-check
-> before relying on a number. The integration options in §6 are **proposals** for the `kiln-v1.x` row *Models beyond the
-> machine* (r33) — nothing here is decided. One recommendation (§5.6, Ollama `:cloud` tags) also concerns `kiln-v1`.
+> before relying on a number. **Decided 2026-10-22:** routers are allowed **pinned** — first for remote judges (r45), then in
+> r33 — under the rules of §5; the `:cloud` safeguards of §5.6 land in `kiln-v1` (r17, r28). See `open-decisions.md` 26–27.
 > Type: concept (research)
 >
 > Scope note: this doc looks at **LLM routers and gateways** — OpenRouter above all, and the self-hosted and hosted
@@ -153,7 +153,7 @@ and prompts off the machine under a profile that promises `local-only`. **Propos
   (Ollama allows this);
 - the per-host network check's allowlist excludes `ollama.com`, so a missed case still fails by name.
 
-## 6. Integration options (proposals for r33)
+## 6. Integration options (for r45 and r33)
 
 | Option | How it works | Fits KILN when | Trade-offs |
 |---|---|---|---|
@@ -168,7 +168,7 @@ anywhere the policy has not allowed, or leave a request unrecorded.
 ### An illustrative binding
 
 ```yaml
-# kiln.config/ — illustrative only; the real schema is decided in r33
+# kiln.config/ — illustrative only; the real schema is decided in r45 and r33
 providers:
   openrouter:
     kind: openrouter                 # via pi-ai
@@ -194,6 +194,9 @@ tiers:
 ```
 
 ## 7. Open questions
+
+*Answered 2026-10-22: (1) yes, pinned, starting with r45; (2) only when the factory's policy names the fallback; (3)
+provider identity recorded on every request; (4) yes — r17 and r28.*
 
 These belong to r33's open decisions (egress policy language, model-family identity), and are listed in
 [`open-decisions.md`](./open-decisions.md):

@@ -3,8 +3,8 @@
 > **Type:** explainer — for understanding, not a specification. **Audience:** software engineers who will build,
 > review or plan KILN and want a clear, high-level picture of exactly what `kiln-v1` delivers, what it leaves out, and
 > how it gets built. **Status:** describes the `kiln-v1` scope of the [PRD](../../prd/kiln-prd.md) (final, 2026-10-21)
-> and the [roadmap proposal](../../../specs/ROADMAP.md). The roadmap is **pending the Roadmap gate**: until a person
-> admits it, the order and cut of rows may still change. Where this explainer and the PRD or roadmap differ, they govern.
+> and the [roadmap](../../../specs/ROADMAP.md), **admitted at the Roadmap gate on 2026-10-22** (human@batorfi). The Roadmap
+> gate re-opens after every merged feature, where the order and cut of later rows may still be revised. Where this explainer and the PRD or roadmap differ, they govern.
 >
 > Companions: [architecture explainer](./kiln-architecture.md) · [the constitution, explained](./kiln-constitution.md) ·
 > [the flow](../../concepts/the-flow.md) · [decisions, settled and open](../../concepts/open-decisions.md) ·
@@ -18,7 +18,7 @@
 4. [A feature's life in `kiln-v1`](#4-a-features-life-in-kiln-v1)
 5. [What we are building, technically](#5-what-we-are-building-technically)
 6. [What is not in `kiln-v1`](#6-what-is-not-in-kiln-v1)
-7. [How it gets built: 23 rows](#7-how-it-gets-built-23-rows)
+7. [How it gets built: 26 rows](#7-how-it-gets-built-26-rows)
 8. [What we reuse from today's code](#8-what-we-reuse-from-todays-code)
 9. [The quality bar](#9-the-quality-bar)
 10. [When `kiln-v1` is done](#10-when-kiln-v1-is-done)
@@ -36,7 +36,9 @@ from the command line. Everything runs on the engineer's own machine on local mo
 reboots without losing or approving anything, and is recorded as an ordered stream of events that explains every
 decision afterwards. Each factory keeps a knowledge base of how its code was built, readable in Obsidian. One machine can
 run several factories, and a **small team** of engineers — each with their own workshop — can work on one codebase
-together through a shared **team space** in git.
+together through a shared **team space** in git. Before adopting the factory at all, a team can **explore** an existing
+codebase with KILN — maps and answers with citations, nothing written to the repository — and every citation opens at its
+line in the **Zed** editor.
 
 What `kiln-v1` deliberately is **not**: a hosted service, an autopilot, a cloud agent, or a swarm. Those boundaries are in
 §6.
@@ -81,6 +83,11 @@ claims on code, team knowledge and requests between teammates. A solo engineer i
 - **Start a new codebase** from a product brief to a merged, verified walking skeleton.
 - **Bring KILN into an existing codebase**: a full scan into the knowledge base, a baseline of what is already broken, a
   territory KILN may change, and the team's own conventions, CI and pull requests.
+- **Explore before adopting.** An explore space on any repository — no factory, no gates, nothing written to it — draws
+  the architecture map, hot spots and test landscape and answers questions and traces with citations, labelled measured
+  or inferred.
+- **Work from Zed.** Every citation opens in Zed at its line; KILN tasks run from Zed; the engineer's own coding agent
+  can ask KILN's read-only MCP server about knowledge, claims and territory.
 - **Read how the code was built.** Every merged feature leaves a feature story and implementation pages in the factory's
   knowledge base, grounded in code at a commit and flagged when the code drifts.
 - **Work as a team.** Share a team roadmap decided by quorum, see who is building what through claims and overlap
@@ -112,6 +119,8 @@ claims on code, team knowledge and requests between teammates. A solo engineer i
 | **New codebases** | product brief, constitution from it, technology decisions, walking skeleton | r29 |
 | **Existing codebases** | profile, full scan into knowledge, baseline, territory, fitting the team's process, base drift | r30, r31 |
 | **Team space** | signed team roadmap by quorum, claims and overlap, requests and mirrored reviews, team-aware Merge gate, team knowledge | r38, r39 |
+| **Explore** | the explore space: no roadmap, no gates, zero footprint; architecture map, hot spots, test landscape; ask and trace with citations | r43 |
+| **Editor (Zed), phase 1** | deep links both ways, task templates, vaults and specs as Zed projects, a read-only KILN MCP server | r44 |
 | **Release** | installer, newcomer docs, a demo factory, release manifest and tag | r32 |
 
 ### 3.3 The command line
@@ -210,6 +219,7 @@ contracts ← record ← durable ← lane, workers ← director ← workshop ←
 | `workshop` | registry, people and roles, policies, Needs you |
 | `team` | the team-space repository: subscribe and publish, signatures, claims, requests, team rules |
 | `server` · `web` · `cli` | HTTP, auth, read models, push, intake; the prebuilt front door; the command line |
+| `editor` | Zed integration: links and task templates, the read-only MCP server (in `kiln-v1`); later the ACP agent and the language server |
 | `checks/` · `fixtures/` · `agents/` | readiness probes and the network check; committed replays; role instructions |
 | `legacy/` | the first program's code, frozen until each part is ported or retired |
 
@@ -240,10 +250,12 @@ change to what `kiln-v1` builds: a local, single-host workshop is their degenera
 
 | Not in `kiln-v1` | What that means in practice | Planned |
 |---|---|---|
-| **Private and cloud models** | `kiln-v1` runs **local models only** (`local-only` profile). No per-role routing to remote models, no egress policies, no budgets for remote spend. | r33 |
+| **Private and cloud models** | `kiln-v1` runs **local models only** (`local-only` profile). **Remote judges** come first, right after the release; full per-role routing, profiles and budgets follow. | r45, then r33 |
 | **The bench** | no private notebook, no research steps on spare capacity, no spikes or candidate list | r34, r35 |
 | **Full observability** | no per-feature traces, no insights screens, no time travel, no OpenTelemetry export (core metrics and health *are* in `kiln-v1`) | r36 |
 | **Factories anywhere** | factories run on the workshop's own machine; no team servers or cloud hosts, no moving factories, no sleeping hosts, no shared hosts | r37 |
+| **Explore beyond the explore space** | no as-is specifications, tours, archaeology, readiness report or legacy-language parsing (the explore space itself *is* in `kiln-v1`) | r46–r49 |
+| **Zed beyond phase 1** | no KILN agent in Zed's Agent Panel, no gate moves from Zed, no language server (links, tasks and the MCP server *are* in `kiln-v1`) | r50–r52 |
 | **Brownfield adoption stages** | no Observe → Rehearse → Contribute → Own stages, no rehearsal on past changes, no characterization tasks, no incremental re-scans | r40 |
 | **Greenfield beyond the skeleton** | no automatic conventions enforcement, no vertical-slice planning, no team start of a new product | r41 |
 | **A shared, multi-user workshop** | a team in `kiln-v1` is personal workshops plus a team space; several people logging into one workshop over the network is not built | with factories anywhere |
@@ -255,13 +267,16 @@ The terminal UI inside Pi from the first program is **retired**; the `kiln` CLI 
 
 ---
 
-## 7. How it gets built: 23 rows
+## 7. How it gets built: 26 rows
 
 KILN is built the way it will build software: a roadmap of feature-sized **rows**, each walked through the gates, with a
-person admitting the program and re-admitting it between rows. `kiln-v1` is **23 rows** — r12 to r32, the spike r42,
-and the team rows r38 and r39. Row ids are never reused, so they are not in numeric order.
+person admitting the program and re-admitting it between rows. `kiln-v1` is **26 rows** — r12 to r32, the spike r42,
+the team rows r38 and r39, and the explore and editor rows r43 and r44. Row ids are never reused, so they are not in numeric order.
 
 ### 7.1 The rows, in order
+
+*Each row has its own explainer — what it delivers, the PRD requirements it carries in full, how it is proven and the
+decisions that shape it — in [`specs/explainers/`](../../../specs/explainers/README.md).*
 
 | # | Row | What it delivers | Proven when |
 |---|---|---|---|
@@ -285,9 +300,11 @@ and the team rows r38 and r39. Row ids are never reused, so they are not in nume
 | 18 | **r28** First run | `kiln init`, `kiln doctor`, first factory, Spec Kit, first roadmap | install to a first Roadmap gate in under an hour, nothing leaving the machine |
 | 19 | **r29** New codebases | product brief, constitution, decisions, walking skeleton | an empty repository reaches a merged skeleton that passes from a clean clone |
 | 20 | **r30** Existing codebases 1 | profile and full scan into the knowledge base | a full scan writes module pages and a coverage report; resumes after a crash |
-| 21 | **r31** Existing codebases 2 | baseline, territory, the team's process, base drift | out-of-territory writes are refused; pre-existing failures never block on their own |
-| 22 | **r38** Team space 1 | team-space repository, keys and signed acts, team roadmap by quorum | a team roadmap change takes effect only when the quorum has signed |
-| 23 | **r39** Team space 2 | claims and overlap, requests and mirrored reviews, team-aware Merge gate | overlap surfaces at Work plan; a required review conditions *approve*; Merge uses the code host's queue |
+| 21 | **r43** Explore space | an explore space with no roadmap and no gates; maps; ask and trace with citations | it answers a new joiner's questions with citations and writes nothing to the repository |
+| 22 | **r44** KILN in Zed, phase 1 | deep links, task templates, vault projects, a read-only MCP server | citations open at their line in Zed; an agent's MCP query is answered and recorded |
+| 23 | **r31** Existing codebases 2 | baseline, territory, the team's process, base drift | out-of-territory writes are refused; pre-existing failures never block on their own |
+| 24 | **r38** Team space 1 | team-space repository, keys and signed acts, team roadmap by quorum | a team roadmap change takes effect only when the quorum has signed |
+| 25 | **r39** Team space 2 | claims and overlap, requests and mirrored reviews, team-aware Merge gate | overlap surfaces at Work plan; a required review conditions *approve*; Merge uses the code host's queue |
 | — | **r32** Release | installer, newcomer docs, demo factory, manifest and tag | a newcomer installs KILN and decides a first Roadmap gate on a real repository in under an hour |
 
 ### 7.2 Dependencies and the critical path
@@ -308,9 +325,9 @@ step  row(s) — (depends on)
   9   r21 Stepping in · r22 Shaping the roadmap · r23 Factory knowledge · r25 Several factories ... (r20)
  10   r24 Implementation knowledge (r23) · r26 Agents and flows (r18, r25) · r28 First run (r17, r22, r23)
  11   r29 New codebases (r26, r28) · r30 Existing codebases 1 (r24, r28) · r38 Team space 1 (r24, r25)
- 12   r31 Existing codebases 2 ................ (r21, r30)
- 13   r39 Team space 2 ........................ (r31, r38)
- 14   r32 Release ............................. (r21, r24, r26, r27, r29, r31, r39)
+ 12   r31 Existing codebases 2 (r21, r30) · r43 Explore space (r30)
+ 13   r39 Team space 2 (r31, r38) · r44 KILN in Zed, phase 1 (r20, r24, r43)
+ 14   r32 Release ............................. (r21, r24, r26, r27, r29, r31, r39, r43, r44)
 ```
 
 The **critical path** is fifteen steps long: r12 → r42 → r13 → r14 → r15 → r16 → r17 → r18 → r20 → r23 → r28 → r30 → r31 →
@@ -405,8 +422,8 @@ from the record alone; and the share of merged features with a complete feature 
 Yes. A solo engineer has a workshop and no team space; every team feature is additive.
 
 **Can I use Claude, GPT or another cloud model in `kiln-v1`?**
-No — `kiln-v1` is local-only. Private and cloud models, with per-role routing and egress policies, are row r33 in
-`kiln-v1.x`. The design already accounts for them, so nothing built in `kiln-v1` has to change when they arrive.
+No — `kiln-v1` is local-only. **Remote judges** come first in `kiln-v1.x` (r45) — a frontier judge through a provider or
+OpenRouter, workers kept local (`hybrid-deployments.md`); private and cloud models for every role follow in r33. The design already accounts for them, so nothing built in `kiln-v1` has to change when they arrive.
 
 **Does KILN touch my working copy?**
 No. Each factory works in its own KILN-managed git worktree, one branch per feature, and never checks out branches or
@@ -422,9 +439,9 @@ The Roadmap gate re-opens before r13 and the program is re-planned. That is the 
 building on it.
 
 **Can the order change?**
-Yes, until and at the Roadmap gate. The roadmap itself suggests two reshapings worth considering — moving Health
-earlier so it watches the durable core from the start, or moving existing codebases ahead of new ones if the first users
-bring existing repositories.
+Yes — the program was admitted as proposed on 2026-10-22, and the Roadmap gate re-opens after every merged feature, where
+rows can be revised, added or dropped. Two reshapings were offered and not taken at admission — moving Health earlier, or
+existing codebases ahead of new ones — and remain options at a later gate.
 
 **Where do I find the detail?**
 The [PRD](../../prd/kiln-prd.md) for requirements, the [roadmap](../../../specs/ROADMAP.md) for rows and acceptance,

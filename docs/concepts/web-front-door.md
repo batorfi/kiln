@@ -143,7 +143,7 @@ The ten gates fall into three phases:
 | 3 | **Specification gate** | *What exactly counts as done?* | specification | spec writer | — | approve · revise · reject |
 | 4 | **Work plan gate** | *In what pieces, and in what order, will it be built?* | work plan (tasks and their order) | the director's planner | — | approve · revise · reject |
 | 5 | **Implementation gate** | *Do we start building — from a safe, restorable point — and is this still one feature?* | a restorable commit | the director | — | approve · split+revise |
-| 6 | **Code review gate** | *Is the code right, measured against the specification?* | the diff and review notes | worker(s) | code reviewer · holds the lane | approve · restart |
+| 6 | **Code review gate** | *Is the code right, measured against the specification?* | the diff and review notes | worker(s) | code reviewer · holds the lane | approve · revise · restart |
 | 7 | **Verification gate** | *Does it actually work as specified?* | verification report | worker(s) | verifier · holds the lane | approve · reject (≤ 2 automatic fix rounds first) |
 | 8 | **Documentation gate** | *Do the docs describe what was actually built?* | documentation changes | techwriter / docs synthesizer | — | approve · revise · reject |
 | 9 | **Merge gate** | *Do we ship this feature?* | the pull request | PR writer | — | approve (= merge) · reject |
