@@ -4,11 +4,17 @@
 
 **Created**: 2026-10-22
 
-**Status**: **Draft — CLARIFIED (2026-10-22); ready for `/speckit.plan`.** NC1 and NC2 were resolved by the human on
-2026-10-22 and each landed on the recommended option — see *Clarifications* below. Roadmap row **`r12`** was admitted as the **next row** at the Roadmap gate (`human@batorfi`,
+**Status**: **CLARIFIED (2026-10-22, 2026-10-23) and PLANNED (2026-10-23); ready for `/speckit-tasks`.** NC1 and NC2 were resolved by the
+human on 2026-10-22 and three more questions on 2026-10-23, each on the recommended option — see *Clarifications* below; the plan is
+[plan.md](./plan.md). Roadmap row **`r12`** was admitted as the **next row** at the Roadmap gate (`human@batorfi`,
 2026-10-22T12:20:22Z, entry 1 of `gate0.note` in [specs/ROADMAP.md](../ROADMAP.md)). It stays `queued` — never `active` —
 until its own first gate opens (`chain_unattended=false`). **Nothing here admits a program, advances a gate, decides a gate
 or edits the roadmap** (constitution VI).
+
+**Adjusted during planning (2026-10-23)** — three statements did not survive contact with the code; each is corrected below and
+explained in [plan.md](./plan.md) §"Findings that changed the spec": the **NC1 premise and SC-008** (v2's moves are a superset of
+v1's), **FR-010** (the scheduler is half pure logic, half a runner on the lane runtime), and the **legacy location** (a
+repo-root `legacy/`, not `kiln/legacy/`).
 
 **Input**: the row **`r12`** — *"Foundations reset — the new codebase layout (packages: contracts, durable, record, lane,
 workers, director, server, web, cli, checks), the legacy Pi extension frozen in legacy/, and the keep-list ported with its
@@ -46,8 +52,13 @@ Two facts shape it:
 ### Session 2026-10-22 (resolved by human@batorfi)
 
 - **NC1 — Historical records versus the new rules.** The ported move vocabulary and role policy follow constitution v2.0.1;
-  the committed walks (`fixtures/r7-*`, the r1–r8 evidence) were made under v1.0.0 and would fail a v2.0.1-only validator.
-  **Resolved: option A — versioned flow definitions.**
+  the committed walks (`fixtures/r7-*`, the r1–r8 evidence) were made under v1.0.0. **Resolved: option A — versioned flow
+  definitions.**
+  *Correction (planning, 2026-10-23, measured on the real validator): the premise above first said the old walks "would fail a
+  v2.0.1-only validator". They would not — v2's moves are a superset of v1's (Code review gains `revise`; nothing is removed), and
+  the committed r7 walk passes under both. What a v2-only validator could no longer do is reject what v1 forbade (a Code review
+  `revise`) or say which rules a record was made under; the decision stands on that, and costs little because v1 is a copy of the
+  first program's own vocabulary.*
 
   | Option | Answer | Implications |
   |---|---|---|
@@ -243,8 +254,10 @@ management API, only `server` and `host` open listeners) — without reading eve
   `approve · revise · restart`.
 - **FR-009**: The role tier policy MUST bind every judge role — architecture critic, code reviewer, verifier, and any judge on
   an added gate — only to the strongest model, refusing a weaker binding by name (WORK-2, constitution II).
-- **FR-010**: The affinity scheduler MUST be ported with its behaviour unchanged: a swap only on a genuine tier change, every
-  swap priced and recorded (LANE-2, constitution IV).
+- **FR-010**: The **pure affinity logic** MUST be ported with its behaviour unchanged — what counts as a swap (a genuine tier
+  change only), the swap counter, and the schedule-time strongest-binding guard, which throws synchronously (LANE-2, constitution
+  IV). Pricing and recording each swap belong to the lane runtime (`run`, an adapt item) and arrive with the lane task
+  (r13/r16); `schedule`, which calls that runtime, stays in legacy until then.
 - **FR-011**: The factory-log and roadmap schemas, the log and roadmap validators and their report formatting MUST be
   ported, and the validators MUST run on the factory-log as before (EVT-5, validators part).
 - **FR-012**: A record MUST be validated against the flow version it was made under (NC1-A): the first program's committed walks
@@ -303,13 +316,17 @@ management API, only `server` and `host` open listeners) — without reading eve
 - **SC-006**: `kiln check` detects **every** disallowed construct in its negative suite (a call, an import, an alias, a computed
   access) and fails when it scanned no files.
 - **SC-007**: The boundary check catches **every** forbidden import in its negative suite.
-- **SC-008**: The first program's committed walks validate **unchanged** against flow v1, and the same walks fail flow v2 by
-  name (*flow-version-mismatch*) — proving the two versions differ where constitution v2.0.1 says they do.
+- **SC-008**: The first program's committed walks validate **unchanged** against flow v1 (and also against v2, whose moves are a
+  superset); a Code review `revise` record **fails flow v1 by name** (rule G3, naming the flow) and **passes flow v2** — proving
+  the two versions differ exactly where constitution v2.0.1 says they do.
 
 ## Assumptions
 
-- The new layout lives where PRD §8.2 places it: `kiln/packages/…`, with `kiln/legacy/`, `kiln/checks/`, `kiln/fixtures/` and
-  `kiln/agents/` beside it; the plan may refine names, not responsibilities.
+- The new layout is `kiln/packages/…` with `kiln/checks/`, `kiln/fixtures/` and (from r17) `kiln/agents/` beside it, as PRD §8.2
+  places it. **Legacy is `legacy/` at the repository root, not `kiln/legacy/`**: measured on 2026-10-23, the unmodified first-program
+  suite keeps passing at the old depth (500 tests, 0 failures with the live-Pi tier off), but nested one level deeper 6 failures
+  appear (3 tests, 3 test files that no longer load) because legacy tests locate the repository root by relative path. PRD §8.2 is
+  amended to match.
 - "Adapt" items of PRD §10.2 (the gate primitive, the lane, the log writer, the Ollama residency code, the state reducer, the
   readiness probes, the Pi RPC driver, the scripted walks) stay in `legacy/` in this row and are adapted by the rows that need
   them (r13–r16, r19).
