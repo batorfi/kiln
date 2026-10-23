@@ -1,0 +1,8 @@
+{
+  "name": "@kiln/checks",
+  "private": true,
+  "type": "module",
+  "kiln": {
+    "responsibility": "Named, falsifiable checks that never pass vacuously: the network lint, package boundaries and legacy identity."
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "kiln",
+  "version": "0.2.0",
+  "private": true,
+  "description": "KILN — a local software factory you own: agents work, independent judges check, people decide at every gate. The restart codebase (r12 onward); the first program lives in ../legacy. Zero runtime dependencies, nothing to install.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/batorfi/kiln.git"
+  },
+  "author": "Zsolt Bátorfi",
+  "type": "module",
+  "engines": {
+    "node": "^22.18.0 || >=23.6.0"
+  },
+  "imports": {
+    "#contracts/*": "./packages/contracts/src/*",
+    "#record/*": "./packages/record/src/*",
+    "#lane/*": "./packages/lane/src/*",
+    "#durable/*": "./packages/durable/src/*",
+    "#workers/*": "./packages/workers/src/*",
+    "#director/*": "./packages/director/src/*",
+    "#server/*": "./packages/server/src/*",
+    "#cli/*": "./packages/cli/src/*",
+    "#checks/*": "./checks/*"
+  },
+  "scripts": {
+    "test": "node tests/run.ts",
+    "test:new": "node tests/run.ts --new-only",
+    "test:legacy": "node tests/run.ts --legacy-only",
+    "kiln": "node packages/cli/src/main.ts",
+    "check": "node packages/cli/src/main.ts check",
+    "validate:log": "node packages/record/src/log.ts",
+    "validate:roadmap": "node packages/record/src/roadmap.ts"
+  },
+  "dependencies": {}
+}

@@ -1,0 +1,8 @@
+{
+  "name": "@kiln/workers",
+  "private": true,
+  "type": "module",
+  "kiln": {
+    "responsibility": "Role conversations on models — tool sets, replay policy and providers; the only importer of pi-ai — arrives with r16."
+  }
+}

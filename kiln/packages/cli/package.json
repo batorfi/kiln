@@ -1,0 +1,8 @@
+{
+  "name": "@kiln/cli",
+  "private": true,
+  "type": "module",
+  "kiln": {
+    "responsibility": "The kiln command line: `kiln check` now; init, doctor, status, needs and gate follow in later rows."
+  }
+}

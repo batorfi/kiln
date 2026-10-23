@@ -1,0 +1,8 @@
+{
+  "name": "@kiln/director",
+  "private": true,
+  "type": "module",
+  "kiln": {
+    "responsibility": "Deterministic orchestration of a feature's flow and the planner's checked drafts — arrives with r18."
+  }
+}
