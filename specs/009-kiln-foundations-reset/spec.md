@@ -63,6 +63,18 @@ Two facts shape it:
   | **A (recommended)** | **Copy.** `legacy/` keeps a byte-identical, frozen copy of everything it uses; the ported copies in the packages evolve to v2.0.1. | "Frozen" really means unchanged; legacy tests keep passing untouched; v2.0.1 changes cannot break legacy. Cost: duplicated source until legacy is retired, recorded as such. |
   | B | **Move, and let legacy import from the packages.** | One home for each module — but every v2.0.1 change (Code review `revise`, three judges) changes legacy behaviour and breaks its tests, so legacy is no longer frozen. |
 
+### Session 2026-10-23 (`/speckit-clarify`)
+
+- Q: When the live-Pi tests meet a Pi version KILN never measured, what makes them skip — the new test runner, or an edit to the
+  legacy Pi test gate? → A: **The runner**, via the legacy gate's existing `KILN_PI=0` off switch; no legacy file is touched.
+- Q: In r12, what should `kiln check`'s network check examine, and where should the allowlist live? → A: **A static lint over
+  the new packages** (the first program's, ported with its tokenizer, denylist and never-vacuous guard); the allowlist is a
+  **checked-in, path-keyed file in `checks/` that starts empty**. Runtime observation of connections arrives with the workers
+  (r16); r17 moves the allowlist into `kiln.config/`.
+- Q: Of the 73 kept test cases, 19 test code that stays in legacy until a later row — stay in legacy until that code is adapted,
+  or port the code they need now? → A: **They stay in legacy** until the row that adapts their code ports them. The new suite
+  ports the **54** cases whose subject is on the keep-list; legacy still runs all 73 unchanged.
+
 ## User Scenarios & Testing *(mandatory)*
 
 The users of this row are **the engineers who build KILN** — everyone who will work on r13 onwards — and the **reviewers**
@@ -76,8 +88,8 @@ scheduler, the schemas and validators, the deterministic clock — are in their 
 
 **Why this priority**: every later row builds here; a wrong or untested foundation would be inherited by all of them.
 
-**Independent Test**: run the suite on a fresh clone; every kept test runs from its new location and passes, and the count
-of kept test cases is at least the count before the move.
+**Independent Test**: run the suite on a fresh clone; every ported test runs from its new location and passes, at least 54
+cases run from the new packages, and all 73 first-program cases still pass (54 ported and 19 in legacy).
 
 **Acceptance Scenarios**:
 
@@ -85,9 +97,11 @@ of kept test cases is at least the count before the move.
    ported test runs from its package and passes, and the run reports a non-zero number of tests.
 2. **Given** the PRD's package list, **When** the engineer looks for a responsibility (for example "the affinity scheduler"),
    **Then** it lives in exactly the package the PRD names, and that package states its responsibility in one place.
-3. **Given** the first program's 73 kept test cases (contract, negative, network-scan, scheduler, switch-cost), **When** the
-   port is complete, **Then** none has been dropped, and any whose expectation changed did so only because of a recorded
-   constitution v2.0.1 rule.
+3. **Given** the first program's 73 test cases in the kept directories (contract, negative, network-scan, scheduler,
+   switch-cost), **When** the port is complete, **Then** the 54 whose subject is on the keep-list run from the new packages;
+   the other 19 — which test code that stays in legacy until a later row adapts it — keep running, unchanged, in legacy and are
+   listed by file with the row that will port them; none is dropped, and any ported case whose expectation changed did so only
+   because of a recorded constitution v2.0.1 rule.
 
 ---
 
@@ -105,8 +119,9 @@ of failing on a Pi version it never measured, skips with a printed reason.
 
 1. **Given** the tree before the move, **When** the legacy tree is compared with it, **Then** every legacy file is
    byte-identical to its original (only its location changed), and the comparison is itself a test.
-2. **Given** Pi 1.1.0 installed (measured version 0.85.1), **When** the default suite runs, **Then** the live-Pi tests skip,
-   each printing the installed and the measured version, and no live-Pi test fails.
+2. **Given** Pi 1.1.0 installed (measured version 0.85.1), **When** the default suite runs, **Then** the runner prints once
+   that the live-Pi tier is skipped, naming the installed and the measured versions; every live-Pi test is reported as skipped
+   (with the legacy gate's own off-switch reason) and none fails.
 3. **Given** Pi 0.85.1 installed, **When** the Pi tier is demanded, **Then** the live-Pi tests run as before.
 4. **Given** the Pi tier is explicitly demanded on an unmeasured Pi version, **When** it runs, **Then** it fails by name
    (*pi-version-unmeasured*) rather than skipping — a demanded tier is never silently skipped.
@@ -137,23 +152,27 @@ and the PRD.
 
 ---
 
-### User Story 4 — `kiln check` proves a run makes no outbound connection (Priority: P2)
+### User Story 4 — `kiln check` proves the source makes no unapproved network call (Priority: P2)
 
-An engineer runs `kiln check` to prove that local-only work stays on the machine. The first program's hardened network
-scan — the one that cannot pass vacuously — runs through the new command, with its allowlist taken from configuration.
+An engineer runs `kiln check` to prove that local-only code stays on the machine. The first program's hardened network lint —
+the one that cannot pass vacuously — runs through the new command over the new packages, with its allowlist read from a
+checked-in file. It is a **lint of source files**, not a sandbox and not a runtime monitor; runtime enforcement arrives where
+the network code does (the residency manager, r16).
 
-**Why this priority**: local-by-default (constitution VIII) must be provable from the first row of the new codebase.
+**Why this priority**: local-by-default (constitution VIII) must be checkable from the first row of the new codebase.
 
-**Independent Test**: run `kiln check` on a clean run and on a run that attempts a disallowed connection.
+**Independent Test**: run `kiln check` on the clean packages and on a scratch change that adds a disallowed network call.
 
 **Acceptance Scenarios**:
 
-1. **Given** a run that contacts only loopback, **When** `kiln check` runs the network check, **Then** it passes and says
-   what it observed.
-2. **Given** a run that attempts a connection outside the allowlist, **When** the check runs, **Then** it fails, naming the
-   destination.
-3. **Given** a check that observed nothing at all (no run, no capture), **When** it completes, **Then** it fails — a check
-   that saw nothing never passes.
+1. **Given** the new packages with no network-capable code outside the allowlist, **When** `kiln check` runs the network check,
+   **Then** it passes and reports how many files it scanned and which allowlist it applied.
+2. **Given** a source file in a scanned package that calls `fetch`, imports a network or process module, or evades the lint by
+   aliasing or computed access, **When** the check runs, **Then** it fails, naming the file and the construct.
+3. **Given** a scan that covered zero files (a wrong path, an empty package set), **When** it completes, **Then** it fails — a
+   check that saw nothing never passes.
+4. **Given** an allowlist entry, **When** the check runs, **Then** the entry is keyed by relative path (never by bare file
+   name) and an entry naming a file that does not exist fails by name. The allowlist starts empty.
 
 ---
 
@@ -182,10 +201,13 @@ management API, only `server` and `host` open listeners) — without reading eve
 - **The two copies drift on purpose**: the legacy copy never changes, the ported copy follows v2.0.1. The duplication is
   recorded (which files, since which commit) and ends when legacy is retired.
 - **A run that executes zero tests** must still fail, as today, from the new layout too.
+- **A new package adds network code before the allowlist names it**: the network check fails, naming the file.
 - **The empty shipped `ROADMAP.md` fixture** (`kiln/ROADMAP.md`) and the firing-ready probe that reads it move to legacy
   together; the admitted program stays at `specs/ROADMAP.md` and is untouched by this row.
 - **Pi not installed at all**: the live-Pi tier skips with its existing reason, as today.
-- **A future Pi version measured later**: adding it to the measured list re-enables the tier without code changes.
+- **A future Pi version measured later**: adding it to the runner's measured list (and the legacy probe's, which a test
+  keeps equal) re-enables the tier.
+- **The tier switched off by the operator already** (`KILN_PI=0`): the runner leaves the setting alone and prints nothing extra.
 
 ## Requirements *(mandatory)*
 
@@ -205,8 +227,12 @@ management API, only `server` and `host` open listeners) — without reading eve
   frozen **copy** of every module that is also ported (NC2-A) — with no feature work there; a test MUST prove the byte-identity
   against the pre-move tree, and a record MUST list the duplicated files.
 - **FR-005**: Legacy tests MUST keep running in the default suite until their code is retired.
-- **FR-006**: The live-Pi tier MUST skip, printing the installed and measured versions, when the installed Pi version is not in
-  its measured list; when the tier is demanded explicitly it MUST fail by name instead of skipping.
+- **FR-006**: The test runner (new code, outside `legacy/`) MUST compare the installed Pi version with the measured list. When it
+  is not on the list and the tier is not demanded, the runner MUST switch the tier off for that run through the legacy gate's
+  existing off switch (`KILN_PI=0`) and print the installed and measured versions once; it MUST NOT touch any legacy file. When
+  the tier is demanded explicitly (`--pi`) the runner MUST NOT switch it off — the tests run and fail by name
+  (*pi-version-unmeasured*). The runner's measured list is a single constant, and a test MUST assert it equals the legacy
+  probe's list so the two cannot drift.
 
 **The keep-list (PRD §10.1)**
 - **FR-007**: The standard flow MUST be data and **versioned**: **v1** reproduces the first program's rail exactly (for verifying
@@ -225,12 +251,16 @@ management API, only `server` and `host` open listeners) — without reading eve
   against v1, new records against v2; a record that names no version is treated as v1; nothing in a committed record is rewritten.
 - **FR-013**: The deterministic clock MUST be ported for replays.
 - **FR-014**: The committed real walks (`fixtures/r7-*`) MUST be kept as regression fixtures, unmodified.
-- **FR-015**: Every ported module MUST travel with its tests; no kept test case is dropped, and any changed expectation MUST
-  cite the constitution v2.0.1 rule that changed it.
+- **FR-015**: Every ported module MUST travel with its tests; no first-program test case is dropped (the 54 whose subject is
+  ported run from the new packages, the 19 whose subject stays in legacy keep running there, and a record lists those 19 by
+  file and by the row that will port them), and any changed expectation in a ported case MUST cite the constitution v2.0.1
+  rule that changed it.
 
 **Checks**
-- **FR-016**: `kiln check` MUST run the hardened network scan with its allowlist taken from configuration; it MUST fail by name on
-  a disallowed destination and MUST fail when it observed nothing.
+- **FR-016**: `kiln check` MUST run the network lint — the first program's, ported with its tokenizer, denylist and never-vacuous
+  guard — over the new packages, with its allowlist read from a checked-in, path-keyed file in `checks/` that starts empty; it MUST
+  fail by name, file and construct on a disallowed call, and MUST fail when it scanned no files. The small pure loopback-host
+  helper the lint needs MUST be copied into the new code, not imported from `legacy/`.
 - **FR-017**: A boundary check MUST enforce PRD §8.2's dependency direction and seam rules, failing by file and rule.
 - **FR-018**: Every check MUST fail by its own name when its condition is not met (the `*-ready` pattern).
 
@@ -247,25 +277,31 @@ management API, only `server` and `host` open listeners) — without reading eve
 - **Legacy tree** — the frozen first-program code and tests, byte-identical to their originals.
 - **Keep-list item** — a module (with its tests) ported from the first program: move vocabulary, gate rail, roles and tiers,
   scheduler, clock, schemas, validators, network scan, committed walks.
+- **Deferred test case** — one of the 19 first-program cases whose subject is an adapt item; it keeps running in legacy and is
+  ported by the row that adapts its subject.
 - **Flow definition** — the standard flow as data: gates, names, questions, moves, judges, fix-round cap; versioned if NC1-A.
 - **Move kind** — one of the closed set, with its fixed consequence; labels may vary, kinds may not.
 - **Role tier policy** — which roles are judges and the rule that judges bind only to the strongest model.
-- **Check** — a named, falsifiable probe (network, boundaries, legacy byte-identity) that fails by its own name.
+- **Check** — a named, falsifiable probe (network lint, boundaries, legacy byte-identity) that fails by its own name.
+- **Network allowlist** — a checked-in file in `checks/`, keyed by relative path, naming the only modules allowed to reach the
+  network; empty in this row.
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
 - **SC-001**: On a fresh clone, the default suite reports **0 failures** on a host with an unmeasured Pi (today's 8 live-Pi
-  failures become named skips), and **0 failures** on a host with the measured Pi.
-- **SC-002**: The number of kept test cases after the port is **at least 73** (the pre-move count in the kept directories),
-  and every legacy test that passed before still passes.
+  failures become reported skips, with the versions printed by the runner), and **0 failures** on a host with the measured Pi.
+- **SC-002**: At least **54** test cases run from the new packages (the cases whose subject is on the keep-list), and all **73**
+  first-program cases in the kept directories — the 54 ported plus the 19 that stay in legacy — pass; every legacy test that
+  passed before still passes.
 - **SC-003**: **100%** of legacy files are byte-identical to their pre-move originals, proven by a test.
 - **SC-004**: The flow data matches constitution v2.0.1 for **all ten gates** — names, moves and judges — checked by a test
   that reads the constitution's move-kind list and the PRD's GATE-1/GATE-2.
 - **SC-005**: A judge bound to a weaker model is refused in **100%** of the negative cases, and `docs-synthesizer` is never
   accepted as a judge.
-- **SC-006**: `kiln check` detects **every** disallowed destination in its negative suite and fails when it observed nothing.
+- **SC-006**: `kiln check` detects **every** disallowed construct in its negative suite (a call, an import, an alias, a computed
+  access) and fails when it scanned no files.
 - **SC-007**: The boundary check catches **every** forbidden import in its negative suite.
 - **SC-008**: The first program's committed walks validate **unchanged** against flow v1, and the same walks fail flow v2 by
   name (*flow-version-mismatch*) — proving the two versions differ where constitution v2.0.1 says they do.
@@ -278,7 +314,15 @@ management API, only `server` and `host` open listeners) — without reading eve
   readiness probes, the Pi RPC driver, the scripted walks) stay in `legacy/` in this row and are adapted by the rows that need
   them (r13–r16, r19).
 - The measured Pi versions list starts as `[0.85.1]`; re-measuring against Pi 1.1.0 is a later legacy chore, not part of r12.
+- The legacy Pi gate already honours `KILN_PI=0` with a printed per-test reason (measured 2026-10-23: 11 live-Pi tests skipped,
+  0 failed); the runner only needs to set it.
 - No user-visible surface is added; `kiln check` is the only new command, and its output is text.
+- The 19 cases that stay in legacy are: `negative/async-await` (4, on `validate/runtime-ready.ts`), `negative/not-silent` (5, on
+  the live resident), `netscan/allowlist` (6, on the Ollama resident's allowlist entry), `scheduler` (3, on the stub resident)
+  and `switch-cost` (1, on the Ollama and live residents). Each is ported by the row that adapts its subject (r13–r16); the
+  plan names the row. The ported network lint gets its own new tests for its empty, path-keyed allowlist.
+- No network-capable code is ported in r12 (the Ollama residency stays in legacy until r16), so the network allowlist starts
+  empty; the legacy copy of the lint keeps its own single-entry allowlist for the legacy tree.
 - The spec's success is verified offline; the live Ollama and Pi tiers remain optional, skipping with printed reasons.
 
 ## Out of Scope
@@ -287,3 +331,5 @@ management API, only `server` and `host` open listeners) — without reading eve
   workers (r16); configuration files (r17) — beyond the data and policies this row ports.
 - Any change to `specs/ROADMAP.md`, the constitution, or a gate's state.
 - Re-measuring the legacy live-Pi tier on Pi 1.1.0.
+- Runtime observation of network connections (arrives with the workers and the residency manager, r16) and moving the allowlist
+  into `kiln.config/` (r17).

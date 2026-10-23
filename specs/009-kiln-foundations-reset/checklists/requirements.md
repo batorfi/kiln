@@ -36,7 +36,11 @@
   choices made in the spec. How the packages are wired, the workspace mechanics and file moves are left to `/speckit.plan`.
 - **Resolved 2026-10-22 (human@batorfi):** NC1 → versioned flow definitions (v1 = first program, v2 = constitution v2.0.1);
   NC2 → copy (legacy keeps a frozen copy; the ported copies evolve). Spec, FR-004/007/012, edge cases and SC-008 updated.
+- **Resolved 2026-10-23 (`/speckit-clarify`, human@batorfi):** the Pi skip is done by the runner through the legacy gate's `KILN_PI=0`
+  switch (FR-006, US2); the network check is a static lint over the new packages with a checked-in, path-keyed allowlist that starts
+  empty (US4, FR-016, SC-006); the 19 tests on adapt-item subjects stay in legacy, 54 are ported (FR-015, SC-002).
 - **Validation run 1 (2026-10-22):** all other items pass. Counts cited in the spec were measured on 2026-10-22: 500 tests
   (477 pass, 15 skip, 8 fail — live-Pi, Pi 1.1.0 vs measured 0.85.1); 73 kept test cases in `tests/contract`, `negative`,
   `netscan`, `scheduler`, `switch-cost`.
 - **Validation run 2 (2026-10-22):** all items pass; ready for `/speckit.plan`.
+- **Validation run 3 (2026-10-23, after `/speckit-clarify`):** 16/16 items pass; no regressions.
