@@ -30,4 +30,13 @@ reported skips.
 
 ## Checkpoints
 
-*(filled in as the row is implemented; each entry names the command and its result)*
+*(each entry names the command and its result)*
+
+### After the move (T002–T004, 2026-10-23)
+
+| Check | Command | Result |
+|---|---|---|
+| The move is pure | `git diff -M --name-status c4c3892 3298507` | **168 renames at 100%, 0 other** |
+| Legacy runs unmodified from its new location | `cd legacy && KILN_PI=0 node tests/run.ts` (`/tmp/r12-legacy-after-move.log`) | **500 tests, 470 pass, 0 fail, 30 skipped** — the 15 live-Pi tests are skipped by the legacy gate's off switch with its printed reason; identical to the research R1 measurement (layout A) |
+| Working tree after the run | `git status -s` | clean — the suite writes no tracked file |
+| Ignore patterns | `git check-ignore -v legacy/factory-log/x.jsonl` | ignored; `legacy/factory-log/.gitkeep` stays tracked |
