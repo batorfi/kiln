@@ -138,13 +138,14 @@ kiln/                                     # NEW
 │       └── tests/
 ├── checks/
 │   ├── package.json                      # kiln.responsibility (checks is the tenth unit of FR-001)
+│   ├── lex.ts                            # the tokenizer (from _netscan.ts), shared by the network lint and the boundary check
 │   ├── network-lint.ts  loopback.ts  network-allowlist.json       # the first program's lint, ported; allowlist empty
 │   ├── boundaries.ts    boundaries.json
-│   ├── legacy-identity.ts  legacy-manifest.json  legacy-copies.json  make-legacy-manifest.ts
+│   ├── legacy-identity.ts  legacy-manifest.json  legacy-copies.json
 │   ├── index.ts                          # the registry `kiln check` uses
 │   └── tests/                            # bypass (7), hardened (7), strictly-stronger (3), untouched (3) — ported; + boundaries, legacy, legacy-baseline
 ├── fixtures/                             # r7-live-inference.jsonl, r7-live-broken.jsonl, r7-live-inference.meta.json (copies)
-└── tests/{run.ts, measured-pi.ts, runner/*.test.ts}
+└── tests/{run.ts, measured-pi.ts, pi-tier.ts, runner/*.test.ts, tools/{make-legacy-manifest.ts, count-ported.ts}}   # tools/ spawns git: outside the lint's scan roots
 ```
 
 **Structure Decision**: a repo-root `legacy/` beside a new `kiln/` (research R1, with measurements); packages wired by a single `imports` map in `kiln/package.json` (R2);
@@ -173,7 +174,7 @@ Order matters; each phase leaves the repository green.
 
 | Phase | Work | Proves |
 |---|---|---|
-| **P0 Baseline** | generate `legacy-manifest.json` from the baseline commit's blobs (no moves yet); write `make-legacy-manifest.ts` | the manifest is independent of the move |
+| **P0 Baseline** | record the baseline commit, tree id and the starting suite numbers in `baseline.md`; **the manifest itself is generated right after P1** from the baseline commit's git blobs — the new `kiln/` cannot hold the generator until the old one has moved, and git objects are unaffected by the move, so the manifest stays independent of it | the starting point is on record |
 | **P1 Move** | `git mv kiln legacy`; `.gitignore` patterns for `legacy/factory-log`; **no content change**; run the legacy suite (`KILN_PI=0`) | US2.1: 168 renames; 500 tests, 0 failures (measured) |
 | **P2 Scaffold** | `kiln/package.json` with the `imports` map, `tsconfig.json`, the ten `packages/*/package.json` (responsibility), empty-package skeletons | FR-001, FR-002; US1.2 |
 | **P3 contracts** | port `move-vocabulary` → flow v1/v2, roles/roster, types, schemas; ported `gate-rail` (6) and `strongest-model` (5) tests; new v2 / roster / constitution-and-PRD tests; write `gate-rail.md` (v2) | US3; SC-004, SC-005 |

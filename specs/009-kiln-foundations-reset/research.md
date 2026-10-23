@@ -86,7 +86,7 @@ responsibility belongs next to the code it describes; the central file holds *ru
 
 ## R4 — Proving legacy is byte-identical
 
-**Decision.** `kiln/checks/legacy-manifest.json`, generated **once, before the move**, from the git blobs of the baseline commit
+**Decision.** `kiln/checks/legacy-manifest.json`, generated **once, immediately after the move-only commit**, from the git blobs of the baseline commit
 (`299b0a5…`, the tip of `main` when r12 started), not from the working tree. It records, for every tracked file under the old
 `kiln/`: relative path, byte size, SHA-256, and git blob id; plus the baseline commit id and its `kiln/` tree id. `kiln check legacy` is **pure filesystem** (it must not spawn `git`: the network lint's denylist includes `node:child_process`, and the check lives in
 `checks/`, which the lint scans):

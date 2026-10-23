@@ -10,8 +10,8 @@ Beside it, `kiln/` is the new codebase. Nothing under `kiln/` imports from `lega
 
 ## The manifest — `kiln/checks/legacy-manifest.json`
 
-Generated **once, before the move**, from the git blobs of the baseline commit — so it records the original, not whatever the tree happens to be later.
-Shape in [data-model §5](../data-model.md). Regenerating it is a deliberate act (`node checks/make-legacy-manifest.ts <baseline-commit>`), reviewed like
+Generated **once, immediately after the move-only commit**, from the git blobs of the **baseline commit** (not from the working tree) — so it records the original, whatever the tree looks like later.
+Shape in [data-model §5](../data-model.md). Regenerating it is a deliberate act (`node tests/tools/make-legacy-manifest.ts <baseline-commit>`, which lives under `tests/` because it spawns `git` and the network lint does not scan `tests/`), reviewed like
 any other change, and is expected only when legacy is **retired** — then the manifest and `legacy/` are deleted together.
 
 ## `kiln check legacy` — pure filesystem
