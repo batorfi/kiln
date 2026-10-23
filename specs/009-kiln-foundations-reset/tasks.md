@@ -36,7 +36,7 @@ skeleton are Foundational because every story builds on them.
 **Purpose**: record where we start, then move the first program's tree without changing a byte.
 
 - [X] T001 Record the starting point in `specs/009-kiln-foundations-reset/baseline.md`: the baseline commit (`git rev-parse 299b0a5`) and its `kiln/` tree id (`git rev-parse 299b0a5:kiln`), the Node and Pi versions, and the suite numbers measured before any change (`cd kiln && node tests/run.ts`: 500 tests, 477 pass, 15 skipped, 8 fail — all 8 in `tests/pi/pi-live.test.ts`, Pi 1.1.0 installed vs 0.85.1 measured). Confirm `git status` is clean and `.specify/feature.json` points at this feature.
-- [ ] T002 Move the first program's whole tree with `git mv kiln legacy` — a **move-only commit**: no file content changes, nothing added under `legacy/` (research R1, R15). Commit message names the baseline commit.
+- [X] T002 Move the first program's whole tree with `git mv kiln legacy` — a **move-only commit**: no file content changes, nothing added under `legacy/` (research R1, R15). Commit message names the baseline commit.
 - [ ] T003 In `.gitignore`, replace the `kiln/factory-log/*` runtime-artifact patterns with `legacy/factory-log/*.jsonl`, `legacy/factory-log/*.log` and `!legacy/factory-log/.gitkeep` (the dogfood scripts now write there); keep the `kiln/factory-log/` patterns too for the new tree. Commit separately from the move.
 - [ ] T004 Prove the move changed nothing: `cd legacy && KILN_PI=0 node tests/run.ts`. Expect **500 tests, 0 failures** (measured in research R1, layout A). Append the numbers to `specs/009-kiln-foundations-reset/baseline.md`. If anything fails, stop — a relative-path assumption was missed — and record it before continuing.
 
