@@ -71,13 +71,17 @@ property, and puts files behind `node_modules` symlinks that obscure paths. Rela
 
 ## R3 — Where a package states its responsibility
 
-**Decision.** Each package has a `package.json` with a `kiln.responsibility` string — one sentence, the single source of truth. The
+**Decision.** Each package has a `kiln.json` with a `responsibility` string — one sentence, the single source of truth. The
 boundary check fails a package whose entry is missing or empty (`boundary-responsibility-missing`). There is no per-package
 README duplicating it.
 
+**Implementation finding (T019, 2026-10-23).** The file is `kiln.json`, not `package.json`: Node resolves `#` imports from the *nearest* `package.json`, and
+forbids an `imports` target outside that package, so a `package.json` in each package would hide the root `imports` map and make cross-package imports
+impossible without an install. Only `kiln/package.json` exists, so the one map serves every package.
+
 **Rationale.** FR-001 asks for "its single responsibility in one place". A machine-readable field can be checked; prose in a README
-cannot, and drifts. Empty packages (`durable`, `workers`, `director`, `server`, `web`) consist of just this `package.json`, which
-git tracks, so they exist in a fresh clone. `kiln/checks/` — the tenth unit FR-001 lists — carries the same `package.json`, although it sits beside `packages/`, not in it.
+cannot, and drifts. Empty packages (`durable`, `workers`, `director`, `server`, `web`) consist of just this `kiln.json`, which
+git tracks, so they exist in a fresh clone. `kiln/checks/` — the tenth unit FR-001 lists — carries the same `kiln.json`, although it sits beside `packages/`, not in it.
 
 **Alternatives.** README per package — rejected (unchecked, drifts). A central table only in `boundaries.json` — rejected: the
 responsibility belongs next to the code it describes; the central file holds *rules*, not prose.

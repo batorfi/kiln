@@ -1,0 +1,4 @@
+{
+  "name": "@kiln/workers",
+  "responsibility": "Role conversations on models \u2014 tool sets, replay policy and providers; the only importer of pi-ai \u2014 arrives with r16."
+}

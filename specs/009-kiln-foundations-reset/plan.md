@@ -118,7 +118,7 @@ kiln/                                     # NEW
 ├── tsconfig.json                         # editor support; noEmit; mirrors the imports map
 ├── packages/
 │   ├── contracts/                        # pure, no I/O
-│   │   ├── package.json                  # kiln.responsibility
+│   │   ├── kiln.json                     # responsibility
 │   │   ├── gate-rail.md                  # the v2 contract (FR-019); points to legacy/contracts/gate-rail.md for v1
 │   │   ├── schemas/{factory-log,roadmap}.schema.json
 │   │   ├── src/{moves.ts, types.ts, roles.ts, flow/{index.ts, v1.ts, v2.ts}}
@@ -131,13 +131,13 @@ kiln/                                     # NEW
 │   │   ├── package.json
 │   │   ├── src/{types.ts, affinity.ts}   # WorkUnit; switchCount, bindAll, judgeUnitsBoundStrongest (the pure part of scheduler.ts)
 │   │   └── tests/                        # 3 new
-│   ├── durable/ workers/ director/ server/ web/    # package.json only — responsibility stated, nothing else yet
+│   ├── durable/ workers/ director/ server/ web/    # kiln.json only — responsibility stated, nothing else yet
 │   └── cli/
 │       ├── package.json
 │       ├── src/main.ts                   # `kiln check [name…] [--json]`
 │       └── tests/
 ├── checks/
-│   ├── package.json                      # kiln.responsibility (checks is the tenth unit of FR-001)
+│   ├── kiln.json                         # responsibility (checks is the tenth unit of FR-001)
 │   ├── lex.ts                            # the tokenizer (from _netscan.ts), shared by the network lint and the boundary check
 │   ├── network-lint.ts  loopback.ts  network-allowlist.json       # the first program's lint, ported; allowlist empty
 │   ├── boundaries.ts    boundaries.json
@@ -156,7 +156,7 @@ responsibilities in each package's `package.json` (R3); rule and record files in
 | # | Decision | Where decided |
 |---|---|---|
 | D1 | `legacy/` at the repo root; `git mv kiln legacy` in a move-only commit | R1, R15 |
-| D2 | `imports` map, no install/build; packages declare responsibility in `package.json` | R2, R3 |
+| D2 | `imports` map, no install/build; packages declare responsibility in `kiln.json` | R2, R3 |
 | D3 | Byte-identity by a manifest from the baseline's git blobs; `kiln check legacy` is pure filesystem; the git cross-check is a test | R4 |
 | D4 | Duplication recorded in `legacy-copies.json`; ported files may differ | R5 |
 | D5 | Flow v1/v2 as frozen data; optional `flow` on `gate-completion`; absent ⇒ v1; validators resolve per record | R6 |
@@ -176,7 +176,7 @@ Order matters; each phase leaves the repository green.
 |---|---|---|
 | **P0 Baseline** | record the baseline commit, tree id and the starting suite numbers in `baseline.md`; **the manifest itself is generated right after P1** from the baseline commit's git blobs — the new `kiln/` cannot hold the generator until the old one has moved, and git objects are unaffected by the move, so the manifest stays independent of it | the starting point is on record |
 | **P1 Move** | `git mv kiln legacy`; `.gitignore` patterns for `legacy/factory-log`; **no content change**; run the legacy suite (`KILN_PI=0`) | US2.1: 168 renames; 500 tests, 0 failures (measured) |
-| **P2 Scaffold** | `kiln/package.json` with the `imports` map, `tsconfig.json`, the ten `packages/*/package.json` (responsibility), empty-package skeletons | FR-001, FR-002; US1.2 |
+| **P2 Scaffold** | `kiln/package.json` with the `imports` map, `tsconfig.json`, the ten `kiln.json` files (responsibility), empty-package skeletons | FR-001, FR-002; US1.2 |
 | **P3 contracts** | port `move-vocabulary` → flow v1/v2, roles/roster, types, schemas; ported `gate-rail` (6) and `strongest-model` (5) tests; new v2 / roster / constitution-and-PRD tests; write `gate-rail.md` (v2) | US3; SC-004, SC-005 |
 | **P4 record** | port `_core`, `log`, `roadmap`, `_report`, `clock`; the `flow` field and per-record resolution; ported `log` (9), `roadmap` (3), `no-silent-approval` (4), `roadmap-m3` (7) cases; fixtures; G3 message fix | US3.3; FR-011..014; SC-008 |
 | **P5 lane (pure)** | `types.ts`, `affinity.ts`; three new tests | FR-010 (adjusted) |
@@ -190,7 +190,7 @@ Order matters; each phase leaves the repository green.
 
 | FR | Realised by | Phase |
 |---|---|---|
-| FR-001 layout, responsibilities | nine packages + `checks/`, each `package.json` `kiln.responsibility`; `boundary-responsibility-missing` | P2 |
+| FR-001 layout, responsibilities | nine packages + `checks/`, each `kiln.json` `responsibility`; `boundary-responsibility-missing` | P2 |
 | FR-002 runtime, no dependency | `imports` map; `externals: {}`; `boundary-bare-specifier` | P2, P6 |
 | FR-003 one runner, refuses zero tests | `kiln/tests/run.ts` ([runner.md](./contracts/runner.md)) | P8 |
 | FR-004 legacy byte-identical + copy record | `git mv`; `legacy-manifest.json`; `legacy-copies.json`; `kiln check legacy` | P0, P1, P6 |

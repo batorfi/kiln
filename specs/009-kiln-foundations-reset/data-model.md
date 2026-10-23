@@ -7,7 +7,7 @@ rule/record files the checks read — plus two small result shapes. The key enti
 
 | Spec entity | Realised as | Lives in |
 |---|---|---|
-| Package | a directory with `package.json` + `kiln.responsibility`; rules in `boundaries.json` | `kiln/packages/*`, `kiln/checks/boundaries.json` |
+| Package | a directory with `kiln.json` (`responsibility`); rules in `boundaries.json` | `kiln/packages/*`, `kiln/checks/boundaries.json` |
 | Legacy tree | the moved first-program tree + `LegacyManifest` | `legacy/`, `kiln/checks/legacy-manifest.json` |
 | Keep-list item | a `CopyRecord` (legacy ↔ ported, or legacy-only + the row that ports it) | `kiln/checks/legacy-copies.json` |
 | Flow definition | `FlowDefinition` (v1, v2) | `kiln/packages/contracts/src/flow/` |

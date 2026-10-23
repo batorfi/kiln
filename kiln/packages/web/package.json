@@ -1,8 +1,0 @@
-{
-  "name": "@kiln/web",
-  "private": true,
-  "type": "module",
-  "kiln": {
-    "responsibility": "The prebuilt front door assets — arrive with r19."
-  }
-}

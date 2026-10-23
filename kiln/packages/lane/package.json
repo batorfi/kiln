@@ -1,8 +1,0 @@
-{
-  "name": "@kiln/lane",
-  "private": true,
-  "type": "module",
-  "kiln": {
-    "responsibility": "One lane per factory: the pure affinity logic now; the lane task, the scheduler's runner and the residency manager arrive with r13 and r16."
-  }
-}

@@ -16,7 +16,7 @@ All commands run from `kiln/` unless stated.
 ls ..                       # legacy/  kiln/  docs/  specs/  …      (legacy/ is a sibling of kiln/)
 ls packages                 # contracts record durable lane workers director server web cli
 ls checks                   # network-lint.ts boundaries.ts legacy-identity.ts boundaries.json network-allowlist.json legacy-manifest.json legacy-copies.json …
-cat packages/*/package.json checks/package.json | grep responsibility       # one sentence per unit (FR-001)
+cat packages/*/kiln.json checks/kiln.json | grep responsibility       # one sentence per unit (FR-001)
 ```
 
 **Expect**: nine packages plus `checks/`, each with a responsibility; no `node_modules`; `git status` clean on a fresh clone. *(US1.2)*

@@ -57,7 +57,7 @@ comment is not an import) — `import … from "x"`, `export … from "x"`, `imp
 | `boundary-legacy-import` | anything under `kiln/` importing from `legacy/` | file, specifier |
 | `boundary-contracts-io` | `contracts` importing a `node:` module | file, specifier |
 | `boundary-package-undeclared` | a `packages/<dir>` not in `layers` | directory |
-| `boundary-responsibility-missing` | a directory under `packages/`, or `checks/`, without a non-empty `kiln.responsibility` in its `package.json` | directory |
+| `boundary-responsibility-missing` | a directory under `packages/`, or `checks/`, without a non-empty `responsibility` in its `kiln.json` | directory |
 | `boundary-zero-files` | the scan examined no file | — (never-vacuous) |
 
 ## Required behaviours (each is a test with a scratch tree)
@@ -72,5 +72,5 @@ comment is not an import) — `import … from "x"`, `export … from "x"`, `imp
 | B6 | a file importing `../../../legacy/src/x.ts` | fails `boundary-legacy-import` |
 | B7 | `"#lane/x.ts"` inside a string or comment | is **not** read as an import |
 | B8 | a `packages/` directory not in `layers` | fails `boundary-package-undeclared` |
-| B9 | a package whose `package.json` lacks `kiln.responsibility` | fails `boundary-responsibility-missing` |
+| B9 | a package whose `kiln.json` lacks `responsibility` | fails `boundary-responsibility-missing` |
 | B10 | an empty scan root | fails `boundary-zero-files` |

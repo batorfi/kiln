@@ -1,8 +1,0 @@
-{
-  "name": "@kiln/durable",
-  "private": true,
-  "type": "module",
-  "kiln": {
-    "responsibility": "The one seam over Pi Durable: task types, the gate contract and resume — arrives with r42 and r13."
-  }
-}

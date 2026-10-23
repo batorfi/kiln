@@ -1,8 +1,0 @@
-{
-  "name": "@kiln/contracts",
-  "private": true,
-  "type": "module",
-  "kiln": {
-    "responsibility": "Gate ids, move kinds, versioned flow definitions, judge rosters, the tier policy, record types and JSON schemas — pure, with no I/O."
-  }
-}

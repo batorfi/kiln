@@ -1,0 +1,4 @@
+{
+  "name": "@kiln/record",
+  "responsibility": "The factory-log and roadmap validators, report formatting and the deterministic clock; the event stream itself arrives with r15."
+}

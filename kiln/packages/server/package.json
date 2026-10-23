@@ -1,8 +1,0 @@
-{
-  "name": "@kiln/server",
-  "private": true,
-  "type": "module",
-  "kiln": {
-    "responsibility": "The loopback front door: session security, read models, live push and move intake — arrives with r19."
-  }
-}
