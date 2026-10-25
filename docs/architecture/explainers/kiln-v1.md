@@ -220,8 +220,8 @@ contracts ← record ← durable ← lane, workers ← director ← workshop ←
 | `team` | the team-space repository: subscribe and publish, signatures, claims, requests, team rules |
 | `server` · `web` · `cli` | HTTP, auth, read models, push, intake; the prebuilt front door; the command line |
 | `editor` | Zed integration: links and task templates, the read-only MCP server (in `kiln-v1`); later the ACP agent and the language server |
-| `checks/` · `fixtures/` · `agents/` | readiness probes and the network check; committed replays; role instructions |
-| `legacy/` | the first program's code, frozen until each part is ported or retired |
+| `checks/` · `fixtures/` · `agents/` | the named, falsifiable checks behind `kiln check` (the network lint, package boundaries, legacy identity — from row r12); committed replays; role instructions |
+| `legacy/` (**at the repository root, beside `kiln/`**, not inside it) | the first program's code, frozen byte-for-byte until each part is ported or retired; `kiln check legacy` proves it unchanged. Placed at the root because, measured in r12, nesting it one level deeper broke 6 of its tests |
 
 `host/` (a separately running host runtime) and `bench/` exist in the layout but are `kiln-v1.x` work; in `kiln-v1` the
 host runs in-process with the workshop.
@@ -280,7 +280,7 @@ decisions that shape it — in [`specs/explainers/`](../../../specs/explainers/R
 
 | # | Row | What it delivers | Proven when |
 |---|---|---|---|
-| 1 | **r12** Foundations reset | the package layout; legacy frozen; the keep-list ported with tests green | every ported test passes; `kiln check` runs the network check |
+| 1 | **r12** Foundations reset | the package layout; legacy frozen; the keep-list ported with tests green; the standard flow as versioned data (v1 the first program's ten-gate rail, v2 the twelve-gate flow) | every ported test passes; `kiln check` runs the network, boundary and legacy-identity checks |
 | 2 | **r42** Spike: external completion | a go/no-go on completing a waiting Pi Durable task atomically from outside | a spike report decides go, go-with-fallback or no-go |
 | 3 | **r13** Durable core | the Pi Durable seam, task types, the gate contract, one store per factory | killed at every step of a gate, it resumes waiting and settles only on a committed move |
 | 4 | **r14** Gates as data | the default flow and move kinds as data; `kiln check flow` | a scripted feature walks ten gates from the CLI and survives kill-and-resume at each |

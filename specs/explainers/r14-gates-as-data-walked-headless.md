@@ -16,15 +16,16 @@
 
 ## In one paragraph
 
-The default flow — the Roadmap gate and nine feature gates — becomes data the director executes, not a constant rail in code. A scripted feature walks all ten gates from the command line and survives being killed at every one, which makes the flow demonstrable long before any screen exists.
+The default flow — the Roadmap gate and eleven feature gates, two of which (Experience design and UI review) apply only to interface work — becomes data the director executes, not a constant rail in code. A scripted feature walks the whole flow from the command line and survives being killed at every one, which makes the flow demonstrable long before any screen exists.
 
 ## What it delivers
 
 - the standard flow as data, with the closed set of move kinds: approve, revise, reject, restart, split+revise, mitigate, and the Roadmap gate's row edits
-- the decided move semantics: Code review offers `approve · revise · restart`; a reject may name an earlier gate at any time; every gate after the target re-opens; triage skips only Concept and Design
+- the decided move semantics: Code review offers `approve · revise · restart`; a reject may name an earlier gate at any time; every gate after the target re-opens; triage skips only Concept and Architecture
+- the two interface gates carry a deterministic `applies_when` and are recorded as *not applicable* otherwise
 - the fix-round cap (default 2, settable 0–3)
 - `kiln check flow` for the default flow, with a negative suite of invalid flows it must refuse
-- a scripted feature walking all ten gates from the CLI, surviving kill-and-resume at every gate
+- a scripted interface feature walking all eleven feature gates and a non-interface one the nine that apply, from the CLI, surviving kill-and-resume at every gate
 
 ## Not in this row
 

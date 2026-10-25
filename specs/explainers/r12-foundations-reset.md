@@ -16,16 +16,16 @@
 
 ## In one paragraph
 
-The restart reorganises the repository around the new design without throwing away what the first program proved. This row creates the package layout every later row builds in, freezes the old Pi extension in `legacy/`, and ports the code that still expresses a rule KILN holds — with its tests — so the new codebase starts with its guarantees already checked.
+The restart reorganises the repository around the new design without throwing away what the first program proved. This row creates the package layout every later row builds in, freezes the first program's whole tree in `legacy/` (at the repository root, byte-identical and proven so by a check), and ports the code that still expresses a rule KILN holds — with its tests — so the new codebase starts with its guarantees already checked.
 
 ## What it delivers
 
 - the package layout: `contracts`, `record`, `durable`, `lane`, `workers`, `director`, `server`, `web`, `cli`, `checks` (with room for `knowledge`, `workshop`, `team`, `explore`, `editor` later)
-- the first program's Pi extension and terminal UI frozen in `legacy/`, with no feature work there
-- the keep-list ported with its tests green: the standard flow and move kinds as data, the schemas, the log and roadmap validators, the affinity scheduler, the strongest-judge tier policy, the deterministic clock
-- the hardened, never-vacuous network check generalised into `checks/`
-- the legacy `kiln/contracts/gate-rail.md` rewritten for constitution v2.0.1 and the decided move set (with r14)
-- the legacy live-Pi suite skipping with a printed reason on a Pi version it has not measured, instead of failing
+- the first program's whole tree (its Pi extension and terminal UI included) frozen in `legacy/` at the repository root, with no feature work there — and `kiln check legacy` proving it unchanged
+- the keep-list ported with its tests green: the standard flow as versioned data (v1 the first program's ten-gate rail, v2 the twelve-gate flow of constitution v2.1.0 with five judges) and the move kinds, the schemas, the log and roadmap validators, the affinity scheduler, the strongest-judge tier policy, the deterministic clock
+- `kiln check`: the hardened, never-vacuous network lint, the package-boundary check and the legacy-identity check, each failing by name
+- a new gate-rail contract for constitution v2.1.0 beside the code (the legacy one stays with the legacy probe that reads it)
+- the test runner running both suites, and switching the legacy live-Pi tier off — with the versions printed — on a Pi version it has not measured, instead of failing
 
 ## Not in this row
 

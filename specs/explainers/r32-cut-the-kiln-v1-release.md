@@ -21,7 +21,7 @@ The release row turns everything before it into something a newcomer can install
 ## What it delivers
 
 - the installer and newcomer documentation
-- a demo factory, downloaded on request, replaying a committed walk through all ten gates
+- a demo factory, downloaded on request, replaying a committed walk through all eleven feature gates of an interface feature
 - a release manifest and version tag
 - acceptance on a real repository by a newcomer
 
