@@ -1,5 +1,5 @@
 // `kiln check boundaries` (r12 T074; contracts/boundaries.md): PRD §8.2's dependency direction, seam rules and "no bare specifiers", enforced by a rule file
-// (checks/boundaries.json) instead of hoped for. It reads the import specifiers of every non-test source file — `packages/<name>/src` and `checks/*.ts` —
+// (checks/boundaries.json) instead of hoped for. It reads the import specifiers of every non-test source file — everything under `packages/<name>/` and `checks/` —
 // with the shared tokenizer, so a specifier inside a string, a comment or a template is never read as an import. Pure: reads files, spawns nothing.
 //   · `#<pkg>/…` and a relative import into another package are the same thing, and must be in the importing package's allowed list (siblings are not);
 //   · `node:` builtins are free except in `contracts`, which does no I/O;
@@ -108,7 +108,7 @@ export function checkBoundaries(opts: BoundaryOptions = {}): CheckResult {
 
   // the imports
   const files = networkScanFiles(kilnDir);
-  if (files.length === 0) failures.push({ code: "boundary-zero-files", detail: "the scan examined ZERO files (roots: packages/<name>/src, checks/*.ts) — a vacuous scan proves nothing" });
+  if (files.length === 0) failures.push({ code: "boundary-zero-files", detail: "the scan examined ZERO files (roots: packages/<name>/, checks/ — recursively, tests excluded) — a vacuous scan proves nothing" });
   const allowedList = (pkg: string) => (layers[pkg].imports.length ? layers[pkg].imports.join(", ") : "nothing");
   for (const file of files) {
     const owner = file.startsWith("checks/") ? "checks" : file.split("/")[1];
@@ -128,6 +128,7 @@ export function checkBoundaries(opts: BoundaryOptions = {}): CheckResult {
         const pm = /^packages\/([^/]+)(?:\/|$)/.exec(rel);
         if (pm) toPackage(pm[1], spec);
         else if (rel === "checks" || rel.startsWith("checks/")) toPackage("checks", spec);
+        else at("boundary-forbidden-import", `imports ${spec}, which is ${rel} — source may import only from packages/ and checks/ (not from tests/, fixtures/ or the root of kiln/)`);
       } else if (spec.startsWith("#")) {
         toPackage(spec.slice(1).split("/")[0], spec);
       } else if (spec.startsWith("node:")) {

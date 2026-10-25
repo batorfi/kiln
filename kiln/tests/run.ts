@@ -80,39 +80,42 @@ function cleanEnv(extra: Record<string, string> = {}): NodeJS.ProcessEnv {
   return env;
 }
 
-/** Runs a child, passes its output through, and returns its exit code and how many tests its summary reported. */
-function runChild(cmdArgs: string[], cwd: string, env: NodeJS.ProcessEnv): Promise<{ code: number; ran: number }> {
+interface RunResult { code: number; ran: number; skipped: number }
+
+/** Runs a child, passes its output through, and returns its exit code and how many tests (and how many of those skipped) its summary reported. */
+function runChild(cmdArgs: string[], cwd: string, env: NodeJS.ProcessEnv): Promise<RunResult> {
   return new Promise((resolveRun) => {
     const child = spawn(process.execPath, cmdArgs, { cwd, env, stdio: ["ignore", "pipe", "pipe"] });
     let out = "";
     child.stdout.on("data", (d: Buffer) => { out += d; process.stdout.write(d); });
     child.stderr.on("data", (d: Buffer) => process.stderr.write(d));
-    child.on("error", (e) => { console.error(`FAIL — could not start ${cmdArgs[0]}: ${e.message}`); resolveRun({ code: 1, ran: 0 }); });
+    child.on("error", (e) => { console.error(`FAIL — could not start ${cmdArgs[0]}: ${e.message}`); resolveRun({ code: 1, ran: 0, skipped: 0 }); });
     child.on("close", (code) => {
       const m = /(?:ℹ |# )tests (\d+)/.exec(out);
-      resolveRun({ code: code ?? 1, ran: m ? Number(m[1]) : 0 });
+      const k = /(?:ℹ |# )skipped (\d+)/.exec(out);
+      resolveRun({ code: code ?? 1, ran: m ? Number(m[1]) : 0, skipped: k ? Number(k[1]) : 0 });
     });
   });
 }
 
 const zero = (what: string) => `FAIL — the ${what} suite executed ZERO tests. A run that ran nothing proves nothing.`;
 
-async function runNew(): Promise<{ code: number; ran: number }> {
+async function runNew(): Promise<RunResult> {
   const files = discover();
   const where = paths.length ? paths.join(" ") : "packages/*/tests, checks/tests, tests";
   if (files.length === 0) {
     console.error(`FAIL — the run executed ZERO tests (paths: ${where}, relative to ${kilnDir}). A run that ran nothing proves nothing.`);
-    return { code: 1, ran: 0 };
+    return { code: 1, ran: 0, skipped: 0 };
   }
   const r = await runChild(["--test", ...files], kilnDir, cleanEnv());
   if (r.code === 0 && r.ran === 0) {
     console.error(`FAIL — the run executed ZERO tests (paths: ${where}, relative to ${kilnDir}). A run that ran nothing proves nothing.`);
-    return { code: 1, ran: 0 };
+    return { code: 1, ran: 0, skipped: 0 };
   }
   return r;
 }
 
-async function runLegacy(): Promise<{ code: number; ran: number }> {
+async function runLegacy(): Promise<RunResult> {
   const legacyDir = join(kilnDir, "..", "legacy");
   // KILN_LEGACY_RUNNER replaces the frozen runner with a probe — for the runner's own tests only.
   const runner = process.env.KILN_LEGACY_RUNNER ?? join(legacyDir, "tests", "run.ts");
@@ -130,21 +133,23 @@ async function runLegacy(): Promise<{ code: number; ran: number }> {
   const r = await runChild([runner, ...forwarded], legacyDir, cleanEnv(extra));
   if (r.code === 0 && r.ran === 0) {
     console.error(zero("legacy"));
-    return { code: 1, ran: 0 };
+    return { code: 1, ran: 0, skipped: 0 };
   }
   return r;
 }
 
+// "170 tests" counts skipped tests too; a skip is shown beside the count, never hidden in it (a shallow clone skips the git cross-checks).
+const tally = (name: string, r: RunResult) => `${name}: ${r.ran} tests${r.skipped > 0 ? ` (${r.skipped} skipped)` : ""}`;
 const results: string[] = [];
 let failed = false;
 if (!legacyOnly) {
   const r = await runNew();
-  results.push(`new: ${r.ran} tests`);
+  results.push(tally("new", r));
   if (r.code !== 0) failed = true;
 }
 if (!newOnly) {
   const r = await runLegacy();
-  results.push(`legacy: ${r.ran} tests`);
+  results.push(tally("legacy", r));
   if (r.code !== 0) failed = true;
 }
 console.log(results.join(" · "));

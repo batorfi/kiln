@@ -12,7 +12,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { isLoopbackHost } from "./loopback.ts";
-import { moduleSpecifiers, tokenize } from "./lex.ts";
+import { moduleLoads, tokenize } from "./lex.ts";
 import type { CheckResult } from "./index.ts";
 
 /** Source files worth scanning. Recursive; `node_modules` and dot-directories are skipped. */
@@ -31,8 +31,6 @@ const NET_CALL = /\b(?:fetch|XMLHttpRequest|EventSource)\s*\(|\b(?:https?|http2|
 const NET_ALIAS = /(?<![\w$.])fetch\b(?!\s*[(:=])|\b(?:globalThis|window)\s*\.\s*fetch\b(?!\s*\()/;
 /** Computed property access on the global object: `globalThis["fe" + "tch"]` (split out of the first program's alias rule so it fails by its own name). */
 const NET_COMPUTED_ACCESS = /\b(?:globalThis|window)\s*(?:as\s+[\w.<>]+\s*)?\)?\s*\[/;
-/** A COMPUTED module load can fetch anything, invisibly to every specifier check. */
-const COMPUTED_LOAD = /\b(?:import|require)\s*\(\s*(?!["'`])/;
 /** Network/process modules — bare OR `node:`-prefixed (the oldest scan let every `node:` specifier through). */
 const NET_MODULE = /^(?:node:)?(?:http|https|http2|net|tls|dns|dgram|child_process)$/;
 /** An absolute URL literal, to check its host against loopback. */
@@ -54,12 +52,13 @@ export function scanTextDetailed(text: string, path: string, allowlist: readonly
 
   if (NET_PRIMITIVE.test(code)) out.push({ code: "network-call", detail: "a socket/server/network primitive" });
 
-  for (const spec of moduleSpecifiers(tokens)) {
-    if (NET_MODULE.test(spec)) out.push({ code: "network-import", detail: `imports the network/process module "${spec}"` });
+  let computed = false;
+  for (const { specifier: spec } of moduleLoads(tokens)) {
+    if (spec === null) computed = true; // a COMPUTED import()/require(): not one plain string literal, so the module cannot be read from the source
+    else if (NET_MODULE.test(spec)) out.push({ code: "network-import", detail: `imports the network/process module "${spec}"` });
     else if (!INTERNAL_SPECIFIER.test(spec)) out.push({ code: "network-external-dependency", detail: `external dependency "${spec}"` });
   }
-
-  if (COMPUTED_LOAD.test(blanked)) out.push({ code: "network-computed", detail: "a COMPUTED import()/require() — it can load any module, invisibly to every specifier check" });
+  if (computed) out.push({ code: "network-computed", detail: "a COMPUTED import()/require() — it can load any module, invisibly to every specifier check" });
 
   if (!allowed) {
     const where = `outside the loopback allowlist [${allowlist.join(", ")}]`;
@@ -145,26 +144,31 @@ export interface NetworkOptions {
 const defaultKilnDir = fileURLToPath(new URL("..", import.meta.url));
 const posix = (p: string) => p.split(sep).join("/");
 
-// The scan roots: every non-test source file under packages/<name>/src (recursively) and the .ts files directly in checks/, as paths relative to kiln/.
+const isTestFile = (name: string) => /\.test\.[cm]?[jt]s$/.test(name);
+
+/** Source files under `dir`, recursively, as keys relative to kiln/. Skips `tests/` directories, test files, `node_modules` and `.git` — and nothing else: a hidden directory is scanned. */
+function sourceUnder(dir: string, key: string, out: string[]): void {
+  for (const e of readdirSync(dir, { withFileTypes: true }).sort((a, b) => (a.name < b.name ? -1 : 1))) {
+    if (e.isDirectory()) {
+      if (e.name === "tests" || e.name === "node_modules" || e.name === ".git") continue;
+      sourceUnder(join(dir, e.name), `${key}/${e.name}`, out);
+    } else if (e.isFile() && SCAN_EXTENSIONS.test(e.name) && !isTestFile(e.name)) out.push(`${key}/${e.name}`);
+  }
+}
+
+// The scan roots: every non-test source file anywhere under packages/<name>/ and under checks/ (recursively), as paths relative to kiln/. A file
+// outside these roots (kiln/tests/, kiln/fixtures/) is not scanned — and the boundary check refuses to let source import from there.
 export function networkScanFiles(kilnDir: string): string[] {
   const out: string[] = [];
   const packages = join(kilnDir, "packages");
   if (existsSync(packages)) {
     for (const p of readdirSync(packages, { withFileTypes: true }).sort((a, b) => (a.name < b.name ? -1 : 1))) {
-      if (!p.isDirectory()) continue;
-      const files: { path: string; key: string }[] = [];
-      const src = join(packages, p.name, "src");
-      if (existsSync(src) && statSync(src).isDirectory()) collect(src, `packages/${p.name}/src`, files);
-      out.push(...files.map((f) => f.key));
+      if (p.isDirectory()) sourceUnder(join(packages, p.name), `packages/${p.name}`, out);
     }
   }
   const checks = join(kilnDir, "checks");
-  if (existsSync(checks)) {
-    for (const e of readdirSync(checks, { withFileTypes: true }).sort((a, b) => (a.name < b.name ? -1 : 1))) {
-      if (e.isFile() && SCAN_EXTENSIONS.test(e.name) && !/\.test\.[cm]?[jt]s$/.test(e.name)) out.push(`checks/${e.name}`);
-    }
-  }
-  return out.filter((f) => !/\.test\.[cm]?[jt]s$/.test(f)).sort();
+  if (existsSync(checks)) sourceUnder(checks, "checks", out);
+  return out.sort();
 }
 
 export function checkNetwork(opts: NetworkOptions = {}): CheckResult {
@@ -195,13 +199,13 @@ export function checkNetwork(opts: NetworkOptions = {}): CheckResult {
     const bad = (code: NetworkCode, detail: string) => failures.push({ code, file: e.path, detail });
     if (typeof e.path !== "string" || !e.path.includes("/")) bad("allowlist-bare-name", `allowlist entry "${String(e.path)}" is a bare name; entries are paths relative to kiln/ (a same-named file elsewhere must not inherit the exemption)`);
     else if (!existsSync(join(kilnDir, e.path)) || !statSync(join(kilnDir, e.path)).isFile()) bad("allowlist-missing-file", `allowlist entry "${e.path}" names a file that does not exist`);
-    else if (!scannedSet.has(e.path)) bad("allowlist-missing-file", `allowlist entry "${e.path}" is not a scanned source file (scan roots: packages/*/src, checks/*.ts)`);
+    else if (!scannedSet.has(e.path)) bad("allowlist-missing-file", `allowlist entry "${e.path}" is not a scanned source file (scan roots: packages/*, checks/ — recursively, tests excluded)`);
     else if (e.loopbackOnly !== true) bad("network-allowlist-invalid", `allowlist entry "${e.path}" must declare loopbackOnly: true`);
     else keys.push(e.path);
   }
 
   // the scan — never vacuous
-  if (files.length === 0) failures.push({ code: "network-zero-files", detail: "the scan examined ZERO files (roots: packages/*/src, checks/*.ts) — a vacuous scan proves nothing (P-VIII)" });
+  if (files.length === 0) failures.push({ code: "network-zero-files", detail: "the scan examined ZERO files (roots: packages/*, checks/ — recursively, tests excluded) — a vacuous scan proves nothing (P-VIII)" });
   for (const f of files) {
     for (const o of scanTextDetailed(readFileSync(join(kilnDir, f), "utf8"), f, keys, f)) failures.push({ code: o.code, file: f, detail: o.detail });
   }

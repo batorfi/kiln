@@ -98,15 +98,43 @@ export function stripComments(text: string): string {
   return tokenize(text).code;
 }
 
-// `import x from "s"`, `export * from "s"`, `import "s"`, `require("s")`, `import("s")` — matched on the MASKED text (shape only), specifier read from `code`.
-const MODULE_REFERENCE = /(?:^|\s)(?:import|export)\s+[^;'"]*?\s+from\s*["']([^"']+)["']|(?:^|[\s;])import\s*["']([^"']+)["']|\brequire\(\s*["']([^"']+)["']\s*\)|\bimport\(\s*["']([^"']+)["']\s*\)/dg;
+// How a module is named in source. Everything here runs on the MASKED text (shape only: a string, comment or template never looks like code) and reads
+// the specifier from `code` at the same offsets. Whitespace is optional wherever the grammar allows it, so `import{a}from"x"` and `import ("x")` read
+// exactly like their spaced forms (r12 code-review finding 1).
+//   · `import x from "s"`, `import{x}from"s"`, `export * from "s"`, `export{x}from"s"`;
+const STATIC_FROM = /(?<![\w$.])(?:import|export)(?![\w$])[^;'"`]*?(?<![\w$.])from\s*["']([^"']+)["']/dg;
+//   · `import "s"` (side effect only);
+const SIDE_EFFECT = /(?<![\w$.])import\s*["']([^"']+)["']/dg;
+//   · `import(…)` and `require(…)` — the argument decides: ONE string literal is a specifier, anything else is a load nobody can read.
+const CALL = /(?<![\w$])(?:import|require)\s*\(/dg;
+/** The argument starts with exactly one quoted string (or an interpolation-free template) and then `,` or `)` — i.e. it is a literal and nothing is built from it. */
+const LITERAL_ARG = /^\s*(?:"((?:[^"\\\n]|\\.)*)"|'((?:[^'\\\n]|\\.)*)'|`([^`$\\]*)`)\s*[,)]/;
 
-/** Every module specifier the code names, in order of appearance — never one that only appears inside a comment, a string or a template. */
-export function moduleSpecifiers(t: Tokenized): string[] {
-  const out: string[] = [];
-  for (const m of t.masked.matchAll(MODULE_REFERENCE)) {
-    const span = (m as RegExpMatchArray & { indices: ([number, number] | undefined)[] }).indices.slice(1).find((x) => x !== undefined);
-    if (span) out.push(t.code.slice(span[0], span[1]));
+export interface ModuleLoad {
+  /** The module named by a single literal, or null when the load is computed (`import(name)`, `require("a" + b)`, `import(\`x${y}\`)`). */
+  specifier: string | null;
+  offset: number;
+}
+
+/** Every static import/export-from, side-effect import, `import()` and `require()`, in order of appearance — never one that only appears inside a comment, a string or a template. */
+export function moduleLoads(t: Tokenized): ModuleLoad[] {
+  const out: ModuleLoad[] = [];
+  const span = (m: RegExpMatchArray) => (m as RegExpMatchArray & { indices: ([number, number] | undefined)[] }).indices[1]!;
+  for (const re of [STATIC_FROM, SIDE_EFFECT]) {
+    for (const m of t.masked.matchAll(re)) {
+      const [a, b] = span(m);
+      out.push({ specifier: t.code.slice(a, b), offset: a });
+    }
   }
-  return out;
+  for (const m of t.masked.matchAll(CALL)) {
+    const at = m.index! + m[0].length;
+    const lit = LITERAL_ARG.exec(t.code.slice(at));
+    out.push({ specifier: lit ? (lit[1] ?? lit[2] ?? lit[3]) : null, offset: m.index! });
+  }
+  return out.sort((x, y) => x.offset - y.offset);
+}
+
+/** The module specifiers the code names literally, in order of appearance. */
+export function moduleSpecifiers(t: Tokenized): string[] {
+  return moduleLoads(t).flatMap((l) => (l.specifier === null ? [] : [l.specifier]));
 }

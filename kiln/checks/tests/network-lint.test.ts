@@ -111,7 +111,7 @@ test("test files and tests/ directories are not scanned (the lint reads source, 
   });
 });
 
-test("checks/*.ts is scanned too (one level), packages/*/src recursively", () => {
+test("checks/ is scanned too, and packages/*/src, recursively", () => {
   tree({ ...OK, "checks/oops.ts": "fetch(u);\n" }, (k) => assert.equal(checkNetwork({ kilnDir: k, allowlist: NONE }).failures[0]?.file, "checks/oops.ts"));
   tree({ ...OK, "packages/lane/src/deep/deeper/oops.mjs": "fetch(u);\n" }, (k) => assert.equal(checkNetwork({ kilnDir: k, allowlist: NONE }).failures[0]?.file, "packages/lane/src/deep/deeper/oops.mjs"));
 });
