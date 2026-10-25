@@ -45,8 +45,12 @@
         "required": ["gate", "move", "cost"],
         "properties": {
           "gate": {
-            "description": "Program gate0, or one row's live Gates 1..9 (G1: gate vs gate0 distinct).",
-            "oneOf": [{ "const": "gate0" }, { "type": "integer", "minimum": 1, "maximum": 9 }]
+            "description": "Program gate0, or one row's live Gates 1..9 (G1: gate vs gate0 distinct). \"2a\" (Experience design) and \"6a\" (UI review) exist in flow v2 only; under flow v1 a record naming them fails rule G3.",
+            "oneOf": [{ "const": "gate0" }, { "type": "integer", "minimum": 1, "maximum": 9 }, { "const": "2a" }, { "const": "6a" }]
+          },
+          "flow": {
+            "enum": ["v1", "v2"],
+            "description": "The flow version this record was made under (r12). ABSENT MEANS v1 — the first program's records carry none and are never rewritten. New records (r15 onward) write v2."
           },
           "move": {
             "type": "string",

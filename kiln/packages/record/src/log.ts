@@ -6,14 +6,16 @@
 // pre-delegation), R5 (no cloud/remote field), R6 (trace present). It DOES NOT
 // advance a gate or run a lane (SC-006 / Q1=C) — it only READS a stream.
 //
-// Flow: every record is checked against flow v1 for now, passed explicitly (never the function's default, which becomes v2 — T050/T052).
+// Flow (r12 US3): each record is checked against the flow it was made under — `record.flow ?? options.defaultFlow ?? DEFAULT_RECORD_FLOW` (v1: history).
+// Never a function's default (that is the CURRENT flow, v2). A gate the flow lacks ("2a"/"6a" under v1) fails G3 by name.
 //
-// CLI: `node packages/record/src/log.ts <file.jsonl>` (or `npm run validate:log -- <file.jsonl>`) — prints PASS or FAIL + reasons.
+// CLI: `node packages/record/src/log.ts <file.jsonl> [--flow v1|v2]` (or `npm run validate:log -- <file.jsonl>`) — prints PASS or FAIL + reasons.
 
 import { readFileSync } from "node:fs";
 import { isEntryPoint } from "./entry.ts";
 import { validate, isValid, type ValidationError } from "./validate-core.ts";
-import { moveAllowed } from "#contracts/flow/index.ts";
+import { DEFAULT_RECORD_FLOW, flows, hasGate, moveAllowed, moveVocabulary } from "#contracts/flow/index.ts";
+import type { FlowVersion } from "#contracts/moves.ts";
 import { nameRecord, nameSeq, nameMove, fmt, PASS } from "./report.ts";
 
 const SCHEMA_PATH = new URL("../../contracts/schemas/factory-log.schema.json", import.meta.url);
@@ -78,9 +80,15 @@ export function checkOrdering(records: Record<string, unknown>[]): string[] {
 }
 
 /** G3 + R3/R4: every gate-completion decision needs a decider (human OR a distinct pre-delegation). */
+export interface FlowOptions {
+  /** The flow a record that names none was made under. Default: v1 (history). A record's own `flow` always wins. */
+  defaultFlow?: FlowVersion;
+}
+
 export function checkDecisions(
   records: Record<string, unknown>[],
-  allowed: (gate: any, move: string) => boolean,
+  allowed: (gate: any, move: string, flow: FlowVersion) => boolean,
+  options: FlowOptions = {},
 ): string[] {
   const failures: string[] = [];
   // Which gates have a DISTINCT pre-delegation record (R4: a separate recordType).
@@ -99,14 +107,24 @@ export function checkDecisions(
     const seq = (r as any).seq;
     const recType = "gate-completion";
 
-    // G3: move ∈ MoveVocabulary(gate).
-    const validGate = gate === "gate0" || (typeof gate === "number" && gate >= 1 && gate <= 9);
+    // The flow this record was made under: its own field, else the caller's default, else v1 (history).
+    const flow = gc.flow ?? options.defaultFlow ?? DEFAULT_RECORD_FLOW;
+    if (typeof flow !== "string" || !Object.hasOwn(flows, flow)) {
+      failures.push(fmt(`G3 ${nameRecord(seq, recType)}`, `unknown flow ${JSON.stringify(flow)}; known: ${Object.keys(flows).join(", ")}`));
+      continue;
+    }
+    // G3: move ∈ MoveVocabulary(gate, flow).
+    const validGate = gate === "gate0" || (typeof gate === "number" && Number.isInteger(gate) && gate >= 1 && gate <= 9) || gate === "2a" || gate === "6a";
     if (!validGate) {
-      failures.push(fmt(`G1 ${nameRecord(seq, recType)}`, `gate ${JSON.stringify(gate)} is neither gate0 nor 1..9`));
+      failures.push(fmt(`G1 ${nameRecord(seq, recType)}`, `gate ${JSON.stringify(gate)} is neither gate0 nor 1..9 (nor 2a / 6a)`));
      continue;
      }
-    if (!allowed(gate, move)) {
-      failures.push(fmt(`G3 ${nameRecord(seq, recType)}`, nameMove(String(gate), move, [] as any)));
+    if (!hasGate(gate, flow as FlowVersion)) {
+      failures.push(fmt(`G3 ${nameRecord(seq, recType)}`, `gate ${gate} is not in flow ${flow}`));
+      continue;
+    }
+    if (!allowed(gate, move, flow as FlowVersion)) {
+      failures.push(fmt(`G3 ${nameRecord(seq, recType)}`, nameMove(String(gate), move, moveVocabulary(gate, flow as FlowVersion), flow)));
      continue;
      }
     // R3/R4: an approving/corrective decision needs a decider.
@@ -152,25 +170,25 @@ function checkTrace(schema: Record<string, unknown>): string[] {
   return [];
 }
 
-export function validateLog(recordsRaw: Record<string, unknown>[], schema?: Record<string, unknown>): LogResult {
+export function validateLog(recordsRaw: Record<string, unknown>[], schema?: Record<string, unknown>, options: FlowOptions = {}): LogResult {
   const s = schema ?? readHeadSchema();
   const records = recordsRaw as Record<string, unknown>[];
   const failures: string[] = [];
   failures.push(...checkTrace(s));
   failures.push(...checkOrdering(records));
-  failures.push(...checkDecisions(records, (g: any, m: string) => moveAllowed(g as any, m, "v1")));
+  failures.push(...checkDecisions(records, (g, m, f) => moveAllowed(g, m, f), options));
   failures.push(...checkLocalFirst(records));
   return { valid: failures.length === 0, failures };
 }
 
-export function validateLogFile(path: string, schema?: Record<string, unknown>): LogResult {
+export function validateLogFile(path: string, schema?: Record<string, unknown>, options: FlowOptions = {}): LogResult {
   const s = schema ?? readHeadSchema();
   const parsed = parseJsonl(readFileSync(path, "utf8"), s);
   const records = parsed.records as Record<string, unknown>[];
   const failures: string[] = [...parsed.failures];
   failures.push(...checkTrace(s));
   failures.push(...checkOrdering(records));
-  failures.push(...checkDecisions(records, (g: any, m: string) => moveAllowed(g as any, m, "v1")));
+  failures.push(...checkDecisions(records, (g, m, f) => moveAllowed(g, m, f), options));
   failures.push(...checkLocalFirst(records));
   return { valid: failures.length === 0, failures };
 }
@@ -178,12 +196,16 @@ export function validateLogFile(path: string, schema?: Record<string, unknown>):
 // ---- CLI entry (T012) ----
 const isMain = (): boolean => isEntryPoint(import.meta.url);
 if (isMain()) {
-  const path = process.argv[2];
-  if (!path) {
-    console.error("usage: node packages/record/src/log.ts <file.jsonl>");
+  const argv = process.argv.slice(2);
+  const flowAt = argv.indexOf("--flow");
+  const flowArg = flowAt >= 0 ? argv[flowAt + 1] : undefined;
+  const path = argv.find((a, i) => !a.startsWith("--") && (flowAt < 0 || i !== flowAt + 1));
+  const usage = "usage: node packages/record/src/log.ts <file.jsonl> [--flow v1|v2]";
+  if (!path || (flowAt >= 0 && (flowArg === undefined || !Object.hasOwn(flows, flowArg))) || argv.some((a) => a.startsWith("--") && a !== "--flow")) {
+    console.error(usage);
     process.exit(2);
   }
-  const res = validateLogFile(path);
+  const res = validateLogFile(path, undefined, { defaultFlow: flowArg as FlowVersion | undefined });
   if (res.valid) {
     console.log(PASS);
     process.exit(0);

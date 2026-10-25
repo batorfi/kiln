@@ -12,8 +12,10 @@ export function nameSeq(offending: number, expected: string): string {
   return `seq ${offending} ${expected}`;
 }
 
-export function nameMove(gate: string, move: string, allowed: readonly string[]): string {
-  return `move "${move}" not in MoveVocabulary(gate=${gate}); allowed: [${allowed.join(", ")}]`;
+// r12 (US3): unlike the first program's copy, this names the flow and lists the allowed moves, as contracts/flow-and-records.md §4 says
+// (`… not in MoveVocabulary(gate=6, flow=v1); allowed: approve, restart`). The first program printed `allowed: []`; legacy keeps its own copy.
+export function nameMove(gate: string, move: string, allowed: readonly string[], flow?: string): string {
+  return `move "${move}" not in MoveVocabulary(gate=${gate}${flow ? `, flow=${flow}` : ""}); allowed: ${allowed.join(", ")}`;
 }
 
 export function fmt(

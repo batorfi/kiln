@@ -32,3 +32,7 @@ export const GATE_KEY_OF: Record<GateId, GateKey> = {
 };
 
 export type FlowVersion = "v1" | "v2";
+
+/** G1: `gate0` (the Roadmap gate) sits above the lane; it is not one of the feature gates. */
+export const PROGRAM_GATE: GateId = "gate0";
+export const gateIsProgramGate = (gate: GateId): boolean => gate === PROGRAM_GATE;
