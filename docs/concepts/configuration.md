@@ -60,8 +60,8 @@ kiln.config/                ← a git repository (or a folder in one)
   factories/<name>.yaml     ← per factory: profile, policy, budget, placement, tier overrides
 ```
 
-The experience charter is **not** configuration: it is a committed artifact of the product at
-`.specify/memory/experience-charter.md` (`experience-charter.md`), changed only by a person's recorded decision. The
+The experience charter and the design system are **not** configuration: they are committed artifacts of the product at
+`.specify/memory/experience-charter.md` and `.specify/memory/design-system/` (`experience-charter.md`, `design-system.md`), changed only by a person's recorded decision. The
 workshop's configuration repository is separate from any factory's workspace and from the team space; the team
 space holds the team's own floor and shared roles (§9).
 

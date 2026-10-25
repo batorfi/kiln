@@ -61,6 +61,7 @@ None of these blocks a `kiln-v1` row. Each is decided at, or measured in, the ro
 | Rehearse required before Contribute, or recommended | [brownfield](./brownfield.md) §15 Q1 | r40 (`kiln-v1.x`) |
 | When a greenfield factory revisits an early decision suggested by evidence | [greenfield](./greenfield.md) §17 Q4 | r41 (`kiln-v1.x`) |
 | Migrating a workshop created by an earlier KILN version | [first-run](./first-run.md) §15 Q4 | the first release after `kiln-v1` |
+| The design system: token transformation and specimen rendering dependencies, design-tool sync, required modes, density/locale/direction, icon licensing, non-web surfaces | [design-system](./design-system.md) §15 | the rows the Roadmap gate places it in (indicatively r28, r29, r19) |
 | The experience charter and interface gates: legacy products' first charter, wireframe import and breakpoints; UI review delegation, fix rounds, thresholds and who decides | [experience-charter](./experience-charter.md) §12 · [ui-flow](./ui-flow.md) §14 | the rows the Roadmap gate places them in (indicatively r14, r18, r20, r28) |
 | Post-merge gates and the Merge gate's authority | [extensible-flow](./extensible-flow.md) §14 Q3 · PRD §14.12 | out of scope until post-merge gates are admitted |
 | A standard, content-free audit export (CloudEvents JSONL) | [the-record](./the-record.md) §18 Q3 | not yet placed |

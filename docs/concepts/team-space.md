@@ -231,7 +231,7 @@ The team can set rules every member workshop honours for work on the shared code
 - **Protected paths**, where claims are exclusive (§7).
 - **Required gates and shared flows** — gates every member workshop's flows include for matching features, and flows the
   team shares; changed by the quorum (`extensible-flow.md` §8).
-- **The experience floor** — the accessibility floor and design tokens every member's charter must meet, and gates required for matching paths, including Experience design and UI review (`experience-charter.md` §8, `ui-flow.md` §9).
+- **The experience floor** — the accessibility floor, content voice and an optional team design system (tokens, components) every member's charter and design system must meet or extend, and gates required for matching paths, including Experience design and UI review (`experience-charter.md` §8, `ui-flow.md` §9).
 - **Claim expiry** and **publishing minimums** (for example, gate outcomes for adopted features are always published).
 
 Rules live in the team space and are recorded. They — and the list of roadmap deciders and the quorum threshold — change

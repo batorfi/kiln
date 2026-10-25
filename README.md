@@ -165,6 +165,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | | [The interface gates](./docs/concepts/ui-flow.md) | Experience design and UI review: the two built-in gates that apply to interface work |
 | | [An extensible flow](./docs/concepts/extensible-flow.md) | gates teams add to the default flow, with the same guarantees |
 | | [The experience charter](./docs/concepts/experience-charter.md) | the product's users, principles, journeys, screen map and wireframes that those gates measure against |
+| | [The design system](./docs/concepts/design-system.md) | the standard structure of tokens, components and patterns the interface is built from and checked against |
 | | [The director and Needs you](./docs/concepts/the-director.md) | deterministic orchestration, the planner, shaping the roadmap together, the one inbox |
 | **Foundations** | [The constitution, explained](./docs/architecture/explainers/kiln-constitution.md) | the twelve principles, the flow's invariants and governance — what each rule means for the code you write |
 | | [KILN on Pi Durable](./docs/concepts/pi-durable.md) | why durable tasks and conversations are the key enabler |

@@ -11,6 +11,8 @@
 >   5. **Wireframes**: the charter includes **high-level wireframes** of the key screens, as SVG with a text outline of
 >      their regions (§3).
 >
+> Its companion is the **design system** (`design-system.md`): the charter says what the experience is, the design system what it is built from.
+>
 > Scope note: this doc proposes an **experience charter** — a short, human-approved, versioned document that fixes the
 > *user experience* of a product before its first roadmap exists, so every roadmap row and every feature is grounded in
 > one picture of who the product is for, what they do with it and how it should feel. It is made during setup, next to the
@@ -34,7 +36,7 @@ together they feel like five products. The **experience charter** is the one pla
 short core — the principles, the top journeys and the floor fit on a page or two — and room for per-area appendices as the
 product grows, written during setup, from the product brief, and **approved by a person before the first Roadmap
 gate**. It names the **users**, the **experience principles**, the **top journeys**, the **screen map** with its high-level **wireframes**, the
-interaction and content **conventions**, an **accessibility floor** and where the **design tokens** live. The planner
+interaction and content **conventions**, an **accessibility floor** and where the **design system** lives. The planner
 reads it first when it drafts a roadmap; the Roadmap gate brief shows a **journey coverage map** against it; every later
 brief cites it as part of the yardstick. It is amended only by recorded decisions, and never in the middle of a feature.
 
@@ -64,7 +66,7 @@ pattern for things that must be settled by a person before the first roadmap —
 | **Interaction patterns** | the reusable behaviours every screen follows | *every list has empty, loading and error states; undo over confirm dialogs* |
 | **Content voice** | tone, terminology, what the product never says | *plain words; "plan change", never "mutation"* |
 | **Accessibility floor** | the minimum every screen meets | *WCAG 2.2 AA; full keyboard operation; nothing by colour alone* |
-| **Design tokens** | where colours, type, spacing and components are defined — a pointer, not a copy | `design/tokens.json` |
+| **Design system** | a pointer to the design system that defines colours, type, spacing, components and patterns — not a copy; the design system holds the accessibility floor's tested pairs (`design-system.md` §3) | `.specify/memory/design-system/design-system.md` |
 | **Quality bars** | measurable experience limits | *first meaningful screen < 1 s on the reference machine* |
 | **Non-goals** | experiences deliberately left out | *no mobile app in this release* |
 
@@ -81,7 +83,7 @@ look — wireframes decide structure, and the mockups made per feature at Experi
   size and position; the **primary and secondary actions** and where moves and commands live; **navigation** — how a person
   arrives and where they can go; and **annotations** citing the principles (`X2`) and journey steps (`J1.3`) the layout
   serves.
-- *It leaves out:* colour, type, imagery and real content (the design tokens and the mockups own those); the **states** of a
+- *It leaves out:* colour, type, imagery and real content (the design system and the mockups own those); the **states** of a
   screen — a states matrix is made per feature; animation; and pixel measurements beyond the breakpoints the charter names.
 
 **Format.** Each wireframe is an **SVG file** at `.specify/memory/experience-charter/wireframes/<screen-id>-<name>.svg`:
@@ -178,8 +180,7 @@ row, a reorder — and may never change a row the engineer wrote (DIR-5).
 
 ## 8. Teams
 
-In a team (`team-space.md`) the **team floor** may carry a **shared charter floor** — the accessibility floor, the design
-tokens, content voice — that every member workshop's charter may only make **stricter**, like configuration layering
+In a team (`team-space.md`) the **team floor** may carry a **shared charter floor** — the accessibility floor, content voice (and, in its own right, a team design system — `design-system.md` §10) — that every member workshop's charter may only make **stricter**, like configuration layering
 (`configuration.md`). Journeys and the screen map belong to the product's factory. Changing the floor is a decision of
 the team quorum; a workshop's amendments stay its own (Principle XII). A teammate's comment on an amendment is a person's
 evidence, never a decision.
@@ -229,7 +230,7 @@ The admitted roadmap (`specs/ROADMAP.md`) is changed only at the Roadmap gate, s
 | Row | Proposed change |
 |---|---|
 | **r28 First run** | adds the charter step beside the constitution (XCH-2); the kiln init / kiln doctor flow records it |
-| **r29 New codebases** | the product brief gains its charter, drafted from it; the walking skeleton cites it and the design tokens (XCH-1, XCH-6) |
+| **r29 New codebases** | the product brief gains its charter, drafted from it; the walking skeleton cites it and the design system's tokens (XCH-1, XCH-6, `design-system.md` DSN-4) |
 | **r22 Shaping the roadmap together** | the planner reads the charter and the coverage map joins the Roadmap gate brief (XCH-4, XCH-5) |
 | **r20 Gates on the web** | the brief's yardstick cites charter ids (XCH-6) |
 | **r30 Existing codebases, part 1** and **r43 Explore space** | the discovered charter draft comes from the scan and the explore maps |
@@ -305,8 +306,8 @@ the region outline above is the source of truth>
 ## Accessibility floor
 <standard and level; keyboard; contrast; motion; language>
 
-## Design tokens
-<path to tokens and component sources>
+## Design system
+<path to the design-system manifest — a pointer, not a copy>
 
 ## Quality bars
 - <measurable limit> — measured by: <check>

@@ -10,7 +10,7 @@
 > drafts. (The file keeps its name, `ui-flow.md`, for existing links.)
 >
 > Companion docs:
->   - The experience charter:  `experience-charter.md` (what these gates measure against)
+>   - The experience charter:  `experience-charter.md` (what these gates measure against) · The design system: `design-system.md` (what the interface is built from)
 >   - An extensible flow:      `extensible-flow.md` (the rules every gate keeps; §14a for conditionally applicable built-in gates) · The flow: `the-flow.md`
 >   - Configuration:           `configuration.md` (where gate, flow and role files live)
 >   - The record:              `the-record.md` · Teams: `team-space.md` · Insights: `insights.md`
@@ -124,7 +124,7 @@ involved, every state each screen can be in, the content, and the interactions�
    a principle contradicted, a journey step with no screen, a state missing, a pattern that departs from the screen map, an
    accessibility floor breach visible in the mockup, a content term the voice rules out. The critic never edits.
 3. **Deterministic evidence** runs first, as plain checks: every journey step the row cites is covered by a screen; every
-   screen has the full states matrix; every colour and size in the mockups resolves to a design token; contrast of the
+   screen has the full states matrix; every colour and size in the mockups resolves to a design token **of the design system**, and every component and pattern used exists in it (anything new is listed as a proposed addition, `design-system.md` §8.2); contrast of the
    mockup's text pairs meets the charter floor; the mockup's regions match the wireframe's region outline (a missing or
    reordered region is listed, never blocking on its own).
 
@@ -198,7 +198,7 @@ reads that evidence against the approved experience and the charter…
    |---|---|
    | **Accessibility** | automated rules per screen and state, by severity; keyboard path through each journey step; focus order; reduced-motion respected |
    | **Contrast and sizing** | text and control pairs against the charter floor |
-   | **Tokens** | every colour, size, spacing and font in the built CSS resolves to a design token; stray literals listed |
+   | **Tokens** | every colour, size, spacing and font in the built CSS resolves to a token of the design system at the feature's pinned version; stray literals, off-system components, deprecated use and unregistered contrast pairs listed (`design-system.md` §8.4, §10) |
    | **States** | every state in the states matrix reachable and rendered; states built but not designed |
    | **Visual match** | screenshot of each state against the approved mockup, difference per screen and region, at the charter's breakpoints |
    | **Content** | strings against the voice rules and terminology |
@@ -260,7 +260,7 @@ Roles are files in `kiln.config/agents/` (`configuration.md` §6); these are dra
 
 | Role | Kind | Gate | Model tier | Tools |
 |---|---|---|---|---|
-| `ux-designer` | producer | Experience design | cheapest that the far gate can bound | read the repository, the charter, tokens and knowledge; write to the feature directory; render a mockup to an image; **no network, no shell beyond the renderer** |
+| `ux-designer` | producer | Experience design | cheapest that the far gate can bound | read the repository, the charter, the design system and knowledge; write to the feature directory; render a mockup to an image; **no network, no shell beyond the renderer** |
 | `design-critic` | judge | Experience design | **strongest model available**, never the author's conversation | read-only |
 | `ui-checker` | checker (deterministic) | UI review | none — it runs code | build and run the feature on loopback in the factory worktree, drive a headless browser, run the automated rules; **writes only to the report directory** |
 | `ui-reviewer` | judge | UI review | **strongest model available**; reads images only if image-capable | read-only |

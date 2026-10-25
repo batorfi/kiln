@@ -201,6 +201,14 @@ review gates measure features against it. Where a factory has one:
 
 A factory without a charter works as before; briefs say so.
 
+**The design system** is the charter's companion (`.specify/memory/design-system/`, explained in
+`docs/concepts/design-system.md`): the foundations, tokens, components and patterns the interface is built from, in a
+standard structure, approved by a person at setup beside the charter. It is under the same rules — a yardstick, never a
+gate; briefs cite its ids and pinned version; approved and amended only by a person (the named design owner, or a
+Decider), with **additions** decided at a feature's Experience design gate and **renames, removals and changes of
+meaning** only at the Roadmap gate; a feature pins its version at admission; a committed artifact that knowledge may cite
+and never overrides. A factory without one works as before; briefs say so.
+
 ## Roles & Model Tiers
 
 Roles are defined as **files** (`kiln.config/`, see `docs/concepts/configuration.md`) and bound to models by a tier map.
@@ -242,7 +250,7 @@ a feature that violates it is "fired in the wrong atmosphere" — the defect is 
 
 ## Amendment record
 
-**2.1.0 (2026-10-25)** — MINOR: adds *The Experience Charter* section, so the charter is referenced from the constitution, and makes **Experience
+**2.1.0 (2026-10-25)** — MINOR: adds *The Experience Charter* section, so the charter is referenced from the constitution, and adds the **design system** as the charter's companion, and makes **Experience
 design** (after Design) and **UI review** (after Code review) built-in, conditionally applicable gates, so the default
 flow is the Roadmap gate and eleven feature gates; the judge list in Principle II names the design critic and UI reviewer
 (decided by human@batorfi, 2026-10-25; `docs/concepts/experience-charter.md` §9, `docs/concepts/ui-flow.md`). No

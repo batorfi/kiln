@@ -99,7 +99,7 @@ Built locally, read-only, and shown before anything else:
 
 The profile takes minutes. Where the code has an interface, the scan also inventories its screens, routes, flows and
 conventions into a draft **experience charter** — labelled *measured* or *inferred*, with as-is journeys and wireframes
-derived from the running screens — for the team to correct and approve (`experience-charter.md` §4). It is the first page of the knowledge base and the plan for the full scan (§5.3); a person can
+derived from the running screens — for the team to correct and approve (`experience-charter.md` §4). It likewise discovers or adopts the **design system** — tokens and components extracted from the code, or an external system recorded by pointer and mirrored read-only — as *measured* or *inferred* files the team confirms (`design-system.md` §7). It is the first page of the knowledge base and the plan for the full scan (§5.3); a person can
 correct any of it, and the correction wins over inference.
 
 ### 5.2 The baseline

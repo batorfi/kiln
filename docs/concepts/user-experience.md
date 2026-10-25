@@ -214,7 +214,7 @@ carried out.
   same decision — not discovered later in settings;
 - the human knows, before approving, what the factory will do first and what it will need from them;
 - where the product has an interface, setup offers the **experience charter** — users, principles, journeys, screen map and
-  high-level wireframes — approved by a person before the first Roadmap gate, never forced (`experience-charter.md`).
+  high-level wireframes — and the **design system** (tokens, components, patterns) approved by a person before the first Roadmap gate, never forced (`experience-charter.md`, `design-system.md`).
 
 ### 7.2 Deciding at a gate
 

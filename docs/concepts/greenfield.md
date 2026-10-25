@@ -107,6 +107,13 @@ floor and design tokens — the person edits and approves it, and it is committe
 (`experience-charter.md` §4). The walking skeleton cites it and the design tokens, so the first screens are built under it
 and the built-in Experience design and UI review gates (`ui-flow.md`) have a yardstick from the first slice.
 
+### 5.4 The design system
+
+Where the product has an interface, the planner then drafts the **design system** from the charter and a short brand
+input — foundations, tokens in three tiers, a core set of components and patterns, and a specimen page — for the person to
+edit and approve beside the charter (`design-system.md` §7). The walking skeleton is built from its tokens and core
+components, so the first screens already pass the token and contrast checks of the UI review gate.
+
 ## 6. Technology decisions
 
 Foundational choices — language and runtime, framework, data store, testing approach, packaging, how it runs and where —
@@ -225,6 +232,7 @@ Continuing from `first-run.md` Step 4 with *Start empty*:
 3. **Product brief** — written by the person, or drafted in conversation with the planner; approved.
 4. **Constitution** — drafted from the brief with `speckit.constitution`; edited and approved.
 4a. **Experience charter** (if there is an interface) — drafted from the brief; edited and approved by the experience owner or a Decider.
+4b. **Design system** (if there is an interface) — drafted from the charter and a brand input; approved by the design owner or a Decider.
 5. **Knowledge** — the brief, the constitution and any reference documents ingested; workshop learnings linked.
 6. **Open choices** — listed by the planner, narrowed by the person; research and spikes started at the bench.
 7. **First roadmap** — shaped together: the walking skeleton first (with the foundation flow), then the first slices;

@@ -198,6 +198,13 @@ planner drafts it from the product brief; for an existing one it is discovered f
 `.specify/memory/experience-charter.md`, and `charter.approved` is recorded. It is never forced: without it, briefs say
 *no experience charter* and the interface gates measure against the existing screens and tokens.
 
+### 8.4 The design system (optional)
+
+After the charter, setup offers the **design system** (`design-system.md` §7): for a new codebase the planner drafts it
+from the charter and a short brand input, proposes the core components and renders a specimen page; for an existing one it
+is discovered or adopted from the code or an external design source and confirmed. The named design owner or a Decider
+approves it; it is committed at `.specify/memory/design-system/` and `design_system.approved` is recorded. Never forced.
+
 ## 9. Step 5 — knowledge
 
 The factory's knowledge base starts from what the repository already knows, following the LLM Wiki pattern
@@ -254,7 +261,7 @@ before accepting.
 Setup writes `kiln.config/` and the first workshop and factory stores — and, with approval, Spec Kit's scaffolding and the
 constitution in the repository — and records each step as an event: `setup.step_completed` (step, choices),
 `model.checked`, `config.changed`, `factory.created`, `speckit.adopted` or `speckit.initialized` (version, integration,
-template changes), `constitution.approved`, `charter.approved`, `wiki.ingest_completed`, `team.member_joined` — so the record begins with how
+template changes), `constitution.approved`, `charter.approved`, `design_system.approved`, `wiki.ingest_completed`, `team.member_joined` — so the record begins with how
 the workshop was created.
 
 ## 14. How it fits KILN's rules
