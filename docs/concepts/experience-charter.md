@@ -8,6 +8,8 @@
 >   2. **Approver**: a **named experience owner** where the workshop has one, otherwise a Decider (§4).
 >   3. **KILN's own charter**: KILN adopts one for its own web front door, seeded from `user-experience.md` (§11).
 >   4. **Size**: **no page ceiling** — the core stays short and an area may have an appendix (§3).
+>   5. **Wireframes**: the charter includes **high-level wireframes** of the key screens, as SVG with a text outline of
+>      their regions (§3).
 >
 > Scope note: this doc proposes an **experience charter** — a short, human-approved, versioned document that fixes the
 > *user experience* of a product before its first roadmap exists, so every roadmap row and every feature is grounded in
@@ -31,7 +33,7 @@ A product built by a factory drifts when nobody holds its experience as a whole:
 together they feel like five products. The **experience charter** is the one place that holds it. It is a document with a
 short core — the principles, the top journeys and the floor fit on a page or two — and room for per-area appendices as the
 product grows, written during setup, from the product brief, and **approved by a person before the first Roadmap
-gate**. It names the **users**, the **experience principles**, the **top journeys**, the **screen map**, the
+gate**. It names the **users**, the **experience principles**, the **top journeys**, the **screen map** with its high-level **wireframes**, the
 interaction and content **conventions**, an **accessibility floor** and where the **design tokens** live. The planner
 reads it first when it drafts a roadmap; the Roadmap gate brief shows a **journey coverage map** against it; every later
 brief cites it as part of the yardstick. It is amended only by recorded decisions, and never in the middle of a feature.
@@ -57,7 +59,8 @@ pattern for things that must be settled by a person before the first roadmap —
 | **Users and situations** | who uses the product, in what situation, with what skill and device | *billing operators, at a desk, many invoices a day* |
 | **Experience principles** | 3–7 short, testable statements, each with its origin and what it rules out | *X2 · Show the consequence before the click — no destructive action without a preview* |
 | **Top journeys** | the 3–8 things users must be able to do, each as numbered steps with stable ids | *J1 · Correct a prorated invoice: J1.1 find it · J1.2 see why · J1.3 adjust · J1.4 confirm* |
-| **Screen map** | the information architecture: areas, main screens and how they connect | *Invoices → Invoice → Proration trail* |
+| **Screen map** | the information architecture: areas, main screens with stable ids (`S3`), the journey steps each serves and how they connect | *S2 Invoices → S3 Invoice → S4 Proration trail* |
+| **Wireframes** | low-fidelity layouts of the key screens — regions, hierarchy, actions, navigation — settling structure, not look | *S3 Invoice: R1 header · R2 invoice lines · R3 proration trail · R4 actions* |
 | **Interaction patterns** | the reusable behaviours every screen follows | *every list has empty, loading and error states; undo over confirm dialogs* |
 | **Content voice** | tone, terminology, what the product never says | *plain words; "plan change", never "mutation"* |
 | **Accessibility floor** | the minimum every screen meets | *WCAG 2.2 AA; full keyboard operation; nothing by colour alone* |
@@ -70,6 +73,24 @@ cites. As the product grows, an **area** (a part of the screen map with its own 
 at `.specify/memory/experience-charter/<area>.md`, holding its detailed journeys, screens and patterns. Appendices are
 versioned and pinned together with the core, reuse the same id scheme, and may refine the core but never loosen it.
 
+**Wireframes** (decided 2026-10-25). The charter includes **high-level wireframes** of the *key screens*: the home screen,
+the main screen of each area, and every screen where a top journey is completed. A wireframe settles **structure**, never
+look — wireframes decide structure, and the mockups made per feature at Experience design decide look.
+
+- *It shows:* the **regions** of the screen, each with an id (`S3.R2`), a name and a one-line job; **hierarchy** by relative
+  size and position; the **primary and secondary actions** and where moves and commands live; **navigation** — how a person
+  arrives and where they can go; and **annotations** citing the principles (`X2`) and journey steps (`J1.3`) the layout
+  serves.
+- *It leaves out:* colour, type, imagery and real content (the design tokens and the mockups own those); the **states** of a
+  screen — a states matrix is made per feature; animation; and pixel measurements beyond the breakpoints the charter names.
+
+**Format.** Each wireframe is an **SVG file** at `.specify/memory/experience-charter/wireframes/<screen-id>-<name>.svg`:
+neutral grey boxes and labels, no tokens needed. SVG opens anywhere — GitHub, Zed, a browser — and **needs no headless
+browser**, so the charter avoids the rendering dependency the per-feature mockups carry (`ui-flow.md` §14). The **text
+outline stays the source of truth**: the screen's line in the screen map lists its regions in order, so a wireframe can be
+diffed, read by a screen reader and checked by a program. A drawing without its outline is a finding; the PNG shown in a
+brief is only a render.
+
 Rules: every principle and journey has a **stable id** (`X2`, `J1.3`) that briefs, rows and reviews cite; every part says
 **where it came from** (the product brief, research, a person's decision, the existing product); nothing is invented
 silently — a gap is written as an **open question**, not filled with a guess. A starter template is in §14.
@@ -80,7 +101,7 @@ silently — a gap is written as an **open question**, not filled with a guess. 
 
 1. the planner drafts the charter from the brief, its users and quality attributes, and the workshop's standing
    preferences, using the §14 template, each principle and journey citing its source, and open questions where the brief is
-   thin;
+   thin; the screen map and a wireframe for each key screen are drafted as SVG with their region outlines;
 2. the person edits it — alone, or in a shaping conversation with the planner, with alternatives side by side;
 3. the person approves it; setup records `charter.approved` with its version, its approver and its content hash;
 4. it is committed to the factory's worktree at `.specify/memory/experience-charter.md`, beside the constitution, as part
@@ -89,7 +110,8 @@ silently — a gap is written as an **open question**, not filled with a guess. 
 **Existing codebase** (`brownfield.md`, `code-exploration.md`). The charter is **discovered, then confirmed**: the scan and
 the explore space inventory the screens, routes, flows and existing conventions into a draft labelled *measured* or
 *inferred*; the person corrects it; what the product does today is recorded as **as-is journeys**, and the charter says
-plainly which parts are *as-is* and which are *intended*. Nothing is written to the team's repository except through its
+plainly which parts are *as-is* and which are *intended*. Wireframes of existing screens are derived from the running
+screens' regions and landmarks and labelled *inferred* until a person confirms them. Nothing is written to the team's repository except through its
 own pull request.
 
 **Who approves.** The **named experience owner** where the workshop has one (a designer, a product owner); otherwise a
@@ -110,7 +132,7 @@ empty and says so. Setup offers the step and never forces it, so existing factor
   new version applies to features admitted after it; a feature already in progress is shown *a newer charter exists* at its
   next gate and may adopt it by a recorded decision, never by default.
 - **Drift is visible.** The knowledge keeper's lint compares the shipped screens and the screen map and offers findings
-  (*a screen exists that the map does not show*); findings are suggestions to a person, never edits.
+  (*a screen exists that the map does not show; a built screen has lost a region its wireframe names*); findings are suggestions to a person, never edits.
 - **A document, not a wiki page.** The charter is a committed repository artifact, because it is a **yardstick** that
   briefs and judges measure against. Knowledge pages may *describe* it and cite it; they never replace it
   (Principle X).
@@ -135,7 +157,9 @@ blocking it (the gate is a person's decision):
 2. every top journey has at least one row, or is marked **deferred** or **non-goal** in the charter;
 3. every row that changes user-facing behaviour names at least one journey step or says why it has none;
 4. rows citing a journey step whose predecessors have no row are flagged as **out of order**;
-5. the charter version the roadmap was drafted against is the current one.
+5. the charter version the roadmap was drafted against is the current one;
+6. every journey step marked `build` is served by a screen on the screen map, and that screen has a wireframe or says why
+   it has none (`no wireframe: <reason>`).
 
 Anything failing a check is shown as a **gap**, honestly, in the brief (BRIEF-3). The planner may propose fixes — a new
 row, a reorder — and may never change a row the engineer wrote (DIR-5).
@@ -145,9 +169,9 @@ row, a reorder — and may never change a row the engineer wrote (DIR-5).
 | Where | What changes |
 |---|---|
 | **Concept and Specification briefs** | *the yardstick* part cites the principles and journey steps the feature serves, and the accessibility floor |
-| **Design brief** | cites the screen map and interaction patterns the design must follow, as it cites the constitution |
+| **Design brief** | cites the screen map, the wireframes and the interaction patterns the design must follow, as it cites the constitution |
 | **Judges** | the architecture critic and the code reviewer are given the charter as part of their inputs and report findings against its ids |
-| **Experience design and UI review gates** *(proposed in [`ui-flow.md`](./ui-flow.md))* | the added gates measure against the charter; without them the charter still informs every built-in brief |
+| **Experience design and UI review gates** *(proposed in [`ui-flow.md`](./ui-flow.md))* | the added gates measure against the charter: mockups keep the regions of the wireframes (a departure is shown as a proposed amendment, never introduced silently) and UI review checks the built screens' regions against them; without the gates the charter still informs every built-in brief |
 | **Verification** | the accessibility floor and quality bars become checks where they can be run deterministically |
 | **Documentation and knowledge** | feature stories link the journeys a feature completed; the knowledge base cites the charter version |
 | **Bench** | a journey with unproven assumptions is offered as *research this* / *spike this* in the Roadmap-gate evidence view |
@@ -185,15 +209,17 @@ Identifiers use `XCH-` to avoid the PRD's `EXPL-` (explore) prefix.
 
 | ID | Requirement | |
 |---|---|---|
-| XCH-1 | **Charter artifact**: the ten parts of §3 with stable ids and a source per part, committed at `.specify/memory/experience-charter.md` with optional per-area appendices, and referenced from the constitution; a starter template ships with KILN | Must |
+| XCH-1 | **Charter artifact**: the eleven parts of §3 with stable ids and a source per part, committed at `.specify/memory/experience-charter.md` with optional per-area appendices, and referenced from the constitution; a starter template ships with KILN | Must |
 | XCH-2 | **Setup step**: draft from the product brief (new codebases) or discover and confirm (existing); approval by a Decider or a named person; recorded; never forced | Must |
 | XCH-3 | **Versioning and amendment**: semantic versions; amendments decided at the Roadmap gate with a diff and affected rows; pinned per feature at admission; `charter.approved` and `charter.amended` in the catalog | Must |
 | XCH-4 | **Planner input**: the planner reads the charter first and proposes slices along the top journeys, tagging rows with journey-step ids; it never changes a row the engineer wrote | Must |
-| XCH-5 | **Coverage map**: the five deterministic checks of §6 in the Roadmap gate brief, shown as gaps, never blocking | Must |
+| XCH-5 | **Coverage map**: the six deterministic checks of §6 in the Roadmap gate brief, shown as gaps, never blocking | Must |
 | XCH-6 | **Briefs cite it**: the yardstick part of Concept, Design and Specification briefs cites the principles, journey steps and floor that apply | Must |
 | XCH-7 | **Judges and checks**: judges receive the charter; the accessibility floor and quality bars run as deterministic checks at Verification where possible | Should |
 | XCH-8 | **Drift lint** between screen map and shipped screens, as findings only | Should |
 | XCH-9 | **Team floor** for the shared parts, stricter-only, changed by quorum | Could |
+| XCH-11 | **Wireframes**: a high-level SVG wireframe per key screen under `experience-charter/wireframes/`, with region ids, annotations citing `X` and `J` ids and a required text outline in the screen map; drafted by the planner, edited and approved with the charter, amended like the rest | Must |
+| XCH-12 | **Structural conformance**: Experience design mockups keep the wireframes' regions; UI review checks the built screens' landmark regions and headings against the region outline; departures are findings, and a deliberate one is proposed as a charter amendment | Should |
 | XCH-10 | **KILN's own charter**: KILN's web front door is built under a charter seeded from `user-experience.md` (personas, vocabulary, core experiences, the gate brief) and the mockups | Must |
 
 ## 11. Where it lands in the program
@@ -221,10 +247,14 @@ after r23 with `add-row`. The Roadmap gate decides which; this doc does not.
 2. ~~Approver.~~ **Decided 2026-10-25:** a named experience owner when one exists, otherwise a Decider.
 3. ~~Size.~~ **Decided 2026-10-25:** no ceiling; a short core plus per-area appendices.
 4. ~~KILN's own charter.~~ **Decided 2026-10-25:** yes, seeded from `user-experience.md` (XCH-10).
-5. **Visual artifacts.** Should the screen map and journeys be allowed as rendered images next to the text (as the
-   mockups are), with the text remaining the source of truth?
+5. ~~Visual artifacts.~~ **Decided 2026-10-25:** wireframes are part of the charter, as SVG with a required text outline
+   that stays the source of truth (§3). The screen map and journeys may be drawn the same way.
 6. **Legacy products.** For an existing product with no coherent experience, is an *as-is* charter enough, or should the
    first feature be a deliberate experience reset?
+7. **Wireframe sources.** May a person import a wireframe from a design tool (an SVG export from Excalidraw or Figma) as
+   the source, provided its region outline is present and the checks pass?
+8. **Breakpoints.** One wireframe per named breakpoint for each key screen, or only the primary one with notes on how the
+   regions reflow?
 
 ## 13. One sentence
 
@@ -255,7 +285,16 @@ brief: <link to the product brief page>
   - J1.1 <step> · J1.2 <step> · …   status: build | deferred | non-goal
 
 ## Screen map
-<areas → screens → connections, as a list or a diagram; one line each>
+Home: S1 <name> — <purpose>
+Area: <name>
+- S2 <name> — <purpose> · serves: J1.1 · links: S3, S4
+  regions: R1 <name> · R2 <name> · R3 <name> …
+  wireframe: wireframes/s2-<name>.svg        (or: no wireframe: <reason>)
+
+## Wireframes
+(An example drawing is at `experience-charter-example/s3-gate-brief.svg`.)
+<one SVG per key screen under experience-charter/wireframes/; greyscale boxes and labels; annotations cite X and J ids;
+the region outline above is the source of truth>
 
 ## Interaction patterns
 - <pattern> — applies to: <screens>

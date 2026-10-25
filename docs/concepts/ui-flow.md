@@ -110,14 +110,17 @@ involved, every state each screen can be in, the content, and the interactions�
      notes, and what is **new** against the charter (a pattern the charter does not have is a *proposed amendment*, never
      silently introduced);
    - `mockups/*.html` — one self-contained HTML mockup per screen state that matters, using the design tokens, rendered to
-     PNG for the brief (KILN's own mockups are made this way, `mockups/README.md`).
+     PNG for the brief (KILN's own mockups are made this way, `mockups/README.md`). A mockup of a screen that has a
+     charter **wireframe** keeps that wireframe's regions and their order; a screen without one gets a new region outline
+     in `experience.md`, proposed as a charter addition.
 2. **The judge, `design-critic`** (strongest model, lane held, a different conversation from the author) reads the same
    inputs and the author's output and reports findings by severity, each citing a charter id or a named heuristic:
    a principle contradicted, a journey step with no screen, a state missing, a pattern that departs from the screen map, an
    accessibility floor breach visible in the mockup, a content term the voice rules out. The critic never edits.
 3. **Deterministic evidence** runs first, as plain checks: every journey step the row cites is covered by a screen; every
    screen has the full states matrix; every colour and size in the mockups resolves to a design token; contrast of the
-   mockup's text pairs meets the charter floor.
+   mockup's text pairs meets the charter floor; the mockup's regions match the wireframe's region outline (a missing or
+   reordered region is listed, never blocking on its own).
 
 ### 4.3 The brief
 
@@ -193,6 +196,7 @@ reads that evidence against the approved experience and the charter…
    | **States** | every state in the states matrix reachable and rendered; states built but not designed |
    | **Visual match** | screenshot of each state against the approved mockup, difference per screen and region, at the charter's breakpoints |
    | **Content** | strings against the voice rules and terminology |
+   | **Structure** | the built screen's landmark regions and headings against the charter wireframe's region outline; regions missing, added or reordered |
 
 2. **`ui-reviewer`** (judge, strongest model, lane held) reads the checker's structured evidence — the accessibility
    tree, computed styles, difference regions, the states table — together with `experience.md`, the charter and the diff,
