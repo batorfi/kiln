@@ -211,7 +211,7 @@ The factory works in its repository — by default a **separate git worktree**, 
 Feature artifacts follow **GitHub Spec Kit**: the constitution in `.specify/memory/constitution.md`, one directory per
 feature in `specs/NNN-name/` (spec, plan, tasks, and KILN's concept, design and judges' reports), and the `speckit.*`
 commands run by KILN's roles as Pi sessions. Spec-driven artifacts are versioned with the code; the factory store keeps the
-record, not copies of them.
+record, not copies of them. Beside the constitution sit the **experience charter** and the **design system** (`.specify/memory/`), the yardsticks of the interface gates.
 
 ## 6. The record and its views
 

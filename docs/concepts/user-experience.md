@@ -58,6 +58,7 @@ Personas are framed by the **job** a person does in KILN, not by their title. On
 | **The Observer** | follows progress without deciding — a lead, a stakeholder, a teammate | an honest picture of where things stand and why |
 | **The Auditor** | reconstructs what happened after the fact — for compliance, a post-mortem, or curiosity | a complete, trustworthy record: who decided what, on what evidence, and what left the machine |
 | **The Curator** | keeps a factory's wiki: chooses sources, talks ingests through with the LLM, edits pages, acts on lint findings, refines the schema | a knowledge corpus that is current, traceable and actually used by roadmaps and gates |
+| **The Experience and design owner** | owns the experience charter and the design system: approves their versions and amendments, approves pull requests that touch them (a named person, or a Decider when none is named) | an interface that stays one product across every feature and every teammate's factory |
 | **The Evaluator** | judges whether models and policies are good enough — local versus cloud, which role on which model | measured outcomes, comparable across models and over time |
 
 The primary persona is the **Decider**. Every other persona's needs are served without competing with the

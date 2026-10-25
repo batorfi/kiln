@@ -362,7 +362,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | ID | Requirement | |
 |---|---|---|
 | FLOW-1 | **Gates as data**: the director executes a feature's flow from definitions, not a constant rail; the default flow ships as data. | Must |
-| FLOW-2 | **Anchors and invariants**: Roadmap gate first, Merge gate last, all built-in gates present in order; added gates only between built-in ones; skipping only as triage does today; nothing after Merge. | Must |
+| FLOW-2 | **Anchors and invariants**: Roadmap gate first, Merge gate last, all built-in gates present in order (Experience design and UI review apply conditionally and are recorded *not applicable* otherwise); added gates only between built-in ones; skipping only as triage does today; nothing after Merge. | Must |
 | FLOW-3 | **Move kinds**: a closed set (approve · revise · reject · restart · split+revise · mitigate) with team labels and rules (required note, `returns_to`, rounds); events record kind and label. | Must |
 | FLOW-4 | **Gate definitions** (`gates/<id>.md`): question, phase and placement, artifact, author, judges, moves, delegable, hold lane, `applies_when` (paths, labels, and deterministic diff predicates — never an LLM), deciders, brief emphasis, version; an added gate is never an arming point. | Should |
 | FLOW-5 | **Flows** (`flows/<name>.yaml`): extend the standard flow and add gates; factory default; team-required gates by path or label. | Should |
@@ -455,6 +455,19 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | EDIT-6 | **Watch and steer**: follow a worker in the factory's worktree read-only; steer a worker step (never a judge) from the KILN thread. | Should |
 | EDIT-7 | **KILN language server**: territory and claims, knowledge on hover, drift, preserved behaviour, judges' findings, code actions. | Could |
 | EDIT-8 | **Team review in Zed**: a teammate's required review given from a shared Zed workspace and mirrored into the owner's record. | Could |
+
+### 6.23 Experience charter, design system and interface gates
+
+*Concepts: [the experience charter](../concepts/experience-charter.md) · [the design system](../concepts/design-system.md) · [the interface gates](../concepts/ui-flow.md) · [team space §11a](../concepts/team-space.md)*
+
+| ID | Requirement | Priority |
+|---|---|---|
+| EXP-1 | **Experience charter**: a person-approved, versioned setup artifact (users, principles, journeys, screen map, wireframes, floor) at `.specify/memory/experience-charter.md`, beside the constitution; never a gate; XCH-1…12 in the concept. | Must |
+| EXP-2 | **Design system**: a standard structure of foundations, DTCG tokens (three tiers, modes, contrast registry), component and pattern specs and a manifest at `.specify/memory/design-system/`; versioned, owned, checked by `kiln check design-system`; DSN-1…13 in the concept. | Must |
+| EXP-3 | **Interface gates**: Experience design (after Architecture) and UI review (after Code review) are built into the default flow, with deterministic `applies_when`, recorded as *not applicable* otherwise; UXG-1…10 in the concept. | Must |
+| EXP-4 | **Pinned and shared**: a feature pins the constitution, charter and design-system versions at admission; in a team they are the repository's files, changed only by a pull request their owners approve; `kiln check foundations` detects drift. | Must |
+| EXP-5 | **Journey coverage** at the Roadmap gate: the planner reads the charter and the brief shows a coverage map; deterministic, never blocking. | Should |
+| EXP-6 | **KILN's own charter and design system** are approved before the web front door's screens. | Must |
 
 ## 7. Non-functional requirements
 
@@ -720,6 +733,8 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 | Feature | row (roadmap field and ids only) | one roadmap item, walked through nine gates |
 | Step | unit (code only) | one piece of work by one role |
 | Gate | gate task | a stop that waits for a human move |
+| Experience charter | charter | the approved description of who the product is for, its journeys, screens and wireframes — a yardstick, never a gate |
+| Design system | design system | the approved tokens, components and patterns the interface is built from — a yardstick, never a gate |
 | Flow | flow | the gates a feature passes: the default twelve plus any the team added |
 | Move kind | move kind | the fixed meaning behind a move — approve, revise, reject, restart, split+revise, mitigate |
 | Move | move | a human decision at a gate |

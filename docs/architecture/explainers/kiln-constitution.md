@@ -217,7 +217,7 @@ settle a gate in anyone's workshop.
 
 ### II. Every judge runs on the strongest model
 
-**The rule.** Every **judge role** — the architecture critic at Architecture, the code reviewer at Code review, the verifier
+**The rule.** Every **judge role** — the architecture critic at Architecture, the design critic at Experience design, the code reviewer at Code review, the UI reviewer at UI review, the verifier
 at Verification, and any judge on a gate a team adds — must be bound to the **strongest model available to the
 factory**, on every substrate, including a purely local one. A weaker binding is a **refused configuration**, not a
 warning. A judge is **never silently downgraded**: if the strongest model is unavailable, the judged step **waits and
@@ -442,11 +442,13 @@ convenience may break.
 ### The default flow
 
 ```
- Roadmap ─► 1 Concept ─► 2 Architecture ─► 3 Specification ─► 4 Work plan ─► 5 Implementation
- gate                    (judged)                                       │
-   ▲                                                                    ▼
-   │       9 Merge ◄─ 8 Documentation ◄─ 7 Verification ◄─ 6 Code review
-   │                                      (judged)          (judged)
+
+ Roadmap ─► 1 Concept ─► 2 Architecture ─► 2a Experience design ─► 3 Specification ─► 4 Work plan
+ gate                    (judged)          (judged · when UI)                                │
+   ▲                                                                                         ▼
+   │   9 Merge ◄─ 8 Documentation ◄─ 7 Verification ◄─ 6a UI review ◄─ 6 Code review ◄─ 5 Implementation
+   │                                  (judged)          (judged · when UI)  (judged)
+   └──────────────── re-opens after every merged or abandoned feature
    └──────────────── re-opens after every merged or abandoned feature
 ```
 
@@ -455,10 +457,18 @@ convenience may break.
 | Invariant | What it means |
 |---|---|
 | **Fixed anchors** | The Roadmap gate is always first; the Merge gate is always last. Nothing goes before or after them. |
-| **Built-in gates are never removed** | Teams may **add** gates (a threat model, a security review) by a recorded decision. They may not remove or reorder the built-in ones. Every added gate keeps the full gate contract: durable, waiting, settled only by a committed move, recorded. |
+| **Built-in gates are never removed** | Experience design and UI review are built in and apply when a feature touches the interface; otherwise they are recorded as *not applicable*, never dropped. Teams may **add** gates (a threat model, a security review) by a recorded decision. They may not remove or reorder the built-in ones. Every added gate keeps the full gate contract: durable, waiting, settled only by a committed move, recorded. |
 | **A closed set of move kinds** | Every move is one of a fixed set of kinds, each with a known consequence. Teams may label moves in their own words; they may not invent new kinds. Changing the set is a constitutional amendment. |
 | **One feature at a time** | The Roadmap gate admits one feature; it re-opens after that feature. No unattended chaining. |
 | **A flow per feature** | The flow is chosen per feature at the Roadmap gate, from the factory's default, and pinned for that feature. |
+
+### The experience charter and the design system
+
+Two companion artifacts sit beside the constitution in the repository — the **experience charter** (who the product is for,
+its journeys, screens and wireframes) and the **design system** (tokens, components, patterns). They are **yardsticks, never
+gates**: briefs cite them, the Experience design and UI review gates measure against them, a feature pins their versions
+at admission, and only a person approves or amends them. In a team they are the repository's files, shared by every
+member's factory (`team-space.md` §11a).
 
 ### The move kinds
 

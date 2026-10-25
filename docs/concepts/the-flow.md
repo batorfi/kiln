@@ -87,6 +87,7 @@ continues. Their internal ids are `2a-experience` and `6a-ui-review`; the other 
 
 ## 4. Before the first gate
 
+0. **Setup artifacts.** Where the product has an interface, the factory has an **experience charter** and a **design system**, approved by a person before the first Roadmap gate and pinned by each feature at admission (`experience-charter.md`, `design-system.md`); Experience design and UI review measure against them.
 1. **Admission.** At the Roadmap gate a person admits **one** next feature, and with it decides the factory's profile,
    egress policy, budget and placement, and the feature's **flow** (the standard flow unless added gates apply —
    `extensible-flow.md` §7). Approving admits one feature only; there is no chaining.

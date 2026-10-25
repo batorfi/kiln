@@ -96,6 +96,8 @@ The first five gates settle *what to build* before any code exists. The next fou
 last two *describe it and ship it*. The Roadmap gate sits above all of them and is the only gate that is never
 automatic.
 
+Before the first Roadmap gate, a product with an interface also gets two short, person-approved documents beside the constitution — the **experience charter** (who it is for, the journeys, the screens and wireframes) and the **design system** (the tokens, components and patterns it is built from) — which Experience design and UI review measure features against (`experience-charter.md`, `design-system.md`).
+
 These twelve gates are the **default flow**. Teams can add gates that match how they build software — a threat model, a
 security or accessibility review, a performance budget, a product sign-off — between the built-in ones; every added gate
 keeps the same guarantees, and no built-in gate can be removed (`extensible-flow.md`).

@@ -115,7 +115,7 @@ claims on code, team knowledge and requests between teammates. A solo engineer i
 | **Workshop** | several factories, a shared model pool and host scheduler, one Needs you | r25 |
 | **Agents and flows** | the Agents screen, role versions and try-runs; added gates and flows from files | r26 |
 | **Health** | observe-never-act watcher, broken-guarantee signals, core metrics, `kiln health` | r27 |
-| **Getting started** | `kiln init`, `kiln doctor`, first factory, Spec Kit, constitution, first roadmap | r28 |
+| **Getting started** | `kiln init`, `kiln doctor`, first factory, Spec Kit, constitution, experience charter and design system, first roadmap | r28 |
 | **New codebases** | product brief, constitution from it, technology decisions, walking skeleton | r29 |
 | **Existing codebases** | profile, full scan into knowledge, baseline, territory, fitting the team's process, base drift | r30, r31 |
 | **Team space** | signed team roadmap by quorum, claims and overlap, requests and mirrored reviews, team-aware Merge gate, team knowledge | r38, r39 |
@@ -361,7 +361,7 @@ whose rule holds but whose mechanism changes; retire code tied to the Pi extensi
 
 ## 9. The quality bar
 
-`kiln-v1` is held to the [constitution](../../../.specify/memory/constitution.md) (v2.0.1) — every rule enforced by
+`kiln-v1` is held to the [constitution](../../../.specify/memory/constitution.md) (v2.1.0) — every rule enforced by
 construction and proven by a check that fails by name. In engineering terms:
 
 | Requirement | What it means for `kiln-v1` |
