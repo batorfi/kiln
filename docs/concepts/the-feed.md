@@ -56,7 +56,7 @@ edited by its author; edits are new versions, never overwrites.
 
 ## 5. Look and feel
 
-The illustrations use the seed design system (`design-system.md` §12): warm neutrals, the ember accent for the primary action,
+The illustrations use the seed design system (`design-system.md` §12, teal-and-sand theme): sand neutrals, the teal accent for the primary action, Charter for the one-sentence headings, Inter for the interface,
 status shown as a word and a shape, plain second-person sentences, no metaphors from the kiln analogy.
 
 | | |

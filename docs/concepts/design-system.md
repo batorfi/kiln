@@ -409,13 +409,37 @@ palette that this makes explicit.
 
 | Seed | From | Becomes |
 |---|---|---|
-| **Palette** | warm neutrals (`#F5F2EE` background, `#1C1814` ink, `#E6E0D8` line) with an **ember** brand (`#C2410C`, `#EA580C`) | `color.neutral.*` and `color.ember.*` primitives; `color.surface.*`, `color.text.*`, `color.action.primary` semantics |
-| **State colours** | amber *waiting*, green *ok*, blue *info*, violet *delegated* | the product-specific status roles `status.wait`, `status.ok`, `status.info`, `status.delegated` — each tied to its meaning in the gate rail, Needs you and the brief |
-| **Type** | a system sans stack and a monospace for ids, paths and hashes | `font.family.sans`, `font.family.mono`, with a scale |
+| **Palette** | **teal and sand** (changed 2026-10-25; was warm neutrals with an ember accent): sand page `#F4F1EA`, raised `#FFFFFF`, ink `#14201F`, muted text `#56625F`, border `#DDD7CA`, deep-teal rail `#10201F`; **teal** accent `#0F766E` (hover `#0B5F58`, subtle `#DCEEEA`, on dark `#2DD4BF`) | `color.neutral.*` and `color.teal.*` primitives; `color.surface.*`, `color.text.*`, `color.action.primary` semantics |
+| **State colours** | amber *waiting* `#8A4B04` on `#FBEBCB` · green *passed* `#276B2A` on `#E1F0DC` · violet *delegated* `#5B33B0` on `#ECE5F9` · blue *working/info* `#1F4FB8` on `#E2EAFB` · red *rejected/danger* `#A82A1D` on `#FBE3DF` | the product-specific status roles `status.wait`, `status.ok`, `status.delegated`, `status.info`, `status.danger` — each tied to its meaning in the gate rail, Needs you and the brief |
+| **Type** | **three faces** (changed 2026-10-25; was one system sans): *display* Charter (fallbacks Bitstream Charter, Iowan Old Style, Georgia) for page headings only; *interface* Inter (fallback system-ui) for everything people read and click, with tabular figures; *monospace* (DejaVu Sans Mono, ui-monospace) for ids, paths, hashes and commands | `font.family.display`, `font.family.sans`, `font.family.mono`, with a scale |
 | **Components** | the surfaces KILN's concept already describes | *gate rail and gate card · gate brief section · move bar (no pre-selected move) · Needs you item · status pill · event row · record table · diff view · factory card · host card · toast and inline message · empty state* |
 | **Patterns** | `user-experience.md` | *decide-at-a-gate · come-back-after-away · steer-or-approve a held action · compare approved with built · confirm with consequence* |
 
-The seed is a **proposal for the first design system**, drafted and approved before the front door's screens are built
+### 12.1 The teal-and-sand theme
+
+Why teal: the accent is calm and cool, so it never competes with **amber *waiting*** — the one colour a person must notice
+without being alarmed — and it leaves the hot hues to state. The **ember stays in the brand mark and wordmark only**
+(`docs/brand/README.md`: do not recolour the ember); it is not a UI colour. Sand keeps the warmth of the earlier palette.
+
+Measured contrast (WCAG 2.2 relative luminance; text needs 4.5:1, large text and meaningful UI 3:1):
+
+| Pair | Ratio |
+|---|---|
+| ink on page · muted on page · muted on raised | 14.8 · 5.6 · 6.4 |
+| teal on page · teal on raised · white on teal (primary button) | 4.9 · 5.5 · 5.5 |
+| teal-dark `#0B5F58` on subtle `#DCEEEA` · ink on subtle | 6.3 · 13.9 |
+| wait · ok · info · delegated · danger text on their tints | 5.8 · 5.5 · 6.1 · 6.7 · 5.7 |
+| rail text · rail muted · teal-on-dark on rail | 14.4 · 7.5 · 9.0 |
+
+`border.default` (`#DDD7CA`) is decorative only; controls that need a visible boundary use `border.strong` (`#8C9490`,
+3:1 on the page). Each pair is written to the **contrast registry** (§5.5) and checked by `kiln check design-system`. The
+dark mode derives from the rail palette and is drawn at DSN-12.
+
+![KILN theme — teal and sand](./feed/e-theme-sheet.png)
+
+*Sample screens in this theme: `the-feed.md` §5.*
+
+The seed is a **proposal for the first design system** (version 0.2.0 with the teal-and-sand theme), drafted and approved before the front door's screens are built
 (DSN-12); the mockups in `mockups/` stay illustrations. A rule specific to KILN is written into the foundations: **colour
 never carries a gate's state alone** — every state has a word and a shape.
 

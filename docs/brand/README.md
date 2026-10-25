@@ -30,3 +30,6 @@ around the mark of at least the width of the ember.
 | `kiln-avatar.png` | 512 × 512 | a square **avatar** — the mark on the dark background, for a profile or organisation picture |
 
 GitHub's API cannot set either image; both are uploaded by hand in GitHub's settings.
+
+**In the interface (2026-10-25).** The ember is the brand mark's colour only. The product UI uses the teal-and-sand theme
+(`docs/concepts/design-system.md` §12.1); the mark keeps its colours on both light and dark surfaces.
