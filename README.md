@@ -84,6 +84,7 @@ own — a threat model, a security review — without removing any. → [`the-fl
   risks, provenance, history, and what each move would do next.
 - **[Shape the roadmap](./docs/concepts/the-director.md)** — your goals and constraints first, then the planner's draft; edit, pin and decide together.
 - **[Think at the bench](./docs/concepts/the-bench.md)** — a private notebook, research steps and throwaway spikes while factories work.
+- **[Feed KILN anything](./docs/concepts/the-feed.md)** — drop in a note, screenshot, link or file; KILN drafts where it belongs and you decide.
 - **[Curate the knowledge](./docs/concepts/factory-wiki.md)** — keep each factory's knowledge base true.
 - **[Configure](./docs/concepts/configuration.md)** — hosts, models, roles, flows and policies, as plain files.
 - **[Work with the team](./docs/concepts/team-space.md)** — a team roadmap, claims on code, reviews across workshops.
@@ -175,6 +176,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | | [Insights](./docs/concepts/insights.md) | honest numbers about the work — evidence for people, never automatic change |
 | **Knowledge and thinking** | [The factory wiki](./docs/concepts/factory-wiki.md) | an LLM-written, engineer-curated knowledge base per factory; implementation knowledge |
 | | [The bench](./docs/concepts/the-bench.md) | notebook, research steps and spikes, and how they feed the roadmap |
+| | [The Feed](./docs/concepts/the-feed.md) | free-form intake: drop anything in, KILN drafts where it belongs, a person decides |
 | **Scale and teams** | [Factories anywhere](./docs/concepts/factories-anywhere.md) | hosts, placement, moves, sleeping hosts |
 | | [The team space](./docs/concepts/team-space.md) | personal workshops on one codebase: team roadmap, claims, reviews, merging |
 | **Models and machines** | [The model landscape](./docs/concepts/model-landscape.md) | open and closed models for KILN's roles, and local deployment scenarios S1–S6 (research snapshot, 2026-10) |

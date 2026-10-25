@@ -469,6 +469,17 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | EXP-5 | **Journey coverage** at the Roadmap gate: the planner reads the charter and the brief shows a coverage map; deterministic, never blocking. | Should |
 | EXP-6 | **KILN's own charter and design system** are approved before the web front door's screens. | Must |
 
+### 6.24 The Feed
+
+*Concept: [the Feed](../concepts/the-feed.md).*
+
+| ID | Requirement | Priority |
+|---|---|---|
+| FEED-1 | **Free-form intake**: one global action (web, `kiln feed`, editor) accepts a note, link, screenshot, file, voice note, ticket or folder with no required structure; the original is stored untouched in the record with time and source. | Should |
+| FEED-2 | **Drafted destinations**: a labelled planner step proposes where an item could go (feature candidate, roadmap input, gate evidence, knowledge page, question for a step, amendment suggestion, note) and what it found (overlap, matching ticket); no option is pre-selected. | Should |
+| FEED-3 | **Nothing is decided by feeding**: routing is a person's recorded choice; a fed item is evidence or a wish, never a requirement, approval or move; it never blocks a factory and never escalates or expires. | Must |
+| FEED-4 | **Trail**: every use of a fed item shows *from your feed* and links to the original; the original lists where it went. Sorting follows the workshop's egress policy; secrets are scanned on capture. | Should |
+
 ## 7. Non-functional requirements
 
 | Area | Requirement |

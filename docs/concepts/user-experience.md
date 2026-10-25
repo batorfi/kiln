@@ -404,6 +404,14 @@ proposals.
 - what a workshop publishes is visible to its owner before it goes, and defaults to *coordination*;
 - the team roadmap changes only by its quorum, visibly.
 
+### 7.17a Feeding KILN anything
+
+*Purpose:* get an idea, a bug report or a file into KILN without deciding where it belongs.
+*Guarantees:*
+- one global **Feed KILN** action, no required structure; the original is kept exactly as given;
+- KILN **drafts** where it could go and what it found; the person chooses, or leaves it — nothing is selected for them;
+- feeding decides nothing, blocks nothing and never escalates; every later use shows *from your feed* (`the-feed.md`).
+
 ### 7.18 Thinking at the bench
 
 *Purpose:* research, read, sketch and prototype while factories work — and keep what was learned.

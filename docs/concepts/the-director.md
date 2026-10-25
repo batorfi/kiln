@@ -169,6 +169,7 @@ team roadmap, which the team space decides by quorum (`team-space.md` §6).
 - **In Needs you**, when it needs a choice.
 - **In *worth knowing***: corrections flagged for the next Roadmap gate, delegations ended, overlaps, recoveries.
 - **In proposals**: a reason and citations for every row, every split, every order.
+- **In the Feed**: anything you dropped in, sorted into drafted destinations you choose from — never a decision made for you (`the-feed.md`).
 
 ## 5. Needs you
 
