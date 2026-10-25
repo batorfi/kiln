@@ -162,7 +162,9 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | | [The user experience](./docs/concepts/user-experience.md) | personas, vocabulary, core experiences, the ten-part gate brief, trust and safety |
 | | [KILN in Zed](./docs/concepts/zed-integration.md) | briefs, moves and knowledge inside the Zed editor — an ACP agent, an MCP server, deep links, Code review decided where the code is (proposal) |
 | **The process** | [The flow](./docs/concepts/the-flow.md) | the twelve gates in depth, what runs between them, where every move leads |
+| | [The interface gates](./docs/concepts/ui-flow.md) | Experience design and UI review: the two built-in gates that apply to interface work |
 | | [An extensible flow](./docs/concepts/extensible-flow.md) | gates teams add to the default flow, with the same guarantees |
+| | [The experience charter](./docs/concepts/experience-charter.md) | the product's users, principles, journeys, screen map and wireframes that those gates measure against |
 | | [The director and Needs you](./docs/concepts/the-director.md) | deterministic orchestration, the planner, shaping the roadmap together, the one inbox |
 | **Foundations** | [The constitution, explained](./docs/architecture/explainers/kiln-constitution.md) | the twelve principles, the flow's invariants and governance — what each rule means for the code you write |
 | | [KILN on Pi Durable](./docs/concepts/pi-durable.md) | why durable tasks and conversations are the key enabler |

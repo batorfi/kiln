@@ -86,7 +86,8 @@ A short document the engineer writes — alone or in conversation with the plann
 | **Success measures** | how the team will know it worked |
 
 The brief is a page in the factory's knowledge base, labelled *from a person*; the roadmap brief's goals and constraints
-start from it; briefs at the Concept and Specification gates cite it.
+start from it; briefs at the Concept and Specification gates cite it. For a product with an interface, the brief's users
+and quality attributes are also the seed of the **experience charter** (§5.3).
 
 ### 5.2 The constitution
 
@@ -97,6 +98,14 @@ The constitution — Spec Kit's `.specify/memory/constitution.md` (`first-run.md
 - each principle says where it came from; the person edits and approves it;
 - it starts small and is amended as decisions are made — every amendment recorded, versioned, and visible at the next
   gates.
+
+### 5.3 The experience charter
+
+Where the product has an interface, the planner drafts the **experience charter** from the product brief — users and
+situations, experience principles, top journeys, a screen map with high-level wireframes, content voice, accessibility
+floor and design tokens — the person edits and approves it, and it is committed beside the constitution
+(`experience-charter.md` §4). The walking skeleton cites it and the design tokens, so the first screens are built under it
+and the built-in Experience design and UI review gates (`ui-flow.md`) have a yardstick from the first slice.
 
 ## 6. Technology decisions
 
@@ -215,6 +224,7 @@ Continuing from `first-run.md` Step 4 with *Start empty*:
 2. **Add Spec Kit** — `specify init --here --ai pi`; the files are shown before the first commit.
 3. **Product brief** — written by the person, or drafted in conversation with the planner; approved.
 4. **Constitution** — drafted from the brief with `speckit.constitution`; edited and approved.
+4a. **Experience charter** (if there is an interface) — drafted from the brief; edited and approved by the experience owner or a Decider.
 5. **Knowledge** — the brief, the constitution and any reference documents ingested; workshop learnings linked.
 6. **Open choices** — listed by the planner, narrowed by the person; research and spikes started at the bench.
 7. **First roadmap** — shaped together: the walking skeleton first (with the foundation flow), then the first slices;

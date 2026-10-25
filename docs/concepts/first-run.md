@@ -49,7 +49,7 @@ later. A team can be started — or joined — at the end, or any time after.
 ## 3. The path
 
 ```
-install ──► kiln init ──► 1 machine ──► 2 models ──► 3 workshop & storage ──► 4 first factory + Spec Kit ──► 5 knowledge ──► 6 first roadmap
+install ──► kiln init ──► 1 machine ──► 2 models ──► 3 workshop & storage ──► 4 first factory + Spec Kit + constitution (+ experience charter) ──► 5 knowledge ──► 6 first roadmap
                                                                                                                      │
                                                                                      7 team (optional: start or join)◄┘
 ```
@@ -143,7 +143,7 @@ Setup shows and lets the person choose:
 - **Workspace** — KILN creates its own worktree of this repository and works only there, one branch per feature; it
   never checks out branches or writes files in your clone (decided 2026-10-21, `web-front-door.md` §12.7).
 - **Profile** — `local-only` (default), with a one-line explanation of what that guarantees.
-- **Flow** — the standard flow; added gates come later (`extensible-flow.md`).
+- **Flow** — the standard flow; Experience design and UI review are part of it and apply when a feature touches the interface; added gates come later (`extensible-flow.md`).
 - **Name** — suggested from the repository.
 
 ### 8.1 Spec Kit in the repository
@@ -190,6 +190,14 @@ it changes nothing in it. For an existing codebase with a team, history and CI, 
 `brownfield.md` §12: profile and baseline, territory, process, and the Observe stage. For *Start empty*, it continues as
 described in `greenfield.md` §14: product brief, constitution, open technology choices, and a walking skeleton first.
 
+### 8.3 The experience charter (optional)
+
+If the repository has an interface, setup offers the **experience charter** beside the constitution: for a new codebase the
+planner drafts it from the product brief; for an existing one it is discovered from the scan and confirmed
+(`experience-charter.md` §4). A named experience owner or a Decider approves it; it is committed at
+`.specify/memory/experience-charter.md`, and `charter.approved` is recorded. It is never forced: without it, briefs say
+*no experience charter* and the interface gates measure against the existing screens and tokens.
+
 ## 9. Step 5 — knowledge
 
 The factory's knowledge base starts from what the repository already knows, following the LLM Wiki pattern
@@ -216,7 +224,7 @@ Bootstrap ingest runs while the person continues; the first roadmap can start be
   base, with readiness per feature and the inputs each row answers; it asks where the inputs are thin; the person edits,
   reorders, writes or pins rows and asks for alternatives, and every version is checked (`the-director.md` §4.3).
 - **The first Roadmap gate** opens — the first real decision, presented with a short guide to what a gate brief is.
-- **Or the demo** — *See a whole feature first*: downloaded on request, a demo factory replays a committed walk through all ten gates, read-only,
+- **Or the demo** — *See a whole feature first*: downloaded on request, a demo factory replays a committed walk through the gates, read-only,
   so the person can see every gate, brief and the record before deciding anything real.
 
 ## 11. Step 7 — a team (optional)
@@ -246,7 +254,7 @@ before accepting.
 Setup writes `kiln.config/` and the first workshop and factory stores — and, with approval, Spec Kit's scaffolding and the
 constitution in the repository — and records each step as an event: `setup.step_completed` (step, choices),
 `model.checked`, `config.changed`, `factory.created`, `speckit.adopted` or `speckit.initialized` (version, integration,
-template changes), `constitution.approved`, `wiki.ingest_completed`, `team.member_joined` — so the record begins with how
+template changes), `constitution.approved`, `charter.approved`, `wiki.ingest_completed`, `team.member_joined` — so the record begins with how
 the workshop was created.
 
 ## 14. How it fits KILN's rules

@@ -289,7 +289,7 @@ teammate arrive as a **person's evidence** in either brief, never as a model's v
 
 ## 10. What the record and knowledge add
 
-- **Events.** Gate keys `custom:experience-design` and `custom:ui-review`; every gate event carries the **gate version, the
+- **Events.** Built-in gate ids `2a-experience` and `6a-ui-review`; a gate whose rule is false records `gate.not_applicable` with its reason; every gate event carries the **gate version, the
   flow version and the charter version**; findings carry the charter ids they cite; `ui-checker` results are recorded as
   content-free summaries (counts and locations — never page content).
 - **Knowledge.** The implementation digest links the feature's journeys, mockups and accepted deviations; the feature

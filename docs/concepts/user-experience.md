@@ -212,7 +212,9 @@ carried out.
 - the human agrees the roadmap with the director; nothing starts before the Roadmap gate is approved;
 - the factory's profile (where models run), egress policy and budget are chosen **here**, visibly, as part of the
   same decision — not discovered later in settings;
-- the human knows, before approving, what the factory will do first and what it will need from them.
+- the human knows, before approving, what the factory will do first and what it will need from them;
+- where the product has an interface, setup offers the **experience charter** — users, principles, journeys, screen map and
+  high-level wireframes — approved by a person before the first Roadmap gate, never forced (`experience-charter.md`).
 
 ### 7.2 Deciding at a gate
 
@@ -454,6 +456,7 @@ proposals.
 ### 7.23 Adding a gate
 
 *Purpose:* make KILN's flow match the team's SDLC conventions.
+*Note:* **Experience design** and **UI review** are already built into the default flow and apply when a feature touches the interface (`ui-flow.md`); added gates sit beside them.
 *Guarantees:*
 - an added gate is defined in a file — question, artifact, author, judges, moves from the closed set with the team's own
   labels — and checked before it can be used;
@@ -517,7 +520,7 @@ decides how to present it.
 | **1. Orientation** | *Where am I?* | the factory, the feature, the gate and its place among the gates; what has been decided so far for this feature; how long the gate has been waiting; whether this is the first round or a return after a corrective move |
 | **2. The decision** | *What am I deciding?* | the gate's question in plain words; what approving **commits to** and what it does **not**; what is at stake if the decision is wrong; whether this is a judged gate |
 | **3. The work** | *What was produced?* | a plain summary of the artifact, then the artifact itself; on a return round, **what changed since last time** and **how the human's previous note was addressed** |
-| **4. The yardstick** | *What is it measured against?* | the earlier approved artifacts this one must honour — the concept, the specification, the work plan — and how each requirement maps to the work and the evidence; **context from the wiki** — constraints, prior decisions, past incidents — with citations |
+| **4. The yardstick** | *What is it measured against?* | the earlier approved artifacts this one must honour — the concept, the specification, the work plan — and how each requirement maps to the work and the evidence; **the experience charter's principles, journey steps and floor that apply, with ids and its pinned version**; **context from the wiki** — constraints, prior decisions, past incidents — with citations |
 | **5. The evidence** | *Is it right?* | the judges' verdicts with their reasoning and findings, by severity; test and verification results; automatic fix rounds and their outcomes; anything the factory checked and how |
 | **6. Risks and open issues** | *What should worry me?* | assumptions the agents made; questions they could not resolve; disagreements between author and judge; what could not be done (a missing source, a blocked request, an unavailable model); cited wiki pages that are **stale or contradicted** |
 | **7. Provenance** | *Who did this, and how?* | the steps taken, by which roles, on which models and where they ran (local, private, cloud); the human interventions during the work — steering, approved or refused actions; time and cost; what left the machine for this work |
@@ -568,7 +571,7 @@ Every one of these actions is recorded, and the brief shows what was done while 
 ### 8.5 Emphasis per gate
 
 *For built-in gates, as below; for added gates, from the `brief.emphasis` in their definition (`extensible-flow.md` §4). The
-Roadmap gate brief also shows the **flow** proposed for each feature, with reasons and any team-required gates.*
+Roadmap gate brief also shows the **flow** proposed for each feature, with reasons, any team-required gates, which interface gates apply, and — where the factory has a charter — the **journey coverage map** (`experience-charter.md` §6).*
 
 The structure is fixed; the emphasis follows the gate's question.
 
@@ -577,10 +580,12 @@ The structure is fixed; the emphasis follows the gate's question.
 | **Roadmap gate** | the features, their order and dependencies; what changed since the last approval; **the wiki context behind the proposal, with citations**; **evidence and readiness per proposed feature** (ready · thin · unknown), unproven assumptions, and **what was learned since the last approval** from the bench; what the next feature needs from the human; the factory's profile, egress policy, budget — and **where it runs**, with the fit of each candidate host |
 | **Concept gate** | the problem, the premises and the scope; the research it rests on; what is explicitly out of scope |
 | **Design gate** | the proposed structure and its alternatives; the architecture critic's objections and how the design answers them |
+| **Experience design gate** *(interface work)* | the journey steps served; mockups beside the screens they change; the states matrix; charter ids; the design critic's findings; new patterns proposed as charter amendments |
 | **Specification gate** | what "done" means, requirement by requirement; how each will be verified; that this is where the unattended tail can be armed, and what arming it would cover |
 | **Work plan gate** | the pieces and their order; the model order this implies and its expected cost in time and swaps; **overlap with teammates' claims** |
 | **Implementation gate** | the restorable starting point; the size of the work ahead; whether it is still one feature, and what a split would look like |
 | **Code review gate** | the changes, mapped to the specification; the code reviewer's findings by severity; what `revise` (workers fix on the current code) and `restart` (rebuild from the restorable commit) would each redo |
+| **UI review gate** *(interface work)* | approved against built per screen and state; accessibility, token, state, structure and visual-match evidence; whether the reviewer saw the images; accepted deviations |
 | **Verification gate** | requirement-by-requirement results; the automatic fix rounds already attempted and what they changed; the verifier's diagnosis |
 | **Documentation gate** | what the documentation now says, compared with what was built |
 | **Merge gate** | the whole feature end to end — every gate's decision and by whom; open risks carried forward; what left the machine; what merging will do; **what the feature added to the wiki**, starting with its feature story; in a team: **required reviews and checks, base drift, the code host's merge-queue position, and what will be published** |
