@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Getting started |
-| **Release** | `kiln-v1` — position 20 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 20 of 42 in the committed order |
 | **Depends on** | [r24 — Implementation knowledge and the workshop wiki](./r24-implementation-knowledge-and-the-workshop-wiki.md), [r28 — First run](./r28-first-run.md) |
 | **Unlocks** | [r43 — Explore space](./r43-explore-space.md), [r31 — Existing codebases, part 2: baseline, territory, process](./r31-existing-codebases-part-2-baseline-territory-process.md) |
 | **PRD requirements** | BROWN-1, BROWN-11 |
@@ -38,7 +38,7 @@ KILN joins an existing codebase by reading before it writes: a quick profile, th
 | ID | Requirement | Priority |
 |---|---|---|
 | BROWN-1 | **Codebase profile**, read-only: shape, build and test commands, CI, conventions, code owners, existing guidance (including agent instruction files), history, risk areas; correctable by people; corrections win. | Must |
-| BROWN-11 | **Full scan** of the codebase and repository in seven passes — inventory, structure, repository history, build/CI/tests, understanding, reconciliation, synthesis — written into the factory knowledge base (`raw/scan/<commit>/` facts, `pages/codebase/` pages incl. one per module, open questions and a scan report with coverage); estimated before start, durable and resumable, local by default, deep in the territory and mapped elsewhere; pages cited at the scanned commit, labelled measured or inferred; no per-person rankings. Deep inside the territory, a map outside (deep-scanned before Design when a feature will touch it); history read in detail for 2 years (configurable), summarised beyond; code-host discussions as titles, labels and links unless opted in. | Must |
+| BROWN-11 | **Full scan** of the codebase and repository in seven passes — inventory, structure, repository history, build/CI/tests, understanding, reconciliation, synthesis — written into the factory knowledge base (`raw/scan/<commit>/` facts, `pages/codebase/` pages incl. one per module, open questions and a scan report with coverage); estimated before start, durable and resumable, local by default, deep in the territory and mapped elsewhere; pages cited at the scanned commit, labelled measured or inferred; no per-person rankings. Deep inside the territory, a map outside (deep-scanned before Architecture when a feature will touch it); history read in detail for 2 years (configurable), summarised beyond; code-host discussions as titles, labels and links unless opted in. | Must |
 
 ## How it is proven
 

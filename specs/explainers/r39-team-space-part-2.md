@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Team |
-| **Release** | `kiln-v1` — position 25 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 25 of 42 in the committed order |
 | **Depends on** | [r38 — Team space, part 1](./r38-team-space-part-1.md), [r31 — Existing codebases, part 2: baseline, territory, process](./r31-existing-codebases-part-2-baseline-territory-process.md) |
 | **Unlocks** | [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md), [r41 — New codebases, the rest](./r41-new-codebases-the-rest.md) |
 | **PRD requirements** | TEAM-4…7, HITL-4 |

@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | kiln-v1.x |
-| **Release** | `kiln-v1.x` — position 37 of 41 in the committed order |
+| **Release** | `kiln-v1.x` — position 38 of 42 in the committed order |
 | **Depends on** | [r31 — Existing codebases, part 2: baseline, territory, process](./r31-existing-codebases-part-2-baseline-territory-process.md), [r35 — The bench, part 2: spikes and candidates](./r35-the-bench-part-2-spikes-and-candidates.md), [r48 — Explore: readiness](./r48-explore-readiness.md) |
 | **Unlocks** | — |
 | **PRD requirements** | BROWN-4, 6, 7, 9, 10, 12 |

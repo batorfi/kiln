@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Workers |
-| **Release** | `kiln-v1` — position 6 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 6 of 42 in the committed order |
 | **Depends on** | [r13 — Durable core and the gate contract](./r13-durable-core-and-the-gate-contract.md), [r15 — The record](./r15-the-record.md) |
 | **Unlocks** | [r17 — Configuration as files](./r17-configuration-as-files.md) |
 | **PRD requirements** | WORK-1, 3–5, LANE-3 |

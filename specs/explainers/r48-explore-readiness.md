@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | kiln-v1.x |
-| **Release** | `kiln-v1.x` — position 35 of 41 in the committed order |
+| **Release** | `kiln-v1.x` — position 36 of 42 in the committed order |
 | **Depends on** | [r46 — Explore: as-is specifications](./r46-explore-as-is-specifications.md), [r35 — The bench, part 2: spikes and candidates](./r35-the-bench-part-2-spikes-and-candidates.md) |
 | **Unlocks** | [r40 — Existing codebases, the rest](./r40-existing-codebases-the-rest.md) |
 | **PRD requirements** | EXPL-8, EXPL-10 |

@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Front door |
-| **Release** | `kiln-v1` — position 10 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 10 of 42 in the committed order |
 | **Depends on** | [r18 — The director](./r18-the-director.md), [r19 — Web front door, read-only](./r19-web-front-door-read-only.md) |
 | **Unlocks** | [r21 — Stepping in](./r21-stepping-in.md), [r22 — Shaping the roadmap together](./r22-shaping-the-roadmap-together.md), [r23 — The factory knowledge base](./r23-the-factory-knowledge-base.md), [r25 — One workshop, several factories](./r25-one-workshop-several-factories.md), [r44 — KILN in Zed, phase 1](./r44-kiln-in-zed-phase-1.md) |
 | **PRD requirements** | BRIEF-1…4, BRIEF-6, WEB-3 (core), WEB-6, DIR-6 |

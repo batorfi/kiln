@@ -5,7 +5,7 @@
 > 2026-10-22 (human@batorfi); r12 is the next row. The roadmap and the PRD govern where an explainer differs. Generated from the roadmap and PRD on 2026-10-22;
 > regenerate or edit them together when rows change.
 
-**41 rows** in the committed order — **26 in `kiln-v1`** (ending with the release, r32) and **15 in `kiln-v1.x`**.
+**42 rows** in the committed order — **26 in `kiln-v1`** (ending with the release, r32) and **16 in `kiln-v1.x`**.
 Row ids are never reused, so they are not in numeric order.
 
 For the big picture, read [what `kiln-v1` delivers](../../docs/architecture/explainers/kiln-v1.md) and [what `kiln-v1.x` adds](../../docs/architecture/explainers/kiln-v1x.md).
@@ -50,14 +50,15 @@ For the big picture, read [what `kiln-v1` delivers](../../docs/architecture/expl
 | 28 | [**r33** Models beyond the machine](./r33-models-beyond-the-machine.md) | kiln-v1.x | r45 | a hybrid factory's cloud judge sees only what policy allows; a local-only factory reaches nothing beyond loopback |
 | 29 | [**r34** The bench, part 1: notebook and research](./r34-the-bench-part-1-notebook-and-research.md) | kiln-v1.x | r32 | a notebook entry promoted to knowledge keeps its origin; research results are cited |
 | 30 | [**r35** The bench, part 2: spikes and candidates](./r35-the-bench-part-2-spikes-and-candidates.md) | kiln-v1.x | r34 | a spike's report becomes evidence on a candidate shown at the Roadmap gate; spike code never merges |
-| 31 | [**r36** Observability in full](./r36-observability-in-full.md) | kiln-v1.x | r32 | one trace per feature; insights with counts and sample sizes; time travel to any moment |
-| 32 | [**r37** Factories anywhere](./r37-factories-anywhere.md) | kiln-v1.x | r32 | a factory moves between hosts with handover; a network failure approves nothing |
-| 33 | [**r46** Explore: as-is specifications](./r46-explore-as-is-specifications.md) | kiln-v1.x | r32 | a module's as-is specification cites every requirement to code; a person confirms or corrects each; characterization-test proposals pin the confirmed ones |
-| 34 | [**r47** Explore: tours and archaeology](./r47-explore-tours-and-archaeology.md) | kiln-v1.x | r32 | an expert-reviewed tour opens every stop at its line; recovered decisions are confirmed, corrected or rejected by a person |
-| 35 | [**r48** Explore: readiness](./r48-explore-readiness.md) | kiln-v1.x | r46, r35 | the readiness report names candidate territories and first features with evidence and scores no person; adoption stages 0–2 are recorded |
-| 36 | [**r49** Explore: legacy languages](./r49-explore-legacy-languages.md) | kiln-v1.x | r32 | a scan of a legacy-language repository reports exactly which files were parsed and which only inferred |
-| 37 | [**r40** Existing codebases, the rest](./r40-existing-codebases-the-rest.md) | kiln-v1.x | r31, r35, r48 | a rehearsal on a past change compares the judges' findings with what the team merged |
-| 38 | [**r41** New codebases, the rest](./r41-new-codebases-the-rest.md) | kiln-v1.x | r29, r35, r39 | conventions written by the skeleton are enforced from feature two; a team starts a product together |
-| 39 | [**r50** KILN in Zed, phase 2: the Agent Panel](./r50-kiln-in-zed-phase-2-the-agent-panel.md) | kiln-v1.x | r32 | a full gate brief read in Zed's Agent Panel with every citation followed in the editor; a held risky action approved there |
-| 40 | [**r51** KILN in Zed, phase 3: decide where the code is](./r51-kiln-in-zed-phase-3-decide-where-the-code-is.md) | kiln-v1.x | r50 | a Code review gate decided in Zed on the full brief through the same intake as the browser; a stale move from Zed is refused |
-| 41 | [**r52** KILN in Zed, phase 4: ambient and team](./r52-kiln-in-zed-phase-4-ambient-and-team.md) | kiln-v1.x | r51 | editing a claimed path warns in the buffer; a teammate's required review given from a shared Zed workspace is mirrored into the owner's record |
+| 31 | [**r53** The Feed](./r53-the-feed.md) | kiln-v1.x | r35 | an item fed as a screenshot and a note is stored untouched, sorted into drafted destinations, routed by a person, and its trail shows *from your feed*; nothing is decided by feeding, and a routed item can be taken back |
+| 32 | [**r36** Observability in full](./r36-observability-in-full.md) | kiln-v1.x | r32 | one trace per feature; insights with counts and sample sizes; time travel to any moment |
+| 33 | [**r37** Factories anywhere](./r37-factories-anywhere.md) | kiln-v1.x | r32 | a factory moves between hosts with handover; a network failure approves nothing |
+| 34 | [**r46** Explore: as-is specifications](./r46-explore-as-is-specifications.md) | kiln-v1.x | r32 | a module's as-is specification cites every requirement to code; a person confirms or corrects each; characterization-test proposals pin the confirmed ones |
+| 35 | [**r47** Explore: tours and archaeology](./r47-explore-tours-and-archaeology.md) | kiln-v1.x | r32 | an expert-reviewed tour opens every stop at its line; recovered decisions are confirmed, corrected or rejected by a person |
+| 36 | [**r48** Explore: readiness](./r48-explore-readiness.md) | kiln-v1.x | r46, r35 | the readiness report names candidate territories and first features with evidence and scores no person; adoption stages 0–2 are recorded |
+| 37 | [**r49** Explore: legacy languages](./r49-explore-legacy-languages.md) | kiln-v1.x | r32 | a scan of a legacy-language repository reports exactly which files were parsed and which only inferred |
+| 38 | [**r40** Existing codebases, the rest](./r40-existing-codebases-the-rest.md) | kiln-v1.x | r31, r35, r48 | a rehearsal on a past change compares the judges' findings with what the team merged |
+| 39 | [**r41** New codebases, the rest](./r41-new-codebases-the-rest.md) | kiln-v1.x | r29, r35, r39 | conventions written by the skeleton are enforced from feature two; a team starts a product together |
+| 40 | [**r50** KILN in Zed, phase 2: the Agent Panel](./r50-kiln-in-zed-phase-2-the-agent-panel.md) | kiln-v1.x | r32 | a full gate brief read in Zed's Agent Panel with every citation followed in the editor; a held risky action approved there |
+| 41 | [**r51** KILN in Zed, phase 3: decide where the code is](./r51-kiln-in-zed-phase-3-decide-where-the-code-is.md) | kiln-v1.x | r50 | a Code review gate decided in Zed on the full brief through the same intake as the browser; a stale move from Zed is refused |
+| 42 | [**r52** KILN in Zed, phase 4: ambient and team](./r52-kiln-in-zed-phase-4-ambient-and-team.md) | kiln-v1.x | r51 | editing a claimed path warns in the buffer; a teammate's required review given from a shared Zed workspace is mirrored into the owner's record |

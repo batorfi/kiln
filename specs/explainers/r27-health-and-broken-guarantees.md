@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Workshop |
-| **Release** | `kiln-v1` — position 17 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 17 of 42 in the committed order |
 | **Depends on** | [r19 — Web front door, read-only](./r19-web-front-door-read-only.md), [r15 — The record](./r15-the-record.md) |
 | **Unlocks** | [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md) |
 | **PRD requirements** | OBS-1 (core), OBS-3, OBS-5, OBS-6 |

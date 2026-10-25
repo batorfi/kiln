@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Knowledge |
-| **Release** | `kiln-v1` — position 14 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 14 of 42 in the committed order |
 | **Depends on** | [r23 — The factory knowledge base](./r23-the-factory-knowledge-base.md) |
 | **Unlocks** | [r30 — Existing codebases, part 1: profile and full scan](./r30-existing-codebases-part-1-profile-and-full-scan.md), [r44 — KILN in Zed, phase 1](./r44-kiln-in-zed-phase-1.md), [r38 — Team space, part 1](./r38-team-space-part-1.md), [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md) |
 | **PRD requirements** | KNOW-1 (workshop), 5, 6 |

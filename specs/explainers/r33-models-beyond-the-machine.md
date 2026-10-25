@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | kiln-v1.x |
-| **Release** | `kiln-v1.x` — position 28 of 41 in the committed order |
+| **Release** | `kiln-v1.x` — position 28 of 42 in the committed order |
 | **Depends on** | [r45 — Remote judges (judges-only hybrid)](./r45-remote-judges.md) |
 | **Unlocks** | — |
 | **PRD requirements** | MOD-1 (remote), MOD-2…5, HITL-3, CFG-6 (remote) |

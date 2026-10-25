@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Durable core |
-| **Release** | `kiln-v1` — position 3 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 3 of 42 in the committed order |
 | **Depends on** | [r12 — Foundations reset](./r12-foundations-reset.md), [r42 — Spike: completing a waiting task from outside](./r42-spike-completing-a-waiting-task-from-outside.md) |
 | **Unlocks** | [r14 — Gates as data, walked headless](./r14-gates-as-data-walked-headless.md), [r16 — Real local workers](./r16-real-local-workers.md) |
 | **PRD requirements** | CORE-1…5, CORE-7 (store), LANE-1 |
@@ -45,7 +45,7 @@ This row builds the durable heart of a factory on Pi Durable: the task graph tha
 | CORE-4 | Restart resumes every task from its last checkpoint; a waiting gate resumes as waiting; a half-done step never commits its result. | Must |
 | CORE-5 | Exactly-once commands and moves via idempotency keys. | Must |
 | CORE-7 | **One store per factory.** A closed feature's conversations and checkpoints are exported to a checksummed **feature archive** beside the store (never in git), recorded by `feature.archived` with its hash, and compacted out of the live store; archives move with the factory; kept forever unless an Operator sets an age-out (`transcript.aged_out`). The record is never archived, aged out or (in `kiln-v1`) segmented; r15 measures its size and rebuild time. | Must |
-| LANE-1 | **Lane task** per factory: at most one running generation; holds resident model, hold flag (Design, Code review, Verification), swap count; survives restarts. | Must |
+| LANE-1 | **Lane task** per factory: at most one running generation; holds resident model, hold flag (Architecture, Code review, Verification), swap count; survives restarts. | Must |
 
 ## How it is proven
 

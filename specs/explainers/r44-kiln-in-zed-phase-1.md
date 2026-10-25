@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Editor |
-| **Release** | `kiln-v1` — position 22 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 22 of 42 in the committed order |
 | **Depends on** | [r20 — Gates on the web](./r20-gates-on-the-web.md), [r24 — Implementation knowledge and the workshop wiki](./r24-implementation-knowledge-and-the-workshop-wiki.md), [r43 — Explore space](./r43-explore-space.md) |
 | **Unlocks** | [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md) |
 | **PRD requirements** | EDIT-1, EDIT-2, EDIT-3 |

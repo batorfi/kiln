@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Front door |
-| **Release** | `kiln-v1` — position 12 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 12 of 42 in the committed order |
 | **Depends on** | [r20 — Gates on the web](./r20-gates-on-the-web.md) |
 | **Unlocks** | [r28 — First run](./r28-first-run.md) |
 | **PRD requirements** | DIR-7 |

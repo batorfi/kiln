@@ -8,9 +8,9 @@
 | | |
 |---|---|
 | **Phase** | kiln-v1.x |
-| **Release** | `kiln-v1.x` — position 30 of 41 in the committed order |
+| **Release** | `kiln-v1.x` — position 30 of 42 in the committed order |
 | **Depends on** | [r34 — The bench, part 1: notebook and research](./r34-the-bench-part-1-notebook-and-research.md) |
-| **Unlocks** | [r48 — Explore: readiness](./r48-explore-readiness.md), [r40 — Existing codebases, the rest](./r40-existing-codebases-the-rest.md), [r41 — New codebases, the rest](./r41-new-codebases-the-rest.md) |
+| **Unlocks** | [r53 — The Feed](./r53-the-feed.md), [r48 — Explore: readiness](./r48-explore-readiness.md), [r40 — Existing codebases, the rest](./r40-existing-codebases-the-rest.md), [r41 — New codebases, the rest](./r41-new-codebases-the-rest.md) |
 | **PRD requirements** | BENCH-5, 6, 8, 9, 10–12 |
 | **Proven when** | a spike's report becomes evidence on a candidate shown at the Roadmap gate; spike code never merges |
 
@@ -37,7 +37,7 @@ Measured beats guessed. Spikes let engineers and agents try things in throwaway 
 | ID | Requirement | Priority |
 |---|---|---|
 | BENCH-5 | **Spikes**: worktree on a `spike/` branch, question and time box, engineer and/or agent, risky actions held; **no pull request to `main` from a spike branch**; archived on conclusion. | Should |
-| BENCH-6 | **Spike report** with spike-measured results; *propose as a feature* seeds a roadmap entry and its Concept or Design brief. | Should |
+| BENCH-6 | **Spike report** with spike-measured results; *propose as a feature* seeds a roadmap entry and its Concept or Architecture brief. | Should |
 | BENCH-8 | **Links to gates**, gate-time research suggestions, and focus mode (only judged gates and policy stops interrupt). | Should |
 | BENCH-9 | **In a team**: research claims, sharing bench output by choice, handing a spike to a teammate. | Should |
 | BENCH-10 | **Candidate list** per factory: candidates from notes, research and spike reports, links kept; editable by deciders and Curators; proposable to the team roadmap with evidence. | Should |
@@ -69,4 +69,4 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 
 ---
 
-← [r34 — The bench, part 1: notebook and research](./r34-the-bench-part-1-notebook-and-research.md) · [index](./README.md) · [r36 — Observability in full](./r36-observability-in-full.md) →
+← [r34 — The bench, part 1: notebook and research](./r34-the-bench-part-1-notebook-and-research.md) · [index](./README.md) · [r53 — The Feed](./r53-the-feed.md) →
