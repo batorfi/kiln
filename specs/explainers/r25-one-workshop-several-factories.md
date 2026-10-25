@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Workshop |
-| **Release** | `kiln-v1` — position 15 of 42 in the committed order |
+| **Release** | `kiln-v1` — position 15 of 43 in the committed order |
 | **Depends on** | [r20 — Gates on the web](./r20-gates-on-the-web.md) |
 | **Unlocks** | [r26 — Agents and flows](./r26-agents-and-flows.md), [r38 — Team space, part 1](./r38-team-space-part-1.md) |
 | **PRD requirements** | HOST-1, HOST-2 (in-process), LANE-4, WORK-6, PPL-1 (single user) |

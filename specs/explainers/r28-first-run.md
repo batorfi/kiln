@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Getting started |
-| **Release** | `kiln-v1` — position 18 of 42 in the committed order |
+| **Release** | `kiln-v1` — position 19 of 43 in the committed order |
 | **Depends on** | [r17 — Configuration as files](./r17-configuration-as-files.md), [r22 — Shaping the roadmap together](./r22-shaping-the-roadmap-together.md), [r23 — The factory knowledge base](./r23-the-factory-knowledge-base.md) |
 | **Unlocks** | [r29 — New codebases](./r29-new-codebases.md), [r30 — Existing codebases, part 1: profile and full scan](./r30-existing-codebases-part-1-profile-and-full-scan.md) |
 | **PRD requirements** | SETUP-1…11 |
@@ -77,4 +77,4 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 
 ---
 
-← [r27 — Health and broken guarantees](./r27-health-and-broken-guarantees.md) · [index](./README.md) · [r29 — New codebases](./r29-new-codebases.md) →
+← [r53 — The Feed](./r53-the-feed.md) · [index](./README.md) · [r29 — New codebases](./r29-new-codebases.md) →

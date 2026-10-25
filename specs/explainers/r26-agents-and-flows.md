@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Workshop |
-| **Release** | `kiln-v1` — position 16 of 42 in the committed order |
+| **Release** | `kiln-v1` — position 16 of 43 in the committed order |
 | **Depends on** | [r18 — The director](./r18-the-director.md), [r25 — One workshop, several factories](./r25-one-workshop-several-factories.md) |
 | **Unlocks** | [r29 — New codebases](./r29-new-codebases.md), [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md) |
 | **PRD requirements** | CFG-2, CFG-7 (try-runs), FLOW-4…9 |

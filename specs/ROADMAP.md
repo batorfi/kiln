@@ -2,7 +2,7 @@
 
 > **Admitted.** **human@batorfi** approved this program at the **Roadmap gate** (internal id `gate0`) on
 > **2026-10-22T12:20:22Z**, as proposed — written from scratch on 2026-10-20 and revised on 2026-10-21 (decisions, team
-> space, r42) and 2026-10-22 (r43–r52: explore, Zed, remote judges) and 2026-10-25 (r53: the Feed, added at human@batorfi's request, queued until the next Roadmap gate) from the PRD
+> space, r42) and 2026-10-22 (r43–r52: explore, Zed, remote judges) and 2026-10-25 (r53 the Feed, in `kiln-v1`, and r54 its remainder, in `kiln-v1.x` — added at human@batorfi's request, queued until the next Roadmap gate) from the PRD
 > ([`docs/prd/kiln-prd.md`](../docs/prd/kiln-prd.md)) and the concept set in [`docs/concepts/`](../docs/concepts). **r12 is the
 > admitted next row.** Every row stays `queued` until its own first gate opens; the Roadmap gate re-opens after every merged
 > or abandoned feature, where the program can be revised with **approve / revise / reject / edit-rows / add-row / drop-row**.
@@ -248,7 +248,8 @@
     "r31",
     "r39",
     "r43",
-    "r44"
+    "r44",
+    "r53"
    ],
    "status": "queued"
   },
@@ -379,9 +380,20 @@
   },
   {
    "id": "r53",
-   "short": "The Feed (kiln-v1.x) — free-form intake of notes, links, screenshots, files, voice notes, tickets and folders, kept untouched; a labelled planner draft proposes destinations from a closed list; a person routes, takes back, or keeps it; every use shows 'from your feed'; share-to-team and a watched inbox are opt-in",
+   "short": "The Feed — free-form intake of notes, links, screenshots, files, voice notes, tickets and folders, kept untouched; a labelled planner draft proposes destinations from a closed list (only those that exist in the build: roadmap input, gate evidence, knowledge page, question for a step, suggestions, not now); a person routes or takes it back; every use shows 'from your feed'",
    "deps": [
-    "r35"
+    "r22",
+    "r24"
+   ],
+   "status": "queued"
+  },
+  {
+   "id": "r54",
+   "short": "The Feed, the rest (kiln-v1.x) — the destinations the bench provides (keep as a note in the notebook, feature candidates), share a single item to the team, and the opt-in watched inbox folder with capture from other surfaces",
+   "deps": [
+    "r53",
+    "r35",
+    "r39"
    ],
    "status": "queued"
   }
@@ -404,6 +416,7 @@
   "r25",
   "r26",
   "r27",
+  "r53",
   "r28",
   "r29",
   "r30",
@@ -417,7 +430,7 @@
   "r33",
   "r34",
   "r35",
-  "r53",
+  "r54",
   "r36",
   "r37",
   "r46",
@@ -466,6 +479,7 @@ is in [`explainers/`](./explainers/README.md).*
 | r25 | Workshop | **One workshop, several factories** | r20 | HOST-1, HOST-2 (in-process), LANE-4, WORK-6, PPL-1 (single user) | three factories on one host share the model pool; one Needs you across them |
 | r26 | Workshop | **Agents and flows** | r18, r25 | CFG-2, CFG-7 (try-runs), FLOW-4…9 | an added gate defined, checked, tried on a past feature, and chosen for one feature at the Roadmap gate |
 | r27 | Workshop | **Health and broken guarantees** | r19, r15 | OBS-1 (core), OBS-3, OBS-5, OBS-6 | an injected broken guarantee is critical and recorded; a silent watcher shows *unknown*, never healthy |
+| r53 | Workshop | **The Feed** | r22, r24 | FEED-1…5 | an item fed as a screenshot and a note is stored untouched, sorted into drafted destinations (only those this build has), routed by a person, and its trail shows *from your feed*; nothing is decided by feeding, and a routed item can be taken back |
 | r28 | Getting started | **First run** | r17, r22, r23 | SETUP-1…11 | from install to a first Roadmap gate in under an hour on a fresh machine, nothing leaving it |
 | r29 | Getting started | **New codebases** | r26, r28 | GREEN-1…5 | an empty repository reaches a merged walking skeleton that builds and passes from a clean clone |
 | r30 | Getting started | **Existing codebases, part 1: profile and full scan** | r24, r28 | BROWN-1, BROWN-11 | a full scan of this repository writes module pages, a coverage report and open questions; a crash mid-scan resumes |
@@ -474,11 +488,12 @@ is in [`explainers/`](./explainers/README.md).*
 | r31 | Getting started | **Existing codebases, part 2: baseline, territory, process** | r30, r21 | BROWN-2, 3, 5, 8 | a feature outside its territory is flagged at Code review; pre-existing failures never block on their own |
 | r38 | Team | **Team space, part 1** | r24, r25 | TEAM-1, 2, 3, 8 | a team roadmap change takes effect only when the quorum has signed |
 | r39 | Team | **Team space, part 2** | r38, r31 | TEAM-4…7, HITL-4 | overlapping claims surface at the Work plan gate; a required teammate review conditions *approve*; the Merge gate uses the code host's queue |
-| r32 | Release | **Cut the kiln-v1 release** | r21, r24, r26, r27, r29, r31, r39, r43, r44 | §3.1 goals, M14 | a newcomer installs KILN, runs first setup on a real repository and decides its first Roadmap gate in under an hour |
+| r32 | Release | **Cut the kiln-v1 release** | r21, r24, r26, r27, r29, r31, r39, r43, r44, r53 | §3.1 goals, M14 | a newcomer installs KILN, runs first setup on a real repository and decides its first Roadmap gate in under an hour |
 | r45 | kiln-v1.x | **Remote judges (judges-only hybrid)** | r32 | MOD-6, MOD-1 (remote), HITL-3 | a code reviewer runs on a pinned remote model; a provider outage makes the judged step wait; the egress audit lists each request with model served, provider and cost |
 | r33 | kiln-v1.x | **Models beyond the machine** | r45 | MOD-1 (remote), MOD-2…5, HITL-3, CFG-6 (remote) | a hybrid factory's cloud judge sees only what policy allows; a local-only factory reaches nothing beyond loopback |
 | r34 | kiln-v1.x | **The bench, part 1: notebook and research** | r32 | BENCH-1…4, BENCH-7 | a notebook entry promoted to knowledge keeps its origin; research results are cited |
 | r35 | kiln-v1.x | **The bench, part 2: spikes and candidates** | r34 | BENCH-5, 6, 8, 9, 10–12 | a spike's report becomes evidence on a candidate shown at the Roadmap gate; spike code never merges |
+| r54 | kiln-v1.x | **The Feed, the rest** | r53, r35, r39 | FEED-6, 7 | a note fed from the editor lands in the notebook labelled *fed*; one item shared to the team changes no team artifact by itself; a watched folder is off until turned on and listed in *Changes* |
 | r36 | kiln-v1.x | **Observability in full** | r32 | OBS-2, OBS-4, EVT-6, GATE-7 | one trace per feature; insights with counts and sample sizes; time travel to any moment |
 | r37 | kiln-v1.x | **Factories anywhere** | r32 | HOST-2 (separate), HOST-3…7, WEB-2 (network), CFG-5, TEAM-9 | a factory moves between hosts with handover; a network failure approves nothing |
 | r46 | kiln-v1.x | **Explore: as-is specifications** | r32 | EXPL-6, EXPL-7 | a module's as-is specification cites every requirement to code; a person confirms or corrects each; characterization-test proposals pin the confirmed ones |
@@ -490,7 +505,6 @@ is in [`explainers/`](./explainers/README.md).*
 | r50 | kiln-v1.x | **KILN in Zed, phase 2: the Agent Panel** | r32 | EDIT-4 | a full gate brief read in Zed's Agent Panel with every citation followed in the editor; a held risky action approved there |
 | r51 | kiln-v1.x | **KILN in Zed, phase 3: decide where the code is** | r50 | EDIT-5, EDIT-6 | a Code review gate decided in Zed on the full brief through the same intake as the browser; a stale move from Zed is refused |
 | r52 | kiln-v1.x | **KILN in Zed, phase 4: ambient and team** | r51 | EDIT-7, EDIT-8 | editing a claimed path warns in the buffer; a teammate's required review given from a shared Zed workspace is mirrored into the owner's record |
-| r53 | kiln-v1.x | **The Feed** | r35 | FEED-1…7 | an item fed as a screenshot and a note is stored untouched, sorted into drafted destinations, routed by a person, and its trail shows *from your feed*; nothing is decided by feeding, and a routed item can be taken back |
 
 All rows: status **queued**. One row = one feature through the ten gates; each row's Concept or Specification gate may
 still split it (`split+revise` at the Implementation gate exists for exactly this).
@@ -512,24 +526,24 @@ before anything is built on it.
 | **Director** | r18 | deterministic orchestration with a checked planner |
 | **Front door** | r19–r22 | a person runs a real feature from the browser — gates, briefs, delegation, steering, roadmap shaping |
 | **Knowledge** | r23–r24 | a factory wiki and implementation knowledge readable in Obsidian and Zed |
-| **Workshop** | r25–r27 | several factories, added gates and flows, health with broken-guarantee signals |
+| **Workshop** | r25–r27, r53 | several factories, added gates and flows, health with broken-guarantee signals, and the Feed — a free-form intake a person sorts |
 | **Getting started** | r28–r31 | first run, new codebases, existing codebases with a full scan |
 | **Explore and editor** | r43, r44 | exploring a codebase before adopting the factory; KILN in Zed — links, tasks, vaults and a read-only MCP server |
 | **Team** | r38–r39 | a small team of personal workshops sharing one codebase through a team space — roadmap, claims, reviews, merging |
 | **Release** | r32 | **`kiln-v1`** |
-| **kiln-v1.x** | r45, r33–r37, r46–r49, r40–r41, r50–r53 | remote judges first, then models beyond the machine, the bench, full observability, factories anywhere (with shared hosts), the rest of Explore, brownfield and greenfield, KILN in Zed phases 2–4, and the Feed |
+| **kiln-v1.x** | r45, r33–r37, r46–r49, r40–r41, r50–r52, r54 | remote judges first, then models beyond the machine, the bench, full observability, factories anywhere (with shared hosts), the rest of Explore, brownfield and greenfield, KILN in Zed phases 2–4, and the rest of the Feed |
 
-**The `kiln-v1` line.** r12–r32 (with r42, r38, r39, r43 and r44) deliver the PRD's definition of `kiln-v1`: M0–M8 and **M12 (the team
+**The `kiln-v1` line.** r12–r32 (with r42, r38, r39, r43, r44 and r53) deliver the PRD's definition of `kiln-v1`: M0–M8 and **M12 (the team
 space)** plus the *Must* items of M9, M15 and M16, and M14's release. M12 joined `kiln-v1` on 2026-10-21, when a **small
 team** became the primary user (`user-experience.md` decision 23); shared hosts (TEAM-9) stay with factories anywhere in
-`kiln-v1.x`, and team bench work (BENCH-9) with the bench. The release depends on every `kiln-v1` row (r21, r24, r26, r27, r29, r31, r39, r43, r44 and, through them, the rest), matching
+`kiln-v1.x`, and team bench work (BENCH-9) with the bench. The release depends on every `kiln-v1` row (r21, r24, r26, r27, r29, r31, r39, r43, r44, r53 and, through them, the rest), matching
 PRD M14. r43 (the explore space) and r44 (KILN in Zed, phase 1) joined `kiln-v1` on 2026-10-22 as the minimal parts of
-the Explore and editor proposals.
+the Explore and editor proposals. r53 (the Feed) joined `kiln-v1` on 2026-10-25; the destinations that need the bench, sharing and the watched inbox (FEED-6, 7) follow in r54.
 
-**After `kiln-v1`.** r45, r33–r37, r46–r53, r40 and r41 follow as `kiln-v1.x`; **r45 (remote judges) comes first**, and r33
+**After `kiln-v1`.** r45, r33–r37, r46–r52, r54, r40 and r41 follow as `kiln-v1.x`; **r45 (remote judges) comes first**, and r33
 builds on it. Each depends only on the release (or on its own earlier part), so their
 order can be reshaped freely at later Roadmap gates without touching anything built before. r40 and r41 wait for the bench
-(r35) because their evidence comes from research and spikes. r53 (the Feed) also waits for the bench: its notes land in the notebook (r34) and its feature candidates in the candidate list (r35).
+(r35) because their evidence comes from research and spikes. r54 (the rest of the Feed) also waits for the bench: kept notes land in the notebook (r34) and feature candidates in the candidate list (r35); until then the Feed (r53) offers only the destinations that exist.
 
 ## Decisions needed before rows fire
 

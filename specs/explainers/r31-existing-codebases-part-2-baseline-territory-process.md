@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Getting started |
-| **Release** | `kiln-v1` — position 23 of 42 in the committed order |
+| **Release** | `kiln-v1` — position 24 of 43 in the committed order |
 | **Depends on** | [r30 — Existing codebases, part 1: profile and full scan](./r30-existing-codebases-part-1-profile-and-full-scan.md), [r21 — Stepping in](./r21-stepping-in.md) |
 | **Unlocks** | [r39 — Team space, part 2](./r39-team-space-part-2.md), [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md), [r40 — Existing codebases, the rest](./r40-existing-codebases-the-rest.md) |
 | **PRD requirements** | BROWN-2, 3, 5, 8 |

@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Durable core |
-| **Release** | `kiln-v1` — position 3 of 42 in the committed order |
+| **Release** | `kiln-v1` — position 3 of 43 in the committed order |
 | **Depends on** | [r12 — Foundations reset](./r12-foundations-reset.md), [r42 — Spike: completing a waiting task from outside](./r42-spike-completing-a-waiting-task-from-outside.md) |
 | **Unlocks** | [r14 — Gates as data, walked headless](./r14-gates-as-data-walked-headless.md), [r16 — Real local workers](./r16-real-local-workers.md) |
 | **PRD requirements** | CORE-1…5, CORE-7 (store), LANE-1 |

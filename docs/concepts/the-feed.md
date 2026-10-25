@@ -256,10 +256,12 @@ The PRD has FEED-1 to FEED-4 (§6.24); this concept proposes three more.
 
 ## 18. Where it lands in the program
 
-It is not part of `kiln-v1`. It needs the web front door (the screens), the notebook and candidate list from the bench (two of
-its destinations), the planner step and the model pool (sorting), and the record's event store. The natural placement is **with or
-just after the bench** — a *Should*-priority row whose scope can be cut to capture + keep as a note + routing to the roadmap
-input and the notebook, with the other destinations added one by one. Building it is admitted at the Roadmap gate.
+It is part of `kiln-v1` (decided 2026-10-25), as roadmap row **r53**, after the front door and the factory knowledge it routes into
+(r22, r24). Its Musts are FEED-1…5: capture, drafted destinations, routing by a person, the trail and take-back. In `kiln-v1` the
+planner offers only the destinations the build has — roadmap input, gate evidence, knowledge page, question for a step,
+suggestions to the constitution, charter and design system, and *not now*. **Row r54** (`kiln-v1.x`, after the bench) adds the
+destinations that need it — *keep as a note* in the notebook and *feature candidate* — plus sharing a single item to the team and
+the watched inbox (FEED-6, 7). Both rows are admitted at the Roadmap gate; the program re-opens there to take them.
 
 ## 19. Open questions
 

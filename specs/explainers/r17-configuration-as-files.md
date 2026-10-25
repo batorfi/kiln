@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Workers |
-| **Release** | `kiln-v1` — position 7 of 42 in the committed order |
+| **Release** | `kiln-v1` — position 7 of 43 in the committed order |
 | **Depends on** | [r16 — Real local workers](./r16-real-local-workers.md) |
 | **Unlocks** | [r18 — The director](./r18-the-director.md), [r28 — First run](./r28-first-run.md) |
 | **PRD requirements** | CFG-1, 3, 4, 6 (local), 7 (roles), 8, MOD-1 (local) |

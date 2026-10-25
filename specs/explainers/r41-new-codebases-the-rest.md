@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | kiln-v1.x |
-| **Release** | `kiln-v1.x` — position 39 of 42 in the committed order |
+| **Release** | `kiln-v1.x` — position 40 of 43 in the committed order |
 | **Depends on** | [r29 — New codebases](./r29-new-codebases.md), [r35 — The bench, part 2: spikes and candidates](./r35-the-bench-part-2-spikes-and-candidates.md), [r39 — Team space, part 2](./r39-team-space-part-2.md) |
 | **Unlocks** | — |
 | **PRD requirements** | GREEN-6…9 |

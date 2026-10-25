@@ -515,15 +515,23 @@ row("r52",
     [("KILN in Zed §5 (D5, D8)", C + "zed-integration.md"), ("PRD EDIT-7, EDIT-8", P)])
 
 row("r53",
-    "The Feed is one place to drop anything half-formed: a note, a link, a screenshot, a file, a voice note, a ticket, a folder. The original is kept untouched; a labelled planner draft suggests where it could go; a person decides, and can take it back.",
-    ["one global capture action (web, `kiln feed`, editor) that stores the original untouched",
+    "The Feed is one place to drop anything half-formed: a note, a link, a screenshot, a file, a voice note, a ticket, a folder. The original is kept untouched; a labelled planner draft suggests where it could go; a person decides, and can take it back. In `kiln-v1` it offers only the destinations the build has.",
+    ["one global capture action (web, `kiln feed`) that stores the original untouched",
      "deterministic intake and matching, then a labelled planner draft over a closed list of destinations, with no preselection",
-     "routing as a recorded choice by a person, `feed.unrouted` to take it back, and notes kept in the private notebook labelled *fed*",
-     "a *from your feed* trail on every use, and the original listing where it went",
-     "opt-in share to the team for a single item, and an opt-in watched inbox folder"],
-    ["anything decided by feeding: a fed item is evidence or a wish, never a requirement, approval or move"],
+     "routing as a recorded choice by a person, and `feed.unrouted` to take it back",
+     "a *from your feed* trail on every use, and the original listing where it went"],
+    ["the notebook and feature-candidate destinations (r54, after the bench)", "sharing a single item to the team and the watched inbox folder (r54)"],
     ["**I** — the planner proposes, a person routes", "**VII** — every route and take-back is recorded", "**VIII** — personal by default, local first"],
-    [("The Feed", C + "the-feed.md"), ("PRD FEED-1…7", P)])
+    [("The Feed", C + "the-feed.md"), ("PRD FEED-1…5", P)])
+
+row("r54",
+    "The rest of the Feed: once the bench exists, a fed item can be kept as a note in the private notebook or become a feature candidate; one item can be shared to the team on purpose; and a watched folder can feed items in when the person turns it on.",
+    ["keep as a note (notebook, labelled *fed*) and feature candidate as destinations",
+     "share a single item to the team as an explicit act that changes no team artifact by itself",
+     "an opt-in watched inbox folder and capture from other surfaces, listed in *Models & policy → Changes*"],
+    ["—"],
+    ["**XII** — sharing is an explicit act", "**VIII** — off until turned on"],
+    [("The Feed", C + "the-feed.md"), ("PRD FEED-6, FEED-7", P)])
 
 # ---- render -------------------------------------------------------------------------------------
 missing = [r for r in ORDER if r not in N]

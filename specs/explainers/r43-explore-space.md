@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Explore |
-| **Release** | `kiln-v1` — position 21 of 42 in the committed order |
+| **Release** | `kiln-v1` — position 22 of 43 in the committed order |
 | **Depends on** | [r30 — Existing codebases, part 1: profile and full scan](./r30-existing-codebases-part-1-profile-and-full-scan.md) |
 | **Unlocks** | [r44 — KILN in Zed, phase 1](./r44-kiln-in-zed-phase-1.md), [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md) |
 | **PRD requirements** | EXPL-1, EXPL-2 (core), EXPL-3 (ask, trace) |

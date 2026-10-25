@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Workshop |
-| **Release** | `kiln-v1` — position 17 of 42 in the committed order |
+| **Release** | `kiln-v1` — position 17 of 43 in the committed order |
 | **Depends on** | [r19 — Web front door, read-only](./r19-web-front-door-read-only.md), [r15 — The record](./r15-the-record.md) |
 | **Unlocks** | [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md) |
 | **PRD requirements** | OBS-1 (core), OBS-3, OBS-5, OBS-6 |
@@ -63,4 +63,4 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 
 ---
 
-← [r26 — Agents and flows](./r26-agents-and-flows.md) · [index](./README.md) · [r28 — First run](./r28-first-run.md) →
+← [r26 — Agents and flows](./r26-agents-and-flows.md) · [index](./README.md) · [r53 — The Feed](./r53-the-feed.md) →

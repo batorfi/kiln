@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Getting started |
-| **Release** | `kiln-v1` — position 19 of 42 in the committed order |
+| **Release** | `kiln-v1` — position 20 of 43 in the committed order |
 | **Depends on** | [r26 — Agents and flows](./r26-agents-and-flows.md), [r28 — First run](./r28-first-run.md) |
 | **Unlocks** | [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md), [r41 — New codebases, the rest](./r41-new-codebases-the-rest.md) |
 | **PRD requirements** | GREEN-1…5 |

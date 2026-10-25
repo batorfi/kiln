@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Director |
-| **Release** | `kiln-v1` — position 8 of 42 in the committed order |
+| **Release** | `kiln-v1` — position 8 of 43 in the committed order |
 | **Depends on** | [r14 — Gates as data, walked headless](./r14-gates-as-data-walked-headless.md), [r17 — Configuration as files](./r17-configuration-as-files.md) |
 | **Unlocks** | [r20 — Gates on the web](./r20-gates-on-the-web.md), [r26 — Agents and flows](./r26-agents-and-flows.md) |
 | **PRD requirements** | DIR-1…5 |

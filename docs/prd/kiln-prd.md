@@ -475,11 +475,11 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 | ID | Requirement | Priority |
 |---|---|---|
-| FEED-1 | **Free-form intake**: one global action (web, `kiln feed`, editor) accepts a note, link, screenshot, file, voice note, ticket or folder with no required structure; the original is stored untouched in the record with time and source. | Should |
-| FEED-2 | **Drafted destinations**: a labelled planner step proposes where an item could go (feature candidate, roadmap input, gate evidence, knowledge page, question for a step, amendment suggestion, note) and what it found (overlap, matching ticket); no option is pre-selected. | Should |
+| FEED-1 | **Free-form intake**: one global action (web, `kiln feed`, editor) accepts a note, link, screenshot, file, voice note, ticket or folder with no required structure; the original is stored untouched in the record with time and source. | Must |
+| FEED-2 | **Drafted destinations**: a labelled planner step proposes where an item could go (feature candidate, roadmap input, gate evidence, knowledge page, question for a step, amendment suggestion, note) and what it found (overlap, matching ticket); no option is pre-selected. | Must |
 | FEED-3 | **Nothing is decided by feeding**: routing is a person's recorded choice; a fed item is evidence or a wish, never a requirement, approval or move; it never blocks a factory and never escalates or expires. | Must |
-| FEED-4 | **Trail**: every use of a fed item shows *from your feed* and links to the original; the original lists where it went. Sorting follows the workshop's egress policy; secrets are scanned on capture. | Should |
-| FEED-5 | **Take it back**: every reversible destination can be taken back (`feed.unrouted`), and the item returns to *waiting*. | Should |
+| FEED-4 | **Trail**: every use of a fed item shows *from your feed* and links to the original; the original lists where it went. Sorting follows the workshop's egress policy; secrets are scanned on capture. | Must |
+| FEED-5 | **Take it back**: every reversible destination can be taken back (`feed.unrouted`), and the item returns to *waiting*. | Must |
 | FEED-6 | **Share to the team** is an explicit act on a single item and never changes a team artifact by itself. | Could |
 | FEED-7 | **Watched inbox folder** and capture from other surfaces (editor, phone) are opt-in and listed in *Models & policy → Changes* when turned on. | Could |
 
@@ -640,10 +640,11 @@ Each milestone is a candidate roadmap row with its own gates. Every milestone en
 | **M16** | **New codebases** | start empty, product brief, constitution from the brief, technology decisions, walking skeleton on the foundation flow (the Musts, alongside M5–M8; research and spike evidence for decisions once M13 lands); then conventions enforcement, slices, growing into brownfield, team start | M3, M5, M7 | GREEN-1…9 |
 | **M17** | **Explore first** | the explore space with maps and ask and trace (the Musts, in `kiln-v1`); then as-is specifications, a discovered constitution, tours, archaeology, readiness and legacy languages | M7, M15 (full scan) | EXPL-1…10 |
 | **M18** | **Editor integration (Zed)** | deep links, tasks, vault projects and a read-only MCP server (the Musts, in `kiln-v1`); then the Agent Panel, deciding in Zed, watch and steer, a language server, team review | M5, M7 | EDIT-1…8 |
+| **M19** | **The Feed** | free-form intake, drafted destinations, routing with trail and take-back (the Musts, in `kiln-v1`, offering only the destinations the build has); then the notebook and candidate destinations, share to the team and the watched inbox | M7, M8 | FEED-1…7 |
 
-**`kiln-v1`** = M0–M8 and **M12 (the team space, without shared hosts)** plus the *Must* items of M9, M15, M16, **M17 and
-M18** — M12 joined on 2026-10-21, when a small team became the primary user; the Musts of M17 (the explore space) and M18
-(links, tasks, vaults, read-only MCP) joined on 2026-10-22. M10, M11 and M13 (and TEAM-9, shared hosts) can follow
+**`kiln-v1`** = M0–M8 and **M12 (the team space, without shared hosts)** plus the *Must* items of M9, M15, M16, **M17,
+M18 and M19** — M12 joined on 2026-10-21, when a small team became the primary user; the Musts of M17 (the explore space) and M18
+(links, tasks, vaults, read-only MCP) joined on 2026-10-22, and the Musts of M19 (the Feed) on 2026-10-25. M10, M11 and M13 (and TEAM-9, shared hosts) can follow
 as `kiln-v1.x` without changing anything built before them, because the single-machine, local-only workshop is their
 degenerate case.
 
@@ -668,7 +669,7 @@ From the vision, made measurable:
 | Pi Durable is experimental and moves | one seam; pinned versions; contract outlives API; RPC fallback driver |
 | External completion of a waiting task is not a published primitive | go/no-go spike before M1 (r42); upstream first, local decision table as the named fallback |
 | Local-model capability (tool calling, streaming) varies | per-model readiness probes; measured, recorded |
-| Scope: the concepts describe a lot | strict Must/Should; `kiln-v1` is M0–M8 and M12 plus the *Must* items of M9, M15, M16, M17, M18 — everything else is `kiln-v1.x` |
+| Scope: the concepts describe a lot | strict Must/Should; `kiln-v1` is M0–M8 and M12 plus the *Must* items of M9, M15, M16, M17, M18, M19 — everything else is `kiln-v1.x` |
 | Two products during the transition | `legacy/` frozen; no feature work there |
 | Security surface grows with servers and hosts | loopback default; network modes opt-in, behind M11 |
 | Teams collide on shared code | claims and overlap detection from the Work plan gate; protected paths; base drift at merge |

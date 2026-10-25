@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Team |
-| **Release** | `kiln-v1` — position 24 of 42 in the committed order |
+| **Release** | `kiln-v1` — position 25 of 43 in the committed order |
 | **Depends on** | [r24 — Implementation knowledge and the workshop wiki](./r24-implementation-knowledge-and-the-workshop-wiki.md), [r25 — One workshop, several factories](./r25-one-workshop-several-factories.md) |
 | **Unlocks** | [r39 — Team space, part 2](./r39-team-space-part-2.md) |
 | **PRD requirements** | TEAM-1, 2, 3, 8 |

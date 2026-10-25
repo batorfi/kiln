@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Getting started |
-| **Release** | `kiln-v1` — position 20 of 42 in the committed order |
+| **Release** | `kiln-v1` — position 21 of 43 in the committed order |
 | **Depends on** | [r24 — Implementation knowledge and the workshop wiki](./r24-implementation-knowledge-and-the-workshop-wiki.md), [r28 — First run](./r28-first-run.md) |
 | **Unlocks** | [r43 — Explore space](./r43-explore-space.md), [r31 — Existing codebases, part 2: baseline, territory, process](./r31-existing-codebases-part-2-baseline-territory-process.md) |
 | **PRD requirements** | BROWN-1, BROWN-11 |

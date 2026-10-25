@@ -8,9 +8,9 @@
 | | |
 |---|---|
 | **Phase** | kiln-v1.x |
-| **Release** | `kiln-v1.x` — position 30 of 42 in the committed order |
+| **Release** | `kiln-v1.x` — position 31 of 43 in the committed order |
 | **Depends on** | [r34 — The bench, part 1: notebook and research](./r34-the-bench-part-1-notebook-and-research.md) |
-| **Unlocks** | [r53 — The Feed](./r53-the-feed.md), [r48 — Explore: readiness](./r48-explore-readiness.md), [r40 — Existing codebases, the rest](./r40-existing-codebases-the-rest.md), [r41 — New codebases, the rest](./r41-new-codebases-the-rest.md) |
+| **Unlocks** | [r54 — The Feed, the rest](./r54-the-feed-the-rest.md), [r48 — Explore: readiness](./r48-explore-readiness.md), [r40 — Existing codebases, the rest](./r40-existing-codebases-the-rest.md), [r41 — New codebases, the rest](./r41-new-codebases-the-rest.md) |
 | **PRD requirements** | BENCH-5, 6, 8, 9, 10–12 |
 | **Proven when** | a spike's report becomes evidence on a candidate shown at the Roadmap gate; spike code never merges |
 
@@ -69,4 +69,4 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 
 ---
 
-← [r34 — The bench, part 1: notebook and research](./r34-the-bench-part-1-notebook-and-research.md) · [index](./README.md) · [r53 — The Feed](./r53-the-feed.md) →
+← [r34 — The bench, part 1: notebook and research](./r34-the-bench-part-1-notebook-and-research.md) · [index](./README.md) · [r54 — The Feed, the rest](./r54-the-feed-the-rest.md) →

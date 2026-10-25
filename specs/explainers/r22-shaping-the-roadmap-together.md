@@ -8,9 +8,9 @@
 | | |
 |---|---|
 | **Phase** | Front door |
-| **Release** | `kiln-v1` — position 12 of 42 in the committed order |
+| **Release** | `kiln-v1` — position 12 of 43 in the committed order |
 | **Depends on** | [r20 — Gates on the web](./r20-gates-on-the-web.md) |
-| **Unlocks** | [r28 — First run](./r28-first-run.md) |
+| **Unlocks** | [r53 — The Feed](./r53-the-feed.md), [r28 — First run](./r28-first-run.md) |
 | **PRD requirements** | DIR-7 |
 | **Proven when** | a roadmap shaped from inputs, conversation and pinned edits; approve admits exactly the version read |
 

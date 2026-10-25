@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Foundation |
-| **Release** | `kiln-v1` — position 1 of 42 in the committed order |
+| **Release** | `kiln-v1` — position 1 of 43 in the committed order |
 | **Depends on** | — |
 | **Unlocks** | [r42 — Spike: completing a waiting task from outside](./r42-spike-completing-a-waiting-task-from-outside.md), [r13 — Durable core and the gate contract](./r13-durable-core-and-the-gate-contract.md) |
 | **PRD requirements** | GATE-1/2, WORK-2, LANE-2, EVT-5 (validators) |

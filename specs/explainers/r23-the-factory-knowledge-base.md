@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Knowledge |
-| **Release** | `kiln-v1` — position 13 of 42 in the committed order |
+| **Release** | `kiln-v1` — position 13 of 43 in the committed order |
 | **Depends on** | [r20 — Gates on the web](./r20-gates-on-the-web.md) |
 | **Unlocks** | [r24 — Implementation knowledge and the workshop wiki](./r24-implementation-knowledge-and-the-workshop-wiki.md), [r28 — First run](./r28-first-run.md) |
 | **PRD requirements** | KNOW-1 (factory), 2, 3, 4, BRIEF-5 |

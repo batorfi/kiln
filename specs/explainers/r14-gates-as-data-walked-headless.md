@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Durable core |
-| **Release** | `kiln-v1` — position 4 of 42 in the committed order |
+| **Release** | `kiln-v1` — position 4 of 43 in the committed order |
 | **Depends on** | [r13 — Durable core and the gate contract](./r13-durable-core-and-the-gate-contract.md) |
 | **Unlocks** | [r15 — The record](./r15-the-record.md), [r18 — The director](./r18-the-director.md) |
 | **PRD requirements** | GATE-3/4/5/6, FLOW-1/2/3, FLOW-7 (default) |
