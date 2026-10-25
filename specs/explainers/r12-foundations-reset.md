@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Foundation |
-| **Release** | `kiln-v1` — position 1 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 1 of 43 in the committed order |
 | **Depends on** | — |
 | **Unlocks** | [r42 — Spike: completing a waiting task from outside](./r42-spike-completing-a-waiting-task-from-outside.md), [r13 — Durable core and the gate contract](./r13-durable-core-and-the-gate-contract.md) |
 | **PRD requirements** | GATE-1/2, WORK-2, LANE-2, EVT-5 (validators) |
@@ -38,7 +38,7 @@ The restart reorganises the repository around the new design without throwing aw
 
 | ID | Requirement | Priority |
 |---|---|---|
-| GATE-1 | The **default flow**: ten gates with plain names and one question each: **Roadmap gate**, Concept, Design, Specification, Work plan, **Implementation**, Code review, Verification, Documentation, **Merge**. Internal ids stay stable (`gate0`, `1-concept` … `9-pr`). | Must |
+| GATE-1 | The **default flow**: twelve gates with plain names and one question each: **Roadmap gate**, Concept, Architecture, **Experience design**, Specification, Work plan, **Implementation**, Code review, **UI review**, Verification, Documentation, **Merge**. Experience design and UI review carry a deterministic `applies_when` rule and are recorded as *not applicable* for features that do not touch the interface. Internal ids stay stable (`gate0`, `1-concept` … `9-pr`); the two experience gates are `2a-experience` and `6a-ui-review`. | Must |
 | GATE-2 | Each gate offers only its own moves (the existing move vocabulary), including the special cases: Implementation `approve · split+revise`; Code review `approve · revise · restart` (revise goes to the workers); Verification `approve · reject` with **2** automatic fix rounds; Merge `approve · reject`. | Must |
 | WORK-2 | **Tier map**: roles bound to models in one place; every judge role — architecture critic, code reviewer, verifier, and any judge on an added gate — binds only to the strongest model; a weaker binding fails closed (constitution v2.0.1, II: the Docs Synthesizer is no longer a judge). | Must |
 | LANE-2 | **Affinity scheduler** reused from the existing code: swap only on a genuine tier change; swaps are priced and recorded. | Must |

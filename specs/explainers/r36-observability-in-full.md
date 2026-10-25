@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | kiln-v1.x |
-| **Release** | `kiln-v1.x` — position 31 of 41 in the committed order |
+| **Release** | `kiln-v1.x` — position 33 of 43 in the committed order |
 | **Depends on** | [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md) |
 | **Unlocks** | — |
 | **PRD requirements** | OBS-2, OBS-4, EVT-6, GATE-7 |
@@ -63,4 +63,4 @@ Like every row, it walks the full flow — Concept to Merge — with its evidenc
 
 ---
 
-← [r35 — The bench, part 2: spikes and candidates](./r35-the-bench-part-2-spikes-and-candidates.md) · [index](./README.md) · [r37 — Factories anywhere](./r37-factories-anywhere.md) →
+← [r54 — The Feed, the rest](./r54-the-feed-the-rest.md) · [index](./README.md) · [r37 — Factories anywhere](./r37-factories-anywhere.md) →

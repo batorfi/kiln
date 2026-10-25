@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Durable core |
-| **Release** | `kiln-v1` — position 4 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 4 of 43 in the committed order |
 | **Depends on** | [r13 — Durable core and the gate contract](./r13-durable-core-and-the-gate-contract.md) |
 | **Unlocks** | [r15 — The record](./r15-the-record.md), [r18 — The director](./r18-the-director.md) |
 | **PRD requirements** | GATE-3/4/5/6, FLOW-1/2/3, FLOW-7 (default) |
@@ -37,12 +37,12 @@ The default flow — the Roadmap gate and nine feature gates — becomes data th
 
 | ID | Requirement | Priority |
 |---|---|---|
-| GATE-3 | Triage may skip Concept and Design for small features, recorded with its reasoning. | Must |
+| GATE-3 | Triage may skip Concept and Architecture for small features, recorded with its reasoning. | Must |
 | GATE-4 | The **unattended tail** may be armed only at the Specification gate, for Work plan → Documentation; merge excluded unless explicitly delegated; any judge's objection ends it. Auto-crossed gates are recorded as delegated, never as human. | Must |
 | GATE-5 | Corrective moves carry a note that becomes the next step's instruction. | Must |
 | GATE-6 | **Where moves lead** (`the-flow.md` §7, §11–12, accepted 2026-10-21): reject targets a fresh author at the same gate or an earlier gate named in the note — the roadmap at Concept and Merge — and a person may make a reject to an earlier gate at any time; Code review offers `approve · revise · restart`, `revise` going to the workers; every gate after a reject's target is **re-crossed**, its brief showing what changed, with no lighter confirmation; triage never skips Documentation; fix-round cap a factory setting (0–3, default 2). | Must |
 | FLOW-1 | **Gates as data**: the director executes a feature's flow from definitions, not a constant rail; the default flow ships as data. | Must |
-| FLOW-2 | **Anchors and invariants**: Roadmap gate first, Merge gate last, all built-in gates present in order; added gates only between built-in ones; skipping only as triage does today; nothing after Merge. | Must |
+| FLOW-2 | **Anchors and invariants**: Roadmap gate first, Merge gate last, all built-in gates present in order (Experience design and UI review apply conditionally and are recorded *not applicable* otherwise); added gates only between built-in ones; skipping only as triage does today; nothing after Merge. | Must |
 | FLOW-3 | **Move kinds**: a closed set (approve · revise · reject · restart · split+revise · mitigate) with team labels and rules (required note, `returns_to`, rounds); events record kind and label. | Must |
 | FLOW-7 | **`kiln check flow`**: all-or-nothing validation of anchors, placement, roles and judges, move kinds, `returns_to`, restart and mitigate prerequisites, arming points, required gates, cycles. | Must (default flow) / Should (added gates) |
 

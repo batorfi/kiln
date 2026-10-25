@@ -1,27 +1,27 @@
 <!doctype html><html><head><meta charset="utf-8"><title>KILN at a glance</title>
 <style>
 :root{
-  --bg:#F5F2EE; --surface:#FFFFFF; --s2:#FBFAF8; --ink:#1C1814; --ink-2:#3A332C; --muted:#756C62; --faint:#A39A90;
-  --line:#E6E0D8; --line-2:#EFEAE4;
-  --ember:#C2410C; --ember-2:#EA580C; --ember-soft:#FFF1E8; --ember-line:#F6C9AE;
-  --wait:#B45309; --wait-soft:#FEF6E7; --ok:#15803D; --ok-soft:#ECF8F0; --ok-line:#BFE3CB;
-  --info:#1D4ED8; --info-soft:#EEF3FE; --info-line:#C7D6FA;
-  --deleg:#6D28D9; --deleg-soft:#F4EFFD; --deleg-line:#D9C9F6;
-  --dark:#1A1714; --dark-2:#26211C; --dark-ink:#EDE7E0; --dark-muted:#9A9087;
-  --sans:-apple-system,"SF Pro Text","Inter","Helvetica Neue",Arial,sans-serif; --mono:"SF Mono",ui-monospace,Menlo,monospace;
+  --bg:#F4F1EA; --surface:#FFFFFF; --s2:#FAF8F3; --ink:#14201F; --ink-2:#2B3A38; --muted:#56625F; --faint:#8C9490;
+  --line:#DDD7CA; --line-2:#E8E3D8;
+  --ember:#0F766E; --ember-2:#0D9488; --ember-soft:#DCEEEA; --ember-line:#A9D3CC;
+  --wait:#8A4B04; --wait-soft:#FDF1D9; --ok:#276B2A; --ok-soft:#E8F3E4; --ok-line:#C6DFBD;
+  --info:#1F4FB8; --info-soft:#E2EAFB; --info-line:#BFD0F5;
+  --deleg:#5B33B0; --deleg-soft:#ECE5F9; --deleg-line:#CBBBEF;
+  --dark:#10201F; --dark-2:#1B3331; --dark-ink:#E9EFEC; --dark-muted:#9DB1AC;
+  --sans:"Inter",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;--serif:Charter,"Bitstream Charter","Iowan Old Style",Georgia,serif; --mono:ui-monospace,"DejaVu Sans Mono","SF Mono",Menlo,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.45;-webkit-font-smoothing:antialiased;width:2000px}
 .mono{font-family:var(--mono)}
 /* header */
 .hdr{background:var(--dark);color:var(--dark-ink);padding:44px 64px 40px;display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:center}
-.mark{width:104px;height:104px;background:url(../../../brand/kiln-mark.svg) center/contain no-repeat}
+.mark{width:104px;height:104px;background:url(../../../brand/kiln-mark-dark.svg) center/contain no-repeat}
 .hdr h1{font-size:54px;letter-spacing:.16em;font-weight:800;line-height:1}
-.hdr h1 span{letter-spacing:0;font-weight:500;font-size:30px;color:#FDBA74;margin-left:18px}
-.hdr .tag{font-size:21px;color:#D9D0C6;margin-top:12px;max-width:1500px}
+.hdr h1 span{letter-spacing:0;font-weight:500;font-size:30px;color:#2DD4BF;margin-left:18px}
+.hdr .tag{font-size:21px;color:#D2CCBD;margin-top:12px;max-width:1500px}
 .beliefs{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;padding:22px 64px;background:var(--dark-2)}
-.beliefs div{border:1px solid #3A322B;border-radius:12px;padding:12px 14px;color:var(--dark-ink);font-size:13px;line-height:1.35}
-.beliefs b{display:block;color:#FDBA74;font-size:14.5px;margin-bottom:3px}
+.beliefs div{border:1px solid #27403D;border-radius:12px;padding:12px 14px;color:var(--dark-ink);font-size:13px;line-height:1.35}
+.beliefs b{display:block;color:#2DD4BF;font-size:14.5px;margin-bottom:3px}
 /* sections */
 .sec{padding:34px 64px 0}
 .sh{display:flex;align-items:baseline;gap:14px;margin-bottom:16px}
@@ -31,19 +31,20 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14p
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 24px}
 .k{font-size:11.5px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--muted)}
 /* flow */
-.flow{display:grid;grid-template-columns:200px 22px repeat(4,1fr) 22px repeat(3,1fr) 22px repeat(2,1fr);gap:10px;align-items:stretch}
+.flow{display:grid;grid-template-columns:200px 22px repeat(5,1fr) 22px repeat(4,1fr) 22px repeat(2,1fr);gap:10px;align-items:stretch}
 .ph{font-size:12px;text-transform:uppercase;letter-spacing:.1em;font-weight:800;color:var(--muted);border-bottom:3px solid var(--line);padding-bottom:6px}
-.ph.c{border-color:#93B4F5}.ph.b{border-color:#F6C9AE}.ph.r{border-color:#BFE3CB}.ph.p{border-color:#FDBA74}
+.ph.c{border-color:#93B4F5}.ph.b{border-color:#A9D3CC}.ph.r{border-color:#C6DFBD}.ph.p{border-color:#2DD4BF}
 .g{border:1.5px solid var(--line);border-radius:12px;background:#fff;padding:12px 12px 11px;display:flex;flex-direction:column;gap:6px}
 .g .n{font-size:11.5px;font-weight:800;color:var(--faint)}
 .g h3{font-size:17px;line-height:1.15}
 .g .q{font-size:12.5px;color:var(--ink-2);line-height:1.35;flex:1}
 .g .j{font-size:11px;font-weight:800;color:#fff;background:var(--ink-2);border-radius:6px;padding:2px 7px;width:fit-content}
 .g.jd{border:2.5px solid var(--ink-2)}
+.g.ui{background:#ECE5F9}
 .g.rm{background:var(--ember-soft);border-color:var(--ember-line)}
 .g.rm h3{color:var(--ember)}
 .arr{display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:24px;font-weight:300}
-.bands{display:grid;grid-template-columns:200px 22px repeat(4,1fr) 22px repeat(3,1fr) 22px repeat(2,1fr);gap:10px;margin-top:10px;align-items:start}
+.bands{display:grid;grid-template-columns:200px 22px repeat(5,1fr) 22px repeat(4,1fr) 22px repeat(2,1fr);gap:10px;margin-top:10px;align-items:start}
 .band{border-radius:9px;font-size:12.5px;padding:7px 11px;font-weight:650}
 .band.tri{background:var(--s2);border:1.5px dashed var(--line);color:var(--muted)}
 .band.del{background:var(--deleg-soft);border:1.5px solid var(--deleg-line);color:var(--deleg)}
@@ -61,8 +62,8 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14p
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips span{font-size:12px;border:1px solid var(--line);border-radius:7px;padding:3px 8px;background:var(--s2)}
 .chips span b{font-weight:700}
-.l1{background:#FFF7F0;border-color:var(--ember-line)}.l2{background:#FFFBF5;border-color:#F3D9A6}
-.l3{background:var(--info-soft);border-color:var(--info-line)}.l4{background:#F7F5F2}.l5{background:var(--ok-soft);border-color:var(--ok-line)}
+.l1{background:#EAF5F2;border-color:var(--ember-line)}.l2{background:#F2F8F6;border-color:#EBCF98}
+.l3{background:var(--info-soft);border-color:var(--info-line)}.l4{background:#F6F3EC}.l5{background:var(--ok-soft);border-color:var(--ok-line)}
 .side3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
 .side3>div{border-radius:12px;padding:12px 14px;border:1.5px solid var(--line);background:#fff;font-size:12.5px}
 .side3 h4{font-size:14px;margin-bottom:4px}
@@ -109,12 +110,12 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14p
 .loop .ar{border:0;background:none;color:var(--faint);font-size:20px;padding:0}
 /* footer */
 .foot{margin-top:34px;background:var(--dark);color:var(--dark-ink);padding:26px 64px 30px;display:grid;grid-template-columns:1.4fr 1fr;gap:40px}
-.foot h3{font-size:14px;color:#FDBA74;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
+.foot h3{font-size:14px;color:#2DD4BF;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
 .nots{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.nots div{font-size:13px;color:#D9D0C6;border-left:3px solid #5A4C40;padding-left:10px}
+.nots div{font-size:13px;color:#D2CCBD;border-left:3px solid #4B635F;padding-left:10px}
 .nots b{color:#fff}
-.docs{font-family:var(--mono);font-size:12.5px;color:#BFB5AA;line-height:1.75;columns:2}
-.wm{color:#7A6F65;font-size:12px;margin-top:14px}
+.docs{font-family:var(--mono);font-size:12.5px;color:#B9CBC6;line-height:1.75;columns:2}
+.wm{color:#6F8581;font-size:12px;margin-top:14px}
 </style></head><body>
 
 <div class="hdr">
@@ -124,7 +125,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14p
 </div>
 <div class="beliefs">
   <div><b>Humans decide</b>no model approves its own work; nothing ships without a person</div>
-  <div><b>Independent judges</b>Design, Code review and Verification judged on the strongest model</div>
+  <div><b>Independent judges</b>Every judged gate (architecture, experience, code, UI, verification) judged on the strongest model</div>
   <div><b>Your models, your rules</b>local by default; private or cloud only by policy</div>
   <div><b>Durable</b>a crash interrupts work, never loses it — and never approves anything</div>
   <div><b>Explainable</b>every decision, swap and byte that left is in the record</div>
@@ -134,22 +135,24 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14p
 
 <!-- 1. PROCESS -->
 <div class="sec">
-  <div class="sh"><span class="no">1</span><h2>The process — from roadmap to merge</h2><p>The default flow: ten gates in four phases. Teams may add gates between them; none can be removed.</p></div>
+  <div class="sh"><span class="no">1</span><h2>The process — from roadmap to merge</h2><p>The default flow: twelve gates in four phases — two of them apply when a feature touches the interface. Teams may add gates between them; none can be removed.</p></div>
   <div class="card">
     <div class="flow">
       <div class="ph p">Program</div><div></div>
-      <div class="ph c" style="grid-column:span 4">Contract — what to build</div><div></div>
-      <div class="ph b" style="grid-column:span 3">Build and prove</div><div></div>
+      <div class="ph c" style="grid-column:span 5">Contract — what to build</div><div></div>
+      <div class="ph b" style="grid-column:span 4">Build and prove</div><div></div>
       <div class="ph r" style="grid-column:span 2">Release</div>
       <div class="g rm"><span class="n">PROGRAM · PERSON ONLY</span><h3>Roadmap gate</h3><div class="q">Which feature next, in what order — and how does this factory run? Admits one feature at a time.</div></div>
       <div class="arr">›</div>
       <div class="g"><span class="n">1</span><h3>Concept</h3><div class="q">Is this worth building, on these premises?</div></div>
-      <div class="g jd"><span class="n">2</span><h3>Design</h3><div class="q">Is this the right structure?</div><span class="j">architecture critic</span></div>
+      <div class="g jd"><span class="n">2</span><h3>Architecture</h3><div class="q">Is this the right structure?</div><span class="j">architecture critic</span></div>
+      <div class="g jd ui"><span class="n">2a · INTERFACE WORK</span><h3>Experience design</h3><div class="q">Right experience for these users and journeys, within the charter?</div><span class="j">design critic</span></div>
       <div class="g"><span class="n">3</span><h3>Specification</h3><div class="q">What exactly counts as done — and what must not change?</div></div>
       <div class="g"><span class="n">4</span><h3>Work plan</h3><div class="q">In what pieces and order? Sets the model order on the lane.</div></div>
       <div class="arr">›</div>
       <div class="g"><span class="n">5</span><h3>Implementation</h3><div class="q">Start from a safe, restorable point? Still one feature?</div></div>
       <div class="g jd"><span class="n">6</span><h3>Code review</h3><div class="q">Is the code right, against the specification?</div><span class="j">code reviewer</span></div>
+      <div class="g jd ui"><span class="n">6a · INTERFACE WORK</span><h3>UI review</h3><div class="q">Does what was built match what was approved — accessible, consistent?</div><span class="j">UI reviewer</span></div>
       <div class="g jd"><span class="n">7</span><h3>Verification</h3><div class="q">Does it work as specified? ≤ 2 automatic fix rounds first.</div><span class="j">verifier</span></div>
       <div class="arr">›</div>
       <div class="g"><span class="n">8</span><h3>Documentation</h3><div class="q">Do docs and knowledge describe what was built?</div></div>
@@ -157,9 +160,9 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14p
     </div>
     <div class="bands">
       <div class="band rloop">↺ re-opens after every merge</div><div></div>
-      <div class="band tri" style="grid-column:span 2">triage may skip Concept + Design for small features</div>
+      <div class="band tri" style="grid-column:span 2">triage may skip Concept + Architecture for small features</div><div class="band tri">not applicable gates are recorded</div>
       <div class="band tri" style="background:#fff;border-style:solid">◆ arm the unattended tail</div>
-      <div class="band del" style="grid-column:span 7">unattended tail (optional): Work plan → Documentation cross on a clean path · any judge’s objection ends it</div><div class="band tri">Merge only if delegated</div>
+      <div class="band del" style="grid-column:span 8">unattended tail (optional): Work plan → Documentation cross on a clean path · UI review always waits for a person · any judge’s objection ends it</div><div class="band tri">Merge only if delegated</div>
     </div>
     <div class="flowfoot">
       <div class="mv ok"><b>approve</b>moves to the next gate</div>
@@ -178,11 +181,11 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14p
       <div class="sh"><span class="no">2</span><h2>Architecture</h2><p>One workshop server per person; one durable store per factory.</p></div>
       <div class="card">
         <div class="stack">
-          <div class="layer l1"><div class="lt">Surfaces<small>where people act</small></div><div class="chips"><span><b>Web front door</b> · loopback, per-launch secret</span><span>Needs you</span><span>gate briefs</span><span>live factory view</span><span><b>CLI</b> · kiln init · doctor · check · serve</span><span>Obsidian / Zed for knowledge</span></div></div>
+          <div class="layer l1"><div class="lt">Surfaces<small>where people act</small></div><div class="chips"><span><b>Web front door</b> · loopback, per-launch secret</span><span>Needs you</span><span><b>Feed</b> · drop anything, you decide where it goes</span><span>gate briefs</span><span>live factory view</span><span><b>CLI</b> · kiln init · doctor · check · serve</span><span>Obsidian / Zed for knowledge</span></div></div>
           <div class="layer l2"><div class="lt">Director<small>orchestrates, never decides</small></div><div class="chips"><span><b>deterministic core</b> · executes the pinned flow</span><span><b>planner role</b> · drafts roadmaps, labelled</span><span>affinity scheduling</span><span>fix rounds</span><span>ask the director</span></div></div>
           <div class="layer l3"><div class="lt">Durable task graph<small>Pi Durable</small></div><div class="chips"><span>roadmap task</span><span>row task per feature</span><span>unit tasks → conversations</span><span><b>gate tasks</b> · wait, first move wins</span><span>lane task · one generation</span><span>exactly-once moves</span></div></div>
           <div class="layer l4"><div class="lt">Workers and judges<small>roles bound to models</small></div><div class="chips"><span><b>roles</b> · agents/*.md, versioned</span><span>tier map · judges → strongest</span><span><b>Spec Kit</b> · speckit.specify · plan · tasks</span><span>tool sets · replay rules</span><span>model pool · pins, leases</span></div></div>
-          <div class="layer" style="background:#fff"><div class="lt">Spec-driven artifacts<small>in the repository</small></div><div class="chips"><span><b>constitution</b> · every gate measures against it</span><span>specs/ROADMAP.md</span><span><b>specs/NNN-name/</b> · concept, design, spec, plan, tasks, reports</span><span>GitHub Spec Kit · Pi integration</span></div></div>
+          <div class="layer" style="background:#fff"><div class="lt">Spec-driven artifacts<small>in the repository</small></div><div class="chips"><span><b>constitution</b> · every gate measures against it</span><span><b>experience charter</b> · users, journeys, screen map, wireframes</span><span><b>design system</b> · tokens, components, patterns</span><span>specs/ROADMAP.md</span><span><b>specs/NNN-name/</b> · concept, architecture, spec, plan, tasks, reports</span><span>GitHub Spec Kit · Pi integration</span></div></div>
           <div class="layer l5"><div class="lt">Models<small>locality is a property</small></div><div class="chips"><span><b>local</b> · Ollama on the host</span><span><b>private</b> · team servers</span><span><b>cloud</b> · by profile + egress policy</span><span>budgets</span><span>cross-family judging</span></div></div>
         </div>
         <div class="side3">
@@ -199,7 +202,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14p
         <div class="roles">
           <div class="role"><b><i>◆</i>Decide at the gates</b><p>read the brief, approve or send back — with a note that becomes the next instruction</p></div>
           <div class="role"><b><i>≡</i>Shape the roadmap</b><p>with the director: which feature next, with evidence and readiness</p></div>
-          <div class="role"><b><i>✎</i>Think at the bench</b><p>notebook, research steps and spikes while factories work</p></div>
+          <div class="role"><b><i>✎</i>Think at the bench</b><p>notebook, research steps and spikes while factories work; feed KILN any idea or file</p></div>
           <div class="role"><b><i>❖</i>Curate the knowledge</b><p>keep the wikis true; answer what agents could not infer</p></div>
           <div class="role"><b><i>⚙</i>Configure</b><p>hosts, models, roles, flows and policies — as files, checked and recorded</p></div>
           <div class="role"><b><i>⇄</i>Work with the team</b><p>team roadmap, claims, reviews across workshops, the merge queue</p></div>
@@ -226,7 +229,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14p
           <div class="host"><b>cloud-eu-1</b>rented · cloud<div class="facs"><span>handbook</span></div></div>
           <div class="host"><b>build-box-02</b>spare · sleeping<div class="facs"><span>—</span></div></div>
         </div>
-        <div class="team"><b>Team space</b> — a git repository, not a server: team roadmap by quorum, claims on paths, requests between workshops, shared roles and gates, the code host’s merge queue. Each person still decides their own gates.</div>
+        <div class="team"><b>Team space</b> — a git repository, not a server: team roadmap by quorum, claims on paths, requests between workshops, shared roles and gates, the code host’s merge queue. The constitution, charter and design system are the repository’s files — one version for every member’s factory. Each person still decides their own gates.</div>
       </div>
     </div>
     <div>

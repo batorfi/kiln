@@ -176,7 +176,7 @@ roadmap task                      holds the Roadmap gate; admits one feature at 
      ├─ unit task → conversation  a step: triage, researcher, concept writer, designer, critic, worker, …
      ├─ gate task                 Concept gate
      ├─ unit task → conversation
-     ├─ gate task                 Design gate
+     ├─ gate task                 Architecture gate
      │   …
      └─ gate task                 Merge gate
  lane task                        the factory's single lane: holder, resident model, hold flag, swaps
@@ -201,7 +201,7 @@ its replay rules; nothing is approved by the restart.
 
 One factory, one running generation. Before a step's first model request it **acquires the lane** and a **lease** on its
 model from the host's model pool; it releases both when it settles. The **affinity scheduler** orders waiting work to avoid
-needless model swaps — a swap happens only when a different tier is genuinely needed. On the **judged gates** (Design, Code
+needless model swaps — a swap happens only when a different tier is genuinely needed. On the **judged gates** (Architecture, Code
 review, Verification) the lease is **held**, so the judge's model stays resident through the verdict and any automatic fix
 rounds.
 
@@ -211,7 +211,7 @@ The factory works in its repository — by default a **separate git worktree**, 
 Feature artifacts follow **GitHub Spec Kit**: the constitution in `.specify/memory/constitution.md`, one directory per
 feature in `specs/NNN-name/` (spec, plan, tasks, and KILN's concept, design and judges' reports), and the `speckit.*`
 commands run by KILN's roles as Pi sessions. Spec-driven artifacts are versioned with the code; the factory store keeps the
-record, not copies of them.
+record, not copies of them. Beside the constitution sit the **experience charter** and the **design system** (`.specify/memory/`), the yardsticks of the interface gates.
 
 ## 6. The record and its views
 
@@ -391,5 +391,5 @@ are one atomic commit, keyed exactly once, first move wins* — stays the same w
 - [The web front door](../../concepts/web-front-door.md) — the full design, §4–§12
 - [KILN on Pi Durable](../../concepts/pi-durable.md) — why the substrate is the key enabler
 - [The record](../../concepts/the-record.md) — events, envelope, projections in depth
-- [The flow](../../concepts/the-flow.md) — the ten gates, gate by gate
+- [The flow](../../concepts/the-flow.md) — the twelve gates, gate by gate
 - [The PRD](../../prd/kiln-prd.md) — requirements, architecture, codebase layout, milestones

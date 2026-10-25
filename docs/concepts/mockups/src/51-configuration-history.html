@@ -3,8 +3,8 @@
 .ch:first-of-type{border-top:0}
 .ch time{font-family:var(--mono);font-size:11.5px;color:var(--faint)}
 .av{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
-.dif{background:#1F1B17;color:#E9E2D9;border-radius:7px;font-family:var(--mono);font-size:11.5px;line-height:1.6;padding:7px 11px;white-space:pre;margin-top:6px}
-.dif .a{color:#86EFAC}.dif .d{color:#FCA5A5}.dif .c{color:#8C8279}
+.dif{background:#10201F;color:#E9EFEC;border-radius:7px;font-family:var(--mono);font-size:11.5px;line-height:1.6;padding:7px 11px;white-space:pre;margin-top:6px}
+.dif .a{color:#86EFAC}.dif .d{color:#FCA5A5}.dif .c{color:#8C9490}
 .fail{background:var(--bad-soft);border:1px solid var(--bad-line);border-radius:8px;padding:7px 10px;margin-top:6px;font-size:12px;color:#7F1D1D}
 .ckrun .ck{display:grid;grid-template-columns:20px 1fr;gap:8px;padding:6px 0;border-top:1px solid var(--line-2);font-size:12.5px}
 .ckrun .ck:first-child{border-top:0}</style></head><body>
@@ -33,7 +33,7 @@
     <a><span class="fac"><span class="dot wait"></span>handbook</span><span class="s">new</span></a>
   </div>
   <div class="machine"><b>studio-m5</b> · this host · 128 GB
-    <div class="bar"><i style="width:34%;background:#F97316"></i><i style="width:22%;background:#A8A29E"></i><i style="width:12%;background:#57534E"></i></div>
+    <div class="bar"><i style="width:34%;background:#2DD4BF"></i><i style="width:22%;background:#9DB1AC"></i><i style="width:12%;background:#4B635F"></i></div>
     <div><b>81 GB</b> of 104 GB budget in use</div></div>
 </aside>
 <main class="main">
@@ -42,18 +42,18 @@
     <div class="row"><span class="pill">git · kiln.config</span><span class="btn">Run kiln check config</span></div></div>
   <div class="grid" style="grid-template-columns:1.35fr 1fr;align-items:start">
     <div class="card"><div class="card-h"><h2>History</h2><span class="sub">newest first</span></div>
-      <div class="ch"><time>10:21</time><span class="av" style="background:#9A3412">ZB</span><div><b>agents/code-reviewer.md</b> — v4 drafted, not applied<div class="sub">a shared team role: applies when the team quorum signs</div></div><span class="pill wait">pending team</span></div>
-      <div class="ch"><time>10:04</time><span class="av" style="background:#9A3412">ZB</span><div><b>agents/security-reviewer.md</b> — new role, v1 · bound as judge
+      <div class="ch"><time>10:21</time><span class="av" style="background:#0B5F58">ZB</span><div><b>agents/code-reviewer.md</b> — v4 drafted, not applied<div class="sub">a shared team role: applies when the team quorum signs</div></div><span class="pill wait">pending team</span></div>
+      <div class="ch"><time>10:04</time><span class="av" style="background:#0B5F58">ZB</span><div><b>agents/security-reviewer.md</b> — new role, v1 · bound as judge
         <div class="dif"><span class="c">tiers.yaml</span>
 <span class="a">+ security-reviewer: strongest</span></div></div><span class="pill ok">✓ applied · next step</span></div>
-      <div class="ch"><time>10:02</time><span class="av" style="background:#9A3412">ZB</span><div><b>tiers.yaml</b> — tried binding security-reviewer to qwen3-coder:30b
+      <div class="ch"><time>10:02</time><span class="av" style="background:#0B5F58">ZB</span><div><b>tiers.yaml</b> — tried binding security-reviewer to qwen3-coder:30b
         <div class="fail"><b>Refused by kiln check config:</b> security-reviewer is a judge (line of defense); judges bind only to the strongest model available — gemma4:27b. Nothing applied.</div></div><span class="pill bad">✕ check failed</span></div>
-      <div class="ch"><time>Oct 24</time><span class="av" style="background:#6D28D9">BN</span><div><b>hosts/gpu-01.yaml</b> — pinned gemma4:27b
+      <div class="ch"><time>Oct 24</time><span class="av" style="background:#5B33B0">BN</span><div><b>hosts/gpu-01.yaml</b> — pinned gemma4:27b
         <div class="dif"><span class="d">- pin: []</span>
 <span class="a">+ pin: [gemma4:27b]</span>     <span class="c"># fits: 17 GB of 180 GB</span></div></div><span class="pill ok">✓ applied</span></div>
-      <div class="ch"><time>Oct 23</time><span class="av" style="background:#9A3412">ZB</span><div><b>models.yaml</b> — claude-opus-5-5 version re-checked<div class="sub">provider published a new snapshot · <span class="mono">kiln check model</span> passed · treated as a new model</div></div><span class="pill ok">✓ applied</span></div>
-      <div class="ch"><time>Oct 24</time><span class="av" style="background:#9A3412">ZB</span><div><b>factories/billing-service.yaml</b> — row budget 25 → 40 USD<div class="sub">decided at the policy stop in Needs you, with reason “large diff in b3”</div></div><span class="pill ok">✓ applied · next step</span></div>
-      <div class="ch"><time>Oct 20</time><span class="av" style="background:#1D4ED8">AK</span><div><b>policies/tools.yaml</b> — “add dependency” now a risky action<div class="sub">stricter than the team floor — allowed</div></div><span class="pill ok">✓ applied</span></div></div>
+      <div class="ch"><time>Oct 23</time><span class="av" style="background:#0B5F58">ZB</span><div><b>models.yaml</b> — claude-opus-5-5 version re-checked<div class="sub">provider published a new snapshot · <span class="mono">kiln check model</span> passed · treated as a new model</div></div><span class="pill ok">✓ applied</span></div>
+      <div class="ch"><time>Oct 24</time><span class="av" style="background:#0B5F58">ZB</span><div><b>factories/billing-service.yaml</b> — row budget 25 → 40 USD<div class="sub">decided at the policy stop in Needs you, with reason “large diff in b3”</div></div><span class="pill ok">✓ applied · next step</span></div>
+      <div class="ch"><time>Oct 20</time><span class="av" style="background:#1F4FB8">AK</span><div><b>policies/tools.yaml</b> — “add dependency” now a risky action<div class="sub">stricter than the team floor — allowed</div></div><span class="pill ok">✓ applied</span></div></div>
     <div class="grid">
       <div class="card ckrun"><div class="card-h"><h2>kiln check config</h2><span class="pill ok">✓ passing · 10:04</span></div>
         <div class="ck"><span class="check">✓</span><span>every role bound to a reachable, checked model</span></div>

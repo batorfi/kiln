@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | kiln-v1.x |
-| **Release** | `kiln-v1.x` — position 32 of 41 in the committed order |
+| **Release** | `kiln-v1.x` — position 34 of 43 in the committed order |
 | **Depends on** | [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md) |
 | **Unlocks** | — |
 | **PRD requirements** | HOST-2 (separate), HOST-3…7, WEB-2 (network), CFG-5, TEAM-9 |

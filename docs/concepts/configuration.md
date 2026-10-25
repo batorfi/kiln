@@ -48,9 +48,9 @@ kiln.config/                ← a git repository (or a folder in one)
   hosts/<name>.yaml         ← one file per host
   providers/<name>.yaml     ← how models are reached
   models.yaml               ← the model catalog
-  agents/<role>.md          ← role instructions
+  agents/<role>.md          ← role instructions (incl. ux-designer, design-critic, ui-reviewer; ui-checker is deterministic)
   tiers.yaml                ← default role → model bindings
-  gates/<id>.md             ← added gate definitions (extensible-flow.md)
+  gates/<id>.md             ← gate definitions: the built-in ones (incl. experience-design, ui-review — ui-flow.md) and added gates (extensible-flow.md)
   flows/<name>.yaml         ← flows: the standard flow plus added gates
   policies/
     egress.yaml             ← what may leave, to which locality
@@ -60,7 +60,9 @@ kiln.config/                ← a git repository (or a folder in one)
   factories/<name>.yaml     ← per factory: profile, policy, budget, placement, tier overrides
 ```
 
-The workshop's configuration repository is separate from any factory's workspace and from the team space; the team
+The experience charter and the design system are **not** configuration: they are committed artifacts of the product at
+`.specify/memory/experience-charter.md` and `.specify/memory/design-system/` (`experience-charter.md`, `design-system.md`), changed only by a person's recorded decision. The
+workshop's configuration repository is separate from any factory's workspace and from the team space; the team
 space holds the team's own floor and shared roles (§9).
 
 ## 4. Hosts

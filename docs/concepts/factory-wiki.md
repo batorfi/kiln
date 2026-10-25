@@ -317,7 +317,7 @@ factory:
 | Page type | Answers | Written | Grounded in |
 |---|---|---|---|
 | **Feature story** — *"r10 — How it was built"* | How did this feature come to be? | opened at the Concept or Specification gate, extended at every gate, completed at the Merge gate | the record: every gate decision and who made it, rejected alternatives, judge findings, fix rounds, restarts, steering, tool approvals |
-| **Technical overview** | What was built, and how do its parts fit together? | after the Design gate (intended structure), revised after Code review (actual structure) | the approved design, the diff, the code at a commit |
+| **Technical overview** | What was built, and how do its parts fit together? | after the Architecture gate (intended structure), revised after Code review (actual structure) | the approved design, the diff, the code at a commit |
 | **Explainer** | Why is the code the way it is? | after Code review and Verification, for each significant decision in the code | code excerpts at a commit, the judge findings and human notes that shaped them |
 | **How-to guide** | How do I use, extend or operate this? | after Verification, when the behaviour is proven | the code, the tests that prove each step, the specification |
 | **Reference** | What exactly are the interfaces, settings and files? | at the Merge gate | the code at the merge commit |
@@ -403,6 +403,7 @@ attributed, traceable, and open to doubt.
 
 | KILN rule | For the wikis |
 |---|---|
+| **Experience charter** | the charter is a committed artifact, not a wiki page: pages may cite it and never override it; the keeper links feature stories to the journeys and screens they served (`experience-charter.md` §9) |
 | **Humans decide; models work** | the keeper writes; people choose sources, edit and revert; Deciders decide at gates. No wiki content settles a gate |
 | **No model approves its own work** | nothing is approved in a wiki — it is context. The keeper's pages are checked by lint on another model, and every page is open to correction by people |
 | **One lane per factory** | factory-wiki steps run on the factory's lane at lower priority than feature work, typically while the factory waits on a human; workshop-wiki steps use spare workshop capacity. Neither interrupts a feature step or holds a judge's lane |

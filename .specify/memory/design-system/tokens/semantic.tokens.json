@@ -1,0 +1,143 @@
+{
+  "$description": "KILN semantic tokens \u2014 roles. Light mode values; other modes in modes/.",
+  "color": {
+    "surface": {
+      "page": {
+        "$type": "color",
+        "$value": "{color.sand.100}"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "{color.white}"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "{color.sand.50}"
+      },
+      "rail": {
+        "$type": "color",
+        "$value": "{color.teal.900}"
+      },
+      "rail-raised": {
+        "$type": "color",
+        "$value": "{color.teal.800}"
+      }
+    },
+    "text": {
+      "primary": {
+        "$type": "color",
+        "$value": "{color.ink.900}"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "{color.ink.700}"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "{color.ink.500}"
+      },
+      "on-accent": {
+        "$type": "color",
+        "$value": "{color.white}"
+      },
+      "on-rail": {
+        "$type": "color",
+        "$value": "#E9EFEC"
+      },
+      "muted-on-rail": {
+        "$type": "color",
+        "$value": "#9DB1AC"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "{color.teal.700}"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "{color.sand.300}"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "{color.sand.500}"
+      }
+    },
+    "action": {
+      "primary": {
+        "$type": "color",
+        "$value": "{color.teal.600}"
+      },
+      "primary-hover": {
+        "$type": "color",
+        "$value": "{color.teal.700}"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "{color.teal.100}"
+      },
+      "on-rail": {
+        "$type": "color",
+        "$value": "{color.teal.400}"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "{color.teal.600}"
+      }
+    },
+    "status": {
+      "wait": {
+        "fg": {
+          "$type": "color",
+          "$value": "{color.amber.700}"
+        },
+        "bg": {
+          "$type": "color",
+          "$value": "{color.amber.100}"
+        }
+      },
+      "ok": {
+        "fg": {
+          "$type": "color",
+          "$value": "{color.green.700}"
+        },
+        "bg": {
+          "$type": "color",
+          "$value": "{color.green.100}"
+        }
+      },
+      "delegated": {
+        "fg": {
+          "$type": "color",
+          "$value": "{color.violet.700}"
+        },
+        "bg": {
+          "$type": "color",
+          "$value": "{color.violet.100}"
+        }
+      },
+      "info": {
+        "fg": {
+          "$type": "color",
+          "$value": "{color.blue.700}"
+        },
+        "bg": {
+          "$type": "color",
+          "$value": "{color.blue.100}"
+        }
+      },
+      "danger": {
+        "fg": {
+          "$type": "color",
+          "$value": "{color.red.700}"
+        },
+        "bg": {
+          "$type": "color",
+          "$value": "{color.red.100}"
+        }
+      }
+    }
+  }
+}

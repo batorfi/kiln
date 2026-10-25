@@ -97,7 +97,9 @@ Built locally, read-only, and shown before anything else:
 | **History** | active and stale areas, files that change together, who maintains what (from history and code owners) |
 | **Risk** | areas with no tests, files with frequent fixes, secrets-like strings (reported, never sent anywhere) |
 
-The profile takes minutes. It is the first page of the knowledge base and the plan for the full scan (§5.3); a person can
+The profile takes minutes. Where the code has an interface, the scan also inventories its screens, routes, flows and
+conventions into a draft **experience charter** — labelled *measured* or *inferred*, with as-is journeys and wireframes
+derived from the running screens — for the team to correct and approve (`experience-charter.md` §4). It likewise discovers or adopts the **design system** — tokens and components extracted from the code, or an external system recorded by pointer and mirrored read-only — as *measured* or *inferred* files the team confirms (`design-system.md` §7). It is the first page of the knowledge base and the plan for the full scan (§5.3); a person can
 correct any of it, and the correction wins over inference.
 
 ### 5.2 The baseline
@@ -232,7 +234,7 @@ Common brownfield work fits the default flow, with flows the team can choose per
 
 | Kind of work | Flow |
 |---|---|
-| **Bug fix** | standard; triage usually skips Concept and Design; the specification starts with a failing test that reproduces the bug |
+| **Bug fix** | standard; triage usually skips Concept and Architecture; the specification starts with a failing test that reproduces the bug |
 | **Refactor** | standard; the specification is *no behaviour change* plus the structural goal; characterization is required |
 | **Dependency upgrade** | standard, plus an added gate where a team wants one (e.g. a licence check); changelogs of the dependency are research inputs |
 | **Migration** | a team flow with an added rollout or data-migration gate before Merge's pull request is opened |
@@ -279,7 +281,7 @@ KILN depends on Spec Kit (`first-run.md` §8.1), so spec-driven work needs Spec 
 
 - **Observe and Rehearse** — Spec Kit lives only in the factory's scratch worktree; nothing reaches the team's branches.
 - **Entering Contribute** — the first pull request is **"Add Spec Kit and the constitution"**: `.specify/`, `.pi/prompts/speckit.*`
-  and a constitution drafted from the team's conventions, reviewed and merged by the team like any change. If the team
+  a constitution drafted from the team's conventions and, if the team wants one, the confirmed experience charter, reviewed and merged by the team like any change. If the team
   already uses Spec Kit with another integration, KILN adds the Pi integration beside it and changes nothing else.
 - **Every feature after that** — its `specs/NNN-name/` directory travels in the feature's pull request.
 
@@ -342,7 +344,7 @@ Continuing from `first-run.md` Step 4, with an existing repository:
    gate brief as a person's change with its author, and checks (and Verification, if code changed) re-run before Merge can
    be approved. No new feature round.
 5. ~~How deep outside the territory?~~ **Decided 2026-10-21** (human@batorfi): **deep inside, a map outside** (structure, interfaces, owners,
-   dependencies); a feature that will touch a mapped module gets a deep scan of it before its Design gate.
+   dependencies); a feature that will touch a mapped module gets a deep scan of it before its Architecture gate.
 6. ~~PR and issue discussions?~~ **Decided 2026-10-21** (human@batorfi): **titles, labels, states and links by default**; full discussions only by a
    recorded opt-in, and always under the egress policy when the code host is remote.
 7. ~~Territory at the tool level?~~ **Decided 2026-10-21** (human@batorfi): **yes** — workers' write tools refuse paths outside the territory; the

@@ -3,7 +3,7 @@
 > [`open-decisions.md`](./open-decisions.md). Building it is admitted only at the Roadmap gate.
 > Type: concept
 >
-> Scope note: this doc describes **KILN's default flow end to end** — the Roadmap gate and Gates 1–9 — what happens
+> Scope note: this doc describes **KILN's default flow end to end** — the Roadmap gate and Gates 1–9, with the two experience gates 2a and 6a — what happens
 > between the gates, what every gate decides and on what evidence, where each corrective move sends the work, and how
 > shortcuts, absence, restarts and teams change the walk. It is the fresh, self-contained description of the flow for
 > the new concept; it replaces `gates-why-how-what.md` as the reference (that doc stays as history). It is a concept,
@@ -32,8 +32,10 @@
 ## 1. In one paragraph
 
 A KILN factory builds one feature at a time along a single lane. The **Roadmap gate** admits the next feature; then the
-feature walks **nine gates** in four phases — **contract** (Concept, Design, Specification, Work plan), **build and
-prove** (Implementation, Code review, Verification) and **release** (Documentation, Merge). Between gates, agents do the
+feature walks **eleven gates** in three phases — **contract** (Concept, Architecture, Experience design, Specification, Work
+plan), **build and prove** (Implementation, Code review, UI review, Verification) and **release** (Documentation, Merge).
+The two experience gates — Experience design and UI review — are built in and **apply when a feature touches the
+interface**; for any other feature they are recorded as *not applicable* (§4). Between gates, agents do the
 work and independent judges check it; at every gate, a person reads a complete brief and makes a move. Every move has a
 defined consequence: approve moves forward, a corrective move sends the work back a known distance, and nothing ever
 moves forward on its own — not a clock, not a restart, not a missing screen. Merging the feature re-opens the Roadmap
@@ -45,7 +47,7 @@ gate for the next one.
 |---|---|
 | **Cheap to stop early, expensive to stop late** | the gates are ordered so scope is decided before structure, structure before contract, contract before code |
 | **The contract is the yardstick** | the Specification gate fixes what "done" means; Code review and Verification measure against it, never against taste |
-| **No model approves its own work** | authors and judges are different roles; on the three judged gates the judge runs on the strongest model and holds the lane |
+| **No model approves its own work** | authors and judges are different roles; on the judged gates the judge runs on the strongest model and holds the lane |
 | **People decide, with the whole picture** | every gate presents a ten-part brief; advice is labelled as advice; no move is pre-selected |
 | **One lane, one feature** | a single sequential lane keeps model swaps few, the record linear and the human's attention on one thing per factory |
 | **Shortcuts are decisions, not defaults** | skipping and delegation exist, are bounded, are recorded — and any judge's objection ends them |
@@ -53,38 +55,51 @@ gate for the next one.
 ## 3. The flow at a glance
 
 ```
- PROGRAM          CONTRACT                                          BUILD AND PROVE                          RELEASE
- ┌────────┐   ┌─────────┐  ┌────────┐  ┌───────────────┐  ┌─────────┐  ┌──────────────┐  ┌────────────┐  ┌──────────────┐  ┌───────────────┐  ┌───────┐
- │Roadmap │──►│1 Concept│─►│2 Design│─►│3 Specification│─►│4 Work   │─►│5 Implement-  │─►│6 Code      │─►│7 Verification│─►│8 Documentation│─►│9 Merge│──┐
- │ gate   │   │         │  │ judged │  │               │  │  plan   │  │  ation       │  │  review    │  │   judged     │  │               │  │       │  │
- └────────┘   └─────────┘  └────────┘  └───────────────┘  └─────────┘  └──────────────┘  │  judged    │  └──────────────┘  └───────────────┘  └───────┘  │
-     ▲         ╰─ triage may skip both ─╯     │ arm the unattended tail ──────────────────┴────────────┴──── Gates 4–9 on a clean path ───────────────╯   │
-     │                                         ▼                                                                                                      │
-     └──────────────────────────────────────── the Roadmap gate re-opens after every merge ─────────────────────────────────────────────────────────────┘
+  PROGRAM    CONTRACT
+  Roadmap ─► 1 Concept ─► 2 Architecture ─► 2a Experience design ─► 3 Specification ─► 4 Work plan
+  gate        ╰─ triage may skip both ─╯   (when UI)              │
+     ▲                                                             ▼  arm the unattended tail (Gates 4–9, clean path)
+     │      BUILD AND PROVE
+     │      5 Implementation ─► 6 Code review ─► 6a UI review ─► 7 Verification
+     │         (judged: 2 · 2a · 6 · 6a · 7)       (when UI)
+     │      RELEASE
+     │      8 Documentation ─► 9 Merge ─┐
+     └────────── the Roadmap gate re-opens after every merge ◄──┘
 ```
+
+*Gates 2a and 6a apply when the feature touches the interface; otherwise they are recorded as not applicable and the walk
+continues. Their internal ids are `2a-experience` and `6a-ui-review`; the other gates' ids are unchanged.*
 
 | # | Gate | The question | Artifact | Author | Judge | Moves |
 |---|---|---|---|---|---|---|
 | — | **Roadmap** | Which features do we build, in what order — and how does this factory run? | the roadmap | planner | — | approve · revise · reject · edit/add/drop rows |
 | 1 | **Concept** | Is this worth building, on these premises? | concept | researcher → concept writer | — | approve · revise · reject |
-| 2 | **Design** | Is this the right structure? | design | designer | **architecture critic** | approve · revise · reject |
+| 2 | **Architecture** | Is this the right structure? | architecture design (`design.md`) | designer | **architecture critic** | approve · revise · reject |
+| 2a | **Experience design** *(when the feature touches the interface)* | Is this the right experience for these users and journeys, within the charter? | experience, mockups, states matrix | ux designer | **design critic** | approve · approve with note · revise · reject |
 | 3 | **Specification** | What exactly counts as done? | specification | spec writer | — (deterministic checks) | approve · revise · reject · *arm the tail* |
 | 4 | **Work plan** | In what pieces and order will it be built? | work plan | planner | — (deterministic checks) | approve · revise · reject |
 | 5 | **Implementation** | Do we start building from a safe point — and is this still one feature? | restorable commit + size | director | — | approve · split+revise |
 | 6 | **Code review** | Is the code right, against the specification? | diff + review notes | workers | **code reviewer** | approve · revise · restart |
+| 6a | **UI review** *(when the feature touches the interface)* | Does the built interface match the approved experience, and is it accessible and consistent? | UI review report, screenshots, check results | workers | **UI reviewer** (with deterministic UI checks) | approve · approve with note · revise · restart |
 | 7 | **Verification** | Does it actually work as specified? | verification report | workers (fix rounds) | **verifier** | approve · reject |
 | 8 | **Documentation** | Do the docs describe what was actually built? | doc changes + feature story | techwriter, wiki keeper | — | approve · revise · reject |
 | 9 | **Merge** | Do we ship this feature? | pull request | PR writer | — (checks, team reviews) | approve (= merge) · reject |
 
 ## 4. Before the first gate
 
+0. **Setup artifacts.** Where the product has an interface, the factory has an **experience charter** and a **design system**, approved by a person before the first Roadmap gate and pinned by each feature at admission (`experience-charter.md`, `design-system.md`); Experience design and UI review measure against them.
 1. **Admission.** At the Roadmap gate a person admits **one** next feature, and with it decides the factory's profile,
    egress policy, budget and placement, and the feature's **flow** (the standard flow unless added gates apply —
    `extensible-flow.md` §7). Approving admits one feature only; there is no chaining.
-2. **Triage.** The first step of the feature. It judges size and clarity and may **skip Concept and Design** for small,
+2. **Applicability.** Each built-in gate may carry a deterministic `applies_when` rule. Gates 2a and 6a do: they apply
+   when the row touches the interface (paths, labels, or charter journeys it cites; for 6a also what the diff actually
+   changed). The Roadmap gate brief shows, per feature, which gates apply and why; a person may **require** a gate that
+   the rule would not (never the reverse for a gate that applies). A gate that does not apply is recorded as *not
+   applicable* with its reason — it is not a skip, never settles by itself, and the record shows it for every later brief.
+3. **Triage.** The first step of the feature. It judges size and clarity and may **skip Concept and Architecture** for small,
    well-scoped features. The skip and its reasoning are recorded and shown in every later brief. A flow may forbid
    skipping (`no_triage_skip`); nothing else can skip a gate.
-3. **The row starts.** The director creates the feature's row task and runs its steps one at a time on the lane.
+4. **The row starts.** The director creates the feature's row task and runs its steps one at a time on the lane.
 
 *Artifacts.* Every feature is a Spec Kit feature directory (`specs/NNN-name/`): Spec Kit's commands produce the
 specification, plan and tasks; KILN adds the concept, the design and the judges' reports, and every brief measures against
@@ -135,12 +150,12 @@ lead**, and **what it hands forward**.
   states the problem, the premises, the scope and what is out of scope.
 - **Brief first.** The problem and premises; what the concept rests on (cited pages, research, spikes) and which
   premises are unproven; what is explicitly out of scope.
-- **Moves.** approve → Design · revise (note → the same writer) · reject → back to the **Roadmap gate**: the feature
+- **Moves.** approve → Architecture · revise (note → the same writer) · reject → back to the **Roadmap gate**: the feature
   leaves the lane, its work stays in the record (§11, P1).
 - **Hands forward.** The concept: the premises every later gate inherits.
 - *Mockup:* 68.
 
-### 6.2 Design gate — *contract · judged*
+### 6.2 Architecture gate — *contract · judged*
 
 - **Why.** Catch a build that would work but have the wrong shape — module boundaries, data flow, abstractions — while
   changing it costs a document, not a rewrite.
@@ -153,6 +168,19 @@ lead**, and **what it hands forward**.
 - **Hands forward.** The approved structure the specification must respect.
 - *Mockup:* 69.
 
+### 6.2a Experience design gate — *contract · judged · when the feature touches the interface*
+
+- **Why.** Fix what the interface should be — journeys, screens, states, content — while it costs a document, so the
+  specification can state done in terms of approved screens. The experience charter is the yardstick.
+- **Before it.** The ux designer drafts `experience.md` and mockups against the charter at its pinned version; the
+  **design critic** (strongest model, lane held, a different conversation) judges them; deterministic checks run first.
+- **Brief first.** The journey steps served, the mockups beside the screens they change, the states matrix, charter ids
+  and the critic's findings.
+- **Moves.** approve → Specification · approve with open points (note carried to UI review) · revise → the same ux
+  designer · reject → Architecture, or an earlier gate the note names.
+- **Hands forward.** The approved experience the specification must cite.
+- *Full definition:* `ui-flow.md` §4.
+
 ### 6.3 Specification gate — *contract*
 
 - **Why.** Fix what "done" means. Everything after this gate is measured against it; a fuzzy specification poisons every
@@ -161,7 +189,7 @@ lead**, and **what it hands forward**.
   deterministic checks confirm every requirement is testable and traces to the concept.
 - **Brief first.** Requirement by requirement, what done means and how it will be proven; what the specification does
   not promise; the arming option.
-- **Moves.** approve → Work plan · revise · reject → a fresh spec writer, or back to Design · **and, with approve, the
+- **Moves.** approve → Work plan · revise · reject → a fresh spec writer, or back to Architecture · **and, with approve, the
   option to arm the unattended tail** (§8.2).
 - **Hands forward.** The yardstick for Code review and Verification.
 - *Mockup:* 07.
@@ -205,6 +233,18 @@ lead**, and **what it hands forward**.
   The reviewer never edits: `revise` goes to the **workers**, never to the reviewer.
 - **Hands forward.** Reviewed code and any accepted findings.
 - *Mockups:* 02 · 21.
+
+### 6.6a UI review gate — *build and prove · judged · when the feature touches the interface*
+
+- **Why.** Compare what was built with what was approved — accessibility, tokens, states, structure, visual match —
+  before anything is proved.
+- **Before it.** The **UI checker** (deterministic, on loopback) builds and walks every screen and state; the **UI
+  reviewer** (strongest model, lane held; reads images only if it can, and says so) judges the evidence.
+- **Brief first.** Approved against built, per screen and state; the check table; accepted deviations carried from 2a.
+- **Moves.** approve → Verification · approve with accepted deviations (note) · revise → the workers fix, the checker
+  re-runs, a fresh reviewer looks again · restart → a fresh build from the restorable commit.
+- **Hands forward.** An interface that matches the approved experience, with its accepted deviations.
+- *Full definition:* `ui-flow.md` §5.
 
 ### 6.7 Verification gate — *build and prove · judged*
 
@@ -263,13 +303,14 @@ judges changed, it says so plainly, and the decision is still a person's (§11, 
 
 ### 8.1 Triage skip
 
-For small, well-scoped features, triage skips Concept and Design. Recorded with its reasoning; shown in every later
-brief; impossible where the flow sets `no_triage_skip`. Small features still pass Gates 3–9.
+For small, well-scoped features, triage skips Concept and Architecture. Recorded with its reasoning; shown in every later
+brief; impossible where the flow sets `no_triage_skip`. Small features still pass Gates 3–9 (and 2a and 6a where they apply).
 
 ### 8.2 The unattended tail
 
 At the Specification gate, the person who approves may **arm** delegation for the gates after it — Work plan through
-Documentation by default, Merge only if explicitly included. Then, on each covered gate:
+Documentation by default, Merge only if explicitly included. **UI review is not delegable by default**, so on a feature
+that touches the interface the tail stops there and waits for a person (`ui-flow.md` §8). Then, on each covered gate:
 
 - **Clean path** — the gate settles with an *approved under delegation* move that names the delegation, never a person.
 - **Any objection** — a architecture critic objection, a code reviewer `restart`, a verifier `reject`, a split proposed at the
@@ -311,7 +352,7 @@ gate move, and all of which appear in the next brief's provenance (`web-front-do
 | **P2** | **Re-crossing**: every gate after a reject's target opens again; nothing is carried across a change it did not see; briefs show what changed. | an approval is an approval *of something*; it must not silently cover new work |
 | **P3** | **Fix-round cap** stays **2** by default; a factory may set it to 0–3 at the Roadmap gate; the brief always shows the cap and the rounds used. | some factories want every failure in front of a person; a hard upper bound prevents loops |
 | **P4** | **Documentation and Merge stay separate**, even for small features; under delegation, Documentation is the gate most often crossed automatically. | the Documentation gate is where the knowledge base is completed — merging it into Merge would hide it |
-| **P5** | The Design gate gives the designer **one answer round** to the critic before the person sees it; the brief shows the objection, the answer and whether the critic accepts it. | the person decides on a dialogue, not on a raw objection the author never saw |
+| **P5** | The Architecture gate gives the designer **one answer round** to the critic before the person sees it; the brief shows the objection, the answer and whether the critic accepts it. | the person decides on a dialogue, not on a raw objection the author never saw |
 | **P6** | **"Leave the lane"** — at any gate, *pause the factory* plus a Roadmap-gate decision is the way to stop a feature; it is not a move kind. | keeps the move kinds closed (`extensible-flow.md` §5) |
 
 What this revisit settles from the open questions of `gates-why-how-what.md` §5:
@@ -342,10 +383,10 @@ All four were decided on 2026-10-21 (human@batorfi); none adds a move kind.
 3. ~~A lighter confirmation for an unchanged re-crossed gate?~~ **No.** The brief and the move stay the same; the brief
    leads with *unchanged since the approval on <date>* and what changed upstream. Armed delegation may cover it.
 4. ~~Triage skipping Documentation?~~ **No.** Documentation also completes the knowledge base and the feature story (P4);
-   triage skips Concept and Design only (constitution, *The Flow*).
+   triage skips Concept and Architecture only (constitution, *The Flow*).
 
 ## 13. One sentence
 
-KILN's flow admits one feature at a time at the Roadmap gate and walks it through nine gates — contract, build and prove,
+KILN's flow admits one feature at a time at the Roadmap gate and walks it through eleven gates — contract, build and prove,
 release — where agents work, independent judges check, and a person decides every move with a complete brief and a
 known consequence, until Merge ships it and the roadmap opens again.

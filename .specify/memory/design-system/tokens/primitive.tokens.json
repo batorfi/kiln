@@ -1,0 +1,376 @@
+{
+  "$description": "KILN primitive tokens \u2014 raw values. DTCG format. Only semantic tokens may reference these.",
+  "color": {
+    "sand": {
+      "50": {
+        "$type": "color",
+        "$value": "#FAF8F3"
+      },
+      "100": {
+        "$type": "color",
+        "$value": "#F4F1EA",
+        "$description": "page"
+      },
+      "200": {
+        "$type": "color",
+        "$value": "#E8E3D8"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#DDD7CA",
+        "$description": "decorative border"
+      },
+      "400": {
+        "$type": "color",
+        "$value": "#B7B09F"
+      },
+      "500": {
+        "$type": "color",
+        "$value": "#7F8985",
+        "$description": "strong border (3:1 on page)"
+      }
+    },
+    "white": {
+      "$type": "color",
+      "$value": "#FFFFFF"
+    },
+    "ink": {
+      "900": {
+        "$type": "color",
+        "$value": "#14201F",
+        "$description": "primary text"
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#2B3A38"
+      },
+      "500": {
+        "$type": "color",
+        "$value": "#56625F",
+        "$description": "muted text"
+      }
+    },
+    "teal": {
+      "50": {
+        "$type": "color",
+        "$value": "#EAF5F2"
+      },
+      "100": {
+        "$type": "color",
+        "$value": "#DCEEEA",
+        "$description": "subtle accent surface"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#A9D3CC"
+      },
+      "400": {
+        "$type": "color",
+        "$value": "#2DD4BF",
+        "$description": "accent on dark"
+      },
+      "500": {
+        "$type": "color",
+        "$value": "#0D9488"
+      },
+      "600": {
+        "$type": "color",
+        "$value": "#0F766E",
+        "$description": "accent"
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#0B5F58",
+        "$description": "accent hover/pressed"
+      },
+      "900": {
+        "$type": "color",
+        "$value": "#10201F",
+        "$description": "rail surface"
+      },
+      "800": {
+        "$type": "color",
+        "$value": "#1B3331",
+        "$description": "rail raised"
+      },
+      "950": {
+        "$type": "color",
+        "$value": "#0E1A19",
+        "$description": "dark page"
+      },
+      "350": {
+        "$type": "color",
+        "$value": "#5FAEA4",
+        "$description": "logo middle gate (light)"
+      }
+    },
+    "amber": {
+      "100": {
+        "$type": "color",
+        "$value": "#FBEBCB"
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#8A4B04"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#F2B24A"
+      }
+    },
+    "green": {
+      "100": {
+        "$type": "color",
+        "$value": "#E1F0DC"
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#276B2A"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#86D08A"
+      }
+    },
+    "violet": {
+      "100": {
+        "$type": "color",
+        "$value": "#ECE5F9"
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#5B33B0"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#C2A9F5"
+      }
+    },
+    "blue": {
+      "100": {
+        "$type": "color",
+        "$value": "#E2EAFB"
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#1F4FB8"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#8FB0F5"
+      }
+    },
+    "red": {
+      "100": {
+        "$type": "color",
+        "$value": "#FBE3DF"
+      },
+      "700": {
+        "$type": "color",
+        "$value": "#A82A1D"
+      },
+      "300": {
+        "$type": "color",
+        "$value": "#F59E92"
+      }
+    },
+    "dark": {
+      "raised": {
+        "$type": "color",
+        "$value": "#152624"
+      },
+      "border": {
+        "$type": "color",
+        "$value": "#27403D"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#9DB1AC"
+      },
+      "text": {
+        "$type": "color",
+        "$value": "#E9EFEC"
+      },
+      "on-accent": {
+        "$type": "color",
+        "$value": "#06201D"
+      },
+      "logo-outer": {
+        "$type": "color",
+        "$value": "#2B5C57",
+        "$description": "logo outer gate (dark)"
+      },
+      "logo-mid": {
+        "$type": "color",
+        "$value": "#1E8F84",
+        "$description": "logo middle gate (dark)"
+      }
+    }
+  },
+  "font": {
+    "family": {
+      "display": {
+        "$type": "fontFamily",
+        "$value": [
+          "Charter",
+          "Bitstream Charter",
+          "Iowan Old Style",
+          "Georgia",
+          "serif"
+        ],
+        "$description": "page headings only"
+      },
+      "sans": {
+        "$type": "fontFamily",
+        "$value": [
+          "Inter",
+          "system-ui",
+          "-apple-system",
+          "Helvetica Neue",
+          "Arial",
+          "sans-serif"
+        ],
+        "$description": "interface"
+      },
+      "mono": {
+        "$type": "fontFamily",
+        "$value": [
+          "ui-monospace",
+          "DejaVu Sans Mono",
+          "SF Mono",
+          "Menlo",
+          "monospace"
+        ],
+        "$description": "ids, paths, hashes, commands"
+      }
+    },
+    "size": {
+      "100": {
+        "$type": "dimension",
+        "$value": "12px"
+      },
+      "200": {
+        "$type": "dimension",
+        "$value": "13px"
+      },
+      "300": {
+        "$type": "dimension",
+        "$value": "14px"
+      },
+      "400": {
+        "$type": "dimension",
+        "$value": "16px"
+      },
+      "500": {
+        "$type": "dimension",
+        "$value": "18px"
+      },
+      "600": {
+        "$type": "dimension",
+        "$value": "22px"
+      },
+      "700": {
+        "$type": "dimension",
+        "$value": "28px"
+      },
+      "800": {
+        "$type": "dimension",
+        "$value": "36px"
+      }
+    },
+    "weight": {
+      "regular": {
+        "$type": "fontWeight",
+        "$value": 400
+      },
+      "medium": {
+        "$type": "fontWeight",
+        "$value": 500
+      },
+      "semibold": {
+        "$type": "fontWeight",
+        "$value": 600
+      },
+      "bold": {
+        "$type": "fontWeight",
+        "$value": 700
+      }
+    },
+    "lineheight": {
+      "tight": {
+        "$type": "number",
+        "$value": 1.25
+      },
+      "body": {
+        "$type": "number",
+        "$value": 1.45
+      }
+    }
+  },
+  "space": {
+    "1": {
+      "$type": "dimension",
+      "$value": "4px"
+    },
+    "2": {
+      "$type": "dimension",
+      "$value": "8px"
+    },
+    "3": {
+      "$type": "dimension",
+      "$value": "12px"
+    },
+    "4": {
+      "$type": "dimension",
+      "$value": "16px"
+    },
+    "5": {
+      "$type": "dimension",
+      "$value": "20px"
+    },
+    "6": {
+      "$type": "dimension",
+      "$value": "24px"
+    },
+    "8": {
+      "$type": "dimension",
+      "$value": "32px"
+    },
+    "10": {
+      "$type": "dimension",
+      "$value": "40px"
+    },
+    "12": {
+      "$type": "dimension",
+      "$value": "48px"
+    }
+  },
+  "radius": {
+    "sm": {
+      "$type": "dimension",
+      "$value": "6px"
+    },
+    "md": {
+      "$type": "dimension",
+      "$value": "10px"
+    },
+    "lg": {
+      "$type": "dimension",
+      "$value": "14px"
+    },
+    "pill": {
+      "$type": "dimension",
+      "$value": "999px"
+    }
+  },
+  "duration": {
+    "fast": {
+      "$type": "duration",
+      "$value": "120ms"
+    },
+    "base": {
+      "$type": "duration",
+      "$value": "200ms"
+    }
+  }
+}

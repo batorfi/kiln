@@ -127,6 +127,7 @@ must read first:
 | **Appetite** | how large a feature may be before it should be split |
 | **Your own features** | rows the engineer already has in mind, written in their own words |
 | **Pointers** | knowledge pages, spikes, issues or notebook entries the planner should weigh |
+| **The experience charter** | where the factory has one, the planner reads it with the brief: rows serving a journey cite its step ids, a journey with no row is flagged, and amendments are proposed here (`experience-charter.md` §6) |
 
 The brief can be written before any draft exists, added to at any time, or grown out of the conversation below. Goals and
 constraints worth keeping can be filed to the knowledge base as a *direction* page labelled *from a person*.
@@ -150,7 +151,7 @@ constraints worth keeping can be filed to the knowledge base as a *direction* pa
 
 **4. Every version checked.** After each edit or redraft, deterministic checks run: dependencies resolve, pins and
 constraints hold, claims and protected paths in a team are respected, readiness and flow are computed, the time ahead is
-estimated against the factory's host. A violation is shown at once, attributed to the edit or draft that caused it —
+estimated against the factory's host, and — where there is a charter — the journey coverage map and the applicability of Experience design and UI review per row (`ui-flow.md` §6). A violation is shown at once, attributed to the edit or draft that caused it —
 the engineer may keep an edit that breaks a planner preference, never one that breaks a rule.
 
 **5. Then the decision.** Shaping never admits anything. When the engineer is ready, the Roadmap gate's brief is assembled
@@ -168,6 +169,7 @@ team roadmap, which the team space decides by quorum (`team-space.md` §6).
 - **In Needs you**, when it needs a choice.
 - **In *worth knowing***: corrections flagged for the next Roadmap gate, delegations ended, overlaps, recoveries.
 - **In proposals**: a reason and citations for every row, every split, every order.
+- **In the Feed**: anything you dropped in, sorted into drafted destinations you choose from — never a decision made for you (`the-feed.md`).
 
 ## 5. Needs you
 
@@ -180,6 +182,7 @@ their team space. It is the heart of working with KILN: if Needs you is empty, n
 |---|---|---|---|
 | **Gate decision** | Code review gate · kiln-v1 · r10 | that factory's lane | gate task |
 | **Roadmap gate** | which features next · kiln-v1 | that factory's next feature | roadmap task |
+| **Charter approval or amendment** | approve experience charter v1.0.0 · kiln-v1 (a charter amendment is taken at the Roadmap gate) | the factory's first Roadmap gate, or the amendment | charter task |
 | **Risky action** | delete a tracked file · worker in step 2 | that step | tool approval |
 | **Policy stop** | egress blocked · budget reached · judge unavailable | that step or lane | policy |
 | **Question from a step** | a working agent asks how to proceed | that step | the step |
@@ -190,7 +193,7 @@ their team space. It is the heart of working with KILN: if Needs you is empty, n
 | **Director suggestion** | *run research to size "Pin judges"* | nothing — optional | director |
 | **Spike time box ended** | extend, conclude or abandon | that spike | bench |
 | **Promotion suggestion** | *these notes look ready to promote* | nothing — optional | keeper |
-| **Opinion request** | Anna asks your view on her Design | nothing — optional | team space |
+| **Opinion request** | Anna asks your view on her Architecture | nothing — optional | team space |
 
 ### 5.2 Three sections
 

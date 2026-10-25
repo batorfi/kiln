@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Durable core |
-| **Release** | `kiln-v1` — position 2 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 2 of 43 in the committed order |
 | **Depends on** | [r12 — Foundations reset](./r12-foundations-reset.md) |
 | **Unlocks** | [r13 — Durable core and the gate contract](./r13-durable-core-and-the-gate-contract.md) |
 | **PRD requirements** | CORE-6 |

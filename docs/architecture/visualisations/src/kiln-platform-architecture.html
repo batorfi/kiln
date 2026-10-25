@@ -1,17 +1,17 @@
 <!doctype html><html><head><meta charset="utf-8"><title>KILN — platform architecture</title>
 <style>
-:root{--bg:#F5F2EE;--ink:#1C1814;--ink2:#3A332C;--muted:#756C62;--faint:#A39A90;--line:#E6E0D8;
---ember:#C2410C;--ember-soft:#FFF1E8;--ember-line:#F6C9AE;--info:#1D4ED8;--info-soft:#EEF3FE;--info-line:#C7D6FA;
---ok:#15803D;--ok-soft:#ECF8F0;--ok-line:#BFE3CB;--deleg:#6D28D9;--deleg-soft:#F4EFFD;--deleg-line:#D9C9F6;
---wait:#B45309;--wait-soft:#FEF6E7;--wait-line:#F3D9A6;--dark:#1A1714;
---sans:-apple-system,"SF Pro Text","Inter","Helvetica Neue",Arial,sans-serif;--mono:"SF Mono",ui-monospace,Menlo,monospace}
+:root{--bg:#F4F1EA;--ink:#14201F;--ink2:#2B3A38;--muted:#56625F;--faint:#8C9490;--line:#DDD7CA;
+--ember:#0F766E;--ember-soft:#DCEEEA;--ember-line:#A9D3CC;--info:#1F4FB8;--info-soft:#E2EAFB;--info-line:#BFD0F5;
+--ok:#276B2A;--ok-soft:#E8F3E4;--ok-line:#C6DFBD;--deleg:#5B33B0;--deleg-soft:#ECE5F9;--deleg-line:#CBBBEF;
+--wait:#8A4B04;--wait-soft:#FDF1D9;--wait-line:#EBCF98;--dark:#10201F;
+--sans:"Inter",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,"DejaVu Sans Mono","SF Mono",Menlo,monospace}
 *{box-sizing:border-box;margin:0;padding:0}
 body{width:2000px;background:var(--bg);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;font-size:13px;line-height:1.35}
-.hdr{background:var(--dark);color:#EDE7E0;padding:30px 48px;display:flex;align-items:center;gap:26px}
-.mark{width:64px;height:64px;background:url(../../../brand/kiln-mark.svg) center/contain no-repeat}
-.hdr h1{font-size:34px;letter-spacing:.14em;font-weight:800}.hdr h1 span{letter-spacing:0;font-weight:500;color:#FDBA74;font-size:24px;margin-left:14px}
-.hdr p{color:#BFB5AA;font-size:15px;margin-top:6px}
-.hdr .lg{margin-left:auto;display:grid;grid-template-columns:auto auto;gap:6px 18px;font-size:12.5px;color:#D9D0C6}
+.hdr{background:var(--dark);color:#E9EFEC;padding:30px 48px;display:flex;align-items:center;gap:26px}
+.mark{width:64px;height:64px;background:url(../../../brand/kiln-mark-dark.svg) center/contain no-repeat}
+.hdr h1{font-size:34px;letter-spacing:.14em;font-weight:800}.hdr h1 span{letter-spacing:0;font-weight:500;color:#2DD4BF;font-size:24px;margin-left:14px}
+.hdr p{color:#B9CBC6;font-size:15px;margin-top:6px}
+.hdr .lg{margin-left:auto;display:grid;grid-template-columns:auto auto;gap:6px 18px;font-size:12.5px;color:#D2CCBD}
 .lg i{display:inline-block;width:26px;height:0;border-top:2.5px solid;vertical-align:middle;margin-right:8px}
 #wrap{position:relative;padding:28px 48px 34px;display:grid;grid-template-columns:1fr 380px;gap:22px}
 svg#links{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
@@ -26,9 +26,9 @@ svg#links{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
 .c b{display:block;font-size:13.5px;margin-bottom:3px}
 .c span{display:block;color:var(--ink2);font-size:11.5px}
 .c .t{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:4px}
-.L1 .lt{background:#FFF7F0}.L1 .c{border-color:var(--ember-line)}
-.L2 .lt{background:#FFFBF5}.L2 .c{border-color:var(--wait-line)}
-.L3 .lt{background:#F7F5F2}
+.L1 .lt{background:#EAF5F2}.L1 .c{border-color:var(--ember-line)}
+.L2 .lt{background:#F2F8F6}.L2 .c{border-color:var(--wait-line)}
+.L3 .lt{background:#F6F3EC}
 .L4 .lt{background:var(--info-soft)}.L4 .c{border-color:var(--info-line)}
 .L5 .lt{background:var(--ok-soft)}.L5 .c{border-color:var(--ok-line)}
 .c.key{border-width:2.5px;border-color:var(--ink2)}
@@ -39,7 +39,7 @@ svg#links{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
 .panel h3{font-size:15px;margin-bottom:6px}.panel p{font-size:12px;color:var(--ink2)}
 .panel ul{margin:6px 0 0 16px;font-size:12px;color:var(--ink2)}.panel li{margin:2px 0}
 .panel.team{background:var(--info-soft);border:2px dashed var(--info-line)}
-.panel.cc{background:#FBFAF8}
+.panel.cc{background:#FAF8F3}
 .ccnote{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .badge{font:700 11px var(--sans)}
 .foot{padding:0 48px 30px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
@@ -48,8 +48,8 @@ svg#links{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
 .wm{padding:0 48px 22px;color:var(--faint);font-size:11.5px}
 </style></head><body>
 <div class="hdr"><div class="mark"></div><div><h1>KILN<span>platform architecture</span></h1><p>Layers, components and connections — one workshop per person, one host per machine, one process and one durable store per factory.</p></div>
-  <div class="lg"><span><i style="border-color:#C2410C"></i>decisions &amp; commands</span><span><i style="border-color:#1D4ED8"></i>events &amp; views</span>
-  <span><i style="border-color:#15803D"></i>model inference &amp; residency</span><span><i style="border-color:#6D28D9;border-top-style:dashed"></i>coordination &amp; external</span></div></div>
+  <div class="lg"><span><i style="border-color:#0F766E"></i>decisions &amp; commands</span><span><i style="border-color:#1F4FB8"></i>events &amp; views</span>
+  <span><i style="border-color:#276B2A"></i>model inference &amp; residency</span><span><i style="border-color:#5B33B0;border-top-style:dashed"></i>coordination &amp; external</span></div></div>
 
 <div id="wrap">
 <svg id="links"></svg>
@@ -126,7 +126,7 @@ svg#links{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
 <div class="wm">KILN concept · platform architecture · Oct 2026 · illustrative, not a design decision · sources: docs/prd/kiln-prd.md §8–9, docs/architecture/explainers/kiln-architecture.md</div>
 
 <script>
-const C={dec:'#C2410C',ev:'#1D4ED8',mod:'#15803D',co:'#6D28D9'};
+const C={dec:'#0F766E',ev:'#1F4FB8',mod:'#276B2A',co:'#5B33B0'};
 // [from, to, kind, text, fromSide, toSide, fx, tx]
 const L=[
  ['person','browser','dec','reads briefs, makes moves','r','l'],

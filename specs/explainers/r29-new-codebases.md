@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Getting started |
-| **Release** | `kiln-v1` — position 19 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 20 of 43 in the committed order |
 | **Depends on** | [r26 — Agents and flows](./r26-agents-and-flows.md), [r28 — First run](./r28-first-run.md) |
 | **Unlocks** | [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md), [r41 — New codebases, the rest](./r41-new-codebases-the-rest.md) |
 | **PRD requirements** | GREEN-1…5 |
@@ -39,7 +39,7 @@ Starting from an empty repository, intent comes before code: a product brief, a 
 | GREEN-1 | **Start empty**: create the repository, add Spec Kit (files shown before the first commit), local-only by default; always a KILN-managed worktree. | Must |
 | GREEN-2 | **Product brief**: problem, users, outcomes, non-goals, constraints, quality attributes, success measures — written or drafted with the planner, approved, a knowledge page *from a person*; feeds the roadmap brief. | Must |
 | GREEN-3 | **Constitution written from the brief** with `speckit.constitution`, each principle citing its origin; approved before the first feature; amendments recorded and versioned. | Must |
-| GREEN-4 | **Technology decisions**: open choices listed, evidence from research steps and spikes where the bench is available (M13), decided by a person, recorded as decision pages (and constitution amendments where binding); later Design gates measure against them. No starter templates: choices start open; prior decisions in workshop knowledge are evidence, never defaults; no built-in Decisions gate (decision pages appear in the Design brief). | Must |
+| GREEN-4 | **Technology decisions**: open choices listed, evidence from research steps and spikes where the bench is available (M13), decided by a person, recorded as decision pages (and constitution amendments where binding); later Architecture gates measure against them. No starter templates: choices start open; prior decisions in workshop knowledge are evidence, never defaults; no built-in Decisions gate (decision pages appear in the Architecture brief). | Must |
 | GREEN-5 | **Walking skeleton first**, on a **foundation flow** (standard + `no_triage_skip`): layout, build, tests, CI, formatter/linter, one end-to-end path, quickstart, conventions page; Verification from a clean clone. For a library, build, test, CI, packaging and one public function end to end through the public API is a complete skeleton. | Must |
 
 ## How it is proven

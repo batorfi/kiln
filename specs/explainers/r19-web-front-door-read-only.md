@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Front door |
-| **Release** | `kiln-v1` — position 9 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 9 of 43 in the committed order |
 | **Depends on** | [r15 — The record](./r15-the-record.md) |
 | **Unlocks** | [r20 — Gates on the web](./r20-gates-on-the-web.md), [r27 — Health and broken guarantees](./r27-health-and-broken-guarantees.md) |
 | **PRD requirements** | WEB-1, 2, 4, OBS-1 (basic) |

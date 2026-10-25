@@ -166,7 +166,7 @@ decisions.
   agent, or both; risky actions are held for a person as everywhere else. **No pull request to `main` can come from a
   spike branch.** The spike is archived when it concludes.
 - **Spike reports** — what was measured, not what was hoped. *Propose as a feature* seeds a roadmap entry and its
-  Concept or Design brief.
+  Concept or Architecture brief.
 - **The candidate list** — per factory: candidates from notes, research and spike reports, with links kept; editable by
   deciders and Curators; proposable to the team roadmap with evidence. Flaky tests from a brownfield baseline arrive here
   too.
