@@ -1,6 +1,7 @@
 // The registry `kiln check` runs (contracts/cli-check.md). Each story registers its check here.
 
 import { checkLegacy } from "./legacy-identity.ts";
+import { checkBoundaries } from "./boundaries.ts";
 import { checkNetwork } from "./network-lint.ts";
 
 export type CheckName = "network" | "boundaries" | "legacy";
@@ -21,6 +22,7 @@ export const CHECK_NAMES: readonly CheckName[] = ["network", "boundaries", "lega
 
 export const registry: Partial<Record<CheckName, () => CheckResult>> = {
   network: () => checkNetwork(),
+  boundaries: () => checkBoundaries(),
   legacy: () => checkLegacy(),
 };
 
