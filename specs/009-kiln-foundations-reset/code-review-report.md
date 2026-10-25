@@ -1,21 +1,23 @@
 # Code review report: Foundations reset (row r12), the whole branch (T001–T087)
 
-**Branch**: `009-kiln-foundations-reset` @ `906c587` | **Review date**: 2026-10-25 | **Scope**: everything on the branch that is code or configuration — 76 tracked files in `kiln/` (1,775 lines of source, 1,843 lines in 25 test files) plus the unchanged `legacy/` tree
+**Branch**: `009-kiln-foundations-reset` — reviewed at `906c587`; findings 1, 3, 4 and 6 fixed in `8b983e6` and `e3e930c` | **Review date**: 2026-10-25 | **Scope**: everything on the branch that is code or configuration — 76 tracked files in `kiln/` (1,775 lines of source, 1,843 lines in 25 test files) plus the unchanged `legacy/` tree
 **Companions**: [implementation-report.md](./implementation-report.md) · [verification-report.md](./verification-report.md) · **Checked against**: [spec.md](./spec.md), [data-model.md](./data-model.md), [contracts/](./contracts/), [tasks.md](./tasks.md)
 **Supersedes**: the first version of this report (tasks T001–T019 only). Its findings and what became of them are in §6.
 
 ## 1. Verdict
 
+> **Update, same day (Roadmap gate, human@batorfi):** the human chose to fix findings **1, 3 and 4 on this branch before the pull request**. Done in `8b983e6`, with 14 new tests (the new suite is **184**), three mutants of the new regexes each caught (2, 9 and 3 failing tests), and a re-verification on a fresh clone: the five constructs that passed in silence now fail by name; a shallow clone prints `new: 184 tests (5 skipped)`. Finding 6's three document items are fixed in `e3e930c` (`check-not-registered` in `cli-check.md`, the quickstart's Pi version, the contracts' scan roots); the `entry.ts` comment is the one item left. **Open:** finding 2 (inherited; a Roadmap proposal, decided not to change in r12), 5 (no type-check) and 7. The findings below are kept as found; each carries its state.
+
 **The branch is sound and can go to the human's gate.** The move is pure, `legacy/` is byte-identical to the baseline, every spec requirement is met (see the verification report), and the three checks and the runner fail closed in every negative case I tried. I found **no defect that makes a green result wrong for the code as it is written today**. What I found is a set of **gaps in what the checks can see** — the lint and the boundary check read source by pattern, and a few ordinary spellings of an import slip past them *silently*. For checks whose job is to never pass vacuously, that is the finding worth acting on. Nothing was edited in this review.
 
 | # | Severity | Confidence | Area | Finding |
 |---|---|---|---|---|
-| 1 | **Medium** | Confirmed (run, through the CLI) | `checks/lex.ts`, `network-lint.ts` | Import/require spellings the specifier scan does not recognise pass `kiln check network` and `kiln check boundaries` with no output |
-| 2 | **Medium** — inherited, outside r12's scope | Confirmed (run) | `record/log.ts` | A `pre-delegation` record *after* an approval still authorises it (R3/R4 ignore order) |
-| 3 | Low | Confirmed (run) | `checks/` | The scan roots leave holes: `checks/<subdir>/`, files outside `src/`, and relative imports into `kiln/tests/` |
-| 4 | Low | Confirmed (run) | `tests/run.ts` | On a shallow clone or archive the run exits 0, prints `new: 170 tests`, and does not say 5 of them skipped — including the baseline cross-check |
-| 5 | Low | Confirmed (run) | toolchain | No type-check exists; a strict `tsc` run finds 4 errors in the new tree (none changes behaviour) |
-| 6 | Info | Confirmed | docs | `check-not-registered` is still missing from `cli-check.md`; the quickstart names Pi 1.1.0; a comment in `entry.ts` promises behaviour no caller has |
+| 1 | **Medium — fixed** | Confirmed (run, through the CLI) | `checks/lex.ts`, `network-lint.ts` | Import/require spellings the specifier scan does not recognise pass `kiln check network` and `kiln check boundaries` with no output |
+| 2 | **Medium — open** — inherited, outside r12's scope | Confirmed (run) | `record/log.ts` | A `pre-delegation` record *after* an approval still authorises it (R3/R4 ignore order) |
+| 3 | Low — fixed | Confirmed (run) | `checks/` | The scan roots leave holes: `checks/<subdir>/`, files outside `src/`, and relative imports into `kiln/tests/` |
+| 4 | Low — fixed | Confirmed (run) | `tests/run.ts` | On a shallow clone or archive the run exits 0, prints `new: 170 tests`, and does not say 5 of them skipped — including the baseline cross-check |
+| 5 | Low — open | Confirmed (run) | toolchain | No type-check exists; a strict `tsc` run finds 4 errors in the new tree (none changes behaviour) |
+| 6 | Info — mostly fixed | Confirmed | docs | `check-not-registered` is still missing from `cli-check.md`; the quickstart names Pi 1.1.0; a comment in `entry.ts` promises behaviour no caller has |
 | 7 | Info | — | various | Gate range hard-coded in `log.ts`; inherited indentation; `CheckResult` and `registry` notes |
 
 ## 2. What was reviewed and how
@@ -32,7 +34,7 @@
 
 ## 3. Findings
 
-### 1. [Medium · Confirmed] The specifier scan misses ordinary spellings, and the checks pass in silence
+### 1. [Medium · Confirmed · **Fixed in `8b983e6`**] The specifier scan misses ordinary spellings, and the checks pass in silence
 
 `kiln/checks/lex.ts:102` (`MODULE_REFERENCE`) and `kiln/checks/network-lint.ts:35` (`COMPUTED_LOAD`), used by both `kiln check network` and `kiln check boundaries`.
 
@@ -65,7 +67,7 @@ kiln check network      →  PASS network — scanned 24 files
 
 **Why SC-006/SC-007 still hold.** Both criteria are scoped to "the constructs in its negative suite", and every one of those is caught. The verification report is accurate; this finding is that the suite does not yet contain these constructs.
 
-**Fix** (small, in `lex.ts` and `network-lint.ts`, with a negative case per row above in the same commit):
+**Fix** (small, in `lex.ts` and `network-lint.ts`, with a negative case per row above in the same commit) — **as applied**: `moduleLoads` in `lex.ts` replaces the two regexes; the table above is now cases S1–S3 in `checks/tests/network-spellings.test.ts`, plus S4 (plain loads and prose are still not flagged) and S6–S7 (through `checkBoundaries` / `checkNetwork`). The accepted limits of the lint (`const { fetch: f } = globalThis`, `Reflect.get`, `process.binding`) are unchanged and documented. What the fix was meant to do:
 
 - allow optional whitespace everywhere: `\bimport\s*\(`, `\brequire\s*\(`, `(?:^|[^\w$.])(?:import|export)\b[^;'"]*?\bfrom\s*["']`, and the side-effect form `import\s*["']`;
 - decide "literal" by shape, not by first character: an argument is a literal only when it is exactly one quoted string (or a backtick string with no `${`) followed by `)`; anything else is `network-computed`.
@@ -86,7 +88,7 @@ The control — the same approval with no pre-delegation at all — fails `R3 �
 
 **Suggestion**: not in r12. Record it as a proposal for the next row that touches the log: a pre-delegation must have a lower `seq` than the completion it authorises, name the same gate (and, ideally, the same scope), and `R4` should say so in words. A negative case belongs with the fix. (A self-asserted `preDelegation: {}` inside the completion is not a gap: the schema refuses it for lack of `of`/`by`/`at`.)
 
-### 3. [Low · Confirmed] The scan roots leave holes
+### 3. [Low · Confirmed · **Fixed in `8b983e6`**] The scan roots leave holes
 
 `kiln/checks/network-lint.ts:149-168` (`networkScanFiles`, shared by the lint and the boundary check) · `kiln/checks/boundaries.ts:123-130`
 
@@ -95,9 +97,9 @@ The control — the same approval with no pre-delegation at all — fails `R3 �
 - **Relative imports out of the package tree**: `packages/lane/src` importing `../../../tests/pi-tier.ts` → `PASS boundaries`. The resolved path is neither `packages/…` nor `checks/…`, so `toPackage` is never called and nothing says no. That includes `fixtures/`, and the (unscanned) `tests/` helpers, which spawn processes and read the network-adjacent `pi`.
 - **Dot-directories** (`collect` skips every name that starts with `.`) are skipped by design for `.git`; `packages/x/src/.hidden/evil.ts` is skipped too.
 
-None of this is reachable by accident in a tree of this size, but each is a silent pass in a check whose responsibility is "never pass vacuously". **Fix**: scan `checks/**` minus `checks/tests/`; make a relative import that resolves inside `kiln/` but outside `packages/` and `checks/` a `boundary-forbidden-import`; state the dot-directory rule in the check's note line.
+None of this is reachable by accident in a tree of this size, but each is a silent pass in a check whose responsibility is "never pass vacuously". **Fix**: scan `checks/**` minus `checks/tests/`; make a relative import that resolves inside `kiln/` but outside `packages/` and `checks/` a `boundary-forbidden-import`; state the dot-directory rule in the check's note line. **As applied:** both checks scan everything under `packages/<name>/` and `checks/`, recursively, skipping only `tests/` directories, `*.test.*` files, `node_modules` and `.git` (a hidden directory *is* scanned); a relative import into `kiln/tests/`, `fixtures/` or the root is `boundary-forbidden-import`. Cases S8–S12; `contracts/boundaries.md` and `cli-check.md` say so. The real tree still scans 22 files (nothing was hiding).
 
-### 4. [Low · Confirmed] Skipped tests are invisible at the end of a run
+### 4. [Low · Confirmed · **Fixed in `8b983e6`**] Skipped tests are invisible at the end of a run
 
 `kiln/tests/run.ts:92-93, 150` · `kiln/checks/tests/legacy-baseline.test.ts:14-30` · `kiln/checks/tests/netscan-untouched.test.ts:20-24`
 
@@ -110,7 +112,7 @@ new: 170 tests            exit 0
 
 Five tests skip when git history is missing: the two **L6** tests (the manifest's tree id and blob ids against the baseline commit — the half of SC-003 that is "proved by a test" against git itself) and the three r7 history tests. Each prints a reason, but only inside the test stream; the runner's closing line counts them as tests that ran and the exit code is 0. `kiln check legacy` still guards the content against the manifest, so no tampering goes undetected; what is lost silently is the proof that the manifest *is* the baseline. This is the "skipped, never silent" rule applied to a tier the runner does not manage.
 
-**Fix**: parse `ℹ skipped N` the way `ran` is parsed and print `new: 165 tests, 5 skipped`; optionally let `--strict` (or `CI=1`) fail when the L6 tests skip.
+**Fix**: parse `ℹ skipped N` the way `ran` is parsed and print `new: 165 tests, 5 skipped`; optionally let `--strict` (or `CI=1`) fail when the L6 tests skip. **As applied:** the line reads `new: 184 tests (5 skipped)` on a shallow clone (verified) and `legacy: 500 tests (30 skipped)` always; the plain count when nothing skipped (`tests/runner/skipped-summary.test.ts`, R8). The `--strict` option was not added: a shallow clone is a legitimate place to run the suite, and the line now says what did not run.
 
 ### 5. [Low · Confirmed] There is no type-check, and strict `tsc` finds four errors
 
@@ -124,11 +126,11 @@ Five tests skip when git history is missing: the two **L6** tests (the manifest'
 
 None changes behaviour (Node strips the types), and `legacy/` has far more (`tsc --strict` there reports 44). It is recorded because the earlier review said a type-check was "not possible here" and the hole is now measured: **4 errors, 0 in `contracts` source, 0 in `checks/`, `cli/` or `tests/run.ts`**. **Suggestion**: document `npx -y -p typescript tsc --noEmit -p kiln` as an optional step (it adds nothing to the repository) and fix the three test/cast lines when someone touches those files.
 
-### 6. [Info · Confirmed] Documents that no longer match
+### 6. [Info · Confirmed · mostly fixed in `e3e930c`] Documents that no longer match
 
-- `contracts/cli-check.md` does not list `check-not-registered`, the code `runChecks` returns for a name with no entry (open since the first review). It cannot occur with all three registered, but a future `CheckName` without an entry will emit it.
-- `quickstart.md` §1 says "on a machine with Pi 1.1.0 … `live-Pi tier skipped: Pi 1.1.0 installed`". This host now has **Pi 1.4.0** and printed `live-Pi tier skipped: Pi 1.4.0 installed, measured [0.85.1]` — the runner behaves correctly, the example is stale. Say "Pi <installed>".
-- `packages/record/src/entry.ts:6` says a guard that cannot tell "must say no rather than throw — and callers print usage when argv is empty". No caller does: `main.ts`, `log.ts`, `roadmap.ts` all run their command *only if* the guard says yes, so a guard that fails to resolve `argv[1]` ends in silence and exit 0 — the original silent-pass class. The realistic triggers are few (a nonexistent `argv[1]`), but the comment should either be true or be removed.
+- *(fixed)* `contracts/cli-check.md` did not list `check-not-registered`, the code `runChecks` returns for a name with no entry (open since the first review). It cannot occur with all three registered, but a future `CheckName` without an entry will emit it.
+- *(fixed)* `quickstart.md` §1 said "on a machine with Pi 1.1.0 … `live-Pi tier skipped: Pi 1.1.0 installed`". This host now has **Pi 1.4.0** and printed `live-Pi tier skipped: Pi 1.4.0 installed, measured [0.85.1]` — the runner behaves correctly, the example is stale. Say "Pi <installed>".
+- *(open)* `packages/record/src/entry.ts:6` says a guard that cannot tell "must say no rather than throw — and callers print usage when argv is empty". No caller does: `main.ts`, `log.ts`, `roadmap.ts` all run their command *only if* the guard says yes, so a guard that fails to resolve `argv[1]` ends in silence and exit 0 — the original silent-pass class. The realistic triggers are few (a nonexistent `argv[1]`), but the comment should either be true or be removed.
 
 ### 7. [Info] Smaller observations
 
@@ -158,12 +160,12 @@ None changes behaviour (Node strips the types), and `legacy/` has far more (`tsc
 
 ## 5. Recommended order
 
-1. **Finding 1** — before r13 builds more code under these checks; it is a few regexes and one negative case per row of the table.
-2. **Finding 3 and 4** — alongside, in the same files; both are "make a silent pass loud".
-3. **Finding 2** — a Roadmap-gate proposal, not an r12 change (it alters the first program's behaviour).
-4. **Finding 5 and 6** — whenever those files are next touched.
+*Done at the Roadmap gate:* findings 1, 3 and 4, and the document items of 6. *Still open:*
 
-None of the findings changes the spec or the plan. Findings 1, 3 and 4 would each add a negative case and a line to a contract; none needs a decision from the human.
+1. **Finding 2** — a Roadmap-gate proposal, not an r12 change (it alters the first program's behaviour).
+2. **Finding 5, the `entry.ts` comment of 6, and 7** — whenever those files are next touched.
+
+None of the findings changed the spec or the plan. Findings 1, 3 and 4 each added negative cases and a line to a contract.
 
 ## 6. What became of the earlier review's findings
 

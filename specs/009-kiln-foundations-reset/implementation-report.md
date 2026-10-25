@@ -1,21 +1,20 @@
 # Implementation report: Foundations reset (row r12)
 
-**Branch**: `009-kiln-foundations-reset` | **Report date**: 2026-10-25 (first written at `719ee13`; brought to the end of the row at `906c587`) | **Head**: `906c587` | **Base**: `main` @ `299b0a5` (the baseline commit)
+**Branch**: `009-kiln-foundations-reset` | **Report date**: 2026-10-25 (first written at `719ee13`; brought to the end of the row at `906c587`) | **Head**: `e3e930c` (the row closed at `906c587`; the review fixes and the gate came after) | **Base**: `main` @ `299b0a5` (the baseline commit)
 **Spec**: [spec.md](./spec.md) · **Plan**: [plan.md](./plan.md) · **Tasks**: [tasks.md](./tasks.md) · **Baseline log**: [baseline.md](./baseline.md)
 **Companions**: [code-review-report.md](./code-review-report.md) · [verification-report.md](./verification-report.md)
 
 > **How to read this report.** §1–§2 and §4–§8 describe the branch **as it stands now**. §3 and §9–§15 are the dated record of how it got there (what each phase built, what the
-> amendments changed) and are kept as written; §16 covers the last phase, which they predate.
+> amendments changed) and are kept as written; §16 covers the last phase, which they predate; §17–§18 are what happened after the row closed (review, Roadmap gate, review fixes).
 
 ## 1. Status in one paragraph
 
 **The row is implemented: 87 of 87 tasks are done, all five user stories and Polish, in 39 commits.** The first program's tree lives in `legacy/`, byte-identical to the baseline (tree id
 `20a82c7e…`, 168 files) and still green. The new `kiln/` holds nine packages and `checks/`, with **no runtime dependency and nothing to install**: flow v1 and flow v2 (the twelve-gate flow of constitution
 v2.1.0) as data, the tier policy, the record validators, the pure affinity logic, one test runner, and three checks — `kiln check network`, `boundaries` and `legacy` — each of which fails by name
-and none of which passes vacuously. `npm test` → exit 0, **`new: 170 tests · legacy: 500 tests`**; `npm run check` → exit 0, three `PASS`. All eight success criteria are met with two stated limits
+and none of which passes vacuously. `npm test` → exit 0, **`new: 184 tests · legacy: 500 tests (30 skipped)`** (170 at the close of the row; 14 added by the review fixes); `npm run check` → exit 0, three `PASS`. All eight success criteria are met with two stated limits
 (a measured Pi is stub-tested, not run; macOS only) — see the [verification report](./verification-report.md). The [whole-branch code review](./code-review-report.md) found no defect in what the
-checks report, and seven smaller items (the main one: a few valid spellings of an import that the lint and the boundary check cannot see). **The row stays `queued` in `specs/ROADMAP.md`**: closing it is
-the human's Roadmap-gate move (FR-021).
+checks report and seven smaller items; the three that mattered (valid spellings of an import the lint and the boundary check could not see, scan-root holes, skipped tests hidden in the summary) are **fixed**. **The Roadmap gate sat on 2026-10-25** (human@batorfi): it approved the pending text edits of `60a2c7e` and decided that **r12 stays `queued` until its pull request is merged** — a row is `done` only with its merged `@PR#N` — so the next gate entry closes it.
 
 ## 2. Task progress
 
@@ -117,13 +116,13 @@ Behaviour measured on Node 25.9 and 22.18 (no checks are registered, so every ch
 | Question | Answer |
 |---|---|
 | Is `legacy/` green? | **Yes** — 500 tests, 0 failures. With the Pi tier on and an unmeasured Pi (`--pi`, or `KILN_PI=1`) 8 live-Pi tests fail by name, by design (the first program's behaviour; not a regression) |
-| Does `cd kiln && npm test` work? | **Yes** — exit 0; `new: 170 tests · legacy: 500 tests`; prints `live-Pi tier skipped: Pi 1.4.0 installed, measured [0.85.1]` once |
+| Does `cd kiln && npm test` work? | **Yes** — exit 0; `new: 184 tests · legacy: 500 tests (30 skipped)`; prints `live-Pi tier skipped: Pi 1.4.0 installed, measured [0.85.1]` once |
 | `npm run check`? | **Yes** — `PASS network` (22 files), `PASS boundaries` (22 files), `PASS legacy` (168 files); exit 0 |
 | `validate:log` / `validate:roadmap`? | Yes — `PASS` on the r7 walk (under v1 and v2) and on `specs/ROADMAP.md` |
 | Is the README accurate? | Yes — rewritten in T078 (two trees, the new commands); every command in its "Run it" block works |
 | Type-check? | None exists; a strict `tsc` run from a scratch install finds 4 errors, none behavioural ([review](./code-review-report.md) finding 5) |
-| Size | `kiln/`: 76 tracked files, 1,775 lines of source, 1,843 lines in 25 test files; `legacy/`: 168 files, unchanged; 285 files changed against `main` (11,192 insertions, 158 deletions) |
-| Working tree | clean at `906c587` |
+| Size | `kiln/`: 78 tracked files, 1,808 lines of source, 2,040 lines in 27 test files (at `906c587`: 76 files, 1,775 and 1,843 in 25); `legacy/`: 168 files, unchanged; 285 files changed against `main` (11,192 insertions, 158 deletions) |
+| Working tree | clean at `e3e930c` |
 
 ## 6. Departures from the written plan
 
@@ -144,21 +143,20 @@ All are in `plan.md`'s "Implementation notes" (T082). In one place:
 | Claim | Command |
 |---|---|
 | Legacy tree equals baseline | `git rev-parse HEAD:legacy` = `git rev-parse 299b0a5:kiln` = `20a82c7e214be256c804f6e8f1cd4cce9c8e9874` |
-| Both suites, exit code, counts | `cd kiln && npm test` → `new: 170 tests · legacy: 500 tests`, exit 0 (fresh clone `/tmp/kiln-fresh`) |
+| Both suites, exit code, counts | `cd kiln && npm test` → `new: 184 tests · legacy: 500 tests (30 skipped)`, exit 0 (fresh clone of `e3e930c`) |
 | The checks | `npm run check`; each with a planted violation on a scratch copy (quickstart §2, §4, §5) |
-| Node floor | `npx -y node@22.18.0 tests/run.ts --new-only`, likewise 23.6.0, 24.1.0 → 170 / 170 / 0 each; `kiln check` all `PASS` |
+| Node floor | `npx -y node@22.18.0 tests/run.ts --new-only`, likewise 23.6.0, 24.1.0 → 184 / 184 / 0 each; `kiln check` all `PASS` |
 | Census | `node tests/tools/count-ported.ts` |
 | Roadmap untouched | `git diff 60a2c7e -- specs/ROADMAP.md` (empty); `validate:roadmap` `PASS` |
 | Type-check | `tsc --noEmit --strict` from `/tmp/tscheck` (outside the repository) |
-| Task state | 87 `[X]` and 0 `[ ]` in `tasks.md`; `git log main..HEAD` — 39 commits |
+| Task state | 87 `[X]` and 0 `[ ]` in `tasks.md`; `git log main..HEAD` — 44 commits |
 
 ## 8. Next steps
 
-1. **The human's Roadmap-gate move**: close row r12 (this report and the verification report are the evidence); decide the proposed text edits of `60a2c7e` at the same gate.
-2. **Before r13 builds on the checks**, take review finding 1 (import/require spellings the lint and the boundary check miss), 3 (scan-root holes) and 4 (skipped tests invisible in the closing line): small changes in `checks/lex.ts`,
-   `checks/network-lint.ts`, `checks/boundaries.ts` and `tests/run.ts`, each with its negative case. None needs a decision.
+1. **Open the pull request and merge it** (the human's Merge gate). `gh` is not installed on this machine; the compare page is `github.com/batorfi/kiln/compare/main...009-kiln-foundations-reset`. The branch has `main`'s PR #1 merged in.
+2. **Then the Roadmap gate re-opens** (it is already decided what happens there): row r12 → `status: "done"`, `outcome: "@PR#N"`, `gate0.note` entry 3; the next row is **r42**, the go/no-go spike on Pi Durable (a no-go re-opens the gate before r13).
 3. **As a Roadmap proposal, not an r12 change**: review finding 2 — a pre-delegation recorded *after* the approval it authorises still satisfies R3/R4. It is the first program's behaviour, preserved on purpose (FR-011).
-4. **Housekeeping**: `check-not-registered` into `contracts/cli-check.md`; the quickstart's "Pi 1.1.0" to "Pi <installed>"; optionally document an out-of-tree `tsc` run.
+4. **Whenever those files are next touched**: finding 5 (no type-check; 4 strict errors; optionally document an out-of-tree `tsc` run) and the `entry.ts` comment of finding 6.
 5. The 19 deferred cases wait in `legacy/` for r13 and r16, each named in `checks/legacy-copies.json`.
 
 ## 9. Amendment 2026-10-25 — flow v2 is the twelve-gate flow
@@ -297,4 +295,25 @@ Remaining: **Polish T081–T087** — explainers (`kiln-v1.md` §5.2, `kiln-arch
 ## 17. After the row: whole-branch review and re-verification (2026-10-25)
 
 The [code review](./code-review-report.md) read all authored source and probed it adversarially; the [verification](./verification-report.md) was re-run from a fresh clone and extended. Outcome: no success criterion
-fails; the findings are gaps in what the checks can *see* (§8 items 2–4) and one inherited stream rule (§8 item 3). Nothing in the repository was changed by either — these are the only edits of this pass: the three reports.
+fails; the findings were gaps in what the checks can *see* (import spellings, scan roots, skipped tests in the summary), one inherited stream rule (a late pre-delegation), no type-check, and some stale documents. Nothing in the
+repository was changed by the review itself — only the three reports (`a2d07dc`).
+
+## 18. The Roadmap gate and the review fixes (2026-10-25)
+
+**The gate** (`3cd18bc`, 2026-10-25T18:17:27Z, human@batorfi, `gate0.note` entry 2). Three decisions, taken by the human on a brief that said what the gate could and could not do:
+1. *Sequence:* decide the pending edits now; r12 stays `queued` until the PR is merged (the roadmap schema allows `done` only with `@PR#N`; the gate re-opens "after every merged or abandoned feature").
+2. *The `60a2c7e` text edits* (the twelve-gate flow and the charter, design system and interface-gate proposals folded into r12, r14, r15, r17, r19, r20, r22, r28–r30, r32, r43): **APPROVE as written**. Four lines of `ROADMAP.md` changed (the header's "proposed" label, `updated`, `gate0.at`, `gate0.note`); no row, dependency or order. `validate:roadmap` → `PASS`.
+3. *Review findings 1, 3, 4:* fix them on this branch before the PR. Finding 2 (inherited) is not changed by r12.
+
+**The fixes** (`8b983e6`; documents `e3e930c`):
+
+| Finding | Change | Where | Tests |
+|---|---|---|---|
+| 1 import spellings | `moduleLoads`: optional whitespace everywhere; an `import()`/`require()` argument that is not exactly one string literal is `network-computed` | `checks/lex.ts`, `checks/network-lint.ts` | `network-spellings.test.ts` S1–S7 (12 cases in the file) |
+| 3 scan roots | both checks scan everything under `packages/<name>/` and `checks/`, recursively (tests, `node_modules`, `.git` excluded); a relative import into `tests/`, `fixtures/` or the `kiln/` root is `boundary-forbidden-import` | `checks/network-lint.ts` (`networkScanFiles`), `checks/boundaries.ts` | S8–S12 |
+| 4 skipped tests | the closing line shows skips: `new: 184 tests (5 skipped)` | `tests/run.ts` | `tests/runner/skipped-summary.test.ts` R8 (2 cases) |
+| 6 documents | `check-not-registered`; scan roots; the summary line; the quickstart's Pi version and two more planted violations | `contracts/*.md`, `quickstart.md` | — |
+
+**Numbers.** New suite 170 → **184** (+14); ported cases still 54 of 54; scanned files still 22 (nothing was hiding in the real tree); mutants of the new regexes fail 2, 9 and 3 tests. Re-verified on a fresh clone of `e3e930c`: `npm test` exit 0, `npm run check` exit 0, Node 22.18 / 23.6 / 24.1 / 25.9 → 184 tests each, the five formerly silent constructs now fail by name, a `--depth 1` clone prints `(5 skipped)`.
+
+**One thing the fixes do not do:** the network lint stays a lint. `const { fetch: f } = globalThis`, `Reflect.get(globalThis, "fetch")` and `process.binding` are still not detected, as the lint's header says; runtime enforcement is the residency module's (r16).
