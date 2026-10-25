@@ -157,3 +157,17 @@ Recorded here so T082 (the plan's "Implementation notes") has them in one place.
 4. Then US3 → US4 → US5 → Polish as ordered in `tasks.md`.
 
 The row stays `queued` in `specs/ROADMAP.md`; closing it is the human's Roadmap-gate move (FR-021).
+
+## 9. Amendment 2026-10-25 — flow v2 is the twelve-gate flow
+
+After this report was first written, `main` gained constitution **v2.1.0** (PR #1), and the human chose **option 1: v2 = the twelve-gate flow now**. Done:
+
+- **Documents:** `spec.md` (status block, US3, FR-007/008/009/015/019/020, SC-004/005/008), `plan.md` (new *Amendment 2026-10-25* section A1–A8, constitution check),
+  `data-model.md` §1–4, `contracts/flow-and-records.md` (§1–5, new rows F10, F11), `research.md` (R6/R7 amended, new R16), `quickstart.md`, the checklist note,
+  and `tasks.md` (T008, T009, T011, T012, T048–T056, T058, T080–T082; the count stays 87).
+- **Code already delivered, amended:** `moves.ts` (`GateKey` and `GateId` gain `2a-experience`/`6a-ui-review` and `"2a"`/`"6a"`; `GATE_KEY_OF` has 12 entries),
+  `flow/types.ts` (`AppliesWhen`, `GateDefinition.appliesWhen` and `check`), `flow/index.ts` (`hasGate`; `moveAllowed` is false for a gate the flow lacks).
+- **Re-measured:** v1/legacy parity script — 0 mismatches; `hasGate("2a"|"6a","v1")` false, `hasGate(6,"v1")` true; an unknown id still throws `unknown gate id`; the CLI exit codes
+  are unchanged.
+- **Not done, by design (FR-021 and scope):** `specs/ROADMAP.md` (its r14 text still says "ten gates" — an `edit-rows` proposal for the next Roadmap gate), the PRD's WORK-2 line (T080),
+  the explainers (T081), `v2.ts` and the tests (US3, T048–T058), evaluating `applies_when`, and the `kiln check design-system` / `foundations` checks.

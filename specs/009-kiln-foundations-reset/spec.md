@@ -11,6 +11,16 @@ human on 2026-10-22 and three more questions on 2026-10-23, each on the recommen
 until its own first gate opens (`chain_unattended=false`). **Nothing here admits a program, advances a gate, decides a gate
 or edits the roadmap** (constitution VI).
 
+**Amended 2026-10-25 (human@batorfi): flow v2 is the twelve-gate flow of constitution v2.1.0.** Main gained constitution 2.1.0 (the
+experience charter, the design system and two built-in interface gates). The default flow is now the Roadmap gate and **eleven** feature
+gates; the Design gate is named **Architecture**; **Experience design** (`2a-experience`) and **UI review** (`6a-ui-review`) are built in
+with a deterministic `applies_when` rule; the judges are the architecture critic, **design critic**, code reviewer, **UI reviewer** and
+verifier. This row now ports **v2 = constitution 2.1.0**; wherever this document says v2 it means that flow. Scope of the amendment: v2 is
+**data and contracts only** — the `applies_when` declaration and the five-judge roster are carried; *evaluating* the rule, the recorded
+*not applicable* outcome and the walk belong to r14/r15. Not touched: `specs/ROADMAP.md` (its r14 text still says "ten gates" — an
+`edit-rows` proposal for the next Roadmap gate, not an edit here, FR-021), the charter and design-system artifacts, and the
+`kiln check design-system` / `foundations` checks (later rows). Details: [plan.md](./plan.md) §"Amendment 2026-10-25".
+
 **Adjusted during planning (2026-10-23)** — three statements did not survive contact with the code; each is corrected below and
 explained in [plan.md](./plan.md) §"Findings that changed the spec": the **NC1 premise and SC-008** (v2's moves are a superset of
 v1's), **FR-010** (the scheduler is half pure logic, half a runner on the lane runtime), and the **legacy location** (a
@@ -41,9 +51,9 @@ starts with its guarantees already tested, and that the old one stays verifiable
 Two facts shape it:
 
 - **The kept code encodes the old law.** The move vocabulary still gives Code review `approve · restart` (constitution
-  v2.0.1 adds `revise`), and the role policy still names `docs-synthesizer` as a line-of-defense judge (v2.0.1 removed it;
-  the Documentation gate is unjudged). Porting it means updating it to v2.0.1 — while the first program's committed walks,
-  made under v1.0.0, must stay verifiable (NC1).
+  v2.0.1 adds `revise`), the role policy still names `docs-synthesizer` as a line-of-defense judge (v2.0.1 removed it;
+  the Documentation gate is unjudged), and the rail has ten gates (v2.1.0 has twelve, with five judges). Porting it means updating
+  it to v2.1.0 — while the first program's committed walks, made under v1.0.0, must stay verifiable (NC1).
 - **The legacy code depends on the code being ported** (the walk, gate and lane modules import the scheduler, roles,
   clock and move vocabulary). How the two trees relate decides whether "frozen" can really mean unchanged (NC2).
 
@@ -62,7 +72,7 @@ Two facts shape it:
 
   | Option | Answer | Implications |
   |---|---|---|
-  | **A (recommended)** | **Versioned flow definitions.** The standard flow is data with a version: **v1** reproduces the first program's rail exactly; **v2** is constitution v2.0.1. A record is validated against the flow version it was made under; all new work uses v2. | History stays verifiable without rewriting it (matches "the record is never rewritten" and gate events carrying flow and gate versions — `the-record.md`); r15's replay of the old walks needs this anyway. One more concept in the contracts. |
+  | **A (recommended)** | **Versioned flow definitions.** The standard flow is data with a version: **v1** reproduces the first program's rail exactly; **v2** is the current constitution (v2.0.1 when this was decided; v2.1.0 since 2026-10-25, which adds two gates). A record is validated against the flow version it was made under; all new work uses v2. | History stays verifiable without rewriting it (matches "the record is never rewritten" and gate events carrying flow and gate versions — `the-record.md`); r15's replay of the old walks needs this anyway. One more concept in the contracts. |
   | B | **Port only v2; leave historical validation in `legacy/`.** The legacy validators keep checking the old walks until r15 replays them as events. | Simplest port; history is checked by frozen code, and the new validators cannot read old records until r15. |
   | C | **Migrate the fixtures** to the v2 vocabulary. | One rule set — but it rewrites committed evidence, which the program has refused to do since r1. Not recommended. |
 
@@ -71,8 +81,8 @@ Two facts shape it:
 
   | Option | Answer | Implications |
   |---|---|---|
-  | **A (recommended)** | **Copy.** `legacy/` keeps a byte-identical, frozen copy of everything it uses; the ported copies in the packages evolve to v2.0.1. | "Frozen" really means unchanged; legacy tests keep passing untouched; v2.0.1 changes cannot break legacy. Cost: duplicated source until legacy is retired, recorded as such. |
-  | B | **Move, and let legacy import from the packages.** | One home for each module — but every v2.0.1 change (Code review `revise`, three judges) changes legacy behaviour and breaks its tests, so legacy is no longer frozen. |
+  | **A (recommended)** | **Copy.** `legacy/` keeps a byte-identical, frozen copy of everything it uses; the ported copies in the packages evolve to the current constitution (v2.1.0). | "Frozen" really means unchanged; legacy tests keep passing untouched; v2.0.1 changes cannot break legacy. Cost: duplicated source until legacy is retired, recorded as such. |
+  | B | **Move, and let legacy import from the packages.** | One home for each module — but every constitution change (Code review `revise`, new judges and gates) changes legacy behaviour and breaks its tests, so legacy is no longer frozen. |
 
 ### Session 2026-10-23 (`/speckit-clarify`)
 
@@ -139,10 +149,11 @@ of failing on a Pi version it never measured, skips with a printed reason.
 
 ---
 
-### User Story 3 — The flow and the judges as data, under constitution v2.0.1 (Priority: P2)
+### User Story 3 — The flow and the judges as data, under constitution v2.1.0 (Priority: P2)
 
-An engineer building r14 needs the default flow — the Roadmap gate and nine feature gates — and each gate's moves as data,
-matching constitution v2.0.1, and the role policy that binds every judge to the strongest model.
+An engineer building r14 needs the default flow — the Roadmap gate and eleven feature gates, two of them conditional on the
+feature touching the interface — and each gate's moves as data, matching constitution v2.1.0, and the role policy that binds every
+judge to the strongest model.
 
 **Why this priority**: r14 executes this data; it must be right before anything walks it.
 
@@ -153,13 +164,21 @@ and the PRD.
 
 1. **Given** the flow data, **When** it is read for the Code review gate, **Then** its moves are `approve · revise · restart`;
    Implementation `approve · split+revise`; Verification `approve · reject` with a fix-round cap of 2; Merge
-   `approve · reject`; the Roadmap gate's row edits; and only the closed set of move kinds appears anywhere.
-2. **Given** the role policy, **When** a judge role (architecture critic, code reviewer, verifier) is bound to a model weaker
-   than the strongest available, **Then** the binding is refused by name; `docs-synthesizer` is not a judge.
+   `approve · reject`; Experience design `approve · revise · reject`; UI review `approve · revise · restart`; the Roadmap gate's
+   row edits; and only the closed set of move kinds appears anywhere.
+2. **Given** the role policy, **When** a judge role (architecture critic, design critic, code reviewer, UI reviewer, verifier)
+   is bound to a model weaker than the strongest available, **Then** the binding is refused by name; `docs-synthesizer` is not a judge.
 3. **Given** a record made by the first program (for example the committed r7 walk), **When** it is validated, **Then** it is
    judged against flow v1, the version it was made under, and passes; a new record is judged against v2.
-4. **Given** the ten gates, **When** their names are read, **Then** they are the plain names of GATE-1 with internal ids
-   unchanged (`gate0`, `1-concept` … `9-pr`).
+4. **Given** the twelve gates, **When** their names are read, **Then** they are the plain names of GATE-1 (Architecture, not Design)
+   with the first program's internal ids unchanged (`gate0`, `1-concept` … `9-pr`) and the two new ids `2a-experience` and
+   `6a-ui-review`, in the order Roadmap gate, Concept, Architecture, Experience design, Specification, Work plan, Implementation,
+   Code review, UI review, Verification, Documentation, Merge.
+5. **Given** the Experience design and UI review gates, **When** their data is read, **Then** each declares its deterministic
+   `applies_when` rule (paths, labels, and for Experience design the journey predicate; for UI review the diff predicates) and no
+   LLM-decided condition; evaluating it, and the recorded *not applicable* outcome, are r14's.
+6. **Given** a record that names a gate which flow v1 does not have (`2a` or `6a`), **When** it is validated against v1, **Then** it
+   fails by name (rule G3, naming the gate and the flow); against v2 it passes if its move is allowed.
 
 ---
 
@@ -209,7 +228,7 @@ management API, only `server` and `host` open listeners) — without reading eve
   own module, never by keeping a copy of the old tree around.
 - **A legacy module imports kept code**: it imports its own frozen copy (NC2-A); it must never import from the new packages,
   and a boundary check says so.
-- **The two copies drift on purpose**: the legacy copy never changes, the ported copy follows v2.0.1. The duplication is
+- **The two copies drift on purpose**: the legacy copy never changes, the ported copy follows the current constitution (v2.1.0). The duplication is
   recorded (which files, since which commit) and ends when legacy is retired.
 - **A run that executes zero tests** must still fail, as today, from the new layout too.
 - **A new package adds network code before the allowlist names it**: the network check fails, naming the file.
@@ -247,13 +266,14 @@ management API, only `server` and `host` open listeners) — without reading eve
 
 **The keep-list (PRD §10.1)**
 - **FR-007**: The standard flow MUST be data and **versioned**: **v1** reproduces the first program's rail exactly (for verifying
-  its records); **v2** is constitution v2.0.1 — ten gates with GATE-1's plain names and one question each, internal ids unchanged.
-  All new work uses v2.
+  its records); **v2** is constitution v2.1.0 — twelve gates (the Roadmap gate and eleven feature gates) with GATE-1's plain names and
+  one question each, the first program's internal ids unchanged and `2a-experience` / `6a-ui-review` added, with `applies_when`
+  declared on the two conditional gates. All new work uses v2.
 - **FR-008**: Each gate MUST offer only its own moves from the closed set of move kinds (approve, revise, reject, restart,
-  split+revise, mitigate, and the Roadmap gate's row edits), per GATE-2 and constitution v2.0.1 — including Code review
-  `approve · revise · restart`.
-- **FR-009**: The role tier policy MUST bind every judge role — architecture critic, code reviewer, verifier, and any judge on
-  an added gate — only to the strongest model, refusing a weaker binding by name (WORK-2, constitution II).
+  split+revise, mitigate, and the Roadmap gate's row edits), per GATE-2, the interface-gates concept (`docs/concepts/ui-flow.md`) and constitution v2.1.0 — including Code review
+  `approve · revise · restart`, Experience design `approve · revise · reject` and UI review `approve · revise · restart`.
+- **FR-009**: The role tier policy MUST bind every judge role — architecture critic, design critic, code reviewer, UI reviewer,
+  verifier, and any judge on an added gate — only to the strongest model, refusing a weaker binding by name (WORK-2, constitution II).
 - **FR-010**: The **pure affinity logic** MUST be ported with its behaviour unchanged — what counts as a swap (a genuine tier
   change only), the swap counter, and the schedule-time strongest-binding guard, which throws synchronously (LANE-2, constitution
   IV). Pricing and recording each swap belong to the lane runtime (`run`, an adapt item) and arrive with the lane task
@@ -266,8 +286,8 @@ management API, only `server` and `host` open listeners) — without reading eve
 - **FR-014**: The committed real walks (`fixtures/r7-*`) MUST be kept as regression fixtures, unmodified.
 - **FR-015**: Every ported module MUST travel with its tests; no first-program test case is dropped (the 54 whose subject is
   ported run from the new packages, the 19 whose subject stays in legacy keep running there, and a record lists those 19 by
-  file and by the row that will port them), and any changed expectation in a ported case MUST cite the constitution v2.0.1
-  rule that changed it.
+  file and by the row that will port them), and any changed expectation in a ported case MUST cite the constitution rule
+  (v2.0.1 or v2.1.0) that changed it.
 
 **Checks**
 - **FR-016**: `kiln check` MUST run the network lint — the first program's, ported with its tokenizer, denylist and never-vacuous
@@ -278,10 +298,11 @@ management API, only `server` and `host` open listeners) — without reading eve
 - **FR-018**: Every check MUST fail by its own name when its condition is not met (the `*-ready` pattern).
 
 **Contracts and records**
-- **FR-019**: The legacy gate-rail contract MUST be superseded by a contract matching constitution v2.0.1 in the `contracts`
+- **FR-019**: The legacy gate-rail contract MUST be superseded by a contract matching constitution v2.1.0 in the `contracts`
   package; the legacy file stays with the legacy probe that reads it.
 - **FR-020**: The PRD's WORK-2 was corrected on 2026-10-22 to drop `docs-synthesizer` as a judge, matching constitution
-  v2.0.1; this row MUST implement the corrected requirement.
+  v2.0.1; this row MUST implement the corrected requirement, extended by constitution v2.1.0's judges (design critic, UI reviewer). The
+  PRD's WORK-2 text still names v2.0.1 and three judges; the constitution governs, and the PRD line is brought in step in T080.
 - **FR-021**: The row MUST leave the admitted program (`specs/ROADMAP.md`) unchanged and MUST NOT record any gate decision.
 
 ### Key Entities
@@ -309,16 +330,16 @@ management API, only `server` and `host` open listeners) — without reading eve
   first-program cases in the kept directories — the 54 ported plus the 19 that stay in legacy — pass; every legacy test that
   passed before still passes.
 - **SC-003**: **100%** of legacy files are byte-identical to their pre-move originals, proven by a test.
-- **SC-004**: The flow data matches constitution v2.0.1 for **all ten gates** — names, moves and judges — checked by a test
+- **SC-004**: The flow data matches constitution v2.1.0 for **all twelve gates** — names, moves and judges — checked by a test
   that reads the constitution's move-kind list and the PRD's GATE-1/GATE-2.
-- **SC-005**: A judge bound to a weaker model is refused in **100%** of the negative cases, and `docs-synthesizer` is never
-  accepted as a judge.
+- **SC-005**: A judge bound to a weaker model is refused in **100%** of the negative cases — for each of the five v2 judges — and
+  `docs-synthesizer` is never accepted as a judge under v2.
 - **SC-006**: `kiln check` detects **every** disallowed construct in its negative suite (a call, an import, an alias, a computed
   access) and fails when it scanned no files.
 - **SC-007**: The boundary check catches **every** forbidden import in its negative suite.
 - **SC-008**: The first program's committed walks validate **unchanged** against flow v1 (and also against v2, whose moves are a
   superset); a Code review `revise` record **fails flow v1 by name** (rule G3, naming the flow) and **passes flow v2** — proving
-  the two versions differ exactly where constitution v2.0.1 says they do.
+  the two versions differ exactly where the constitution says they do (Code review `revise`; the two interface gates; the roster).
 
 ## Assumptions
 

@@ -76,7 +76,7 @@ node packages/record/src/log.ts /tmp/rev.jsonl --flow v2       # PASS
 ```
 
 **Expect** exactly those outcomes: the committed walk passes under both versions; a Code review `revise` fails v1 by name and passes v2. The tier policy: a judge bound below
-`strongest` is refused (`G2/L1 config error … must be "strongest"`) under both rosters; `docs-synthesizer` is a judge under v1 and **not** under v2.
+`strongest` is refused (`G2/L1 config error … must be "strongest"`) under both rosters; `docs-synthesizer` is a judge under v1 and **not** under v2; `design-critic` and `ui-reviewer` are judges under v2 only. A v1 record naming gate `2a` or `6a` fails G3 by name.
 
 ## 4. The network lint *(US4 · SC-006)*
 

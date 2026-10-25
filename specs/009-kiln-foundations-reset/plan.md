@@ -12,7 +12,7 @@ during this planning — see [Findings that changed the spec](#findings-that-cha
 
 r12 reorganises the repository around the restart's design **without adding behaviour**: it *moves* the first program's whole tree to a repo-root
 `legacy/` (byte-identical, proven by a manifest), *creates* the new `kiln/` codebase as nine packages plus `checks/` (the spec's ten units), wired by a Node `imports` map (no install, no
-build), *ports* the keep-list with its tests under constitution v2.0.1 — the flow as **versioned data** (v1 = the first program's rail, v2 = v2.0.1),
+build), *ports* the keep-list with its tests under the current constitution (v2.1.0, amended 2026-10-25) — the flow as **versioned data** (v1 = the first program's ten-gate rail, v2 = the twelve-gate flow of v2.1.0),
 the tier policy with a per-flow judge roster, the validators and schemas, the clock, the pure affinity logic and the network lint — and adds the
 checks that make the layout enforceable (`kiln check network | boundaries | legacy`). The test runner runs both suites and switches the live-Pi tier
 off through the legacy gate's own off switch when the installed Pi is unmeasured, so the default suite is green here (Pi 1.1.0 vs 0.85.1).
@@ -49,12 +49,12 @@ No `NEEDS CLARIFICATION` remains.
 
 ## Constitution Check
 
-*GATE: passed before Phase 0 and re-checked after Phase 1 design (below). Constitution **v2.0.1**.*
+*GATE: passed before Phase 0 and re-checked after Phase 1 design (below). Constitution **v2.1.0** (re-checked 2026-10-25 after the amendment below).*
 
 | Principle | Applies to r12? | Evaluation |
 |---|---|---|
 | **I** Author/judge separation | tier policy only | **Pass.** `bindRole`/`isJudge` ported; judges (per roster) bind only to `strongest`; no model runs in this row |
-| **II** Every judge on the strongest model | yes | **Pass.** Roster v2 = architecture critic, code reviewer, verifier (+ added-gate judges); a weaker binding throws a named error; `docs-synthesizer` is a judge only under v1 (history). Falsified by F7, F8 |
+| **II** Every judge on the strongest model | yes | **Pass.** Roster v2 = architecture critic, design critic, code reviewer, UI reviewer, verifier (+ added-gate judges); a weaker binding throws a named error; `docs-synthesizer` is a judge only under v1 (history). Falsified by F7, F8 |
 | **III** One lane per factory | affinity logic only | **Pass.** No concurrency introduced; the pure logic ports unchanged |
 | **IV** Affinity is the cost lever | partly | **Pass, scoped.** What counts as a swap and the swap counter port unchanged. Pricing and recording swaps live in the lane runtime (`run`), an adapt item — they arrive with r13/r16 (spec FR-010 adjusted, not a violation) |
 | **V** A missing person never approves | log validator | **Pass.** The "no silent approval" rule (R3/R4 stream rules) and its 4 negative cases port unchanged |
@@ -63,7 +63,7 @@ No `NEEDS CLARIFICATION` remains.
 | **VIII** Local by default | yes | **Pass.** No dependency, no socket; the network lint ports and gains a never-vacuous negative suite; allowlist starts empty |
 | **IX** One committed state; surfaces decide nothing | the CLI | **Pass.** `kiln check` is read-only text; no surface holds state |
 | **X–XII** Knowledge / portable / sovereign | no | **N/A.** Nothing touches knowledge, hosts or workshops |
-| *Flow invariants* | flow data | **Pass.** v2: Roadmap gate first, Merge last, ten gates, built-in gates present, closed move kinds, `mitigate` never a person's move |
+| *Flow invariants* | flow data | **Pass.** v2: Roadmap gate first, Merge last, twelve gates in order, built-in gates present (Experience design and UI review carry a declared `applies_when`, never removed), closed move kinds, `mitigate` never a person's move |
 | *Roles & Model Tiers* | roster | **Pass.** Tier rule encoded per roster; configuration files arrive in r17 |
 | *Dependencies* | yes | **Pass.** None added; pinned/recorded/one-seam rules prepared in `boundaries.json` (`externals` empty) |
 | *Governance* | yes | **Pass.** No amendment needed. **Not violations, recorded for honesty:** duplicated source until legacy retires (NC2-A); PRD §8.2's `kiln/legacy/` sketch amended to `legacy/` (a PRD edit, not a constitution one) |
@@ -82,6 +82,25 @@ Planning measured three things the clarified spec had assumed. Each is corrected
 
 Also found, no spec change: the first program's G3 message prints `allowed: []` (a defect fixed in the ported copy only — R6); the network lint's denylist would flag a
 `checks/` module that spawns `git`, so `kiln check legacy` is pure filesystem and the git evidence is a test (R4).
+
+## Amendment 2026-10-25 — flow v2 is the twelve-gate flow (constitution v2.1.0)
+
+`main` gained constitution **2.1.0** while this branch was being built (PR #1, *experience charter*). The human chose **option 1: v2 = the
+twelve-gate flow now** (recorded in this branch's history). What changes, and what does not:
+
+| # | Decision | Consequence |
+|---|---|---|
+| **A1** | v2 = Roadmap gate + 11 feature gates: Concept, **Architecture**, **Experience design**, Specification, Work plan, Implementation, Code review, **UI review**, Verification, Documentation, Merge | `data-model.md` §2 and `contracts/flow-and-records.md` §2 rewritten; F1 covers twelve gates |
+| **A2** | New internal keys `2a-experience` and `6a-ui-review`; existing keys unchanged; the plain name of `2-architecture` is **Architecture** (was *Design*) in v2 (v1 keeps `architecture`) | `GateKey`/`GateId`/`GATE_KEY_OF` gain two entries. `GateId` gains the string ids `"2a"` and `"6a"` (they cannot be integers without renumbering the first program's 1…9) |
+| **A3** | Moves: Experience design `approve · revise · reject`; UI review `approve · revise · restart` (from `ui-flow.md` §4.4, §5.4). "Approve with note" is an *approve* with a required note — a label, not a new kind, so the closed set of move kinds is unchanged | no new `MoveKind` |
+| **A4** | Roster v2 = architecture-critic, design-critic, code-reviewer, ui-reviewer, verifier (constitution II). `docs-synthesizer` is not a judge; `ux-designer` is a producer; `ui-checker` is a deterministic check, not a model role, so it is on the gate (`check`) and not in the roster | F7/F8 cover the five judges |
+| **A5** | `applies_when` is **declared as data** on the two gates (`paths`, `labels`, `journeys` / `diff`), mirroring `ui-flow.md` §4.1/§5.1; **no evaluation** in r12 | r14 evaluates it and records *not applicable*; r15 records `gate.not_applicable`. The shape is the only coupling |
+| **A6** | Flow v1 has no `2a`/`6a`: `hasGate("2a","v1")` is false, `moveAllowed` is false, `moveVocabulary` throws a named error; the log validator reports it as a G3 failure naming gate and flow | the factory-log `gate` field (new schema copy only) admits `"2a"` and `"6a"`; legacy's schema is untouched |
+| **A7** | The committed walks (gates 1…9) still pass under v1 **and** v2: v2 contains v1's gates, and its move sets contain v1's | SC-008 unchanged in meaning |
+| **A8** | Out of scope here: the experience charter and design-system artifacts, `kiln check design-system` and `foundations`, evaluating `applies_when`, the *not applicable* outcome, triage-skip behaviour, `ROADMAP.md` (its r14 row still says "ten gates" — an `edit-rows` proposal for the next Roadmap gate, FR-021), the PRD's WORK-2 line (stale: three judges, v2.0.1 — brought in step by T080) | listed in `verification-report.md` as known follow-ups |
+
+Tasks affected: T008 and T009 (completed — their code is amended), T012, T048–T054, T055, T056, T058, T080–T082. Measured impact on the work already
+done: v1 data and `bindRole` unchanged (parity script, 0 mismatches before and after).
 
 ## Project Structure
 
@@ -219,8 +238,8 @@ Order matters; each phase leaves the repository green.
 | **SC-001** 0 failures with an unmeasured Pi and with the measured Pi | quickstart §1; runner tests R2/R3/R7; the legacy suite through the new runner |
 | **SC-002** ≥ 54 ported cases; all 73 pass | the census ([research R13](./research.md)); per-file counts in each phase's commit; legacy still runs all 73 |
 | **SC-003** 100% of legacy byte-identical | `kiln check legacy` (L1–L5); baseline test (L6) |
-| **SC-004** flow data matches v2.0.1 for all ten gates | contract tests F1, F2 (read the constitution and PRD) |
-| **SC-005** a weaker judge binding refused 100%; `docs-synthesizer` never a judge under v2 | F7, F8 |
+| **SC-004** flow data matches v2.1.0 for all twelve gates | contract tests F1, F2 (read the constitution, the PRD and `docs/concepts/ui-flow.md`) |
+| **SC-005** a weaker judge binding refused 100% (each of the five v2 judges); `docs-synthesizer` never a judge under v2 | F7, F8 |
 | **SC-006** the lint catches every disallowed construct; fails on zero files | bypass/hardened ports + the negative suite; quickstart §4 |
 | **SC-007** the boundary check catches every forbidden import | B1–B10; quickstart §5 |
 | **SC-008** committed walks pass v1 (and v2); a Code review `revise` fails v1, passes v2 | F3–F6; quickstart §3 |

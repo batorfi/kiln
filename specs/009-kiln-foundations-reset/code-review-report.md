@@ -155,3 +155,10 @@ the schema enum runs first. **Fix**: `Object.hasOwn(flows, version)` (and the sa
 4. Finding 5: decide F3's source of truth before T053; add the `main` exit-code test with the first runner (T031).
 
 None of the findings changes the plan's architecture or the spec; 1 and 3 change a task's wording or a Node-range statement.
+
+## 6. Addendum 2026-10-25 — review of the twelve-gate amendment
+
+The amendment touched three completed files. Re-checked: v1/legacy parity still 0 mismatches; `bindRole` and the finding-2 and finding-4 fixes unchanged; `contracts`
+remains I/O-free with no new import; `hasGate` and `moveAllowed` fail closed for a gate a flow lacks, and an id that is no gate still throws a named error. **One thing to watch
+in US3:** the copied factory-log schema still admits only `gate0` and 1…9 until T051, so a v2 record naming `"2a"`/`"6a"` is rejected by the schema, not G3, until then (T051 is
+before T052/T055 in the task order, which is why no change is needed).

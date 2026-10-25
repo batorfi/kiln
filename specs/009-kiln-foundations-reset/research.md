@@ -131,7 +131,7 @@ point of copying); the record exists so the duplication is visible and ends deli
 
 **Decision.**
 - Flow definitions are **frozen TypeScript data** in `packages/contracts/src/flow/`: `v1.ts` reproduces `MOVE_VOCABULARY`, `GATE_NAME`,
-  `MITIGATION_CAP` and the role roster of the first program exactly; `v2.ts` is constitution v2.0.1. Both satisfy one `FlowDefinition`
+  `MITIGATION_CAP` and the role roster of the first program exactly; `v2.ts` is the current constitution (v2.0.1 when written; **v2.1.0, twelve gates, since the 2026-10-25 amendment** — see below). Both satisfy one `FlowDefinition`
   type (see [data-model.md](./data-model.md)). r14 may move the representation to files; r12 fixes only the shape.
 - A `gate-completion` record may carry an optional **`flow`** field, `"v1" | "v2"`, added to the *ported* factory-log schema (legacy's
   schema is untouched). **A record without it is v1** (FR-012). New records, from r15, always write `flow: "v2"`.
@@ -158,13 +158,13 @@ travels with the record. Infer the version from the move set — rejected: ambig
 ## R7 — The judge roster is part of the flow version
 
 **Decision.** `FlowDefinition.roster` lists the judge roles: v1 = `architecture-critic`, `verifier`, `code-reviewer`,
-`docs-synthesizer` (the four line-of-defense roles); v2 = `architecture-critic`, `code-reviewer`, `verifier` — plus any role a team's
+`docs-synthesizer` (the four line-of-defense roles); v2 = `architecture-critic`, `design-critic`, `code-reviewer`, `ui-reviewer`, `verifier` (constitution v2.1.0, II) — plus any role a team's
 added gate declares as a judge (declared in role files from r17; r12 accepts them as an input to `isJudge`). `bindRole(role, tier,
 roster)` takes the roster as a parameter, so the same function serves both versions. The tier policy is otherwise unchanged:
 a judge binds only to `strongest`; a weaker binding throws a named configuration error.
 
 **Rationale.** WORK-2 as corrected on 2026-10-22 and constitution II. The first program's `strongest-model.test.ts` (5 cases) keeps
-asserting the v1 roster; new cases assert that under v2 `docs-synthesizer` is not a judge and a cheap binding for it is not refused as
+asserting the v1 roster; new cases assert that under v2 `docs-synthesizer` is not a judge, that the five v2 judges are refused below `strongest`, and that `design-critic` and `ui-reviewer` are not judges under v1 and a cheap binding for it is not refused as
 a judge violation.
 
 **Alternatives.** Two copies of `roles.ts` — rejected (duplicates the guard). Drop v1's roster — rejected (v1 records and the legacy
@@ -347,3 +347,26 @@ The legacy `fixtures/pi/` extension fixtures are not copied (they belong to the 
 - **Docs that name old paths**: the README, PRD §8.2/§10, and `docs/architecture/explainers/kiln-v1.md` (§5.2) — updated in the docs task;
   historical specs and archived roadmaps are left as the records they are.
 - **Spec Kit tooling** (`.claude/`, `.specify/`) is not part of either tree and is untouched.
+
+## R16 — The twelve-gate flow (amendment 2026-10-25)
+
+**Trigger.** `main` gained constitution 2.1.0 (PR #1): the default flow is the Roadmap gate plus eleven feature gates; *Design* is named
+*Architecture*; *Experience design* (`2a-experience`) and *UI review* (`6a-ui-review`) are built in, conditional on a deterministic `applies_when`; the judges
+include the design critic and the UI reviewer. PRD GATE-1/GATE-3/FLOW-2 and `docs/concepts/ui-flow.md` carry the detail. `specs/ROADMAP.md` and the r14 row
+still say ten gates.
+
+**Decision (human@batorfi, 2026-10-25).** Flow v2 is the twelve-gate flow now, as **data only**: gates, keys, names, questions, moves, judges, roster, and the
+`appliesWhen` declaration. Evaluating `applies_when`, the *not applicable* outcome and the walk stay with r14/r15.
+
+**Measured before deciding.**
+- v1 data and `bindRole` are unaffected: the parity script (legacy vs `contracts`) gave 0 mismatches before and after.
+- The committed walks use gates 1…9 only, so they pass v1 and v2 (v2 contains v1's gates and its move sets contain v1's).
+- The new ids are not integers: `GateId` gains `"2a"` and `"6a"` rather than renumbering the first program's 1…9; the new schema copy admits them; the legacy
+  schema is untouched.
+- No new move kind: "approve with note" is an *approve* with a required note (`ui-flow.md` §4.4, §5.4).
+
+**Alternatives.** (2) Keep v2 as the ten-gate v2.0.1 flow and add a v3 in r14 — rejected: the tests that read the live constitution could not pass, and r12 would
+ship a "current" flow the constitution no longer calls current. (3) Wait for the next Roadmap gate — rejected by the human.
+
+**Follow-ups outside this row** (listed in the verification report): an `edit-rows` proposal for r14's text; the PRD's WORK-2 line (T080); the explainers
+(T081); `kiln check flow` (r14) will check the twelve-gate invariants.
