@@ -237,3 +237,20 @@ Known deviations recorded in `legacy-copies.json`: `report.ts`'s `nameMove`, `lo
 
 Next: US4 (T059–T071, the network lint — ports 20 cases, so ported total becomes 54), US5 (T072–T077, boundaries), then Polish (T081–T087).
 
+## 14. User Story 4 completed — the network lint (2026-10-25, T059–T071)
+
+71 of 87 tasks done. New suite **150 tests, 0 failures**; **all 54 ported cases are live** (SC-002's census).
+
+| Piece | Where |
+|---|---|
+| Tokenizer (comments, strings, templates with nested `${}`, regex literals) with a new offset-aligned `masked` view, and `moduleSpecifiers` | `kiln/checks/lex.ts` |
+| `isLoopbackHost` (copied, not imported) | `kiln/checks/loopback.ts` |
+| The lint: call / import / alias / computed detection, never-vacuous guard, path-keyed allowlist, loopback-literal rule for allowlisted modules; `checkNetwork()` over `packages/*/src` and `checks/*.ts` | `kiln/checks/network-lint.ts`, `network-allowlist.json` (empty), registered in `checks/index.ts` |
+| Tests | 4 ported files (20 cases), `network-lint.test.ts` (19), `check-network.test.ts` (4) |
+
+**Departures from the first program's lint, all recorded in `legacy-copies.json`:** the "exactly one allowlist entry" rule and the Pi-driver process exemption are gone (research R9); `globalThis["fe"+"tch"]` is now `network-computed` (the task and quickstart require it) rather than lumped with aliasing; imports starting `#` (this package's imports map) are internal, not "external dependencies"; and import detection runs on `masked`, so a whole `import x from "left-pad"` written inside a string is no longer mistaken for an import (this matters to the boundary check, B7). New codes added to `cli-check.md`: `network-external-dependency`, `network-nonloopback-url`, `network-allowlist-invalid`.
+
+**Caught on the way:** a `*/` inside a doc comment (`packages/*/src`) ended it early and broke the file — the same shape of trap the tokenizer exists to avoid; and one of my own CLI assertions passed for the wrong reason (the scratch copy had no sibling `legacy/`), so I rewrote it to say what it means.
+
+Next: US5 (T072–T077, `kiln check boundaries`), then Polish (T081–T087).
+

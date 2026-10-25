@@ -20,7 +20,7 @@ export const SCAN_EXTENSIONS = /\.(?:ts|mts|cts|js|mjs|cjs)$/;
 
 export type NetworkCode =
   | "network-call" | "network-import" | "network-alias" | "network-computed" | "network-external-dependency" | "network-nonloopback-url"
-  | "network-zero-files" | "network-root-missing" | "network-allowlist-invalid" | "allowlist-bare-name" | "allowlist-missing-file";
+  | "network-zero-files" | "network-allowlist-invalid" | "allowlist-bare-name" | "allowlist-missing-file";
 export interface Offence { code: NetworkCode; detail: string }
 
 // ── the patterns, kept from the first program ──────────────────────────────────────────────────────────────────────────────────────

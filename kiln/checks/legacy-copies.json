@@ -189,6 +189,62 @@
       "note": "five cases take the v1 roster as a new argument (a changed call site); v2, F7, F8 and the invalid-roster cases are new"
     },
     {
+      "kind": "ported",
+      "legacy": "validate/_netscan.ts",
+      "ported": "checks/network-lint.ts",
+      "since": "15d075d",
+      "retiresWith": "legacy-retirement",
+      "note": "the network lint: call/import/alias/computed detection and the never-vacuous guard; result codes added, computed access split from aliasing, `#…` imports are internal, the one-entry allowlist rule and the Pi-driver process exemption dropped"
+    },
+    {
+      "kind": "ported",
+      "legacy": "validate/_netscan.ts",
+      "ported": "checks/lex.ts",
+      "since": "15d075d",
+      "retiresWith": "legacy-retirement",
+      "note": "the tokenizer; adds `masked` (offset-aligned) and moduleSpecifiers, shared with the boundary check"
+    },
+    {
+      "kind": "ported",
+      "legacy": "src/ollama-resident.ts",
+      "ported": "checks/loopback.ts",
+      "since": "15d075d",
+      "retiresWith": "legacy-retirement",
+      "note": "only isLoopbackHost; the resident itself arrives with r16"
+    },
+    {
+      "kind": "ported",
+      "legacy": "tests/netscan/bypass.test.ts",
+      "ported": "checks/tests/network-bypass.test.ts",
+      "since": "15d075d",
+      "retiresWith": "legacy-retirement",
+      "note": "expectations unchanged; the allowlist cases pass the first program's allowlisted path explicitly"
+    },
+    {
+      "kind": "ported",
+      "legacy": "tests/netscan/hardened.test.ts",
+      "ported": "checks/tests/network-hardened.test.ts",
+      "since": "15d075d",
+      "retiresWith": "legacy-retirement",
+      "note": "expectations unchanged; two path changes (a real packages/contracts/src, the new scan roots)"
+    },
+    {
+      "kind": "ported",
+      "legacy": "tests/netscan/strictly-stronger.test.ts",
+      "ported": "checks/tests/network-strictly-stronger.test.ts",
+      "since": "15d075d",
+      "retiresWith": "legacy-retirement",
+      "note": "unchanged but the import"
+    },
+    {
+      "kind": "ported",
+      "legacy": "tests/netscan/untouched.test.ts",
+      "ported": "checks/tests/netscan-untouched.test.ts",
+      "since": "15d075d",
+      "retiresWith": "legacy-retirement",
+      "note": "historical git-range assertions; unchanged; skips with a printed reason without history"
+    },
+    {
       "kind": "wait",
       "legacy": "tests/negative/async-await.test.ts",
       "portedBy": "r16",

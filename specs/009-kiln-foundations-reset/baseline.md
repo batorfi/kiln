@@ -79,3 +79,15 @@ reported skips.
 | F3 | v1 data against the legacy `MOVE_VOCABULARY` and `GATE_NAME`, parsed from the legacy file's text | equal, 10 gates |
 | `kiln check legacy` | `npm run kiln -- check legacy` | `PASS`, 30 records in the copy record |
 
+### After US4 (T059–T071, 2026-10-25)
+
+| Check | Command | Result |
+|---|---|---|
+| New suite | `cd kiln && npm run test:new` | **150 tests, 150 pass, 0 fail** (was 107) |
+| Ported cases | bypass 7 + hardened 7 + strictly-stronger 3 + untouched 3 added to the 34 | **54 of 54** — the keep-list's whole census (SC-002); the other 19 stay in `legacy/` as `wait` records |
+| The lint's own tests | `checks/tests/network-lint.test.ts` (19) and `packages/cli/tests/check-network.test.ts` (4) | each violation fails by its own name with file and construct; the allowlist is path-keyed; test files and `tests/` are not scanned; the real tree passes |
+| The check | `npm run kiln -- check network legacy` | `PASS network — scanned 21 files; allowlist: 0 entries`; `PASS legacy — scanned 168 files` |
+| Quickstart §4 | a scratch copy with `fetch(` / `globalThis["fe" + "tch"]` planted in `packages/lane/src` | `FAIL network-call packages/lane/src/oops.ts` / `FAIL network-computed …`, exit 1 |
+| Mutation | seven mutants of `network-lint.ts` (zero-files guard, primitive, module denylist, allowlist-everything, computed access, bare-name check, no tokenizer) | each fails ≥ 1 test (1, 3, 4, 15, 3, 1, 9) |
+| Legacy | `git rev-parse HEAD:legacy` | `20a82c7e…` unchanged |
+
