@@ -3,10 +3,13 @@ import type { FlowVersion, GateId, GateKey, MoveKind } from "../moves.ts";
 import { GATE_KEY_OF } from "../moves.ts";
 import type { FlowDefinition, GateDefinition } from "./types.ts";
 import { v1 } from "./v1.ts";
+import { v2 } from "./v2.ts";
 
-export const flows: { readonly v1: FlowDefinition } = { v1 };
-/** The flow a record or call names nothing for. */
-export const DEFAULT_FLOW: FlowVersion = "v1";
+export const flows: { readonly v1: FlowDefinition; readonly v2: FlowDefinition } = { v1, v2 };
+/** The flow all new work uses (constitution v2.1.0). */
+export const CURRENT_FLOW = "v2" satisfies FlowVersion;
+/** The flow a RECORD that names none was made under (FR-012): history is v1. Never the default of a function — see moveVocabulary. */
+export const DEFAULT_RECORD_FLOW = "v1" satisfies FlowVersion;
 /** Verification's automatic fix rounds before a person waits (G4). */
 export const MITIGATION_CAP_DEFAULT = 2;
 
@@ -24,7 +27,7 @@ function keyOf(gate: GateId): GateKey {
 }
 
 /** False for a gate the flow does not have ("2a" and "6a" under v1); still throws for an id that is no gate at all. */
-export function hasGate(gate: GateId, flow: FlowVersion = DEFAULT_FLOW): boolean {
+export function hasGate(gate: GateId, flow: FlowVersion = CURRENT_FLOW): boolean {
   const key = keyOf(gate);
   return flowOf(flow).gates.some((x) => x.key === key);
 }
@@ -36,15 +39,15 @@ function gateOf(gate: GateId, flow: FlowVersion): GateDefinition {
   return def;
 }
 
-export function moveVocabulary(gate: GateId, flow: FlowVersion = DEFAULT_FLOW): readonly MoveKind[] {
+export function moveVocabulary(gate: GateId, flow: FlowVersion = CURRENT_FLOW): readonly MoveKind[] {
   return gateOf(gate, flow).moves;
 }
 
-export function moveAllowed(gate: GateId, move: string, flow: FlowVersion = DEFAULT_FLOW): boolean {
+export function moveAllowed(gate: GateId, move: string, flow: FlowVersion = CURRENT_FLOW): boolean {
   if (!hasGate(gate, flow)) return false;
   return (moveVocabulary(gate, flow) as readonly string[]).includes(move);
 }
 
-export function gateName(gate: GateId, flow: FlowVersion = DEFAULT_FLOW): string {
+export function gateName(gate: GateId, flow: FlowVersion = CURRENT_FLOW): string {
   return gateOf(gate, flow).name;
 }
