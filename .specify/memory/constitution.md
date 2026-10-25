@@ -182,6 +182,21 @@ reviewed artifact (`ROADMAP.md`) and admitted only at the Roadmap gate (Principl
 dependencies are done; each row is one full walk of its flow; the Roadmap gate sits **between** rows, never inside one.
 The program gate and a feature's gates are never conflated in state or in the move vocabulary.
 
+## The Experience Charter
+
+A factory may have an **experience charter** (`.specify/memory/experience-charter.md`, explained in
+`docs/concepts/experience-charter.md`): a short, versioned document of who the product is for and how it should work as
+a whole, made at setup and approved by a person before the factory's first Roadmap gate. It is a **yardstick, never a
+gate** — it adds no gate and changes no flow invariant. Where a factory has one:
+- every gate brief's yardstick **cites the parts that apply**, and judges receive it as an input;
+- it is **approved and amended only by a person** — the named experience owner, or a Decider — as a recorded decision;
+  amendments are taken at the Roadmap gate, and no model approves or amends it (Principle I);
+- a feature **pins the charter version at admission**, and a newer version never alters a feature in progress;
+- it is a committed repository artifact, not a knowledge page: knowledge may cite it and never overrides it
+  (Principle X).
+
+A factory without a charter works as before; briefs say so.
+
 ## Roles & Model Tiers
 
 Roles are defined as **files** (`kiln.config/`, see `docs/concepts/configuration.md`) and bound to models by a tier map.
@@ -223,6 +238,9 @@ a feature that violates it is "fired in the wrong atmosphere" — the defect is 
 
 ## Amendment record
 
+**2.1.0 (2026-10-25)** — MINOR: adds *The Experience Charter* section, so the charter is referenced from the constitution
+(decided by human@batorfi, 2026-10-25; `docs/concepts/experience-charter.md` §9). No principle changes; no migration.
+
 **2.0.1 (2026-10-21)** — PATCH: the closed set of move kinds names `split+revise` and `mitigate` as the flow and the PRD
 (FLOW-3) do; no change in meaning.
 
@@ -240,4 +258,4 @@ loopback front door replaces the three terminal layers).
 
 **1.0.0 (2026-09-12)** — ratified with the first program.
 
-**Version**: 2.0.1 | **Ratified**: 2026-09-12 | **Last Amended**: 2026-10-21
+**Version**: 2.1.0 | **Ratified**: 2026-09-12 | **Last Amended**: 2026-10-25
