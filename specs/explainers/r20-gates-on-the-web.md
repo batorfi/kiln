@@ -11,7 +11,7 @@
 | **Release** | `kiln-v1` — position 10 of 43 in the committed order |
 | **Depends on** | [r18 — The director](./r18-the-director.md), [r19 — Web front door, read-only](./r19-web-front-door-read-only.md) |
 | **Unlocks** | [r21 — Stepping in](./r21-stepping-in.md), [r22 — Shaping the roadmap together](./r22-shaping-the-roadmap-together.md), [r23 — The factory knowledge base](./r23-the-factory-knowledge-base.md), [r25 — One workshop, several factories](./r25-one-workshop-several-factories.md), [r44 — KILN in Zed, phase 1](./r44-kiln-in-zed-phase-1.md) |
-| **PRD requirements** | BRIEF-1…4, BRIEF-6, WEB-3 (core), WEB-6, DIR-6 |
+| **PRD requirements** | BRIEF-1…4, BRIEF-6, WEB-3 (core), WEB-6, DIR-6, EXP-3 (briefs) |
 | **Proven when** | a person decides every gate of a real feature in the browser and from the CLI; a move on a stale state version is refused |
 
 ## In one paragraph
@@ -33,7 +33,7 @@ This is where a person first decides a real feature's gates — in the browser, 
 
 ## Requirements it carries
 
-*As listed in the roadmap: BRIEF-1…4, BRIEF-6, WEB-3 (core), WEB-6, DIR-6. Full text from the PRD:*
+*As listed in the roadmap: BRIEF-1…4, BRIEF-6, WEB-3 (core), WEB-6, DIR-6, EXP-3 (briefs). Full text from the PRD:*
 
 | ID | Requirement | Priority |
 |---|---|---|
@@ -45,6 +45,7 @@ This is where a person first decides a real feature's gates — in the browser, 
 | WEB-3 | Surfaces (from the mockups): workshop overview and *Needs you*; factory live view; **gate brief**; coming back; record and feature record; knowledge; insights; models & policy; hosts; health; people. | Must (core) / Should (rest) |
 | WEB-6 | **The CLI is the terminal surface**: `kiln status`, `kiln needs` and `kiln gate` show the same projections as the browser, the gate brief as plain text, and make moves through the same move intake under the same rules — a move only where the full brief has been shown, bound to the state version it was made against. | Must |
 | DIR-6 | **Needs you**: one inbox per person across factories, workshop and team space, in three sections — waiting on you, suggestions, worth knowing — each item with its headline and what it blocks; ordered by stakes, blocking others, then waiting time; never decides or expires anything. Each person may choose the order (oldest first by default, teammates first, by factory); ordering never hides an item. | Must |
+| EXP-3 | **Interface gates**: Experience design (after Architecture) and UI review (after Code review) are built into the default flow, with deterministic `applies_when`, recorded as *not applicable* otherwise; UXG-1…10 in the concept. | Must |
 
 ## How it is proven
 

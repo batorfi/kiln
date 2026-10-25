@@ -11,7 +11,7 @@
 | **Release** | `kiln-v1` — position 19 of 43 in the committed order |
 | **Depends on** | [r17 — Configuration as files](./r17-configuration-as-files.md), [r22 — Shaping the roadmap together](./r22-shaping-the-roadmap-together.md), [r23 — The factory knowledge base](./r23-the-factory-knowledge-base.md) |
 | **Unlocks** | [r29 — New codebases](./r29-new-codebases.md), [r30 — Existing codebases, part 1: profile and full scan](./r30-existing-codebases-part-1-profile-and-full-scan.md) |
-| **PRD requirements** | SETUP-1…11 |
+| **PRD requirements** | SETUP-1…11, EXP-1, EXP-2 |
 | **Proven when** | from install to a first Roadmap gate in under an hour on a fresh machine, nothing leaving it |
 
 ## In one paragraph
@@ -34,7 +34,7 @@ From install to a first Roadmap gate in under an hour, on a fresh machine, with 
 
 ## Requirements it carries
 
-*As listed in the roadmap: SETUP-1…11. Full text from the PRD:*
+*As listed in the roadmap: SETUP-1…11, EXP-1, EXP-2. Full text from the PRD:*
 
 | ID | Requirement | Priority |
 |---|---|---|
@@ -49,6 +49,8 @@ From install to a first Roadmap gate in under an hour, on a fresh machine, with 
 | SETUP-9 | Setup recorded: `setup.step_completed` and the step's own events begin the workshop record. | Must |
 | SETUP-10 | **Spec Kit**: `kiln doctor` checks `specify` (pinned range, `uv`, Python); setup **adopts** an existing `.specify/` (version, integration, templates against the manifest, existing `specs/`) or **adds** it (`specify init --here --ai pi`) only with approval — as a pull request in team codebases; the Pi integration installed for KILN's roles; other agents' integrations coexist and are never touched; a new pinned Spec Kit version is offered at the next Roadmap gate, never applied automatically. | Must |
 | SETUP-11 | **The constitution**: adopted as is, edited, or drafted with `speckit.constitution` from the repository's docs and conventions, approved before the first roadmap; briefs cite its principles. | Must |
+| EXP-1 | **Experience charter**: a person-approved, versioned setup artifact (users, principles, journeys, screen map, wireframes, floor) at `.specify/memory/experience-charter.md`, beside the constitution; never a gate; XCH-1…12 in the concept. | Must |
+| EXP-2 | **Design system**: a standard structure of foundations, DTCG tokens (three tiers, modes, contrast registry), component and pattern specs and a manifest at `.specify/memory/design-system/`; versioned, owned, checked by `kiln check design-system`; DSN-1…13 in the concept. | Must |
 
 ## How it is proven
 
