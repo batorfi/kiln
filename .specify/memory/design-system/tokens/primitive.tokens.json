@@ -97,6 +97,11 @@
         "$type": "color",
         "$value": "#0E1A19",
         "$description": "dark page"
+      },
+      "350": {
+        "$type": "color",
+        "$value": "#5FAEA4",
+        "$description": "logo middle gate (light)"
       }
     },
     "amber": {
@@ -189,6 +194,16 @@
       "on-accent": {
         "$type": "color",
         "$value": "#06201D"
+      },
+      "logo-outer": {
+        "$type": "color",
+        "$value": "#2B5C57",
+        "$description": "logo outer gate (dark)"
+      },
+      "logo-mid": {
+        "$type": "color",
+        "$value": "#1E8F84",
+        "$description": "logo middle gate (dark)"
       }
     }
   },

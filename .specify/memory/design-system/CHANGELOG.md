@@ -1,8 +1,8 @@
 # Changelog
 
 ## 0.2.1 — 2026-10-25 — the logo joins the system
-- **What.** New logo, the *Fork K*: a K of one stem and two arms meeting at a decision node; flat teal from the tokens, Charter Bold wordmark. The ember arch is retired and archived. Brand rule 3 and the colour and imagery foundations updated: there is no separate brand colour.
-- **Why.** The old mark's ember was the only place the warm palette survived; the new mark makes the logo and the interface one system, and the node-with-a-gap says the person decides.
+- **What.** New logo, the *nested gates*: three arches narrowing to one, with one dot — the person — in the last; flat teal from the tokens (three tints deepening inward), Charter Bold wordmark. The ember arch is retired and archived. Brand rule 3 and the colour and imagery foundations updated: there is no separate brand colour.
+- **Why.** The old mark's ember was the only place the warm palette survived; the new mark makes the logo and the interface one system, and the single dot inside the last gate says the person decides.
 - **Decided by.** human@batorfi, 2026-10-25.
 - **Breaking.** None for tokens. Logo files renamed or replaced under `docs/brand/`.
 

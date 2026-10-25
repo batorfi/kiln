@@ -18,7 +18,7 @@ tokens, words and states. Concept: `docs/concepts/design-system.md` (§12, §12.
 against the experience charter (`.specify/memory/experience-charter.md`) and pinned by it.
 
 **Three rules specific to KILN.** (1) Colour never carries a state alone — every state has a word and a shape. (2) No
-control pre-selects a gate move. (3) The logo is made of the interface's own tokens — the Fork K in `color.action.primary` / `color.action.on-rail`, the wordmark in Charter Bold (`docs/brand/`); the old ember is retired.
+control pre-selects a gate move. (3) The logo is made of the interface's own tokens — the nested-gates mark in the teal tokens (`color.action.primary` / `color.action.on-rail` and two tints), the wordmark in Charter Bold (`docs/brand/`); the old ember is retired.
 
 ## Inventory
 | Id | Kind | Status | Since |

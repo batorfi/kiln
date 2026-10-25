@@ -418,7 +418,7 @@ palette that this makes explicit.
 ### 12.1 The teal-and-sand theme
 
 Why teal: the accent is calm and cool, so it never competes with **amber *waiting*** — the one colour a person must notice
-without being alarmed — and it leaves the hot hues to state. The **logo is made of the same teal** — the *Fork K* mark
+without being alarmed — and it leaves the hot hues to state. The **logo is made of the same teal** — the *nested gates* mark
 and a Charter Bold wordmark (`docs/brand/README.md`); the earlier ember is retired, so there is no separate brand colour. Sand
 keeps the warmth of the earlier palette.
 
