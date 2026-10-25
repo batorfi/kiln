@@ -3,8 +3,8 @@
 > **Admitted.** **human@batorfi** approved this program at the **Roadmap gate** (internal id `gate0`) on
 > **2026-10-22T12:20:22Z**, as proposed — written from scratch on 2026-10-20 and revised on 2026-10-21 (decisions, team
 > space, r42) and 2026-10-22 (r43–r52: explore, Zed, remote judges) and 2026-10-25 (r53 the Feed, in `kiln-v1`, and r54 its remainder, in `kiln-v1.x` — added at human@batorfi's request, queued until the next Roadmap gate) and 2026-10-25 again (the twelve-gate flow of constitution 2.1.0 and the experience charter, design system and interface gates folded into r12, r14, r15, r17, r19, r20, r22, r28–r30, r32 and r43 as `edit-rows` text — at human@batorfi's request, then **approved at the Roadmap gate on 2026-10-25T18:17:27Z** (`gate0.note`, entry 2): no row, dependency or order changed) from the PRD
-> ([`docs/prd/kiln-prd.md`](../docs/prd/kiln-prd.md)) and the concept set in [`docs/concepts/`](../docs/concepts). **r12 is the
-> admitted next row.** Every row stays `queued` until its own first gate opens; the Roadmap gate re-opens after every merged
+> ([`docs/prd/kiln-prd.md`](../docs/prd/kiln-prd.md)) and the concept set in [`docs/concepts/`](../docs/concepts). **r12, the admitted first row, closed `done` at PR #2 (merged 2026-10-25T18:34:50Z; gate entry 3); r42 is the
+> admitted next row.** Every other row stays `queued` until its own first gate opens; the Roadmap gate re-opens after every merged
 > or abandoned feature, where the program can be revised with **approve / revise / reject / edit-rows / add-row / drop-row**.
 > The decision and its context are logged in `gate0.note`.
 >
@@ -21,13 +21,15 @@
 {
  "deliverable": "kiln-v1 — the new KILN (local web front door on Pi Durable), per docs/prd/kiln-prd.md",
  "owner": "human@batorfi",
- "updated": "2026-10-25T18:17:27Z",
+ "updated": "2026-10-25T18:37:45Z",
  "rows": [
   {
    "id": "r12",
    "short": "Foundations reset — the new codebase layout (packages: contracts, durable, record, lane, workers, director, server, web, cli, checks), the legacy Pi extension frozen in legacy/, and the keep-list ported with its tests green: the standard flow as versioned data (v1 the first program's ten-gate rail; v2 the twelve-gate flow of constitution 2.1.0, with Experience design and UI review declared conditional) and move kinds, schemas, validators, affinity scheduler, strongest-judge tier policy, the never-vacuous network check; the legacy live-Pi suite skips with a printed reason on a Pi version it has not measured (Pi 1.1.0 today, measured 0.85.1) instead of failing",
    "deps": [],
-   "status": "queued"
+   "status": "done",
+   "spec": "specs/009-kiln-foundations-reset/spec.md",
+   "outcome": "@PR#2"
   },
   {
    "id": "r42",
@@ -446,10 +448,10 @@
  "chain_unattended": false,
  "gate0": {
   "status": "approved",
-  "rows": "r12..r52 (program, 41 rows in the committed ordering); next row: r12",
+  "rows": "r12..r52 (program, 41 rows in the committed ordering); next row: r42 (r12 done, @PR#2)",
   "decided_by": "human@batorfi",
-  "at": "2026-10-25T18:17:27Z",
-  "note": "ROADMAP GATE LOG (chronological, P-VII recorded):\n 1) 2026-10-22T12:20:22Z  human@batorfi  APPROVE  the kiln-v1 program as proposed — 41 rows, r12..r52, in the committed ordering; kiln-v1 = 26 rows ending with the release r32; kiln-v1.x = 15 rows. Admitted under constitution v2.0.1, with the PRD (final 2026-10-21, amended 2026-10-22) as the yardstick. r12 is the ADMITTED NEXT ROW; it stays 'queued' until its own first gate opens (M4: 'active' requires a live gate); chain_unattended=false — nothing else is chained, and the Roadmap gate re-opens after every merged or abandoned feature. No optional reshaping taken (r27 stays after r19's dependents; r29 stays before r30/r31). Recorded with the decision: the legacy live-Pi suite fails 8 tests on this host (Pi 1.1.0 vs the measured 0.85.1), identically on main — handled in r12; r42 is a go/no-go and a no-go re-opens this gate before r13. PROPOSED BY: the director (draft of 2026-10-20, revised 2026-10-21 and 2026-10-22). DECIDED BY: the human — P-VI/P-I: the program did not admit itself.\n 2) 2026-10-25T18:17:27Z  human@batorfi  APPROVE (edit-rows text)  the text edits of commit 60a2c7e, as written: the twelve-gate flow of constitution 2.1.0 and the experience charter, design system and interface gates folded into rows r12, r14, r15, r17, r19, r20, r22, r28, r29, r30, r32 and r43 (and the prose 'ten gates' -> the twelve-gate flow). No row, dependency or order changed; the 41-row program of entry 1 stands. Decided at the gate with r12 IMPLEMENTED BUT NOT MERGED: r12 (branch 009-kiln-foundations-reset, 87 of 87 tasks; specs/009-kiln-foundations-reset/{implementation,code-review,verification}-report.md) STAYS 'queued' - a row is 'done' only with its merged '@PR#N' (schema) - and this gate RE-OPENS when its PR is merged, to close it and to name the next row (r42, the go/no-go spike). Decided with it: review findings 1, 3 and 4 (the network and boundary checks miss some import spellings and scan roots; skipped tests are not shown in the runner's closing line) are fixed ON THE r12 BRANCH before the PR is opened; finding 2 (a pre-delegation after its approval still authorises it - the first program's behaviour, kept) is NOT changed by r12 and stays a proposal for a later row. chain_unattended=false. DECIDED BY: the human - P-VI/P-I: the build did not decide it."
+  "at": "2026-10-25T18:37:45Z",
+  "note": "ROADMAP GATE LOG (chronological, P-VII recorded):\n 1) 2026-10-22T12:20:22Z  human@batorfi  APPROVE  the kiln-v1 program as proposed — 41 rows, r12..r52, in the committed ordering; kiln-v1 = 26 rows ending with the release r32; kiln-v1.x = 15 rows. Admitted under constitution v2.0.1, with the PRD (final 2026-10-21, amended 2026-10-22) as the yardstick. r12 is the ADMITTED NEXT ROW; it stays 'queued' until its own first gate opens (M4: 'active' requires a live gate); chain_unattended=false — nothing else is chained, and the Roadmap gate re-opens after every merged or abandoned feature. No optional reshaping taken (r27 stays after r19's dependents; r29 stays before r30/r31). Recorded with the decision: the legacy live-Pi suite fails 8 tests on this host (Pi 1.1.0 vs the measured 0.85.1), identically on main — handled in r12; r42 is a go/no-go and a no-go re-opens this gate before r13. PROPOSED BY: the director (draft of 2026-10-20, revised 2026-10-21 and 2026-10-22). DECIDED BY: the human — P-VI/P-I: the program did not admit itself.\n 2) 2026-10-25T18:17:27Z  human@batorfi  APPROVE (edit-rows text)  the text edits of commit 60a2c7e, as written: the twelve-gate flow of constitution 2.1.0 and the experience charter, design system and interface gates folded into rows r12, r14, r15, r17, r19, r20, r22, r28, r29, r30, r32 and r43 (and the prose 'ten gates' -> the twelve-gate flow). No row, dependency or order changed; the 41-row program of entry 1 stands. Decided at the gate with r12 IMPLEMENTED BUT NOT MERGED: r12 (branch 009-kiln-foundations-reset, 87 of 87 tasks; specs/009-kiln-foundations-reset/{implementation,code-review,verification}-report.md) STAYS 'queued' - a row is 'done' only with its merged '@PR#N' (schema) - and this gate RE-OPENS when its PR is merged, to close it and to name the next row (r42, the go/no-go spike). Decided with it: review findings 1, 3 and 4 (the network and boundary checks miss some import spellings and scan roots; skipped tests are not shown in the runner's closing line) are fixed ON THE r12 BRANCH before the PR is opened; finding 2 (a pre-delegation after its approval still authorises it - the first program's behaviour, kept) is NOT changed by r12 and stays a proposal for a later row. chain_unattended=false. DECIDED BY: the human - P-VI/P-I: the build did not decide it.\n 3) 2026-10-25T18:37:45Z  human@batorfi  CLOSE r12  r12 -> 'done', outcome @PR#2 (branch 009-kiln-foundations-reset, merged 2026-10-25T18:34:50Z, merge commit 7d0ce16; spec specs/009-kiln-foundations-reset/spec.md). Delivered: legacy/ frozen byte-identical to the baseline (tree 20a82c7e, 168 files); the new kiln/ with the standard flow as versioned data (v1 and v2 = the twelve-gate flow of constitution 2.1.0), the record validators, one runner, and three never-vacuous checks (network, boundaries, legacy); 87 of 87 tasks; npm test = 184 new + 500 legacy tests, exit 0; all eight success criteria met (limits: a MEASURED Pi is stub-tested, not run; macOS only). Handled as entry 1 asked: the 8 legacy live-Pi failures on an unmeasured Pi are now a printed skip (a demanded --pi still fails them by name). Review findings 1, 3, 4 fixed before the merge as decided in entry 2. NOT changed by r12 and carried forward as PROPOSALS for a later row: (a) a pre-delegation recorded AFTER the approval it authorises still satisfies R3/R4 (the first program's behaviour, kept by FR-011); (b) no type-check exists (4 strict tsc errors, none behavioural); the 19 deferred legacy test cases wait for r13 and r16. Evidence: specs/009-kiln-foundations-reset/{implementation,code-review,verification}-report.md. NEXT: r42 (the go/no-go spike on Pi Durable) is the ADMITTED NEXT ROW, unchanged in the committed ordering; it stays 'queued' until its own first gate opens (M4: 'active' requires a live gate); no row, dependency or order changed and no optional reshaping taken; a no-go on r42 re-opens this gate before r13; chain_unattended=false. DECIDED BY: the human - P-VI/P-I: the build did not decide it."
  },
  "trace": "P-VI (the Roadmap gate — gate0 — is the sole admission, human-only, always; admitted by human@batorfi 2026-10-22), P-VII (recorded), P-IX (roadmap fields)"
 }
@@ -506,7 +508,7 @@ is in [`explainers/`](./explainers/README.md).*
 | r51 | kiln-v1.x | **KILN in Zed, phase 3: decide where the code is** | r50 | EDIT-5, EDIT-6 | a Code review gate decided in Zed on the full brief through the same intake as the browser; a stale move from Zed is refused |
 | r52 | kiln-v1.x | **KILN in Zed, phase 4: ambient and team** | r51 | EDIT-7, EDIT-8 | editing a claimed path warns in the buffer; a teammate's required review given from a shared Zed workspace is mirrored into the owner's record |
 
-All rows: status **queued**. One row = one feature through the flow (the Roadmap gate and eleven feature gates, two of them conditional); each row's Concept or Specification gate may
+All rows: status **queued**, except **r12 — `done` (`@PR#2`, closed at the Roadmap gate of 2026-10-25)**. One row = one feature through the flow (the Roadmap gate and eleven feature gates, two of them conditional); each row's Concept or Specification gate may
 still split it (`split+revise` at the Implementation gate exists for exactly this).
 
 ## How the program is cut
@@ -587,7 +589,7 @@ was decided the same day: pause-only rules written by an Operator (PRD OBS-6).
 *Approved as proposed; the items below are kept as the record of what was put to the gate.*
 
 1. **The program** — the rows, their order and dependencies, and the `kiln-v1` line at r32.
-2. **The first row** — **r12** is the admitted next row; nothing else is chained (`chain_unattended=false`).
+2. **The first row** — **r12** is the admitted next row; nothing else is chained (`chain_unattended=false`). *(r12 closed `done` at PR #2; **r42** is now the admitted next row.)*
 3. ~~**The open decision before r12** — terminal surface kept or retired.~~ Decided 2026-10-21: retired; the CLI is the
    terminal surface. Also enacted before this gate: **constitution v2.0.1**, under which this program is admitted.
 4. **Optional reshaping** — *not taken.* For example: pull **r27 Health** earlier (right after r19) if broken-guarantee signals should
@@ -596,9 +598,9 @@ was decided the same day: pause-only rules written by an Operator (PRD OBS-6).
 
 ## Guardrails this program keeps
 
-- **Admitted by a person.** `gate0.status` is `approved` with `decided_by: human@batorfi` and the time of the move; no row is
-  `active` or `done` yet; the draft's author was not its decider.
+- **Admitted by a person.** `gate0.status` is `approved` with `decided_by: human@batorfi` and the time of the move; at admission no row was
+  `active` or `done` (r12 has since closed `done`, `@PR#2`, by a human gate entry); the draft's author was not its decider.
 - **History is kept.** The previous program is archived unchanged with its Gate 0 log; no closed row is rewritten.
 - **Ids are unique.** New rows start at r12; `specs/001–008` stay the record of the old rows.
 - **Valid by construction.** Every dependency names an existing row and appears earlier in the ordering, so the graph is
-  acyclic (M1); the approved state carries a full human-decided record (M3); no row carries a gate or an outcome yet (M4).
+  acyclic (M1); the approved state carries a full human-decided record (M3); no row carries a gate, and only r12 carries an outcome (`@PR#2`) (M4).

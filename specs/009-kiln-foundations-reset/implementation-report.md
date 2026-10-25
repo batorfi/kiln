@@ -14,7 +14,7 @@
 v2.1.0) as data, the tier policy, the record validators, the pure affinity logic, one test runner, and three checks — `kiln check network`, `boundaries` and `legacy` — each of which fails by name
 and none of which passes vacuously. `npm test` → exit 0, **`new: 184 tests · legacy: 500 tests (30 skipped)`** (170 at the close of the row; 14 added by the review fixes); `npm run check` → exit 0, three `PASS`. All eight success criteria are met with two stated limits
 (a measured Pi is stub-tested, not run; macOS only) — see the [verification report](./verification-report.md). The [whole-branch code review](./code-review-report.md) found no defect in what the
-checks report and seven smaller items; the three that mattered (valid spellings of an import the lint and the boundary check could not see, scan-root holes, skipped tests hidden in the summary) are **fixed**. **The Roadmap gate sat on 2026-10-25** (human@batorfi): it approved the pending text edits of `60a2c7e` and decided that **r12 stays `queued` until its pull request is merged** — a row is `done` only with its merged `@PR#N` — so the next gate entry closes it.
+checks report and seven smaller items; the three that mattered (valid spellings of an import the lint and the boundary check could not see, scan-root holes, skipped tests hidden in the summary) are **fixed**. **The Roadmap gate sat on 2026-10-25** (human@batorfi): it approved the pending text edits of `60a2c7e` and decided that **r12 stays `queued` until its pull request is merged** — a row is `done` only with its merged `@PR#N`. It was merged as PR #2 and the next gate entry (entry 3, human@batorfi) closed r12 `done`; r42 is the admitted next row.
 
 ## 2. Task progress
 
@@ -153,8 +153,8 @@ All are in `plan.md`'s "Implementation notes" (T082). In one place:
 
 ## 8. Next steps
 
-1. **Open the pull request and merge it** (the human's Merge gate). `gh` is not installed on this machine; the compare page is `github.com/batorfi/kiln/compare/main...009-kiln-foundations-reset`. The branch has `main`'s PR #1 merged in.
-2. **Then the Roadmap gate re-opens** (it is already decided what happens there): row r12 → `status: "done"`, `outcome: "@PR#N"`, `gate0.note` entry 3; the next row is **r42**, the go/no-go spike on Pi Durable (a no-go re-opens the gate before r13).
+1. ~~**Open the pull request and merge it**~~ — **done**: PR #2, merged 2026-10-25T18:34:50Z as `7d0ce16`; the branch is deleted.
+2. ~~**Then the Roadmap gate re-opens**~~ — **done**: r12 is `status: "done"`, `outcome: "@PR#2"`, with `gate0.note` entry 3 (human@batorfi); the admitted next row is **r42**, the go/no-go spike on Pi Durable (a no-go re-opens the gate before r13).
 3. **As a Roadmap proposal, not an r12 change**: review finding 2 — a pre-delegation recorded *after* the approval it authorises still satisfies R3/R4. It is the first program's behaviour, preserved on purpose (FR-011).
 4. **Whenever those files are next touched**: finding 5 (no type-check; 4 strict errors; optionally document an out-of-tree `tsc` run) and the `entry.ts` comment of finding 6.
 5. The 19 deferred cases wait in `legacy/` for r13 and r16, each named in `checks/legacy-copies.json`.
