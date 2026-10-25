@@ -1,11 +1,13 @@
 # Verification report: Foundations reset (row r12)
 
-**Branch**: `009-kiln-foundations-reset` | **Date**: 2026-10-25 | **Spec**: [spec.md](./spec.md) · **Plan**: [plan.md](./plan.md) · **Tasks**: [tasks.md](./tasks.md)
+**Branch**: `009-kiln-foundations-reset` @ `906c587` | **Date**: 2026-10-25 (re-run after the whole-branch code review) | **Spec**: [spec.md](./spec.md) · **Plan**: [plan.md](./plan.md) · **Tasks**: [tasks.md](./tasks.md)
 **Companions**: [implementation-report.md](./implementation-report.md) · [code-review-report.md](./code-review-report.md) · [baseline.md](./baseline.md) (every number, with its command)
 
 **Method.** A fresh `git clone --branch 009-kiln-foundations-reset` into `/tmp/kiln-fresh` (no `node_modules`, nothing installed), then every scenario of
-[quickstart.md](./quickstart.md) §0–§6 from `kiln/`; §7 on three further Node versions; the final run on the working tree. Machine: macOS, Node 25.9.0, Pi 1.1.0
-installed (the live-Pi tier was measured against 0.85.1).
+[quickstart.md](./quickstart.md) §0–§6 from `kiln/`; §7 on three further Node versions; the final run on the working tree. Machine: macOS, Node 25.9.0, **Pi 1.4.0**
+installed (the live-Pi tier was measured against 0.85.1). *This report was first written at the close of the row against Pi 1.1.0; it was run again from scratch the same day
+at the same commit, with Pi since upgraded to 1.4.0 and with the extra probes of the section "Re-run: beyond the quickstart". Every number below is from the re-run; none
+differs from the first run except the Pi version in the skip line.*
 
 ## Verdict
 
@@ -14,11 +16,13 @@ Closing numbers: `npm test` → **exit 0 · `new: 170 tests · legacy: 500 tests
 (`PASS network` 22 files · `PASS boundaries` 22 files · `PASS legacy` 168 files). `specs/ROADMAP.md` carries only the human-requested text edits of `60a2c7e`; row r12 is
 still `queued`; no gate decision was recorded.
 
+**Re-run, same day, same commit (`906c587`):** every scenario of the quickstart and every number above reproduced, on a fresh clone and on Node 22.18, 23.6, 24.1 and 25.9. The additional probes found no failure of a success criterion; they found *gaps beyond the criteria* (five spellings the network and boundary checks cannot see; skipped tests not shown in the runner's summary), listed in the section "Re-run: beyond the quickstart" and in the [code review](./code-review-report.md).
+
 ## Success criteria
 
 | SC | Criterion | Command and result | Met |
 |---|---|---|---|
-| **SC-001** | 0 failures on a host with an unmeasured Pi **and** on one with the measured Pi | Unmeasured (this machine): `npm test` → exit 0, `live-Pi tier skipped: Pi 1.1.0 installed, measured [0.85.1]` once, 0 failures. Demanded: `npm test -- --pi` → exit 1, the 8 `PI-LIVE:` tests fail by name `pi-version-unmeasured` (US2.4). Measured Pi: **not run on a real 0.85.1** (none installed here); covered by runner tests R3/R4 with a stub `pi` printing `0.85.1` — the legacy child's environment is unchanged and the tier is left to run as the first program's did | ✔ — *limit: the measured-Pi half is stub-tested, not run against Pi 0.85.1* |
+| **SC-001** | 0 failures on a host with an unmeasured Pi **and** on one with the measured Pi | Unmeasured (this machine): `npm test` → exit 0, `live-Pi tier skipped: Pi 1.4.0 installed, measured [0.85.1]` once, 0 failures. Demanded: `npm test -- --pi` → exit 1, the 8 `PI-LIVE:` tests fail by name `pi-version-unmeasured` (US2.4). Measured Pi: **not run on a real 0.85.1** (none installed here); covered by runner tests R3/R4 with a stub `pi` printing `0.85.1` — the legacy child's environment is unchanged and the tier is left to run as the first program's did | ✔ — *limit: the measured-Pi half is stub-tested, not run against Pi 0.85.1* |
 | **SC-002** | ≥ 54 ported cases run from the new packages; all 73 originals pass | `node tests/tools/count-ported.ts` → **ported 54 of 54 · waiting in legacy 19 of 19 · 73 of 73 accounted for** (gate-rail 6→15 and strongest-model 5→11 with new v2 cases added); legacy runs all 500 tests, 0 failures | ✔ |
 | **SC-003** | 100 % of legacy files byte-identical, by a test | `kiln check legacy` → `PASS legacy — scanned 168 files`; tampered copy → `FAIL legacy-file-modified legacy/src/roles.ts` (exit 1); `checks/tests/legacy-baseline.test.ts` → tree id and all 168 blob ids equal git's; `git rev-parse HEAD:legacy` = `20a82c7e…` = `299b0a5:kiln` | ✔ |
 | **SC-004** | flow data matches the constitution for **all gates** — names, moves, judges | `packages/contracts/tests/flow-vs-constitution.test.ts` reads constitution v2.1.0, PRD GATE-1/GATE-2 and `ui-flow.md` as text: **twelve** gates, the eleven feature-gate names in order, the five Principle-II judges, the closed set of move kinds, the interface gates' questions/moves/judges/`applies_when`; five mutants of `v2.ts` each fail ≥ 1 case (the criterion said "ten"; amended to twelve on 2026-10-25) | ✔ |
@@ -79,13 +83,33 @@ The `imports` map and type stripping work on 22.18 as written; the fallback (rel
 prints `PASS`. The text edits in `60a2c7e` (the twelve-gate flow and the charter proposals folded into rows) were requested by the human, change no row, dependency or order, and are
 labelled in the file's header as proposed for the next Roadmap gate. **Closing r12 is the human's Roadmap-gate move.**
 
+## Re-run: beyond the quickstart
+
+Probes added in the re-run, each on a scratch copy or a throw-away clone, so nothing in the repository changed (`git status` clean after every one).
+
+| Probe | Command | Result |
+|---|---|---|
+| Demanded Pi tier, unmeasured Pi | `npm test -- --pi` | exit 1; `new: 170 tests · legacy: 500 tests`; **8** legacy `PI-LIVE:` tests fail, each with `[{"code":"pi-version-unmeasured","detail":"reported=1.4.0 measured=[0.85.1]"}]` |
+| `legacy/` removed | `mv ../legacy ../legacy.gone; kiln check legacy` | `FAIL legacy — 168 failures`, each `legacy-file-missing`, exit 1 |
+| Ignored runtime file | `echo x > legacy/factory-log/x.jsonl; kiln check legacy` | `PASS` (the ignore glob works) |
+| README command | `npm run validate:roadmap -- ../specs/ROADMAP.md` | `PASS` |
+| Log stream, flow 2a under v1 | `validate:log` on a `gate:"2a"` record | `FAIL — G3 … gate 2a is not in flow v1`, exit 1 |
+| Type-check, strict | `tsc --noEmit -p tsconfig.json` from a scratch install in `/tmp` | 4 errors (3 files); none behavioural — [code review](./code-review-report.md) finding 5 |
+| Shallow clone | `git clone --depth 1 file://…; node tests/run.ts --new-only` | exit 0; 170 tests, 165 pass, **5 skipped** (the L6 baseline cross-check and the r7 history tests); the closing line does not say so — finding 4 |
+| Checks against spellings outside the negative suite | `import{a}from"#lane/affinity.ts"` in `record`; `import ("node:http")`; `import("node:" + "http")`; a file at `checks/lib/net.ts`; `import "../../../tests/pi-tier.ts"` in `lane` | all five **pass in silence** — findings 1 and 3. They are outside what SC-006/SC-007 promise (the constructs in the negative suites, all of which fail by name), and they are the main follow-up |
+| Log stream, pre-delegation after the approval | `validate:log` on an approve at seq 1 followed by a `pre-delegation` at seq 2 | `PASS` — finding 2 (inherited from the first program; r12 preserves it by FR-011) |
+
+The same run also repeated, on the fresh clone, the three tamper cases of quickstart §2 (modify, delete, add), the planted network and boundary violations of §4–§5, and the census of §6; all gave the results
+tabulated above.
+
 ## Limits and known follow-ups
 
-1. **Measured Pi (SC-001, half).** No Pi 0.85.1 here; the measured-Pi path is stub-tested (R3/R4). Re-measuring Pi 1.1.0 is a legacy chore that changes both lists in one commit; a test keeps them equal.
+1. **Measured Pi (SC-001, half).** No Pi 0.85.1 here; the measured-Pi path is stub-tested (R3/R4). Re-measuring the installed Pi (now 1.4.0) is a legacy chore that changes both lists in one commit; a test keeps them equal.
 2. **macOS only.** As the README says. The entry guard and the path handling were written to be portable, but nothing here ran on Linux or Windows.
 3. **`legacy-copies.json` `since` ids** are the commit ids of the porting commits where known; the later records (US3–US4) carry the id of the commit before the port, which is the nearest recorded.
 4. **For the next Roadmap gate** (not edits for this row): the `edit-rows` text of `60a2c7e`; r14's row now says twelve gates; `kiln check flow` (r14) will check the twelve-gate invariants; `kiln check design-system` / `foundations` have no row yet.
-5. **Findings of the code review** ([report](./code-review-report.md)): 1 (CLI entry guard), 2 (`weakerBindingRejected`), 3 (the default flow), 4 (prototype keys) are fixed with named tests; 5 (the F3 source) was decided and implemented (text parse of the legacy file); the Phase 2 code now has tests.
+5. **Findings of the first code review** (T001–T019): the entry guard, `weakerBindingRejected`, the default flow and prototype keys are fixed with named tests; the F3 source was decided and implemented (text parse of the legacy file); the Phase 2 code now has tests.
+   **Findings of the whole-branch review** ([report](./code-review-report.md)), all open and none blocking the criteria: 1 (import spellings the scan cannot see — the main follow-up), 2 (a late pre-delegation authorises an approval; inherited), 3 (scan-root holes), 4 (skipped tests not shown in the summary), 5 (no type-check; 4 strict errors), 6–7 (documents, cosmetics).
 6. **A defect found after that review and fixed:** the entry guard was also unsafe through a symlinked path (macOS temp directories), which the first program's idiom shares. Fixed in one shared helper with a regression test.
 
 ## Reproduce

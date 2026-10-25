@@ -1,16 +1,21 @@
 # Implementation report: Foundations reset (row r12)
 
-**Branch**: `009-kiln-foundations-reset` | **Report date**: 2026-10-25 | **Head**: `719ee13` | **Base**: `main` @ `299b0a5`
+**Branch**: `009-kiln-foundations-reset` | **Report date**: 2026-10-25 (first written at `719ee13`; brought to the end of the row at `906c587`) | **Head**: `906c587` | **Base**: `main` @ `299b0a5` (the baseline commit)
 **Spec**: [spec.md](./spec.md) · **Plan**: [plan.md](./plan.md) · **Tasks**: [tasks.md](./tasks.md) · **Baseline log**: [baseline.md](./baseline.md)
-**Companion**: [code-review-report.md](./code-review-report.md)
+**Companions**: [code-review-report.md](./code-review-report.md) · [verification-report.md](./verification-report.md)
+
+> **How to read this report.** §1–§2 and §4–§8 describe the branch **as it stands now**. §3 and §9–§15 are the dated record of how it got there (what each phase built, what the
+> amendments changed) and are kept as written; §16 covers the last phase, which they predate.
 
 ## 1. Status in one paragraph
 
-**20 of 87 tasks were done when this report was first written (T001–T019 and T080); US1 (T020–T033) has since been completed — see §11.** Originally: **Phase 1 (Setup, T001–T004) and Phase 2 (Foundational, T005–T019).** The move is complete and proven: the first
-program's tree now lives in `legacy/`, byte-identical to the baseline, and its suite is green. The new `kiln/` has its skeleton, the contracts base (move
-kinds, flow **v1** as data, the tier policy, record types, both JSON schemas), the record core (schema validator, report formatter, clock), the check
-registry and a `kiln check` command. **None of the five user stories is started** (Phases 3–7, T020–T077), and neither is Polish (T078–T087). The new
-tree has **no tests and no test runner yet**, so `npm test` in `kiln/` does not run (§5). The MVP (US1 + US2) is 28 tasks away.
+**The row is implemented: 87 of 87 tasks are done, all five user stories and Polish, in 39 commits.** The first program's tree lives in `legacy/`, byte-identical to the baseline (tree id
+`20a82c7e…`, 168 files) and still green. The new `kiln/` holds nine packages and `checks/`, with **no runtime dependency and nothing to install**: flow v1 and flow v2 (the twelve-gate flow of constitution
+v2.1.0) as data, the tier policy, the record validators, the pure affinity logic, one test runner, and three checks — `kiln check network`, `boundaries` and `legacy` — each of which fails by name
+and none of which passes vacuously. `npm test` → exit 0, **`new: 170 tests · legacy: 500 tests`**; `npm run check` → exit 0, three `PASS`. All eight success criteria are met with two stated limits
+(a measured Pi is stub-tested, not run; macOS only) — see the [verification report](./verification-report.md). The [whole-branch code review](./code-review-report.md) found no defect in what the
+checks report, and seven smaller items (the main one: a few valid spellings of an import that the lint and the boundary check cannot see). **The row stays `queued` in `specs/ROADMAP.md`**: closing it is
+the human's Roadmap-gate move (FR-021).
 
 ## 2. Task progress
 
@@ -18,15 +23,13 @@ tree has **no tests and no test runner yet**, so `npm test` in `kiln/` does not 
 |---|---|---|---|
 | 1 Setup — baseline and the move | T001–T004 (4) | 4 | **complete** |
 | 2 Foundational — skeleton and leaf modules | T005–T019 (15) | 15 | **complete** |
-| 3 US1 — new layout, kept rules proven (P1) | T020–T033 (14) | 0 | not started |
-| 4 US2 — legacy frozen and verifiable (P1) | T034–T047 (14) | 0 | not started |
-| 5 US3 — flow v2 and judges as data (P2) | T048–T058 (11) | 0 | not started |
-| 6 US4 — network lint (P2) | T059–T071 (13) | 0 | not started |
-| 7 US5 — package boundaries (P3) | T072–T077 (6) | 0 | not started |
-| 8 Polish | T078–T087 (10) | 0 | not started |
-| **Total** | **87** | **19** | |
-
-The task list's checkboxes agree with the commits (`git log main..HEAD`): T001, T002, T003, T004, T005–T007, T008–T019 each have a commit.
+| 3 US1 — new layout, kept rules proven (P1) | T020–T033 (14) | 14 | **complete** (§11) |
+| 4 US2 — legacy frozen and verifiable (P1) — *with US1, the MVP* | T034–T047 (14) | 14 | **complete** (§12) |
+| 5 US3 — flow v2 and judges as data (P2) | T048–T058 (11) | 11 | **complete** (§13) |
+| 6 US4 — network lint (P2) | T059–T071 (13) | 13 | **complete** (§14) |
+| 7 US5 — package boundaries (P3) | T072–T077 (6) | 6 | **complete** (§15) |
+| 8 Polish | T078–T087 (10) | 10 | **complete** (§16) |
+| **Total** | **87** | **87** | `tasks.md`: 87 checked, 0 open |
 
 ## 3. What was built
 
@@ -84,79 +87,79 @@ Behaviour measured on Node 25.9 and 22.18 (no checks are registered, so every ch
 | `check network` from `/tmp` | works from any working directory | 1 |
 | `check legacy` on Node 23.6.0 / 24.1.0 | was: no output, exit 0 (code-review finding 1). **Fixed 2026-10-25**; now identical to 22.18 | 1 |
 
-## 4. Requirement and success-criterion coverage
+## 4. Requirement and success-criterion coverage (at `906c587`)
 
-"Delivered" means satisfied and evidenced at head; "Partly" means the groundwork exists; "Open" means no code yet.
+"Delivered" means satisfied and evidenced at head. Every row was re-run on a fresh clone on 2026-10-25 — the commands and outputs are in the [verification report](./verification-report.md).
 
-| ID | Subject | State | Note |
+| ID | Subject | State | Evidence |
 |---|---|---|---|
-| FR-001 | Packages of PRD §8.2 needed now | **Delivered** (structure) | nine packages + `checks/` with responsibilities; boundary *enforcement* is US5 |
-| FR-002 | Node floor, no build, no runtime dependency, no bare specifier | **Partly** | no dependency and no bare specifier today; the CLI's `import.meta.main` guard broke the floor on Node 23.6–24.1; fixed 2026-10-25 (code-review finding 1) |
-| FR-003 | One way to run the suite, zero-test refusal | Open | `kiln/tests/run.ts` not written (T031) |
-| FR-004 | `legacy/` byte-identical | **Delivered** (tree id equal) | the *test* that proves it (T036/T039) is open |
-| FR-005 | Legacy tests keep running | **Delivered** from `legacy/`; Open from `kiln/` (T045) |
-| FR-006 | Pi tier switched off for unmeasured Pi | Open | T042–T047 |
-| FR-007 | Flow versioned data; v1 exact, v2 = constitution | **Partly** | v1 done and measured equal to legacy (0 mismatches over 10 gates × names × moves × roster × cap); v2 open |
-| FR-008 | Each gate only its own moves; Code review `approve · revise · restart` | **Partly** | closed set in code; v2 data open |
-| FR-009 | Judges bind only to strongest | **Partly** | `bindRole` done, behaviour equal to legacy for all 12 roles × 4 tiers; tests open (T054) |
-| FR-010 | Pure affinity logic | Open | T028–T030 |
-| FR-011 | Schemas, validators, report ported | **Partly** | schemas, core, report done; `log.ts`/`roadmap.ts` open |
-| FR-012 | Records validated under their own flow | Open | T052 |
-| FR-013 | Clock ported | **Delivered** | |
-| FR-014 | r7 walks kept as fixtures | Open | T022 (`kiln/fixtures/` exists but is empty) |
-| FR-015 | Every ported module travels with its tests | **Not yet** | five modules ported, none with tests; they arrive with US1/US3 |
-| FR-016–FR-018 | Checks: network, boundaries, never-vacuous | **Partly** | registry and CLI skeleton, fail-closed on an unregistered check; no check exists |
-| FR-019 | v2 gate-rail contract | Open | T056 |
-| FR-020 | PRD WORK-2 corrected | Done before the row (2026-10-22) | |
-| FR-021 | Roadmap untouched, no gate decision | **Delivered** | `git diff main -- specs/ROADMAP.md` is empty |
-| SC-001 | Suite green on unmeasured Pi | Open | needs T045 |
-| SC-002 | ≥54 ported cases + all 73 accounted | Open | 0 of 54 ported |
-| SC-003 | 100 % of legacy bytes identical, by a test | **Measured, not yet a test** | tree id equal today |
-| SC-004–SC-008 | Flow/judge/lint/boundary/walk criteria | Open | |
+| FR-001 | Packages of PRD §8.2 needed now | **Delivered** | nine packages + `checks/`, each `kiln.json` with one responsibility; `kiln check boundaries` enforces it |
+| FR-002 | Node floor, no build, no runtime dependency, no bare specifier | **Delivered** | `dependencies` empty; bare specifiers refused by `boundary-bare-specifier` and `network-external-dependency`; Node 22.18, 23.6, 24.1, 25.9 pass |
+| FR-003 | One way to run the suite; zero tests fail | **Delivered** | `kiln/tests/run.ts`; run from any directory |
+| FR-004 | `legacy/` byte-identical | **Delivered** | tree id equal; `kiln check legacy` over a 168-file manifest; L1–L6 tests |
+| FR-005 | Legacy tests keep running | **Delivered** | `legacy: 500 tests` inside `npm test` (470 pass, 0 fail, 30 skipped) |
+| FR-006 | Pi tier switched off for an unmeasured Pi, versions printed once, never when demanded | **Delivered** | runner R1–R7; `npm test -- --pi` fails 8 tests by name |
+| FR-007–FR-009 | Flow as versioned data; each gate its own moves; judges bind only to the strongest | **Delivered** | v1 equal to the first program (0 mismatches); v2 equal to constitution v2.1.0, PRD and `ui-flow.md` (a test reads them); 11 tier-policy cases |
+| FR-010 | Pure affinity logic | **Delivered** | `lane/src/affinity.ts`, 3 new tests, mutation-checked |
+| FR-011–FR-014 | Schemas, validators, flow per record, clock, fixtures | **Delivered** | 23 ported record cases; `flow-records.test.ts`; fixtures byte-identical |
+| FR-015 | Every ported module with its tests; no case dropped | **Delivered** | `count-ported.ts`: 54 of 54 ported, 19 of 19 waiting in `legacy/`, 73 of 73 |
+| FR-016–FR-018 | Checks: network, boundaries, never vacuous, falsifiable | **Delivered** | network: 19 new + 4 CLI cases and the 20 ported; boundaries: 16 + 4 CLI cases; zero-file, missing-directory and invalid-rule-file cases fail by name; *see review finding 1 for the spellings outside the negative suites* |
+| FR-019 | The v2 gate-rail contract | **Delivered** | `packages/contracts/gate-rail.md` |
+| FR-020 | PRD WORK-2 corrected | **Delivered** | before the row (2026-10-22) and again for v2.1.0 (T080) |
+| FR-021 | Roadmap untouched, no gate decision | **Delivered** | `git diff 60a2c7e -- specs/ROADMAP.md` empty; row r12 `queued` |
+| SC-001 | Green on an unmeasured and on a measured Pi | **Met — limit** | unmeasured: run (Pi 1.4.0 here); measured: stub-tested, no Pi 0.85.1 on this machine |
+| SC-002 | ≥ 54 ported cases; all 73 accounted for | **Met** | the census tool |
+| SC-003 | 100 % of legacy bytes identical, by a test | **Met** | `legacy-baseline.test.ts` + `kiln check legacy` (the git half skips on a shallow clone — review finding 4) |
+| SC-004–SC-008 | Flow/judge/lint/boundary/walk criteria | **Met** | verification report, one row each |
 
 ## 5. State of the repository at head
 
 | Question | Answer |
 |---|---|
-| Is `legacy/` green? | **Yes** — 500 tests, 0 failures with `KILN_PI=0`; 8 live-Pi failures remain if `KILN_PI` is unset (measured at baseline, not re-run today; not a regression) |
-| Does `cd kiln && npm test` work? | **No** — `tests/run.ts` does not exist (`MODULE_NOT_FOUND`). `plan.md` says "each phase leaves the repository green"; this is true of `legacy/` only |
-| Do `npm run validate:log` / `validate:roadmap` work? | No — `log.ts` and `roadmap.ts` are US1 |
-| Does `npm run check` work? | It runs and exits 1: all three checks are unregistered |
-| Is the README accurate? | No — it still says `cd kiln/kiln` and lists legacy scripts; scheduled for T078 |
-| Are there new tests? | **0** |
-| Working tree | clean |
+| Is `legacy/` green? | **Yes** — 500 tests, 0 failures. With the Pi tier on and an unmeasured Pi (`--pi`, or `KILN_PI=1`) 8 live-Pi tests fail by name, by design (the first program's behaviour; not a regression) |
+| Does `cd kiln && npm test` work? | **Yes** — exit 0; `new: 170 tests · legacy: 500 tests`; prints `live-Pi tier skipped: Pi 1.4.0 installed, measured [0.85.1]` once |
+| `npm run check`? | **Yes** — `PASS network` (22 files), `PASS boundaries` (22 files), `PASS legacy` (168 files); exit 0 |
+| `validate:log` / `validate:roadmap`? | Yes — `PASS` on the r7 walk (under v1 and v2) and on `specs/ROADMAP.md` |
+| Is the README accurate? | Yes — rewritten in T078 (two trees, the new commands); every command in its "Run it" block works |
+| Type-check? | None exists; a strict `tsc` run from a scratch install finds 4 errors, none behavioural ([review](./code-review-report.md) finding 5) |
+| Size | `kiln/`: 76 tracked files, 1,775 lines of source, 1,843 lines in 25 test files; `legacy/`: 168 files, unchanged; 285 files changed against `main` (11,192 insertions, 158 deletions) |
+| Working tree | clean at `906c587` |
 
 ## 6. Departures from the written plan
 
-Recorded here so T082 (the plan's "Implementation notes") has them in one place.
+All are in `plan.md`'s "Implementation notes" (T082). In one place:
 
-1. **`kiln.json`, not `package.json`, per package** (T007) — decided in research R3; `tasks.md` already reflects it.
-2. **`registry` is `Partial<Record<CheckName, …>>`**, not `Record<CheckName, …>` as T018 words it, because it starts empty; `runChecks` adds a failure code,
-   `check-not-registered`, that is not in the `cli-check.md` failure list.
-3. **`flow/index.ts` already exports `MITIGATION_CAP_DEFAULT`** (T050 lists it) and names its single default `DEFAULT_FLOW` where the contract names two
-   (`CURRENT_FLOW`, `DEFAULT_RECORD_FLOW`). Consequence in code-review finding 3.
-4. **`weakerBindingRejected` takes an optional fourth parameter** (`extraJudges`) beyond the contract's three — a superset, needed by F8.
-5. **`kiln/fixtures/` and `kiln/tests/` exist as empty directories** locally; git does not track them, so a fresh clone lacks them until T022/T031.
+1. **`kiln.json`, not `package.json`, per package** (T007) — research R3; `tasks.md` reflects it.
+2. **`registry` is `Partial<Record<CheckName, …>>`** (T018), and `runChecks` returns the failure code `check-not-registered` for a name with no entry. That code is not yet in `cli-check.md` (review finding 6).
+3. **Two flow defaults, not one** (T050): `CURRENT_FLOW` = v2 and `DEFAULT_RECORD_FLOW` = v1, as the contract names them — after the first review showed one constant serving both meanings.
+4. **`weakerBindingRejected` takes an optional fourth parameter** (`extraJudges`), a superset of the contract's three, needed by F8.
+5. **Flow v2 is the twelve-gate flow**, not ten (the 2026-10-25 amendment, §9): constitution v2.1.0 landed on `main` mid-row and the human chose option 1. SC-004 was amended from "ten" to "twelve".
+6. **One entry guard for every command** (`record/src/entry.ts`): the first program's `process.argv[1] === fileURLToPath(import.meta.url)` idiom is unsafe through symlinked directories (macOS `/var` → `/private/var`); found by the tamper test (§12).
+7. **Not byte-identical copies, by design:** `report.ts` (`nameMove` takes the flow), `log.ts`, and the factory-log schema (the `flow` field and the `2a`/`6a` gate ids) — each noted in `legacy-copies.json`.
+8. **The network lint dropped two first-program rules** — "exactly one allowlist entry" and the Pi-driver process exemption (research R9) — and gained three failure codes; the boundary check gained `boundary-rules-invalid` (§14, §15).
+9. **Empty local directories** `kiln/fixtures/` and `kiln/tests/` existed before T022/T031 (git does not track empty directories); both are populated now.
 
 ## 7. How this was measured
 
 | Claim | Command |
 |---|---|
-| Legacy tree equals baseline | `git rev-parse HEAD:legacy` vs `git rev-parse 299b0a5:kiln` |
-| Legacy suite | `cd legacy && KILN_PI=0 node tests/run.ts` |
-| Copies are exact | `cmp` of schemas, `_core`, `_report`, `clock`; `diff` of `types.ts` (one import line) |
-| Flow v1 / roles equal legacy | scratch script in `/tmp/r12-review/parity.ts` (outside the repo) importing both trees; 0 mismatches |
-| CLI behaviour | `node packages/cli/src/main.ts check …` on Node 25.9.0, and `npx node@22.18.0` / `node@23.6.0` / `node@24.1.0` |
-| Roadmap untouched | `git diff main -- specs/ROADMAP.md` |
+| Legacy tree equals baseline | `git rev-parse HEAD:legacy` = `git rev-parse 299b0a5:kiln` = `20a82c7e214be256c804f6e8f1cd4cce9c8e9874` |
+| Both suites, exit code, counts | `cd kiln && npm test` → `new: 170 tests · legacy: 500 tests`, exit 0 (fresh clone `/tmp/kiln-fresh`) |
+| The checks | `npm run check`; each with a planted violation on a scratch copy (quickstart §2, §4, §5) |
+| Node floor | `npx -y node@22.18.0 tests/run.ts --new-only`, likewise 23.6.0, 24.1.0 → 170 / 170 / 0 each; `kiln check` all `PASS` |
+| Census | `node tests/tools/count-ported.ts` |
+| Roadmap untouched | `git diff 60a2c7e -- specs/ROADMAP.md` (empty); `validate:roadmap` `PASS` |
+| Type-check | `tsc --noEmit --strict` from `/tmp/tscheck` (outside the repository) |
+| Task state | 87 `[X]` and 0 `[ ]` in `tasks.md`; `git log main..HEAD` — 39 commits |
 
 ## 8. Next steps
 
-1. ~~Fix the CLI entry guard~~ — done. Still to decide: whether T085 should also run Node 23.6 and 24.1.
-2. **T020–T033 (US1)**: ports of the validators, fixtures and the first runner. Pass `"v1"` explicitly in `log.ts` (finding 3).
-3. **T034–T047 (US2)** completes the MVP: manifest, `legacy` check, `decidePiTier`, runner extension.
-4. Then US3 → US4 → US5 → Polish as ordered in `tasks.md`.
-
-The row stays `queued` in `specs/ROADMAP.md`; closing it is the human's Roadmap-gate move (FR-021).
+1. **The human's Roadmap-gate move**: close row r12 (this report and the verification report are the evidence); decide the proposed text edits of `60a2c7e` at the same gate.
+2. **Before r13 builds on the checks**, take review finding 1 (import/require spellings the lint and the boundary check miss), 3 (scan-root holes) and 4 (skipped tests invisible in the closing line): small changes in `checks/lex.ts`,
+   `checks/network-lint.ts`, `checks/boundaries.ts` and `tests/run.ts`, each with its negative case. None needs a decision.
+3. **As a Roadmap proposal, not an r12 change**: review finding 2 — a pre-delegation recorded *after* the approval it authorises still satisfies R3/R4. It is the first program's behaviour, preserved on purpose (FR-011).
+4. **Housekeeping**: `check-not-registered` into `contracts/cli-check.md`; the quickstart's "Pi 1.1.0" to "Pi <installed>"; optionally document an out-of-tree `tsc` run.
+5. The 19 deferred cases wait in `legacy/` for r13 and r16, each named in `checks/legacy-copies.json`.
 
 ## 9. Amendment 2026-10-25 — flow v2 is the twelve-gate flow
 
@@ -273,3 +276,25 @@ Next: US5 (T072–T077, `kiln check boundaries`), then Polish (T081–T087).
 
 Remaining: **Polish T081–T087** — explainers (`kiln-v1.md` §5.2, `kiln-architecture.md` §13, `_generate.py`), the plan's "Implementation notes", the ported-case census tool, a fresh-clone run of every quickstart scenario, the Node 22.18 run (and, per code-review finding 1, 23.6 and 24.1), the roadmap-untouched confirmation, and the verification report.
 
+## 16. Polish completed — the end of the row (2026-10-25, T078–T087)
+
+87 of 87 tasks done.
+
+| Task | What | Result |
+|---|---|---|
+| T078, T079 | README: two trees, the new commands, the layout table; the `legacy/` row says older specs' `kiln/…` paths read as `legacy/…` (README line 254) | the measured-Pi sentence the legacy test reads is kept; the legacy suite still green after the edit |
+| T080 | PRD §8.2, WORK-2, GATE-2, M1 | done earlier (§10) |
+| T081 | Explainers: `kiln-v1.md` §5.2, `kiln-architecture.md` §13, `_generate.py` regenerated | regenerated with `python3 specs/explainers/_generate.py .` |
+| T082 | `plan.md` "Implementation notes": each departure and why | §6 above is its summary |
+| T083 | `kiln/tests/tools/count-ported.ts` | **ported 54 of 54 · waiting 19 of 19 · 73 of 73**; fails if a ported file has fewer cases than its original |
+| T084 | every quickstart scenario on a fresh clone | the verification report; quickstart corrected in three places (a wrong `node --test <dir>/` command, a sample record with an invalid `wallClock`, an inline `node -e` reading a field that does not exist) |
+| T085 | the declared Node floor | 22.18.0 / 23.6.0 / 24.1.0 / 25.9.0 — 170 tests each, `kiln check` all `PASS`; the `imports` map and type stripping work on 22.18 as written, so the relative-specifier fallback (R2) was not needed |
+| T086 | roadmap untouched | `git diff 60a2c7e -- specs/ROADMAP.md` empty; r12 `queued`; `gate0` unchanged |
+| T087 | closing numbers | `npm test` exit 0 (`new: 170 · legacy: 500`); `npm run check` exit 0; checklist ticked |
+
+**Closing numbers, with the growth of the new suite:** US1 30 → US2 67 → US3 107 → US4 150 → US5 **170**. Ported cases: 0 → 23 → 34 → 54. Checks registered: 0 → 1 (`legacy`) → 2 (`network`) → 3 (`boundaries`).
+
+## 17. After the row: whole-branch review and re-verification (2026-10-25)
+
+The [code review](./code-review-report.md) read all authored source and probed it adversarially; the [verification](./verification-report.md) was re-run from a fresh clone and extended. Outcome: no success criterion
+fails; the findings are gaps in what the checks can *see* (§8 items 2–4) and one inherited stream rule (§8 item 3). Nothing in the repository was changed by either — these are the only edits of this pass: the three reports.
