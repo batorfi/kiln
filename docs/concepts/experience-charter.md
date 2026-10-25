@@ -1,6 +1,13 @@
-> Status: concept — **proposal** (2026-10-25, drafted for human@batorfi). Nothing here is decided until a person approves
-> it; building it is admitted only at the Roadmap gate (`add-row` / `edit-rows`).
+> Status: concept — **proposal** (2026-10-25, drafted for human@batorfi). Admitting it into the program is decided only at
+> the Roadmap gate (`add-row` / `edit-rows`); the four questions below were decided in review on 2026-10-25.
 > Type: concept
+>
+> Decisions taken by the human (2026-10-25):
+>   1. **Location**: `.specify/memory/experience-charter.md`, beside the constitution, **with a reference to it in the
+>      constitution** (§9).
+>   2. **Approver**: a **named experience owner** where the workshop has one, otherwise a Decider (§4).
+>   3. **KILN's own charter**: KILN adopts one for its own web front door, seeded from `user-experience.md` (§11).
+>   4. **Size**: **no page ceiling** — the core stays short and an area may have an appendix (§3).
 >
 > Scope note: this doc proposes an **experience charter** — a short, human-approved, versioned document that fixes the
 > *user experience* of a product before its first roadmap exists, so every roadmap row and every feature is grounded in
@@ -21,8 +28,9 @@
 ## 1. In one paragraph
 
 A product built by a factory drifts when nobody holds its experience as a whole: each feature is reasonable alone, and
-together they feel like five products. The **experience charter** is the one place that holds it. It is a short document
-— one to three pages — written during setup, from the product brief, and **approved by a person before the first Roadmap
+together they feel like five products. The **experience charter** is the one place that holds it. It is a document with a
+short core — the principles, the top journeys and the floor fit on a page or two — and room for per-area appendices as the
+product grows, written during setup, from the product brief, and **approved by a person before the first Roadmap
 gate**. It names the **users**, the **experience principles**, the **top journeys**, the **screen map**, the
 interaction and content **conventions**, an **accessibility floor** and where the **design tokens** live. The planner
 reads it first when it drafts a roadmap; the Roadmap gate brief shows a **journey coverage map** against it; every later
@@ -38,7 +46,7 @@ pattern for things that must be settled by a person before the first roadmap —
 | | A new gate before the Roadmap gate | The charter (this proposal) |
 |---|---|---|
 | Flow invariants | broken (Roadmap gate first) | untouched |
-| Constitution | amendment needed | none needed (§9) |
+| Constitution | amendment needed | one MINOR amendment adds a reference to it; no principle changes (§9) |
 | Who decides | a gate decider | the person approving setup, recorded |
 | Revisited | never — a gate is per feature | at every Roadmap gate, where program decisions already live |
 
@@ -56,6 +64,11 @@ pattern for things that must be settled by a person before the first roadmap —
 | **Design tokens** | where colours, type, spacing and components are defined — a pointer, not a copy | `design/tokens.json` |
 | **Quality bars** | measurable experience limits | *first meaningful screen < 1 s on the reference machine* |
 | **Non-goals** | experiences deliberately left out | *no mobile app in this release* |
+
+**Size.** There is no page ceiling (decided 2026-10-25). The **core** stays short on purpose — it is what every brief
+cites. As the product grows, an **area** (a part of the screen map with its own users or journeys) may have an **appendix**
+at `.specify/memory/experience-charter/<area>.md`, holding its detailed journeys, screens and patterns. Appendices are
+versioned and pinned together with the core, reuse the same id scheme, and may refine the core but never loosen it.
 
 Rules: every principle and journey has a **stable id** (`X2`, `J1.3`) that briefs, rows and reviews cite; every part says
 **where it came from** (the product brief, research, a person's decision, the existing product); nothing is invented
@@ -79,8 +92,9 @@ the explore space inventory the screens, routes, flows and existing conventions 
 plainly which parts are *as-is* and which are *intended*. Nothing is written to the team's repository except through its
 own pull request.
 
-**Who approves.** A Decider of the factory, or a person the workshop names for experience decisions (a designer, a product
-owner). Approval is one person's recorded decision — never a model's, never inferred from absence.
+**Who approves.** The **named experience owner** where the workshop has one (a designer, a product owner); otherwise a
+Decider of the factory (decided 2026-10-25). Approval is one person's recorded decision — never a model's, never inferred
+from absence.
 
 **Without a charter.** A factory with no charter still works: briefs say *no experience charter*, the coverage map is
 empty and says so. Setup offers the step and never forces it, so existing factories are not blocked.
@@ -159,8 +173,11 @@ evidence, never a decision.
 | **XII · Workshops are sovereign** | a team floor only tightens; no team act settles a workshop's amendment |
 | **Flow invariants** | no gate added before the Roadmap gate; the flow is unchanged |
 
-No constitutional amendment is needed. If the constitution's rule that briefs cite its principles is later extended to
-name the charter, that is a MINOR clarification a person approves.
+**The constitutional reference** (decided 2026-10-25). No principle changes, but the constitution gains a short section,
+*The Experience Charter*, that points to the charter, says it is a yardstick and never a gate, and requires briefs to cite
+it where a factory has one. Because it adds a section, it is a **MINOR** amendment (2.0.1 → 2.1.0), made under the
+constitution's own governance: a written rationale, human approval and a Sync Impact Report that is scratch and not
+committed. A draft is prepared with this proposal; it takes effect only when a person approves it.
 
 ## 10. Proposed requirements
 
@@ -168,7 +185,7 @@ Identifiers use `XCH-` to avoid the PRD's `EXPL-` (explore) prefix.
 
 | ID | Requirement | |
 |---|---|---|
-| XCH-1 | **Charter artifact**: the ten parts of §3 with stable ids and a source per part, committed at `.specify/memory/experience-charter.md`; a starter template ships with KILN | Must |
+| XCH-1 | **Charter artifact**: the ten parts of §3 with stable ids and a source per part, committed at `.specify/memory/experience-charter.md` with optional per-area appendices, and referenced from the constitution; a starter template ships with KILN | Must |
 | XCH-2 | **Setup step**: draft from the product brief (new codebases) or discover and confirm (existing); approval by a Decider or a named person; recorded; never forced | Must |
 | XCH-3 | **Versioning and amendment**: semantic versions; amendments decided at the Roadmap gate with a diff and affected rows; pinned per feature at admission; `charter.approved` and `charter.amended` in the catalog | Must |
 | XCH-4 | **Planner input**: the planner reads the charter first and proposes slices along the top journeys, tagging rows with journey-step ids; it never changes a row the engineer wrote | Must |
@@ -177,6 +194,7 @@ Identifiers use `XCH-` to avoid the PRD's `EXPL-` (explore) prefix.
 | XCH-7 | **Judges and checks**: judges receive the charter; the accessibility floor and quality bars run as deterministic checks at Verification where possible | Should |
 | XCH-8 | **Drift lint** between screen map and shipped screens, as findings only | Should |
 | XCH-9 | **Team floor** for the shared parts, stricter-only, changed by quorum | Could |
+| XCH-10 | **KILN's own charter**: KILN's web front door is built under a charter seeded from `user-experience.md` (personas, vocabulary, core experiences, the gate brief) and the mockups | Must |
 
 ## 11. Where it lands in the program
 
@@ -190,18 +208,19 @@ The admitted roadmap (`specs/ROADMAP.md`) is changed only at the Roadmap gate, s
 | **r20 Gates on the web** | the brief's yardstick cites charter ids (XCH-6) |
 | **r30 Existing codebases, part 1** and **r43 Explore space** | the discovered charter draft comes from the scan and the explore maps |
 | **r15 The record** | the two new events enter the catalog |
+| **Constitution** | the MINOR amendment of §9 (2.0.1 → 2.1.0) lands before r28 uses the charter |
+| **r19 Web front door, read-only** | KILN's own charter (XCH-10) is drafted and approved before r19's screens are built, so the front door is the first product made under a charter |
 
 Either each change is folded into those rows with `edit-rows`, or one new row — *the experience charter* — is added
 after r23 with `add-row`. The Roadmap gate decides which; this doc does not.
 
 ## 12. Open questions
 
-1. **File location.** `.specify/memory/experience-charter.md` (beside the constitution; KILN-owned file in Spec Kit's
-   memory directory) or a KILN-owned path such as `docs/experience-charter.md`? Default proposed: beside the constitution.
-2. **Approver.** Any Decider, or a named experience owner when one exists?
-3. **Size.** Is one to three pages the right ceiling, or should a large product allow per-area appendices?
-4. **KILN's own charter.** KILN is built by its own process; should it adopt a charter for its web front door, seeded from
-   `user-experience.md`?
+1. ~~File location.~~ **Decided 2026-10-25** (human@batorfi): `.specify/memory/experience-charter.md`, beside the
+   constitution, referenced from it.
+2. ~~Approver.~~ **Decided 2026-10-25:** a named experience owner when one exists, otherwise a Decider.
+3. ~~Size.~~ **Decided 2026-10-25:** no ceiling; a short core plus per-area appendices.
+4. ~~KILN's own charter.~~ **Decided 2026-10-25:** yes, seeded from `user-experience.md` (XCH-10).
 5. **Visual artifacts.** Should the screen map and journeys be allowed as rendered images next to the text (as the
    mockups are), with the text remaining the source of truth?
 6. **Legacy products.** For an existing product with no coherent experience, is an *as-is* charter enough, or should the
