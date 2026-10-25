@@ -179,6 +179,7 @@ export interface CopyRecord {
   kind: "ported" | "wait";              // wait = a legacy item whose row has not ported it yet
   since?: string;                       // commit id of the port (set when the porting commit exists)
   portedBy?: string;                    // for kind "wait": the row that will port it ("r13", "r16")
+  cases?: number;                       // for kind "wait": test cases held back (summed: the 19 deferred cases)
   retiresWith: "legacy-retirement";     // the duplication ends deliberately
   note?: string;
 }

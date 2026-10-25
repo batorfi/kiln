@@ -20,7 +20,7 @@ and `model` in r17.)
 |---|---|---|---|
 | `network` | non-test source of `packages/*/src` and `checks/*.ts`, with the allowlist in `checks/network-allowlist.json` | no file calls a network API, imports a network or process module, or evades the lint, outside the allowlist — and **at least one file was scanned** | `network-call` · `network-import` · `network-alias` · `network-computed` · `network-zero-files` · `allowlist-missing-file` · `allowlist-bare-name` |
 | `boundaries` | import specifiers of the same files, against `checks/boundaries.json` | every import respects the dependency direction and seam rules; every package declares a responsibility — and at least one file was scanned | see [boundaries.md](./boundaries.md) |
-| `legacy` | `legacy/` against `checks/legacy-manifest.json`, and `checks/legacy-copies.json` | every manifest file exists with its recorded hash; no unlisted file outside the manifest's `ignore` globs; the copy record is consistent | see [legacy-identity.md](./legacy-identity.md) |
+| `legacy` | `legacy/` against `checks/legacy-manifest.json`, and `checks/legacy-copies.json` | every manifest file exists with its recorded hash; no unlisted file outside the manifest's `ignore` globs; the copy record is consistent | see [legacy-identity.md](./legacy-identity.md) (adds `legacy-manifest-invalid`) |
 
 ## Output (text, to stdout)
 

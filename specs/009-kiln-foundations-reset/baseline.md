@@ -53,3 +53,16 @@ reported skips.
 | Copies exact | `cmp` of the three r7 fixtures and the blank roadmap against `legacy/` | identical |
 | Legacy untouched | `git diff --stat -- legacy` | empty; tree id still `20a82c7e…` |
 
+### After US2 (T034–T047, 2026-10-25)
+
+| Check | Command | Result |
+|---|---|---|
+| Manifest | `node tests/tools/make-legacy-manifest.ts 299b0a5` | **168 files**, baseline `299b0a5…`, tree `20a82c7e…`; every hash equals the working tree's `legacy/` |
+| Identity check | `npm run kiln -- check legacy` | `PASS legacy — scanned 168 files`; 2 ignored globs; 19 deferred cases listed |
+| Tamper cases | `checks/tests/legacy-identity.test.ts` (13), `legacy-baseline.test.ts` (2), `packages/cli/tests/check-legacy.test.ts` (2) | modified / missing / added / copy-unlisted / zero-files / invalid each fail by name; the CLI on a tampered copy exits 1 naming the file; four mutants of the check each fail ≥ 1 test |
+| Baseline cross-check | `legacy-baseline.test.ts` | treeId and all 168 blob ids equal git's (skips with a printed reason without history) |
+| Pi decision | `tests/runner/pi-tier.test.ts` (8), `pi-skip.test.ts` (9), `measured-equality.test.ts` (1); two mutants of `decidePiTier` each fail ≥ 2 | stub `pi` 1.1.0 → skip line once, legacy child `KILN_PI=0`; stub 0.85.1 / `--pi` / `KILN_PI=1` / `KILN_PI=0` / no Pi → unchanged |
+| **L7 / R7** `npm test` here (Pi 1.1.0) | `cd kiln && npm test` | **exit 0**; `live-Pi tier skipped: Pi 1.1.0 installed, measured [0.85.1]` once; **`new: 67 tests · legacy: 500 tests`** (new 67 pass; legacy 470 pass, 0 fail, 30 skipped) |
+| Demanded tier (US2.4) | `npm test -- --pi` | **exit 1**; no skip line; legacy 500 tests, 477 pass, **8 fail**, 15 skipped — the 8 `PI-LIVE:` tests fail by name `pi-version-unmeasured` (the baseline's numbers exactly) |
+| Legacy untouched | `git rev-parse HEAD:legacy` | `20a82c7e…` |
+

@@ -197,3 +197,25 @@ Measured: `npm run test:new` — **30 tests, 0 failures**; `validate:log` and `v
 
 Not yet: `npm test` also runs the legacy suite (T045); `legacy-copies.json` records for these ports (T037); the manifest check. Two things to know for later: (1) the runner flags `--live`, `--cost`, `--serial`, `--pi` are rejected until T045 forwards them;
 (2) the runner found a real pitfall — a nested `node --test` inside a test reads as "zero tests" unless `NODE_TEST_CONTEXT` is removed.
+
+## 12. User Story 2 completed — the MVP (2026-10-25, T034–T047)
+
+47 of 87 tasks done (T001–T047 and T080 — 48 with the PRD task). **US1 + US2 is the MVP the plan defined: the move is safe, proven and green.**
+
+| Piece | Where |
+|---|---|
+| Manifest generator and manifest (168 files, from the baseline commit's blobs) | `kiln/tests/tools/make-legacy-manifest.ts`, `kiln/checks/legacy-manifest.json` |
+| `kiln check legacy` (pure filesystem) and the copy record (27 records: 20 ported pairs, 5 `wait` files = the 19 deferred cases) | `kiln/checks/legacy-identity.ts`, `legacy-copies.json`; registered in `checks/index.ts` |
+| Pi tier: measured list, `decidePiTier`, version probe | `kiln/tests/measured-pi.ts`, `pi-tier.ts` |
+| Runner: both suites, zero-test rule on each, `--new-only` / `--legacy-only`, forwarded legacy flags, the skip line | `kiln/tests/run.ts` |
+
+**Defects found and fixed on the way (worth knowing):**
+1. **The entry guard was unsafe through symlinks** — and so is the first program's idiom. `import.meta.url` is a real path; `process.argv[1]` is as typed; on macOS temp dirs (`/var` → `/private/var`) they differ and a command would run nothing and exit 0. Found by the tamper test, fixed once in `packages/record/src/entry.ts` (`isEntryPoint`, realpath on both sides) and used by the CLI, both validators and the manifest generator; a regression test runs them through a symlink and a mutant of the old guard fails it. This is the same silent-pass class as code-review finding 1.
+2. `git ls-tree` filters to the working directory's prefix: run from `kiln/` it listed zero files. The generator now uses `--full-tree` and refuses an empty listing.
+3. A nested `node --test` inherits `NODE_TEST_CONTEXT` (US1 finding) — the runner strips it for both children.
+4. While mutation-testing I reverted my own uncommitted runner with `git checkout`; I rebuilt it from the same content and committed immediately. Lesson kept: commit before mutating.
+
+**Contract updates:** `runner.md` (exclusive flags, `KILN_LEGACY_RUNNER` seam), `legacy-identity.md` (`legacy-manifest-invalid`), `data-model.md` §6 (`cases`).
+
+Full numbers: `baseline.md`. Next: US3 (T048–T058, the twelve-gate flow data and tests), US4 (T059–T071, the network lint), US5 (T072–T077, boundaries), Polish (T078–T087, minus T080).
+

@@ -23,6 +23,7 @@ any other change, and is expected only when legacy is **retired** — then the m
 | a file under `legacy/` is not in the manifest and not matched by `ignore` | `legacy-file-added` | path |
 | a `CopyRecord` names a `legacy` path not in the manifest, a missing `ported` path, or lacks `portedBy` for `kind: "wait"` | `legacy-copy-unlisted` | record |
 | the manifest lists zero files | `legacy-zero-files` | — |
+| the manifest or copy record cannot be read, or is not schema 1 | `legacy-manifest-invalid` | file and reason |
 
 `ignore` = `factory-log/*.jsonl`, `factory-log/*.log` (runtime artifacts `.gitignore` already excludes). Nothing else is skipped.
 

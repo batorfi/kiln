@@ -11,7 +11,7 @@ npm run test:new          # = node tests/run.ts --new-only
 npm run test:legacy       # = node tests/run.ts --legacy-only
 ```
 
-Works from any working directory (it resolves everything from its own location). `paths` restrict the **new** suite (relative to `kiln/`); the legacy suite runs
+Also accepted: `--legacy-only` (exclusive with `--new-only`). Any other flag is a usage error (exit 2), never silently ignored. Works from any working directory (it resolves everything from its own location). `paths` restrict the **new** suite (relative to `kiln/`); the legacy suite runs
 whole unless `--new-only`. `--live`, `--cost`, `--serial` and `--pi` are passed to the legacy runner unchanged — the new suite has no live tier yet.
 
 ## What it runs
@@ -40,6 +40,8 @@ The legacy files are not touched: the legacy Pi gate already honours `KILN_PI=0`
 
 **The measured list** is the constant `MEASURED_PI_VERSIONS` in `kiln/tests/measured-pi.ts`. A test asserts it equals the constant in `legacy/validate/_pi-driver.ts`
 by reading that file's text (new code may not import legacy). When a later chore re-measures Pi 1.1.0, both lists change in one commit and the equality test keeps them honest.
+
+**Test seam.** `KILN_LEGACY_RUNNER=<path>` replaces the frozen legacy runner with a probe, so the runner's own tests can observe the environment and arguments the legacy child receives without running 500 tests. It is for those tests only. A runner started inside a test strips `NODE_TEST_CONTEXT` (a nested `node --test` would otherwise print no summary and read as "zero tests").
 
 ## Required behaviours (each is a test)
 
