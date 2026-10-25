@@ -120,7 +120,7 @@ WCAG 2.2 AA. Every state readable without colour (word and shape). Full keyboard
 
 ## Design system
 
-KILN's own design system (`.specify/memory/design-system/`, seed defined in `docs/concepts/design-system.md` §12: the teal-and-sand theme, Charter display + Inter interface + monospace, status colours for wait/ok/info/delegated/danger) is pinned by this charter. It is to be authored and approved separately (DSN-12); until then wireframes stay greyscale.
+KILN's own design system (`.specify/memory/design-system/`, seed defined in `docs/concepts/design-system.md` §12: the teal-and-sand theme, Charter display + Inter interface + monospace, status colours for wait/ok/info/delegated/danger) is pinned by this charter (version 0.2.0, teal and sand, now written as files: tokens, contrast registry, 12 components, 5 patterns). Its manifest is a draft awaiting formal approval (DSN-12); the wireframes stay greyscale structure.
 
 ## Quality bars
 

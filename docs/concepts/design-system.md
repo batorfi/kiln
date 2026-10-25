@@ -431,13 +431,13 @@ Measured contrast (WCAG 2.2 relative luminance; text needs 4.5:1, large text and
 | wait · ok · info · delegated · danger text on their tints | 5.8 · 5.5 · 6.1 · 6.7 · 5.7 |
 | rail text · rail muted · teal-on-dark on rail | 14.4 · 7.5 · 9.0 |
 
-`border.default` (`#DDD7CA`) is decorative only; controls that need a visible boundary use `border.strong` (`#8C9490`,
+`border.default` (`#DDD7CA`) is decorative only; controls that need a visible boundary use `border.strong` (`#7F8985`,
 3:1 on the page). Each pair is written to the **contrast registry** (§5.5) and checked by `kiln check design-system`. The
 dark mode derives from the rail palette and is drawn at DSN-12.
 
 ![KILN theme — teal and sand](./feed/e-theme-sheet.png)
 
-*Sample screens in this theme: `the-feed.md` §5.*
+*Sample screens in this theme: `the-feed.md` §5. **Written as files (2026-10-25):** `.specify/memory/design-system/` holds the manifest, foundations, DTCG tokens (primitive, semantic, component, light and dark), the contrast registry (40 pairs, all passing), 12 components, 5 patterns, the interface-copy glossary and the changelog. The infographics are drawn in this theme.*
 
 The seed is a **proposal for the first design system** (version 0.2.0 with the teal-and-sand theme), drafted and approved before the front door's screens are built
 (DSN-12); the mockups in `mockups/` stay illustrations. A rule specific to KILN is written into the foundations: **colour

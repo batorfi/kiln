@@ -33,7 +33,7 @@ The software engineer in the middle of KILN, in three parts:
 
 Illustrative scenario (Zsolt, Anna, Bence); the concept docs govern where they differ.
 
-Regenerate (4000 × 4630 px):
+Regenerate (4000 × 4630 px; teal-and-sand theme, see `../design-system.md` §12.1):
 
 ```sh
 cd src && "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --disable-gpu --hide-scrollbars \

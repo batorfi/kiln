@@ -1,0 +1,67 @@
+{
+  "$description": "Component-scoped aliases to semantic tokens.",
+  "button": {
+    "primary": {
+      "bg": {
+        "$type": "color",
+        "$value": "{color.action.primary}"
+      },
+      "bg-hover": {
+        "$type": "color",
+        "$value": "{color.action.primary-hover}"
+      },
+      "fg": {
+        "$type": "color",
+        "$value": "{color.text.on-accent}"
+      }
+    },
+    "secondary": {
+      "bg": {
+        "$type": "color",
+        "$value": "{color.surface.raised}"
+      },
+      "border": {
+        "$type": "color",
+        "$value": "{color.border.strong}"
+      },
+      "fg": {
+        "$type": "color",
+        "$value": "{color.text.primary}"
+      }
+    }
+  },
+  "pill": {
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.pill}"
+    }
+  },
+  "card": {
+    "bg": {
+      "$type": "color",
+      "$value": "{color.surface.raised}"
+    },
+    "border": {
+      "$type": "color",
+      "$value": "{color.border.default}"
+    },
+    "radius": {
+      "$type": "dimension",
+      "$value": "{radius.lg}"
+    }
+  },
+  "rail": {
+    "bg": {
+      "$type": "color",
+      "$value": "{color.surface.rail}"
+    },
+    "item-active": {
+      "$type": "color",
+      "$value": "{color.surface.rail-raised}"
+    },
+    "indicator": {
+      "$type": "color",
+      "$value": "{color.action.on-rail}"
+    }
+  }
+}
