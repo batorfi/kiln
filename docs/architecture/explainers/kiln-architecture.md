@@ -314,6 +314,7 @@ says *unknown*, never *healthy*.
 ## 13. The codebase
 
 ```
+legacy/          the first program's code (rows r1–r8), at the repository root, frozen until each part is ported or retired
 kiln/
   packages/
     contracts/   gate rail and flows as data, move kinds, event catalog and schemas, roles and tiers   (pure, no I/O)
@@ -333,9 +334,8 @@ kiln/
     web/         the front door (prebuilt)
     cli/         kiln init · doctor · health · serve · host · check · agents try · replay
   agents/        role instructions
-  checks/        readiness probes and network checks
+  checks/        named, falsifiable checks behind `kiln check`: the network lint, package boundaries, legacy identity (each unit also states its single responsibility in a kiln.json)
   fixtures/      committed event streams and replays
-  legacy/        the first program's code, frozen until each part is ported or retired
 ```
 
 **Dependency direction** — inner layers never import outer ones:

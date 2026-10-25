@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "layers": {
+    "contracts": { "imports": [], "builtins": "none" },
+    "record": { "imports": ["contracts"] },
+    "durable": { "imports": ["contracts", "record"] },
+    "lane": { "imports": ["contracts", "record", "durable"] },
+    "workers": { "imports": ["contracts", "record", "durable"] },
+    "director": { "imports": ["contracts", "record", "durable", "lane", "workers"] },
+    "workshop": { "imports": ["contracts", "record", "durable", "lane", "workers", "director"] },
+    "host": { "imports": ["contracts", "record", "durable", "lane", "workers", "director"] },
+    "server": { "imports": ["contracts", "record", "durable", "lane", "workers", "director", "workshop", "host"] },
+    "web": { "imports": ["server"] },
+    "cli": { "imports": ["contracts", "record", "server", "checks"] },
+    "editor": { "imports": ["server"] },
+    "team": { "imports": ["contracts", "record", "durable"] },
+    "explore": { "imports": ["contracts", "record", "durable", "lane", "workers", "knowledge"] },
+    "knowledge": { "imports": ["contracts", "record", "durable", "workers"] },
+    "bench": { "imports": ["contracts", "record", "durable", "workers", "knowledge"] },
+    "checks": { "imports": ["contracts", "record"] }
+  },
+  "externals": {},
+  "forbidden": { "legacyRoot": "legacy/" }
+}

@@ -1,60 +1,156 @@
-// kiln/tests/run.ts — CR-1 / CR-8 / CR-11 (code review), r7 · the ONE way scripts and people run the suite.
+// kiln/tests/run.ts — the ONE way scripts and people run the suite (r12 T031, T045; contracts/runner.md).
+// It resolves everything from ITS OWN location, so it works from any working directory, and it REFUSES a run that executed nothing —
+// `node --test` exits 0 when no file matches, a silent pass in a project whose central rule is "never silently approve".
 //
-// WHY THIS EXISTS. `kiln/package.json` lives in `kiln/`, and `npm run` executes scripts with `kiln/` as the working directory — but the
-// scripts used repo-root-relative paths (`kiln/tests/...`), which resolve to `kiln/kiln/...`. Measured: `npm run test:live` ran ZERO
-// tests and exited 0 (a silent pass, in a project whose central rule is "never silently approve"); the other scripts crashed. This
-// runner resolves everything from ITS OWN location, so it works from any working directory, and it REFUSES a run that executed nothing.
+//   node tests/run.ts                          the new suite, then the first program's suite (frozen, in legacy/)
+//   node tests/run.ts --new-only               only the new suite
+//   node tests/run.ts --legacy-only            only the legacy suite
+//   node tests/run.ts [--live] [--cost] [--serial] [--pi]   forwarded to the legacy runner unchanged
+//   node tests/run.ts <path>…                  restrict the NEW suite to these files or directories, RELATIVE TO kiln/
 //
-//   node tests/run.ts                      the default (offline) suite
-//   node tests/run.ts --live               + the live tier (KILN_LIVE=1). Needs a running local Ollama and an installed model.
-//   node tests/run.ts --cost               + the cost test, which UNLOADS the model — implies --live AND --serial
-//   node tests/run.ts --serial             one test file at a time (`--test-concurrency=1`)
-//   node tests/run.ts --pi [path…]         DEMAND the Pi tier (KILN_PI=1) AND refuse a run in which no `PI-LIVE:` test passed (r8, FR-011)
-//   node tests/run.ts [flags] <path|glob>… restrict to these paths, RELATIVE TO kiln/ (default: `tests/**/*.test.ts`)
-//
-// Env vars are set here (not by a `KILN_LIVE=1 node …` shell prefix), so it also works in `cmd.exe`/PowerShell. Pure glue: no network,
-// no gate advanced (P-VI).
+// The live-Pi tier: before the legacy suite starts, the installed Pi (KILN_PI_BIN or `pi`) is compared with the measured list. On an unmeasured
+// Pi that nobody demanded, KILN_PI=0 is set for the legacy child — the legacy gate's own off switch, which prints its reason per test — and the
+// two versions are printed once. A demanded tier (`--pi`, KILN_PI=1) is never switched off: its tests run and fail by name.
+// Pure glue: no network, no gate advanced, no legacy file touched.
 
 import { spawn } from "node:child_process";
+import { existsSync, readdirSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { join, relative, resolve, sep } from "node:path";
+import { MEASURED_PI_VERSIONS } from "./measured-pi.ts";
+import { decidePiTier, installedPiVersion, piBinary } from "./pi-tier.ts";
 
 const kilnDir = fileURLToPath(new URL("..", import.meta.url));
 const args = process.argv.slice(2);
-const has = (f: string) => args.includes(f);
+const NEW_FLAGS = new Set(["--new-only", "--legacy-only"]);
+const FORWARDED = new Set(["--live", "--cost", "--serial", "--pi"]);
+const badFlag = args.find((a) => a.startsWith("--") && !NEW_FLAGS.has(a) && !FORWARDED.has(a));
+if (badFlag) {
+  console.error(`unknown flag "${badFlag}"\nusage: node tests/run.ts [--new-only | --legacy-only] [--live] [--cost] [--serial] [--pi] [path…]`);
+  process.exit(2);
+}
+if (args.includes("--new-only") && args.includes("--legacy-only")) {
+  console.error("--new-only and --legacy-only exclude each other");
+  process.exit(2);
+}
+const newOnly = args.includes("--new-only");
+const legacyOnly = args.includes("--legacy-only");
+const forwarded = args.filter((a) => FORWARDED.has(a));
 const paths = args.filter((a) => !a.startsWith("--"));
 
-const env: NodeJS.ProcessEnv = { ...process.env };
-if (has("--live") || has("--cost")) env.KILN_LIVE = "1";
-if (has("--cost")) env.KILN_LIVE_COST = "1"; // the cost test unloads the model — never enabled implicitly
-if (has("--pi")) env.KILN_PI = "1"; // r8: demand the Pi tier — a missing Pi FAILS the PI-LIVE tests instead of skipping them (F-1)
-const serial = has("--serial") || has("--cost"); // parallel files would race the unload
+const EXCLUDED = [join("tests", "runner", "fixtures") + sep, join("tests", "tools") + sep];
 
-const nodeArgs = ["--test", ...(serial ? ["--test-concurrency=1"] : []), ...(paths.length > 0 ? paths : ["tests/**/*.test.ts"])];
-const child = spawn(process.execPath, nodeArgs, { cwd: kilnDir, env, stdio: ["ignore", "pipe", "pipe"] });
-
-let out = "";
-child.stdout.on("data", (d: Buffer) => { out += d; process.stdout.write(d); });
-child.stderr.on("data", (d: Buffer) => process.stderr.write(d));
-/**
- * r8 (FR-011): how many `PI-LIVE:` tests PASSED. Both reporters, because they differ: the spec reporter prints a pass as `✔ PI-LIVE: …` (a skip is
- * `﹣`, a failure `✖`); TAP prints `ok N - PI-LIVE: …` for a pass AND `ok N - PI-LIVE: … # SKIP …` for a skip — so a TAP skip must be excluded by hand.
- */
-function piLivePasses(text: string): number {
-  return text.split("\n").filter((l) => /^\s*✔\s+PI-LIVE:/.test(l) || (/^\s*ok \d+ - PI-LIVE:/.test(l) && !/#\s*(?:SKIP|TODO)/i.test(l))).length;
+/** Every *.test.ts under `dir`, sorted, as paths relative to kiln/. */
+function testFilesUnder(dir: string): string[] {
+  if (!existsSync(dir)) return [];
+  const out: string[] = [];
+  for (const entry of readdirSync(dir, { recursive: true, withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.endsWith(".test.ts")) continue;
+    const rel = relative(kilnDir, join(entry.parentPath, entry.name));
+    if (rel.split(sep).includes("node_modules") || EXCLUDED.some((x) => rel.startsWith(x))) continue;
+    out.push(rel);
+  }
+  return out;
 }
 
-child.on("close", (code) => {
-  const m = /(?:ℹ |# )tests (\d+)/.exec(out);
-  const ran = m ? Number(m[1]) : 0;
-  if (code === 0 && ran === 0) {
-    // `node --test` exits 0 when nothing matched. That is a SILENT PASS — refuse it.
-    console.error(`FAIL — the run executed ZERO tests (paths: ${paths.length ? paths.join(" ") : "tests/**/*.test.ts"}, relative to ${kilnDir}). A run that ran nothing proves nothing.`);
-    process.exit(1);
+function discover(): string[] {
+  if (paths.length > 0) {
+    const found = new Set<string>();
+    for (const p of paths) {
+      const abs = resolve(kilnDir, p);
+      if (!existsSync(abs)) continue;
+      if (statSync(abs).isDirectory()) testFilesUnder(abs).forEach((f) => found.add(f));
+      else if (abs.endsWith(".test.ts")) found.add(relative(kilnDir, abs));
+    }
+    return [...found].sort();
   }
-  if (has("--pi") && code === 0 && piLivePasses(out) === 0) {
-    // `--pi` demanded the Pi tier. A run whose PI-LIVE tests were all skipped, excluded or absent proves nothing about Pi.
-    console.error(`FAIL — --pi demanded the Pi tier, but NO \`PI-LIVE:\` test passed (paths: ${paths.length ? paths.join(" ") : "tests/**/*.test.ts"}). A skipped, excluded or misnamed Pi test is not a pass.`);
-    process.exit(1);
+  const roots = [join(kilnDir, "tests"), join(kilnDir, "checks", "tests")];
+  const packages = join(kilnDir, "packages");
+  if (existsSync(packages)) {
+    for (const p of readdirSync(packages, { withFileTypes: true })) if (p.isDirectory()) roots.push(join(packages, p.name, "tests"));
   }
-  process.exit(code ?? 1);
-});
+  return [...new Set(roots.flatMap(testFilesUnder))].sort();
+}
+
+// A runner started from inside a test (the runner's own tests do) inherits NODE_TEST_CONTEXT, which makes a nested `node --test` emit machine
+// output and no summary — it would read as "zero tests". Strip it: every run started here is a fresh top-level run.
+function cleanEnv(extra: Record<string, string> = {}): NodeJS.ProcessEnv {
+  const env = { ...process.env, ...extra };
+  delete env.NODE_TEST_CONTEXT;
+  return env;
+}
+
+interface RunResult { code: number; ran: number; skipped: number }
+
+/** Runs a child, passes its output through, and returns its exit code and how many tests (and how many of those skipped) its summary reported. */
+function runChild(cmdArgs: string[], cwd: string, env: NodeJS.ProcessEnv): Promise<RunResult> {
+  return new Promise((resolveRun) => {
+    const child = spawn(process.execPath, cmdArgs, { cwd, env, stdio: ["ignore", "pipe", "pipe"] });
+    let out = "";
+    child.stdout.on("data", (d: Buffer) => { out += d; process.stdout.write(d); });
+    child.stderr.on("data", (d: Buffer) => process.stderr.write(d));
+    child.on("error", (e) => { console.error(`FAIL — could not start ${cmdArgs[0]}: ${e.message}`); resolveRun({ code: 1, ran: 0, skipped: 0 }); });
+    child.on("close", (code) => {
+      const m = /(?:ℹ |# )tests (\d+)/.exec(out);
+      const k = /(?:ℹ |# )skipped (\d+)/.exec(out);
+      resolveRun({ code: code ?? 1, ran: m ? Number(m[1]) : 0, skipped: k ? Number(k[1]) : 0 });
+    });
+  });
+}
+
+const zero = (what: string) => `FAIL — the ${what} suite executed ZERO tests. A run that ran nothing proves nothing.`;
+
+async function runNew(): Promise<RunResult> {
+  const files = discover();
+  const where = paths.length ? paths.join(" ") : "packages/*/tests, checks/tests, tests";
+  if (files.length === 0) {
+    console.error(`FAIL — the run executed ZERO tests (paths: ${where}, relative to ${kilnDir}). A run that ran nothing proves nothing.`);
+    return { code: 1, ran: 0, skipped: 0 };
+  }
+  const r = await runChild(["--test", ...files], kilnDir, cleanEnv());
+  if (r.code === 0 && r.ran === 0) {
+    console.error(`FAIL — the run executed ZERO tests (paths: ${where}, relative to ${kilnDir}). A run that ran nothing proves nothing.`);
+    return { code: 1, ran: 0, skipped: 0 };
+  }
+  return r;
+}
+
+async function runLegacy(): Promise<RunResult> {
+  const legacyDir = join(kilnDir, "..", "legacy");
+  // KILN_LEGACY_RUNNER replaces the frozen runner with a probe — for the runner's own tests only.
+  const runner = process.env.KILN_LEGACY_RUNNER ?? join(legacyDir, "tests", "run.ts");
+  const extra: Record<string, string> = {};
+  const decision = decidePiTier({
+    env: process.env,
+    demanded: forwarded.includes("--pi"),
+    installedVersion: installedPiVersion(piBinary(process.env)),
+    measured: MEASURED_PI_VERSIONS,
+  });
+  if (decision.action === "switch-off") {
+    extra.KILN_PI = "0";
+    console.log(`live-Pi tier skipped: Pi ${decision.installed} installed, measured [${decision.measured.join(", ")}]`);
+  }
+  const r = await runChild([runner, ...forwarded], legacyDir, cleanEnv(extra));
+  if (r.code === 0 && r.ran === 0) {
+    console.error(zero("legacy"));
+    return { code: 1, ran: 0, skipped: 0 };
+  }
+  return r;
+}
+
+// "170 tests" counts skipped tests too; a skip is shown beside the count, never hidden in it (a shallow clone skips the git cross-checks).
+const tally = (name: string, r: RunResult) => `${name}: ${r.ran} tests${r.skipped > 0 ? ` (${r.skipped} skipped)` : ""}`;
+const results: string[] = [];
+let failed = false;
+if (!legacyOnly) {
+  const r = await runNew();
+  results.push(tally("new", r));
+  if (r.code !== 0) failed = true;
+}
+if (!newOnly) {
+  const r = await runLegacy();
+  results.push(tally("legacy", r));
+  if (r.code !== 0) failed = true;
+}
+console.log(results.join(" · "));
+process.exit(failed ? 1 : 0);

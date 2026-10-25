@@ -11,20 +11,21 @@
 | **Release** | `kiln-v1` — position 4 of 43 in the committed order |
 | **Depends on** | [r13 — Durable core and the gate contract](./r13-durable-core-and-the-gate-contract.md) |
 | **Unlocks** | [r15 — The record](./r15-the-record.md), [r18 — The director](./r18-the-director.md) |
-| **PRD requirements** | GATE-3/4/5/6, FLOW-1/2/3, FLOW-7 (default) |
-| **Proven when** | a scripted feature walks ten gates from the CLI; `kiln check flow` refuses every invalid flow in its negative suite |
+| **PRD requirements** | GATE-3/4/5/6, FLOW-1/2/3, FLOW-7 (default), EXP-3 |
+| **Proven when** | a scripted feature walks the twelve-gate flow from the CLI (two gates not applicable for a non-interface feature, recorded with their reason); `kiln check flow` refuses every invalid flow in its negative suite |
 
 ## In one paragraph
 
-The default flow — the Roadmap gate and nine feature gates — becomes data the director executes, not a constant rail in code. A scripted feature walks all ten gates from the command line and survives being killed at every one, which makes the flow demonstrable long before any screen exists.
+The default flow — the Roadmap gate and eleven feature gates, two of which (Experience design and UI review) apply only to interface work — becomes data the director executes, not a constant rail in code. A scripted feature walks the whole flow from the command line and survives being killed at every one, which makes the flow demonstrable long before any screen exists.
 
 ## What it delivers
 
 - the standard flow as data, with the closed set of move kinds: approve, revise, reject, restart, split+revise, mitigate, and the Roadmap gate's row edits
-- the decided move semantics: Code review offers `approve · revise · restart`; a reject may name an earlier gate at any time; every gate after the target re-opens; triage skips only Concept and Design
+- the decided move semantics: Code review offers `approve · revise · restart`; a reject may name an earlier gate at any time; every gate after the target re-opens; triage skips only Concept and Architecture
+- the two interface gates carry a deterministic `applies_when` and are recorded as *not applicable* otherwise
 - the fix-round cap (default 2, settable 0–3)
 - `kiln check flow` for the default flow, with a negative suite of invalid flows it must refuse
-- a scripted feature walking all ten gates from the CLI, surviving kill-and-resume at every gate
+- a scripted interface feature walking all eleven feature gates and a non-interface one the nine that apply, from the CLI, surviving kill-and-resume at every gate
 
 ## Not in this row
 
@@ -33,7 +34,7 @@ The default flow — the Roadmap gate and nine feature gates — becomes data th
 
 ## Requirements it carries
 
-*As listed in the roadmap: GATE-3/4/5/6, FLOW-1/2/3, FLOW-7 (default). Full text from the PRD:*
+*As listed in the roadmap: GATE-3/4/5/6, FLOW-1/2/3, FLOW-7 (default), EXP-3. Full text from the PRD:*
 
 | ID | Requirement | Priority |
 |---|---|---|
@@ -45,16 +46,17 @@ The default flow — the Roadmap gate and nine feature gates — becomes data th
 | FLOW-2 | **Anchors and invariants**: Roadmap gate first, Merge gate last, all built-in gates present in order (Experience design and UI review apply conditionally and are recorded *not applicable* otherwise); added gates only between built-in ones; skipping only as triage does today; nothing after Merge. | Must |
 | FLOW-3 | **Move kinds**: a closed set (approve · revise · reject · restart · split+revise · mitigate) with team labels and rules (required note, `returns_to`, rounds); events record kind and label. | Must |
 | FLOW-7 | **`kiln check flow`**: all-or-nothing validation of anchors, placement, roles and judges, move kinds, `returns_to`, restart and mitigate prerequisites, arming points, required gates, cycles. | Must (default flow) / Should (added gates) |
+| EXP-3 | **Interface gates**: Experience design (after Architecture) and UI review (after Code review) are built into the default flow, with deterministic `applies_when`, recorded as *not applicable* otherwise; UXG-1…10 in the concept. | Must |
 
 ## How it is proven
 
-**Acceptance:** a scripted feature walks ten gates from the CLI; `kiln check flow` refuses every invalid flow in its negative suite.
+**Acceptance:** a scripted feature walks the twelve-gate flow from the CLI (two gates not applicable for a non-interface feature, recorded with their reason); `kiln check flow` refuses every invalid flow in its negative suite.
 
 Like every row, it walks the full flow — Concept to Merge — with its evidence (specification, plan, tasks, judges' reports, verification) kept in its own `specs/NNN-…` directory, and every principle it touches checked by a test that fails by name.
 
 ## Decisions that shape it
 
-- the legacy `kiln/contracts/gate-rail.md` (old gate names, four line-of-defense roles, the 1.0.0 move table) is rewritten for constitution v2.0.1 and the decided move set — Code review `approve · revise · restart`, reject-to-earlier, three built-in judges — as r14 encodes the flow as data; `firing-ready` reads it, so it changes with its checks
+- the legacy `kiln/contracts/gate-rail.md` (old gate names, four line-of-defense roles, the 1.0.0 move table) is rewritten for constitution v2.1.0 and the decided move set — Code review `approve · revise · restart`, reject-to-earlier, five built-in judges, twelve gates with Architecture, Experience design and UI review — as r14 encodes the flow as data; `firing-ready` reads it, so it changes with its checks
 
 ## Rules it must keep
 

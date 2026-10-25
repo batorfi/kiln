@@ -1,0 +1,4 @@
+{
+  "name": "@kiln/server",
+  "responsibility": "The loopback front door: session security, read models, live push and move intake \u2014 arrives with r19."
+}

@@ -21,7 +21,7 @@ The release row turns everything before it into something a newcomer can install
 ## What it delivers
 
 - the installer and newcomer documentation
-- a demo factory, downloaded on request, replaying a committed walk through all ten gates
+- a demo factory, downloaded on request, replaying a committed walk through all eleven feature gates of an interface feature
 - a release manifest and version tag
 - acceptance on a real repository by a newcomer
 
@@ -36,7 +36,7 @@ The release row turns everything before it into something a newcomer can install
 This row carries no individual requirements: it proves the PRD's **§3.1 goals** and milestone **M14** over everything
 built before it. The goals, from the PRD:
 
-1. **A runnable factory** a person can point at a feature and walk through all ten gates, in a browser, on local models.
+1. **A runnable factory** a person can point at a feature and walk through the twelve-gate flow (two of its gates apply only to interface work), in a browser, on local models.
 2. **Rules enforced by construction** — no silent approval, author/judge separation, one step at a time per factory,
    judges on the strongest model, everything recorded — each with a check that fails by name.
 3. **Durable by default** — no crash, restart, move or sleeping host loses work or settles a gate.

@@ -19,7 +19,15 @@ Thumbs.db
 .vscode/
 .idea/
 
-# --- kiln/ runtime artifacts (factory-log runs write these locally) ---
+# --- runtime artifacts (factory-log runs write these locally) ---
+# legacy/ is the first program's tree, moved from kiln/ (r12); its dogfood scripts write here.
+legacy/factory-log/*.jsonl
+legacy/factory-log/*.log
+!legacy/factory-log/.gitkeep
+# kiln/ is the new codebase; the same rule for any factory-log it writes later.
 kiln/factory-log/*.jsonl
 kiln/factory-log/*.log
 !kiln/factory-log/.gitkeep
+
+# Spec Kit catalog cache (written by `specify integration list/info/search`) — machine-local
+.specify/integrations/.cache/

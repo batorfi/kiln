@@ -1,4 +1,5 @@
 > Status: product requirements — **final** (2026-10-21, human@batorfi; previously a proposal, rev 4, 2026-10-18; **amended
+> 2026-10-25**: the codebase layout (§8.2: `legacy/` at the repository root) and WORK-2 (five judges, constitution v2.1.0), as r12 measured and the twelve-gate flow requires; **amended
 > 2026-10-22**: goal 7, §6.21 Explore, §6.22 Editor integration, MOD-6, M17–M18, §14.13). Open decisions were
 > settled on 2026-10-21 and are recorded where they apply; what remains open is listed in
 > [`open-decisions.md`](../concepts/open-decisions.md). Building it is admitted only at the Roadmap gate.
@@ -73,7 +74,7 @@ old code that still expresses a rule we keep** (§10).
 
 ### 3.1 Goals
 
-1. **A runnable factory** a person can point at a feature and walk through all ten gates, in a browser, on local models.
+1. **A runnable factory** a person can point at a feature and walk through the twelve-gate flow (two of its gates apply only to interface work), in a browser, on local models.
 2. **Rules enforced by construction** — no silent approval, author/judge separation, one step at a time per factory,
    judges on the strongest model, everything recorded — each with a check that fails by name.
 3. **Durable by default** — no crash, restart, move or sleeping host loses work or settles a gate.
@@ -141,7 +142,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | ID | Requirement | |
 |---|---|---|
 | GATE-1 | The **default flow**: twelve gates with plain names and one question each: **Roadmap gate**, Concept, Architecture, **Experience design**, Specification, Work plan, **Implementation**, Code review, **UI review**, Verification, Documentation, **Merge**. Experience design and UI review carry a deterministic `applies_when` rule and are recorded as *not applicable* for features that do not touch the interface. Internal ids stay stable (`gate0`, `1-concept` … `9-pr`); the two experience gates are `2a-experience` and `6a-ui-review`. | Must |
-| GATE-2 | Each gate offers only its own moves (the existing move vocabulary), including the special cases: Implementation `approve · split+revise`; Code review `approve · revise · restart` (revise goes to the workers); Verification `approve · reject` with **2** automatic fix rounds; Merge `approve · reject`. | Must |
+| GATE-2 | Each gate offers only its own moves (the existing move vocabulary), including the special cases: Implementation `approve · split+revise`; Code review `approve · revise · restart` (revise goes to the workers); Verification `approve · reject` with **2** automatic fix rounds; Merge `approve · reject`; and on the two interface gates Experience design `approve · revise · reject` and UI review `approve · revise · restart` (`docs/concepts/ui-flow.md` §4.4, §5.4). | Must |
 | GATE-3 | Triage may skip Concept and Architecture for small features, recorded with its reasoning. | Must |
 | GATE-4 | The **unattended tail** may be armed only at the Specification gate, for Work plan → Documentation; merge excluded unless explicitly delegated; any judge's objection ends it. Auto-crossed gates are recorded as delegated, never as human. | Must |
 | GATE-5 | Corrective moves carry a note that becomes the next step's instruction. | Must |
@@ -169,7 +170,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | ID | Requirement | |
 |---|---|---|
 | WORK-1 | Each step is a **fresh** durable **conversation** with its role's instructions (`agents/*.md`), its tier's model, only its permitted tools and explicit inputs referenced in the record; steps never share a conversation — the only continuation is `revise`; a shared preamble may come from forking a prepared base. | Must |
-| WORK-2 | **Tier map**: roles bound to models in one place; judges (architecture critic, code reviewer, verifier, docs synthesizer) bind only to the strongest model; a weaker binding fails closed. | Must |
+| WORK-2 | **Tier map**: roles bound to models in one place; every judge role — architecture critic, design critic, code reviewer, UI reviewer, verifier, and any judge on an added gate — binds only to the strongest model; a weaker binding fails closed (constitution v2.1.0, II: the Docs Synthesizer is no longer a judge, since v2.0.1). | Must |
 | WORK-3 | Only the director creates conversations; workers have no subagent tool. | Must |
 | WORK-4 | **Replay discipline**: read-only tools are replay-safe; writes and commands are not — the model is told of an interruption. | Must |
 | WORK-5 | Deterministic `requestId` per step (feature, gate, step, attempt). | Must |
@@ -545,8 +546,12 @@ kiln/
   agents/          role instructions (*.md)
   checks/          readiness probes and network checks (the *-ready pattern)
   fixtures/        committed event streams and replays
-  legacy/          r1–r9 code, frozen, until each part is ported or retired
 ```
+
+**`legacy/` is not inside `kiln/`.** The first program's tree (r1–r9 code) is frozen at the **repository root**, beside `kiln/`, until each part is ported or retired. Measured
+in r12: nested one level deeper, the unmodified legacy suite shows 6 failures (3 tests, 3 test files that no longer load); at the old depth it shows 0
+([`specs/009-kiln-foundations-reset/research.md`](../../specs/009-kiln-foundations-reset/research.md) R1). Amended 2026-10-25. Each package and `checks/` states its single responsibility in a `kiln.json`;
+`kiln check boundaries` (r12) enforces the direction below.
 
 **Dependency direction:** `contracts` ← `record` ← `durable` ← `lane`, `workers` ← `director` ← `workshop`, `host` ←
 `server` ← `web`/`cli`/`editor`; `team` and `explore` sit beside `workshop` (an explore space reuses `knowledge`, `record`,
@@ -622,7 +627,7 @@ Each milestone is a candidate roadmap row with its own gates. Every milestone en
 | # | Milestone | Delivers | Depends on | Key requirements |
 |---|---|---|---|---|
 | **M0** | **Foundations reset** | new layout; legacy frozen; contracts, schemas, validators, scheduler, roles and network check ported with their tests green | — | GATE-1/2, WORK-2, LANE-2, EVT-5 (validators) |
-| **M1** | **Durable core, headless** | Pi Durable seam; roadmap/row/unit/gate/lane tasks; the gate contract; a scripted feature walks ten gates from the CLI, survives kill-and-resume; **gates as data** with the default flow | M0 | CORE-1…7, LANE-1, GATE-3/4/5/6, FLOW-1/2/3, FLOW-7 (default) |
+| **M1** | **Durable core, headless** | Pi Durable seam; roadmap/row/unit/gate/lane tasks; the gate contract; a scripted feature walks the twelve-gate flow from the CLI (an interface feature all eleven feature gates; a non-interface one the nine that apply, the other two recorded *not applicable*), survives kill-and-resume; **gates as data** with the default flow | M0 | CORE-1…7, LANE-1, GATE-3/4/5/6, FLOW-1/2/3, FLOW-7 (default) |
 | **M2** | **Record** | outbox, envelope, catalog, backbone, cursors; factory-log projection byte-identical on rebuild; old walks replayed as event streams | M1 | EVT-1…5, EVT-3a |
 | **M3** | **Real workers** | conversations on local models via `pi-ai`; tier map; tool sets; replay discipline; residency manager; model pool (one host); `kiln.config/` with roles, tier map and `kiln check config` / `kiln check model` | M1, M2 | WORK-1…5, LANE-3, CFG-1, CFG-3, CFG-4, CFG-6 (local), CFG-7 (roles), CFG-8, MOD-1 (local) |
 | **M4** | **Front door, read-only** | server, session security, read models, live push; overview, factory live, record views | M2 | WEB-1/2/4, OBS-1 (basic) |

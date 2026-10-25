@@ -1,0 +1,4 @@
+{
+  "name": "@kiln/contracts",
+  "responsibility": "Gate ids, move kinds, versioned flow definitions, judge rosters, the tier policy, record types and JSON schemas \u2014 pure, with no I/O."
+}

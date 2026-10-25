@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "kiln://contracts/roadmap.schema.json",
+  "title": "KILN ROADMAP.md structured head",
+  "trace": "P-VI (Gate 0 = sole admission, human-only, always), P-VII (recorded), P-IX (roadmap fields)",
+  "description": "The deliverable's firing program. The structured head is the source of truth; the rendered table is a projection (M4). RULE M3: a shipped/empty artifact has gate0.status=pending and NO committed ordering; an approved gate0 or committed ordering is rejected by this schema's 'roadmap-state' guard so the scaffold cannot pre-authorize a program (Q2=A).",
+  "type": "object",
+  "required": ["deliverable", "owner", "updated", "rows", "ordering", "chain_unattended", "gate0", "trace"],
+  "additionalProperties": false,
+  "properties": {
+    "deliverable": { "type": "string", "description": "id + name of the program." },
+    "owner": { "type": "string", "pattern": "^human@" },
+    "updated": { "type": "string", "format": "date-time" },
+    "rows": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/row" },
+      "description": "Empty array for the shipped artifact (Q2=A)."
+    },
+    "ordering": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Firing order; references only existing row ids (M1). Unset/empty = not-yet-committed."
+    },
+    "chain_unattended": { "type": "boolean", "default": false },
+    "gate0": {
+      "type": "object",
+      "title": "gate0 — Roadmap (pre-lane, human-only)",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "type": "string", "enum": ["pending", "approved", "revised", "rejected"] },
+        "rows": { "type": "string", "description": "e.g. 'r1..r5' when admitted." },
+        "decided_by": { "type": "string", "pattern": "^human@" },
+        "at": { "type": "string", "format": "date-time" },
+        "note": { "type": "string" }
+      }
+    },
+    "trace": { "type": "string", "description": "Constitution principle(s) encoded (FR-009)." }
+  },
+  "allOf": [
+    {
+      "$comment": "M3: a SHIPPED / empty artifact must not pre-authorize a program. If gate0 is approved OR ordering is committed, the artifact must also carry a human-decided gate0 record. The scaffold ships status=pending + empty ordering, which PASSES. A committed program is produced only by Gate 0 (a human move), checked in the negative suite.",
+      "if": {
+        "properties": {
+          "gate0": { "properties": { "status": { "const": "approved" } } },
+          "required": ["gate0"]
+        }
+      },
+      "then": {
+        "properties": {
+          "gate0": {
+            "required": ["rows", "decided_by", "at"],
+            "properties": {
+              "rows": { "type": "string", "minLength": 1 },
+              "decided_by": { "type": "string", "pattern": "^human@" },
+              "at": { "type": "string", "format": "date-time" }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "row": {
+      "type": "object",
+      "title": "RoadmapRow (one row = one full Gates 1..9 lane)",
+      "required": ["id", "short", "deps", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^r[0-9]+$" },
+        "short": { "type": "string", "minLength": 1 },
+        "deps": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^r[0-9]+$" },
+          "description": "Cycle-free references to existing row ids (M1). A row is eligible to fire iff all deps are 'done' (M2)."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["queued", "active", "revising", "done", "aborted"]
+        },
+        "outcome": {
+          "type": "string",
+          "pattern": "^@PR#[0-9]+$",
+          "description": "Present IFF status=done."
+        },
+        "gate": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9,
+          "description": "Present IFF status=active: the in-flight row's live Gate 1..9 (G1: distinct from gate0)."
+        },
+        "spec": { "type": "string" }
+      }
+    }
+  }
+}

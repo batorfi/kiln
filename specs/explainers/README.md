@@ -15,10 +15,10 @@ For the big picture, read [what `kiln-v1` delivers](../../docs/architecture/expl
 
 | # | Row | Phase | Depends on | Proven when |
 |---|---|---|---|---|
-| 1 | [**r12** Foundations reset](./r12-foundations-reset.md) | Foundation | — | new layout builds; legacy frozen; every ported test green; `kiln check` runs the network check |
+| 1 | [**r12** Foundations reset](./r12-foundations-reset.md) | Foundation | — | new layout builds; legacy frozen; every ported test green; the flow data holds twelve gates and five judges; `kiln check` runs the network check |
 | 2 | [**r42** Spike: completing a waiting task from outside](./r42-spike-completing-a-waiting-task-from-outside.md) | Durable core | r12 | go / go-with-fallback / no-go decided by a spike report; kill-at-every-step tests show one atomic move + completion, first move wins; a no-go re-opens the Roadmap gate |
 | 3 | [**r13** Durable core and the gate contract](./r13-durable-core-and-the-gate-contract.md) | Durable core | r12, r42 | kill the server at every step of a gate task: it resumes, waits, and settles only on a committed move |
-| 4 | [**r14** Gates as data, walked headless](./r14-gates-as-data-walked-headless.md) | Durable core | r13 | a scripted feature walks ten gates from the CLI; `kiln check flow` refuses every invalid flow in its negative suite |
+| 4 | [**r14** Gates as data, walked headless](./r14-gates-as-data-walked-headless.md) | Durable core | r13 | a scripted feature walks the twelve-gate flow from the CLI (two gates not applicable for a non-interface feature, recorded with their reason); `kiln check flow` refuses every invalid flow in its negative suite |
 | 5 | [**r15** The record](./r15-the-record.md) | Durable core | r14 | factory-log rebuilt byte-identical from events; the first program's committed walks (closed rows r1–r3, r7, r8) replay as streams; old event versions upcast on read |
 | 6 | [**r16** Real local workers](./r16-real-local-workers.md) | Workers | r13, r15 | a feature walks with real local workers and judges on Ollama; a crash mid-generation resumes without double-charging a tool |
 | 7 | [**r17** Configuration as files](./r17-configuration-as-files.md) | Workers | r16 | a weaker judge binding is refused; a config change applies from the next step and is recorded with before/after |

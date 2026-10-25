@@ -11,7 +11,7 @@
 | **Release** | `kiln-v1` — position 9 of 43 in the committed order |
 | **Depends on** | [r15 — The record](./r15-the-record.md) |
 | **Unlocks** | [r20 — Gates on the web](./r20-gates-on-the-web.md), [r27 — Health and broken guarantees](./r27-health-and-broken-guarantees.md) |
-| **PRD requirements** | WEB-1, 2, 4, OBS-1 (basic) |
+| **PRD requirements** | WEB-1, 2, 4, OBS-1 (basic), EXP-6 |
 | **Proven when** | a second browser tab without the secret sees nothing; a reconnect resumes from its last seq with no polling |
 
 ## In one paragraph
@@ -32,7 +32,7 @@ The first screens: a local web front door that shows the factory live, built on 
 
 ## Requirements it carries
 
-*As listed in the roadmap: WEB-1, 2, 4, OBS-1 (basic). Full text from the PRD:*
+*As listed in the roadmap: WEB-1, 2, 4, OBS-1 (basic), EXP-6. Full text from the PRD:*
 
 | ID | Requirement | Priority |
 |---|---|---|
@@ -40,6 +40,7 @@ The first screens: a local web front door that shows the factory live, built on 
 | WEB-2 | **Session security**: loopback bind, per-launch secret, Host/Origin checks, CSRF protection; `decided_by` from the session. Network-shared workshop: TLS and the team's identity provider. | Must / Should |
 | WEB-4 | A reconnecting browser resumes from its last `seq`; no polling. | Must |
 | OBS-1 | **Metrics** derived from events (human loop, quality, cost, throughput, model behaviour). | Must (core) |
+| EXP-6 | **KILN's own charter and design system** are approved before the web front door's screens. | Must |
 
 ## How it is proven
 

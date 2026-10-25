@@ -1,0 +1,373 @@
+# Feature Specification: Foundations reset (row r12)
+
+**Feature Branch**: `009-kiln-foundations-reset`
+
+**Created**: 2026-10-22
+
+**Status**: **CLARIFIED (2026-10-22, 2026-10-23) and PLANNED (2026-10-23); ready for `/speckit-tasks`.** NC1 and NC2 were resolved by the
+human on 2026-10-22 and three more questions on 2026-10-23, each on the recommended option — see *Clarifications* below; the plan is
+[plan.md](./plan.md). Roadmap row **`r12`** was admitted as the **next row** at the Roadmap gate (`human@batorfi`,
+2026-10-22T12:20:22Z, entry 1 of `gate0.note` in [specs/ROADMAP.md](../ROADMAP.md)). It stays `queued` — never `active` —
+until its own first gate opens (`chain_unattended=false`). **Nothing here admits a program, advances a gate, decides a gate
+or edits the roadmap** (constitution VI).
+
+**Amended 2026-10-25 (human@batorfi): flow v2 is the twelve-gate flow of constitution v2.1.0.** Main gained constitution 2.1.0 (the
+experience charter, the design system and two built-in interface gates). The default flow is now the Roadmap gate and **eleven** feature
+gates; the Design gate is named **Architecture**; **Experience design** (`2a-experience`) and **UI review** (`6a-ui-review`) are built in
+with a deterministic `applies_when` rule; the judges are the architecture critic, **design critic**, code reviewer, **UI reviewer** and
+verifier. This row now ports **v2 = constitution 2.1.0**; wherever this document says v2 it means that flow. Scope of the amendment: v2 is
+**data and contracts only** — the `applies_when` declaration and the five-judge roster are carried; *evaluating* the rule, the recorded
+*not applicable* outcome and the walk belong to r14/r15. Not touched: `specs/ROADMAP.md` (its r14 text still says "ten gates" — an
+`edit-rows` proposal for the next Roadmap gate, not an edit here, FR-021), the charter and design-system artifacts, and the
+`kiln check design-system` / `foundations` checks (later rows). Details: [plan.md](./plan.md) §"Amendment 2026-10-25".
+
+**Adjusted during planning (2026-10-23)** — three statements did not survive contact with the code; each is corrected below and
+explained in [plan.md](./plan.md) §"Findings that changed the spec": the **NC1 premise and SC-008** (v2's moves are a superset of
+v1's), **FR-010** (the scheduler is half pure logic, half a runner on the lane runtime), and the **legacy location** (a
+repo-root `legacy/`, not `kiln/legacy/`).
+
+**Input**: the row **`r12`** — *"Foundations reset — the new codebase layout (packages: contracts, durable, record, lane,
+workers, director, server, web, cli, checks), the legacy Pi extension frozen in legacy/, and the keep-list ported with its
+tests green: standard flow and move kinds as data, schemas, validators, affinity scheduler, strongest-judge tier policy, the
+never-vacuous network check; the legacy live-Pi suite skips with a printed reason on a Pi version it has not measured."*
+Explainer: [`specs/explainers/r12-foundations-reset.md`](../explainers/r12-foundations-reset.md). PRD requirements carried:
+**GATE-1, GATE-2, WORK-2, LANE-2, EVT-5 (validators)**; PRD §8.2 (layout) and §10 (what we keep).
+
+**Provenance (what r12 builds on).** The first program's closed rows, all on `main`: r1 `002-kiln-lane`, r2
+`003-kiln-roadmap-overlay`, r3 `004-kiln-live-walk`, r7 `006-kiln-live-inference`, r8 `007-kiln-pi-extension`, plus the
+unclosed r9 work (`008-kiln-pi-ui`), retired on 2026-10-21. Measured on 2026-10-22: the suite runs **500 tests — 477 pass,
+15 skip, 8 fail**, all 8 in the live-Pi tier because the installed Pi is **1.1.0** and the tier was measured against
+**0.85.1**; the same 8 fail on `main`.
+
+---
+
+## Why this row exists
+
+The restart (PRD §2) reorganises the repository around the new design — a durable task graph, an event record, a web
+front door — while **keeping every rule the first program proved**. Every later row builds inside the layout this row
+creates, so it comes first. It adds no new behaviour: it **moves, freezes and checks**. Its value is that the new codebase
+starts with its guarantees already tested, and that the old one stays verifiable without anyone working in it.
+
+Two facts shape it:
+
+- **The kept code encodes the old law.** The move vocabulary still gives Code review `approve · restart` (constitution
+  v2.0.1 adds `revise`), the role policy still names `docs-synthesizer` as a line-of-defense judge (v2.0.1 removed it;
+  the Documentation gate is unjudged), and the rail has ten gates (v2.1.0 has twelve, with five judges). Porting it means updating
+  it to v2.1.0 — while the first program's committed walks, made under v1.0.0, must stay verifiable (NC1).
+- **The legacy code depends on the code being ported** (the walk, gate and lane modules import the scheduler, roles,
+  clock and move vocabulary). How the two trees relate decides whether "frozen" can really mean unchanged (NC2).
+
+## Clarifications
+
+### Session 2026-10-22 (resolved by human@batorfi)
+
+- **NC1 — Historical records versus the new rules.** The ported move vocabulary and role policy follow constitution v2.0.1;
+  the committed walks (`fixtures/r7-*`, the r1–r8 evidence) were made under v1.0.0. **Resolved: option A — versioned flow
+  definitions.**
+  *Correction (planning, 2026-10-23, measured on the real validator): the premise above first said the old walks "would fail a
+  v2.0.1-only validator". They would not — v2's moves are a superset of v1's (Code review gains `revise`; nothing is removed), and
+  the committed r7 walk passes under both. What a v2-only validator could no longer do is reject what v1 forbade (a Code review
+  `revise`) or say which rules a record was made under; the decision stands on that, and costs little because v1 is a copy of the
+  first program's own vocabulary.*
+
+  | Option | Answer | Implications |
+  |---|---|---|
+  | **A (recommended)** | **Versioned flow definitions.** The standard flow is data with a version: **v1** reproduces the first program's rail exactly; **v2** is the current constitution (v2.0.1 when this was decided; v2.1.0 since 2026-10-25, which adds two gates). A record is validated against the flow version it was made under; all new work uses v2. | History stays verifiable without rewriting it (matches "the record is never rewritten" and gate events carrying flow and gate versions — `the-record.md`); r15's replay of the old walks needs this anyway. One more concept in the contracts. |
+  | B | **Port only v2; leave historical validation in `legacy/`.** The legacy validators keep checking the old walks until r15 replays them as events. | Simplest port; history is checked by frozen code, and the new validators cannot read old records until r15. |
+  | C | **Migrate the fixtures** to the v2 vocabulary. | One rule set — but it rewrites committed evidence, which the program has refused to do since r1. Not recommended. |
+
+- **NC2 — Moving or copying the kept code.** The keep-list is used by both the new packages and the frozen legacy code.
+  **Resolved: option A — copy.**
+
+  | Option | Answer | Implications |
+  |---|---|---|
+  | **A (recommended)** | **Copy.** `legacy/` keeps a byte-identical, frozen copy of everything it uses; the ported copies in the packages evolve to the current constitution (v2.1.0). | "Frozen" really means unchanged; legacy tests keep passing untouched; v2.0.1 changes cannot break legacy. Cost: duplicated source until legacy is retired, recorded as such. |
+  | B | **Move, and let legacy import from the packages.** | One home for each module — but every constitution change (Code review `revise`, new judges and gates) changes legacy behaviour and breaks its tests, so legacy is no longer frozen. |
+
+### Session 2026-10-23 (`/speckit-clarify`)
+
+- Q: When the live-Pi tests meet a Pi version KILN never measured, what makes them skip — the new test runner, or an edit to the
+  legacy Pi test gate? → A: **The runner**, via the legacy gate's existing `KILN_PI=0` off switch; no legacy file is touched.
+- Q: In r12, what should `kiln check`'s network check examine, and where should the allowlist live? → A: **A static lint over
+  the new packages** (the first program's, ported with its tokenizer, denylist and never-vacuous guard); the allowlist is a
+  **checked-in, path-keyed file in `checks/` that starts empty**. Runtime observation of connections arrives with the workers
+  (r16); r17 moves the allowlist into `kiln.config/`.
+- Q: Of the 73 kept test cases, 19 test code that stays in legacy until a later row — stay in legacy until that code is adapted,
+  or port the code they need now? → A: **They stay in legacy** until the row that adapts their code ports them. The new suite
+  ports the **54** cases whose subject is on the keep-list; legacy still runs all 73 unchanged.
+
+## User Scenarios & Testing *(mandatory)*
+
+The users of this row are **the engineers who build KILN** — everyone who will work on r13 onwards — and the **reviewers**
+who decide its gates.
+
+### User Story 1 — Work in the new layout, with the kept rules already proven (Priority: P1)
+
+An engineer opens the repository to start r13. The code is organised into the packages the PRD describes, each with a
+stated responsibility; the rules the first program proved — the move vocabulary, the strongest-judge policy, the affinity
+scheduler, the schemas and validators, the deterministic clock — are in their new homes, and their tests pass there.
+
+**Why this priority**: every later row builds here; a wrong or untested foundation would be inherited by all of them.
+
+**Independent Test**: run the suite on a fresh clone; every ported test runs from its new location and passes, at least 54
+cases run from the new packages, and all 73 first-program cases still pass (54 ported and 19 in legacy).
+
+**Acceptance Scenarios**:
+
+1. **Given** a fresh clone with the supported Node version, **When** the engineer runs the default test command, **Then** every
+   ported test runs from its package and passes, and the run reports a non-zero number of tests.
+2. **Given** the PRD's package list, **When** the engineer looks for a responsibility (for example "the affinity scheduler"),
+   **Then** it lives in exactly the package the PRD names, and that package states its responsibility in one place.
+3. **Given** the first program's 73 test cases in the kept directories (contract, negative, network-scan, scheduler,
+   switch-cost), **When** the port is complete, **Then** the 54 whose subject is on the keep-list run from the new packages;
+   the other 19 — which test code that stays in legacy until a later row adapts it — keep running, unchanged, in legacy and are
+   listed by file with the row that will port them; none is dropped, and any ported case whose expectation changed did so only
+   because of a recorded constitution v2.0.1 rule.
+
+---
+
+### User Story 2 — The old code is frozen, and still verifiable (Priority: P1)
+
+A reviewer wants proof that nothing of the first program was lost or silently changed. The Pi extension, the terminal UI
+layers and everything not yet ported sit under `legacy/`, unchanged; their tests still run; and the live-Pi tier, instead
+of failing on a Pi version it never measured, skips with a printed reason.
+
+**Why this priority**: the restart promises that history is kept and that legacy work stops — both must be checkable.
+
+**Independent Test**: compare `legacy/` with the pre-move tree; run the default suite on a host with an unmeasured Pi.
+
+**Acceptance Scenarios**:
+
+1. **Given** the tree before the move, **When** the legacy tree is compared with it, **Then** every legacy file is
+   byte-identical to its original (only its location changed), and the comparison is itself a test.
+2. **Given** Pi 1.1.0 installed (measured version 0.85.1), **When** the default suite runs, **Then** the runner prints once
+   that the live-Pi tier is skipped, naming the installed and the measured versions; every live-Pi test is reported as skipped
+   (with the legacy gate's own off-switch reason) and none fails.
+3. **Given** Pi 0.85.1 installed, **When** the Pi tier is demanded, **Then** the live-Pi tests run as before.
+4. **Given** the Pi tier is explicitly demanded on an unmeasured Pi version, **When** it runs, **Then** it fails by name
+   (*pi-version-unmeasured*) rather than skipping — a demanded tier is never silently skipped.
+
+---
+
+### User Story 3 — The flow and the judges as data, under constitution v2.1.0 (Priority: P2)
+
+An engineer building r14 needs the default flow — the Roadmap gate and eleven feature gates, two of them conditional on the
+feature touching the interface — and each gate's moves as data, matching constitution v2.1.0, and the role policy that binds every
+judge to the strongest model.
+
+**Why this priority**: r14 executes this data; it must be right before anything walks it.
+
+**Independent Test**: query the flow data for each gate's question, moves and judge; check them against the constitution
+and the PRD.
+
+**Acceptance Scenarios**:
+
+1. **Given** the flow data, **When** it is read for the Code review gate, **Then** its moves are `approve · revise · restart`;
+   Implementation `approve · split+revise`; Verification `approve · reject` with a fix-round cap of 2; Merge
+   `approve · reject`; Experience design `approve · revise · reject`; UI review `approve · revise · restart`; the Roadmap gate's
+   row edits; and only the closed set of move kinds appears anywhere.
+2. **Given** the role policy, **When** a judge role (architecture critic, design critic, code reviewer, UI reviewer, verifier)
+   is bound to a model weaker than the strongest available, **Then** the binding is refused by name; `docs-synthesizer` is not a judge.
+3. **Given** a record made by the first program (for example the committed r7 walk), **When** it is validated, **Then** it is
+   judged against flow v1, the version it was made under, and passes; a new record is judged against v2.
+4. **Given** the twelve gates, **When** their names are read, **Then** they are the plain names of GATE-1 (Architecture, not Design)
+   with the first program's internal ids unchanged (`gate0`, `1-concept` … `9-pr`) and the two new ids `2a-experience` and
+   `6a-ui-review`, in the order Roadmap gate, Concept, Architecture, Experience design, Specification, Work plan, Implementation,
+   Code review, UI review, Verification, Documentation, Merge.
+5. **Given** the Experience design and UI review gates, **When** their data is read, **Then** each declares its deterministic
+   `applies_when` rule (paths, labels, and for Experience design the journey predicate; for UI review the diff predicates) and no
+   LLM-decided condition; evaluating it, and the recorded *not applicable* outcome, are r14's.
+6. **Given** a record that names a gate which flow v1 does not have (`2a` or `6a`), **When** it is validated against v1, **Then** it
+   fails by name (rule G3, naming the gate and the flow); against v2 it passes if its move is allowed.
+
+---
+
+### User Story 4 — `kiln check` proves the source makes no unapproved network call (Priority: P2)
+
+An engineer runs `kiln check` to prove that local-only code stays on the machine. The first program's hardened network lint —
+the one that cannot pass vacuously — runs through the new command over the new packages, with its allowlist read from a
+checked-in file. It is a **lint of source files**, not a sandbox and not a runtime monitor; runtime enforcement arrives where
+the network code does (the residency manager, r16).
+
+**Why this priority**: local-by-default (constitution VIII) must be checkable from the first row of the new codebase.
+
+**Independent Test**: run `kiln check` on the clean packages and on a scratch change that adds a disallowed network call.
+
+**Acceptance Scenarios**:
+
+1. **Given** the new packages with no network-capable code outside the allowlist, **When** `kiln check` runs the network check,
+   **Then** it passes and reports how many files it scanned and which allowlist it applied.
+2. **Given** a source file in a scanned package that calls `fetch`, imports a network or process module, or evades the lint by
+   aliasing or computed access, **When** the check runs, **Then** it fails, naming the file and the construct.
+3. **Given** a scan that covered zero files (a wrong path, an empty package set), **When** it completes, **Then** it fails — a
+   check that saw nothing never passes.
+4. **Given** an allowlist entry, **When** the check runs, **Then** the entry is keyed by relative path (never by bare file
+   name) and an entry naming a file that does not exist fails by name. The allowlist starts empty.
+
+---
+
+### User Story 5 — Package boundaries are checked, not hoped for (Priority: P3)
+
+A reviewer at a later row wants confidence that the dependency direction of PRD §8.2 holds — `contracts` pure with no I/O,
+and the seam rules (only `durable` imports Pi Durable, only `workers` imports `pi-ai`, only `lane` talks to Ollama's
+management API, only `server` and `host` open listeners) — without reading every import.
+
+**Why this priority**: boundaries erode silently; a check now is cheap and every later row benefits.
+
+**Independent Test**: add a forbidden import in a scratch change; the check fails by name.
+
+**Acceptance Scenarios**:
+
+1. **Given** the packages, **When** the boundary check runs, **Then** it passes and lists the rules it checked.
+2. **Given** a package that imports from a package later in the dependency direction, or `contracts` performing I/O,
+   **When** the check runs, **Then** it fails, naming the file and the rule.
+
+### Edge Cases
+
+- **A kept test depended on its old location** (a relative path, a fixture lookup): it must be fixed to resolve from its
+  own module, never by keeping a copy of the old tree around.
+- **A legacy module imports kept code**: it imports its own frozen copy (NC2-A); it must never import from the new packages,
+  and a boundary check says so.
+- **The two copies drift on purpose**: the legacy copy never changes, the ported copy follows the current constitution (v2.1.0). The duplication is
+  recorded (which files, since which commit) and ends when legacy is retired.
+- **A run that executes zero tests** must still fail, as today, from the new layout too.
+- **A new package adds network code before the allowlist names it**: the network check fails, naming the file.
+- **The empty shipped `ROADMAP.md` fixture** (`kiln/ROADMAP.md`) and the firing-ready probe that reads it move to legacy
+  together; the admitted program stays at `specs/ROADMAP.md` and is untouched by this row.
+- **Pi not installed at all**: the live-Pi tier skips with its existing reason, as today.
+- **A future Pi version measured later**: adding it to the runner's measured list (and the legacy probe's, which a test
+  keeps equal) re-enables the tier.
+- **The tier switched off by the operator already** (`KILN_PI=0`): the runner leaves the setting alone and prints nothing extra.
+
+## Requirements *(mandatory)*
+
+### Functional Requirements
+
+**Layout**
+- **FR-001**: The codebase MUST be organised into the packages of PRD §8.2 needed now — `contracts`, `record`, `durable`,
+  `lane`, `workers`, `director`, `server`, `web`, `cli`, `checks` — each stating its single responsibility; packages that later
+  rows add (`knowledge`, `workshop`, `team`, `explore`, `editor`, `host`, `bench`) MAY be created empty or later.
+- **FR-002**: The supported runtime MUST stay as today (Node `^22.18.0 || >=23.6.0`, TypeScript run directly, no build step),
+  and the row MUST add **no runtime dependency** (Pi Durable and `pi-ai` arrive in r42/r13 and r16).
+- **FR-003**: There MUST be one way to run the whole suite from any working directory, and it MUST refuse a run that executed
+  no tests (the existing runner's guarantee).
+
+**Legacy**
+- **FR-004**: The whole first-program tree MUST live under `legacy/`, byte-identical to its pre-move original — including a
+  frozen **copy** of every module that is also ported (NC2-A) — with no feature work there; a test MUST prove the byte-identity
+  against the pre-move tree, and a record MUST list the duplicated files.
+- **FR-005**: Legacy tests MUST keep running in the default suite until their code is retired.
+- **FR-006**: The test runner (new code, outside `legacy/`) MUST compare the installed Pi version with the measured list. When it
+  is not on the list and the tier is not demanded, the runner MUST switch the tier off for that run through the legacy gate's
+  existing off switch (`KILN_PI=0`) and print the installed and measured versions once; it MUST NOT touch any legacy file. When
+  the tier is demanded explicitly (`--pi`) the runner MUST NOT switch it off — the tests run and fail by name
+  (*pi-version-unmeasured*). The runner's measured list is a single constant, and a test MUST assert it equals the legacy
+  probe's list so the two cannot drift.
+
+**The keep-list (PRD §10.1)**
+- **FR-007**: The standard flow MUST be data and **versioned**: **v1** reproduces the first program's rail exactly (for verifying
+  its records); **v2** is constitution v2.1.0 — twelve gates (the Roadmap gate and eleven feature gates) with GATE-1's plain names and
+  one question each, the first program's internal ids unchanged and `2a-experience` / `6a-ui-review` added, with `applies_when`
+  declared on the two conditional gates. All new work uses v2.
+- **FR-008**: Each gate MUST offer only its own moves from the closed set of move kinds (approve, revise, reject, restart,
+  split+revise, mitigate, and the Roadmap gate's row edits), per GATE-2, the interface-gates concept (`docs/concepts/ui-flow.md`) and constitution v2.1.0 — including Code review
+  `approve · revise · restart`, Experience design `approve · revise · reject` and UI review `approve · revise · restart`.
+- **FR-009**: The role tier policy MUST bind every judge role — architecture critic, design critic, code reviewer, UI reviewer,
+  verifier, and any judge on an added gate — only to the strongest model, refusing a weaker binding by name (WORK-2, constitution II).
+- **FR-010**: The **pure affinity logic** MUST be ported with its behaviour unchanged — what counts as a swap (a genuine tier
+  change only), the swap counter, and the schedule-time strongest-binding guard, which throws synchronously (LANE-2, constitution
+  IV). Pricing and recording each swap belong to the lane runtime (`run`, an adapt item) and arrive with the lane task
+  (r13/r16); `schedule`, which calls that runtime, stays in legacy until then.
+- **FR-011**: The factory-log and roadmap schemas, the log and roadmap validators and their report formatting MUST be
+  ported, and the validators MUST run on the factory-log as before (EVT-5, validators part).
+- **FR-012**: A record MUST be validated against the flow version it was made under (NC1-A): the first program's committed walks
+  against v1, new records against v2; a record that names no version is treated as v1; nothing in a committed record is rewritten.
+- **FR-013**: The deterministic clock MUST be ported for replays.
+- **FR-014**: The committed real walks (`fixtures/r7-*`) MUST be kept as regression fixtures, unmodified.
+- **FR-015**: Every ported module MUST travel with its tests; no first-program test case is dropped (the 54 whose subject is
+  ported run from the new packages, the 19 whose subject stays in legacy keep running there, and a record lists those 19 by
+  file and by the row that will port them), and any changed expectation in a ported case MUST cite the constitution rule
+  (v2.0.1 or v2.1.0) that changed it.
+
+**Checks**
+- **FR-016**: `kiln check` MUST run the network lint — the first program's, ported with its tokenizer, denylist and never-vacuous
+  guard — over the new packages, with its allowlist read from a checked-in, path-keyed file in `checks/` that starts empty; it MUST
+  fail by name, file and construct on a disallowed call, and MUST fail when it scanned no files. The small pure loopback-host
+  helper the lint needs MUST be copied into the new code, not imported from `legacy/`.
+- **FR-017**: A boundary check MUST enforce PRD §8.2's dependency direction and seam rules, failing by file and rule.
+- **FR-018**: Every check MUST fail by its own name when its condition is not met (the `*-ready` pattern).
+
+**Contracts and records**
+- **FR-019**: The legacy gate-rail contract MUST be superseded by a contract matching constitution v2.1.0 in the `contracts`
+  package; the legacy file stays with the legacy probe that reads it.
+- **FR-020**: The PRD's WORK-2 was corrected on 2026-10-22 to drop `docs-synthesizer` as a judge, matching constitution
+  v2.0.1; this row MUST implement the corrected requirement, extended by constitution v2.1.0's judges (design critic, UI reviewer). The
+  PRD's WORK-2 text still names v2.0.1 and three judges; the constitution governs, and the PRD line is brought in step in T080.
+- **FR-021**: The row's own implementation MUST leave the admitted program (`specs/ROADMAP.md`) unchanged — row `r12` stays `queued`, `gate0` and its log are untouched — and MUST NOT record any gate decision. *Exception recorded 2026-10-25:* at human@batorfi's request, commit `60a2c7e` folded the twelve-gate flow and the experience-charter proposals into the rows as `edit-rows` text (no row, dependency or order changed, nothing logged), proposed for the next Roadmap gate; the row's tasks do not touch the file again.
+
+### Key Entities
+
+- **Package** — a unit of the new layout with one responsibility and a place in the dependency direction.
+- **Legacy tree** — the frozen first-program code and tests, byte-identical to their originals.
+- **Keep-list item** — a module (with its tests) ported from the first program: move vocabulary, gate rail, roles and tiers,
+  scheduler, clock, schemas, validators, network scan, committed walks.
+- **Deferred test case** — one of the 19 first-program cases whose subject is an adapt item; it keeps running in legacy and is
+  ported by the row that adapts its subject.
+- **Flow definition** — the standard flow as data: gates, names, questions, moves, judges, fix-round cap; versioned if NC1-A.
+- **Move kind** — one of the closed set, with its fixed consequence; labels may vary, kinds may not.
+- **Role tier policy** — which roles are judges and the rule that judges bind only to the strongest model.
+- **Check** — a named, falsifiable probe (network lint, boundaries, legacy byte-identity) that fails by its own name.
+- **Network allowlist** — a checked-in file in `checks/`, keyed by relative path, naming the only modules allowed to reach the
+  network; empty in this row.
+
+## Success Criteria *(mandatory)*
+
+### Measurable Outcomes
+
+- **SC-001**: On a fresh clone, the default suite reports **0 failures** on a host with an unmeasured Pi (today's 8 live-Pi
+  failures become reported skips, with the versions printed by the runner), and **0 failures** on a host with the measured Pi.
+- **SC-002**: At least **54** test cases run from the new packages (the cases whose subject is on the keep-list), and all **73**
+  first-program cases in the kept directories — the 54 ported plus the 19 that stay in legacy — pass; every legacy test that
+  passed before still passes.
+- **SC-003**: **100%** of legacy files are byte-identical to their pre-move originals, proven by a test.
+- **SC-004**: The flow data matches constitution v2.1.0 for **all twelve gates** — names, moves and judges — checked by a test
+  that reads the constitution's move-kind list and the PRD's GATE-1/GATE-2.
+- **SC-005**: A judge bound to a weaker model is refused in **100%** of the negative cases — for each of the five v2 judges — and
+  `docs-synthesizer` is never accepted as a judge under v2.
+- **SC-006**: `kiln check` detects **every** disallowed construct in its negative suite (a call, an import, an alias, a computed
+  access) and fails when it scanned no files.
+- **SC-007**: The boundary check catches **every** forbidden import in its negative suite.
+- **SC-008**: The first program's committed walks validate **unchanged** against flow v1 (and also against v2, whose moves are a
+  superset); a Code review `revise` record **fails flow v1 by name** (rule G3, naming the flow) and **passes flow v2** — proving
+  the two versions differ exactly where the constitution says they do (Code review `revise`; the two interface gates; the roster).
+
+## Assumptions
+
+- The new layout is `kiln/packages/…` with `kiln/checks/`, `kiln/fixtures/` and (from r17) `kiln/agents/` beside it, as PRD §8.2
+  places it. **Legacy is `legacy/` at the repository root, not `kiln/legacy/`**: measured on 2026-10-23, the unmodified first-program
+  suite keeps passing at the old depth (500 tests, 0 failures with the live-Pi tier off), but nested one level deeper 6 failures
+  appear (3 tests, 3 test files that no longer load) because legacy tests locate the repository root by relative path. PRD §8.2 is
+  amended to match.
+- "Adapt" items of PRD §10.2 (the gate primitive, the lane, the log writer, the Ollama residency code, the state reducer, the
+  readiness probes, the Pi RPC driver, the scripted walks) stay in `legacy/` in this row and are adapted by the rows that need
+  them (r13–r16, r19).
+- The measured Pi versions list starts as `[0.85.1]`; re-measuring against Pi 1.1.0 is a later legacy chore, not part of r12.
+- The legacy Pi gate already honours `KILN_PI=0` with a printed per-test reason (measured 2026-10-23: 11 live-Pi tests skipped,
+  0 failed); the runner only needs to set it.
+- No user-visible surface is added; `kiln check` is the only new command, and its output is text.
+- The 19 cases that stay in legacy are: `negative/async-await` (4, on `validate/runtime-ready.ts`), `negative/not-silent` (5, on
+  the live resident), `netscan/allowlist` (6, on the Ollama resident's allowlist entry), `scheduler` (3, on the stub resident)
+  and `switch-cost` (1, on the Ollama and live residents). Each is ported by the row that adapts its subject (r13–r16); the
+  plan names the row. The ported network lint gets its own new tests for its empty, path-keyed allowlist.
+- No network-capable code is ported in r12 (the Ollama residency stays in legacy until r16), so the network allowlist starts
+  empty; the legacy copy of the lint keeps its own single-entry allowlist for the legacy tree.
+- The spec's success is verified offline; the live Ollama and Pi tiers remain optional, skipping with printed reasons.
+
+## Out of Scope
+
+- The Pi Durable seam, task types and gate contract (r42, r13); executing the flow (r14); the event record (r15); real
+  workers (r16); configuration files (r17) — beyond the data and policies this row ports.
+- Any change to `specs/ROADMAP.md`, the constitution, or a gate's state.
+- Re-measuring the legacy live-Pi tier on Pi 1.1.0.
+- Runtime observation of network connections (arrives with the workers and the residency manager, r16) and moving the allowlist
+  into `kiln.config/` (r17).

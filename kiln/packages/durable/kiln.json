@@ -1,0 +1,4 @@
+{
+  "name": "@kiln/durable",
+  "responsibility": "The one seam over Pi Durable: task types, the gate contract and resume \u2014 arrives with r42 and r13."
+}

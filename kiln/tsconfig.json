@@ -5,10 +5,10 @@
     "moduleResolution": "NodeNext",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
-     "strict": true,
+    "strict": true,
     "noEmit": true,
     "skipLibCheck": true,
     "types": ["node"]
-   },
+  },
   "include": ["**/*.ts"]
 }

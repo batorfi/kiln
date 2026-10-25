@@ -2,7 +2,7 @@
 
 > **Admitted.** **human@batorfi** approved this program at the **Roadmap gate** (internal id `gate0`) on
 > **2026-10-22T12:20:22Z**, as proposed — written from scratch on 2026-10-20 and revised on 2026-10-21 (decisions, team
-> space, r42) and 2026-10-22 (r43–r52: explore, Zed, remote judges) and 2026-10-25 (r53 the Feed, in `kiln-v1`, and r54 its remainder, in `kiln-v1.x` — added at human@batorfi's request, queued until the next Roadmap gate) from the PRD
+> space, r42) and 2026-10-22 (r43–r52: explore, Zed, remote judges) and 2026-10-25 (r53 the Feed, in `kiln-v1`, and r54 its remainder, in `kiln-v1.x` — added at human@batorfi's request, queued until the next Roadmap gate) and 2026-10-25 again (the twelve-gate flow of constitution 2.1.0 and the experience charter, design system and interface gates folded into r12, r14, r15, r17, r19, r20, r22, r28–r30, r32 and r43 as `edit-rows` text — at human@batorfi's request, then **approved at the Roadmap gate on 2026-10-25T18:17:27Z** (`gate0.note`, entry 2): no row, dependency or order changed) from the PRD
 > ([`docs/prd/kiln-prd.md`](../docs/prd/kiln-prd.md)) and the concept set in [`docs/concepts/`](../docs/concepts). **r12 is the
 > admitted next row.** Every row stays `queued` until its own first gate opens; the Roadmap gate re-opens after every merged
 > or abandoned feature, where the program can be revised with **approve / revise / reject / edit-rows / add-row / drop-row**.
@@ -21,11 +21,11 @@
 {
  "deliverable": "kiln-v1 — the new KILN (local web front door on Pi Durable), per docs/prd/kiln-prd.md",
  "owner": "human@batorfi",
- "updated": "2026-10-25T12:00:00Z",
+ "updated": "2026-10-25T18:17:27Z",
  "rows": [
   {
    "id": "r12",
-   "short": "Foundations reset — the new codebase layout (packages: contracts, durable, record, lane, workers, director, server, web, cli, checks), the legacy Pi extension frozen in legacy/, and the keep-list ported with its tests green: standard flow and move kinds as data, schemas, validators, affinity scheduler, strongest-judge tier policy, the never-vacuous network check; the legacy live-Pi suite skips with a printed reason on a Pi version it has not measured (Pi 1.1.0 today, measured 0.85.1) instead of failing",
+   "short": "Foundations reset — the new codebase layout (packages: contracts, durable, record, lane, workers, director, server, web, cli, checks), the legacy Pi extension frozen in legacy/, and the keep-list ported with its tests green: the standard flow as versioned data (v1 the first program's ten-gate rail; v2 the twelve-gate flow of constitution 2.1.0, with Experience design and UI review declared conditional) and move kinds, schemas, validators, affinity scheduler, strongest-judge tier policy, the never-vacuous network check; the legacy live-Pi suite skips with a printed reason on a Pi version it has not measured (Pi 1.1.0 today, measured 0.85.1) instead of failing",
    "deps": [],
    "status": "queued"
   },
@@ -48,7 +48,7 @@
   },
   {
    "id": "r14",
-   "short": "Gates as data, walked headless — the standard flow (Roadmap gate + Gates 1–9) executed from data with the closed set of move kinds and kiln check flow for the default flow; a scripted feature walks all ten gates from the CLI and survives kill-and-resume at every gate",
+   "short": "Gates as data, walked headless — the standard flow (Roadmap gate + eleven feature gates; Experience design and UI review carry a deterministic applies_when and are recorded as not applicable when it is false) executed from data with the closed set of move kinds and kiln check flow for the default flow; a scripted interface feature walks all eleven feature gates and a non-interface one the nine that apply, from the CLI, and both survive kill-and-resume at every gate",
    "deps": [
     "r13"
    ],
@@ -56,7 +56,7 @@
   },
   {
    "id": "r15",
-   "short": "The record — transactional outbox, schema-versioned event envelope and catalog, backbone with consumer cursors; the factory-log as a projection rebuilt byte-identically; the old committed walks replayed as event streams",
+   "short": "The record — transactional outbox, schema-versioned event envelope and catalog, backbone with consumer cursors; the factory-log as a projection rebuilt byte-identically; the old committed walks replayed as event streams; the catalog includes the not-applicable gate outcome and the charter and design-system approved and amended events",
    "deps": [
     "r14"
    ],
@@ -73,7 +73,7 @@
   },
   {
    "id": "r17",
-   "short": "Configuration as files — kiln.config/ with role files (agents/*.md), the tier map with judges bound to the strongest model, kiln check config and kiln check model, changes recorded with before and after and applied from the next step; Ollama :cloud tags recorded as remote and refused under local-only",
+   "short": "Configuration as files — kiln.config/ with role files (agents/*.md), the tier map with judges bound to the strongest model (including the design critic and the UI reviewer), the built-in interface roles (ux-designer, design-critic, ui-checker, ui-reviewer), kiln check config and kiln check model, changes recorded with before and after and applied from the next step; Ollama :cloud tags recorded as remote and refused under local-only",
    "deps": [
     "r16"
    ],
@@ -90,7 +90,7 @@
   },
   {
    "id": "r19",
-   "short": "Web front door, read-only — the loopback server with a per-launch secret and Host/Origin checks, read models with live push and resume-from-seq, and the first screens: workshop overview, factory live view, record explorer",
+   "short": "Web front door, read-only — the loopback server with a per-launch secret and Host/Origin checks, read models with live push and resume-from-seq, and the first screens: workshop overview, factory live view, record explorer — built under KILN's own experience charter and design system, approved by a person before the screens are",
    "deps": [
     "r15"
    ],
@@ -98,7 +98,7 @@
   },
   {
    "id": "r20",
-   "short": "Gates on the web — the ten-part gate brief with its headline, moves bound to the state version they were made against, the brief recorded as seen, and Needs you; a person decides every gate of a real feature in the browser, and the same gates from the kiln CLI (status, needs, gate brief as text, moves)",
+   "short": "Gates on the web — the ten-part gate brief with its headline (its yardstick citing charter and design-system ids and versions; mockups and approved-versus-built comparisons rendered at the interface gates), moves bound to the state version they were made against, the brief recorded as seen, and Needs you; a person decides every gate of a real feature in the browser, and the same gates from the kiln CLI (status, needs, gate brief as text, moves)",
    "deps": [
     "r18",
     "r19"
@@ -115,7 +115,7 @@
   },
   {
    "id": "r22",
-   "short": "Shaping the roadmap together — the roadmap brief of the engineer's inputs, a shaping conversation with the planner, direct edits and pins the planner never silently changes, versioned drafts checked on every version, row origins in the Roadmap gate brief, approve bound to the version read",
+   "short": "Shaping the roadmap together — the roadmap brief of the engineer's inputs, a shaping conversation with the planner, direct edits and pins the planner never silently changes, versioned drafts checked on every version, row origins in the Roadmap gate brief, a journey-coverage map from the charter, approve bound to the version read",
    "deps": [
     "r20"
    ],
@@ -165,7 +165,7 @@
   },
   {
    "id": "r28",
-   "short": "First run — kiln init (browser or terminal) and kiln doctor: machine check, models recommended and checked, workshop and storage, a first factory from a repository with Spec Kit adopted or added and the constitution confirmed, knowledge bootstrap, and the first roadmap shaped together; kiln doctor checks that Ollama's cloud features are off on local-only hosts",
+   "short": "First run — kiln init (browser or terminal) and kiln doctor: machine check, models recommended and checked, workshop and storage, a first factory from a repository with Spec Kit adopted or added and the constitution confirmed, the experience charter and design system set up and approved by a person, knowledge bootstrap, and the first roadmap shaped together; kiln doctor checks that Ollama's cloud features are off on local-only hosts",
    "deps": [
     "r17",
     "r22",
@@ -175,7 +175,7 @@
   },
   {
    "id": "r29",
-   "short": "New codebases — start empty: create the repository with Spec Kit, the product brief, a constitution written from it, technology decisions recorded by a person, and a walking skeleton on the foundation flow verified from a clean clone",
+   "short": "New codebases — start empty: create the repository with Spec Kit, the product brief, a constitution and an experience charter written from it, technology decisions recorded by a person, and a walking skeleton built from the first design system's tokens and core components, on the foundation flow, verified from a clean clone",
    "deps": [
     "r26",
     "r28"
@@ -184,7 +184,7 @@
   },
   {
    "id": "r30",
-   "short": "Existing codebases, part 1 — the codebase profile and the full scan of code and repository history into the knowledge base: raw scan facts, codebase and module pages cited at the scanned commit, open questions, a scan report with coverage; durable, local, deep in the territory",
+   "short": "Existing codebases, part 1 — the codebase profile and the full scan of code and repository history into the knowledge base: raw scan facts, codebase and module pages cited at the scanned commit, a discovered experience-charter and design-system draft, open questions, a scan report with coverage; durable, local, deep in the territory",
    "deps": [
     "r24",
     "r28"
@@ -193,7 +193,7 @@
   },
   {
    "id": "r43",
-   "short": "Explore space — explore an existing codebase before adopting the factory: a lightweight space with no roadmap and no gates, on top of the profile and full scan, with the architecture map, hot spots and test landscape, and questions and traces answered with citations labelled measured or inferred and filed back as knowledge; it writes nothing to the repository and becomes a factory's starting point",
+   "short": "Explore space — explore an existing codebase before adopting the factory: a lightweight space with no roadmap and no gates, on top of the profile and full scan, with the architecture map, hot spots and test landscape (and a discovered charter draft), and questions and traces answered with citations labelled measured or inferred and filed back as knowledge; it writes nothing to the repository and becomes a factory's starting point",
    "deps": [
     "r30"
    ],
@@ -238,7 +238,7 @@
   },
   {
    "id": "r32",
-   "short": "Cut the kiln-v1 release — installer, newcomer docs, a demo factory (downloaded on request) replaying a committed walk through all ten gates, a release manifest and version tag; acceptance: a newcomer installs KILN, runs first setup on a real repository, and decides its first Roadmap gate in under an hour",
+   "short": "Cut the kiln-v1 release — installer, newcomer docs, a demo factory (downloaded on request) replaying a committed walk through all eleven feature gates of an interface feature, a release manifest and version tag; acceptance: a newcomer installs KILN, runs first setup on a real repository, and decides its first Roadmap gate in under an hour",
    "deps": [
     "r21",
     "r24",
@@ -448,8 +448,8 @@
   "status": "approved",
   "rows": "r12..r52 (program, 41 rows in the committed ordering); next row: r12",
   "decided_by": "human@batorfi",
-  "at": "2026-10-22T12:20:22Z",
-  "note": "ROADMAP GATE LOG (chronological, P-VII recorded):\n 1) 2026-10-22T12:20:22Z  human@batorfi  APPROVE  the kiln-v1 program as proposed — 41 rows, r12..r52, in the committed ordering; kiln-v1 = 26 rows ending with the release r32; kiln-v1.x = 15 rows. Admitted under constitution v2.0.1, with the PRD (final 2026-10-21, amended 2026-10-22) as the yardstick. r12 is the ADMITTED NEXT ROW; it stays 'queued' until its own first gate opens (M4: 'active' requires a live gate); chain_unattended=false — nothing else is chained, and the Roadmap gate re-opens after every merged or abandoned feature. No optional reshaping taken (r27 stays after r19's dependents; r29 stays before r30/r31). Recorded with the decision: the legacy live-Pi suite fails 8 tests on this host (Pi 1.1.0 vs the measured 0.85.1), identically on main — handled in r12; r42 is a go/no-go and a no-go re-opens this gate before r13. PROPOSED BY: the director (draft of 2026-10-20, revised 2026-10-21 and 2026-10-22). DECIDED BY: the human — P-VI/P-I: the program did not admit itself."
+  "at": "2026-10-25T18:17:27Z",
+  "note": "ROADMAP GATE LOG (chronological, P-VII recorded):\n 1) 2026-10-22T12:20:22Z  human@batorfi  APPROVE  the kiln-v1 program as proposed — 41 rows, r12..r52, in the committed ordering; kiln-v1 = 26 rows ending with the release r32; kiln-v1.x = 15 rows. Admitted under constitution v2.0.1, with the PRD (final 2026-10-21, amended 2026-10-22) as the yardstick. r12 is the ADMITTED NEXT ROW; it stays 'queued' until its own first gate opens (M4: 'active' requires a live gate); chain_unattended=false — nothing else is chained, and the Roadmap gate re-opens after every merged or abandoned feature. No optional reshaping taken (r27 stays after r19's dependents; r29 stays before r30/r31). Recorded with the decision: the legacy live-Pi suite fails 8 tests on this host (Pi 1.1.0 vs the measured 0.85.1), identically on main — handled in r12; r42 is a go/no-go and a no-go re-opens this gate before r13. PROPOSED BY: the director (draft of 2026-10-20, revised 2026-10-21 and 2026-10-22). DECIDED BY: the human — P-VI/P-I: the program did not admit itself.\n 2) 2026-10-25T18:17:27Z  human@batorfi  APPROVE (edit-rows text)  the text edits of commit 60a2c7e, as written: the twelve-gate flow of constitution 2.1.0 and the experience charter, design system and interface gates folded into rows r12, r14, r15, r17, r19, r20, r22, r28, r29, r30, r32 and r43 (and the prose 'ten gates' -> the twelve-gate flow). No row, dependency or order changed; the 41-row program of entry 1 stands. Decided at the gate with r12 IMPLEMENTED BUT NOT MERGED: r12 (branch 009-kiln-foundations-reset, 87 of 87 tasks; specs/009-kiln-foundations-reset/{implementation,code-review,verification}-report.md) STAYS 'queued' - a row is 'done' only with its merged '@PR#N' (schema) - and this gate RE-OPENS when its PR is merged, to close it and to name the next row (r42, the go/no-go spike). Decided with it: review findings 1, 3 and 4 (the network and boundary checks miss some import spellings and scan roots; skipped tests are not shown in the runner's closing line) are fixed ON THE r12 BRANCH before the PR is opened; finding 2 (a pre-delegation after its approval still authorises it - the first program's behaviour, kept) is NOT changed by r12 and stays a proposal for a later row. chain_unattended=false. DECIDED BY: the human - P-VI/P-I: the build did not decide it."
  },
  "trace": "P-VI (the Roadmap gate — gate0 — is the sole admission, human-only, always; admitted by human@batorfi 2026-10-22), P-VII (recorded), P-IX (roadmap fields)"
 }
@@ -462,25 +462,25 @@ is in [`explainers/`](./explainers/README.md).*
 
 | id | phase | feature | deps | PRD requirements | acceptance (what proves the row) |
 |----|-------|---------|------|------------------|----------------------------------|
-| r12 | Foundation | **Foundations reset** | — | GATE-1/2, WORK-2, LANE-2, EVT-5 (validators) | new layout builds; legacy frozen; every ported test green; `kiln check` runs the network check |
+| r12 | Foundation | **Foundations reset** | — | GATE-1/2, WORK-2, LANE-2, EVT-5 (validators), EXP-3 (flow data only) | new layout builds; legacy frozen; every ported test green; the flow data holds twelve gates and five judges; `kiln check` runs the network check |
 | r42 | Durable core | **Spike: completing a waiting task from outside** | r12 | CORE-6 | go / go-with-fallback / no-go decided by a spike report; kill-at-every-step tests show one atomic move + completion, first move wins; a no-go re-opens the Roadmap gate |
 | r13 | Durable core | **Durable core and the gate contract** | r12, r42 | CORE-1…5, CORE-7 (store), LANE-1 | kill the server at every step of a gate task: it resumes, waits, and settles only on a committed move |
-| r14 | Durable core | **Gates as data, walked headless** | r13 | GATE-3/4/5/6, FLOW-1/2/3, FLOW-7 (default) | a scripted feature walks ten gates from the CLI; `kiln check flow` refuses every invalid flow in its negative suite |
+| r14 | Durable core | **Gates as data, walked headless** | r13 | GATE-3/4/5/6, FLOW-1/2/3, FLOW-7 (default), EXP-3 | a scripted feature walks the twelve-gate flow from the CLI (two gates not applicable for a non-interface feature, recorded with their reason); `kiln check flow` refuses every invalid flow in its negative suite |
 | r15 | Durable core | **The record** | r14 | EVT-1…5, EVT-3a, CORE-7 (archive; record size measured) | factory-log rebuilt byte-identical from events; the first program's committed walks (closed rows r1–r3, r7, r8) replay as streams; old event versions upcast on read |
 | r16 | Workers | **Real local workers** | r13, r15 | WORK-1, 3–5, LANE-3 | a feature walks with real local workers and judges on Ollama; a crash mid-generation resumes without double-charging a tool |
 | r17 | Workers | **Configuration as files** | r16 | CFG-1, 3, 4, 6 (local), 7 (roles), 8, MOD-1 (local) | a weaker judge binding is refused; a config change applies from the next step and is recorded with before/after |
 | r18 | Director | **The director** | r14, r17 | DIR-1…5 | the same situation yields the same next step every time; planner drafts that fail checks never reach a person |
-| r19 | Front door | **Web front door, read-only** | r15 | WEB-1, 2, 4, OBS-1 (basic) | a second browser tab without the secret sees nothing; a reconnect resumes from its last seq with no polling |
-| r20 | Front door | **Gates on the web** | r18, r19 | BRIEF-1…4, BRIEF-6, WEB-3 (core), WEB-6, DIR-6 | a person decides every gate of a real feature in the browser and from the CLI; a move on a stale state version is refused |
+| r19 | Front door | **Web front door, read-only** | r15 | WEB-1, 2, 4, OBS-1 (basic), EXP-6 | a second browser tab without the secret sees nothing; a reconnect resumes from its last seq with no polling |
+| r20 | Front door | **Gates on the web** | r18, r19 | BRIEF-1…4, BRIEF-6, WEB-3 (core), WEB-6, DIR-6, EXP-3 (briefs) | a person decides every gate of a real feature in the browser and from the CLI; a move on a stale state version is refused |
 | r21 | Front door | **Stepping in** | r20 | HITL-1/2, GATE-4, WEB-5 | an armed tail crosses clean gates as *delegated*, and stops at the first objection; a judge cannot be steered |
-| r22 | Front door | **Shaping the roadmap together** | r20 | DIR-7 | a roadmap shaped from inputs, conversation and pinned edits; approve admits exactly the version read |
+| r22 | Front door | **Shaping the roadmap together** | r20 | DIR-7, EXP-5 | a roadmap shaped from inputs, conversation and pinned edits; approve admits exactly the version read |
 | r23 | Knowledge | **The factory knowledge base** | r20 | KNOW-1 (factory), 2, 3, 4, BRIEF-5 | a wiki that opens cleanly in Obsidian and Zed; briefs cite pages and flag stale ones |
 | r24 | Knowledge | **Implementation knowledge and the workshop wiki** | r23 | KNOW-1 (workshop), 5, 6 | a merged feature has a feature story grounded at a commit; a code change flags the pages it drifts |
 | r25 | Workshop | **One workshop, several factories** | r20 | HOST-1, HOST-2 (in-process), LANE-4, WORK-6, PPL-1 (single user) | three factories on one host share the model pool; one Needs you across them |
 | r26 | Workshop | **Agents and flows** | r18, r25 | CFG-2, CFG-7 (try-runs), FLOW-4…9 | an added gate defined, checked, tried on a past feature, and chosen for one feature at the Roadmap gate |
 | r27 | Workshop | **Health and broken guarantees** | r19, r15 | OBS-1 (core), OBS-3, OBS-5, OBS-6 | an injected broken guarantee is critical and recorded; a silent watcher shows *unknown*, never healthy |
 | r53 | Workshop | **The Feed** | r22, r24 | FEED-1…5 | an item fed as a screenshot and a note is stored untouched, sorted into drafted destinations (only those this build has), routed by a person, and its trail shows *from your feed*; nothing is decided by feeding, and a routed item can be taken back |
-| r28 | Getting started | **First run** | r17, r22, r23 | SETUP-1…11 | from install to a first Roadmap gate in under an hour on a fresh machine, nothing leaving it |
+| r28 | Getting started | **First run** | r17, r22, r23 | SETUP-1…11, EXP-1, EXP-2 | from install to a first Roadmap gate in under an hour on a fresh machine, nothing leaving it |
 | r29 | Getting started | **New codebases** | r26, r28 | GREEN-1…5 | an empty repository reaches a merged walking skeleton that builds and passes from a clean clone |
 | r30 | Getting started | **Existing codebases, part 1: profile and full scan** | r24, r28 | BROWN-1, BROWN-11 | a full scan of this repository writes module pages, a coverage report and open questions; a crash mid-scan resumes |
 | r43 | Explore | **Explore space** | r30 | EXPL-1, EXPL-2 (core), EXPL-3 (ask, trace) | an explore space answers a new joiner's questions with citations and draws the architecture map — and writes nothing to the repository |
@@ -506,7 +506,7 @@ is in [`explainers/`](./explainers/README.md).*
 | r51 | kiln-v1.x | **KILN in Zed, phase 3: decide where the code is** | r50 | EDIT-5, EDIT-6 | a Code review gate decided in Zed on the full brief through the same intake as the browser; a stale move from Zed is refused |
 | r52 | kiln-v1.x | **KILN in Zed, phase 4: ambient and team** | r51 | EDIT-7, EDIT-8 | editing a claimed path warns in the buffer; a teammate's required review given from a shared Zed workspace is mirrored into the owner's record |
 
-All rows: status **queued**. One row = one feature through the ten gates; each row's Concept or Specification gate may
+All rows: status **queued**. One row = one feature through the flow (the Roadmap gate and eleven feature gates, two of them conditional); each row's Concept or Specification gate may
 still split it (`split+revise` at the Implementation gate exists for exactly this).
 
 ## How the program is cut
@@ -521,7 +521,7 @@ before anything is built on it.
 | Phase | Rows | Ends with |
 |---|---|---|
 | **Foundation** | r12 | the new layout with every kept rule ported and tested |
-| **Durable core** | r42, r13–r15 | a feature walks ten gates headless, survives any crash, and is fully recorded |
+| **Durable core** | r42, r13–r15 | a feature walks the twelve-gate flow headless, survives any crash, and is fully recorded |
 | **Workers** | r16–r17 | real local models doing the work and judging it, configured as files |
 | **Director** | r18 | deterministic orchestration with a checked planner |
 | **Front door** | r19–r22 | a person runs a real feature from the browser — gates, briefs, delegation, steering, roadmap shaping |
@@ -552,7 +552,7 @@ From PRD §14, placed at the row that needs them:
 | Before | Decision |
 |---|---|
 | **r12** | ~~keep a terminal surface (the r9 work) or retire it~~ — **decided 2026-10-21: retired**; `legacy/` is frozen and retired, the terminal surface is the `kiln` CLI (PRD §14.1, WEB-6) |
-| **r12 / r14** | the legacy `kiln/contracts/gate-rail.md` (old gate names, four line-of-defense roles, the 1.0.0 move table) is rewritten for constitution v2.0.1 and the decided move set — Code review `approve · revise · restart`, reject-to-earlier, three built-in judges — as r14 encodes the flow as data; `firing-ready` reads it, so it changes with its checks |
+| **r12 / r14** | the legacy `kiln/contracts/gate-rail.md` (old gate names, four line-of-defense roles, the 1.0.0 move table) is rewritten for constitution v2.1.0 and the decided move set — Code review `approve · revise · restart`, reject-to-earlier, five built-in judges, twelve gates with Architecture, Experience design and UI review — as r14 encodes the flow as data; `firing-ready` reads it, so it changes with its checks |
 | **r28** | ~~first-run choices~~ — **decided 2026-10-21**: demo downloaded on request; 32 GB minimum, 64 GB recommended; Spec Kit upgrades offered at the Roadmap gate; other integrations coexist (SETUP-2, 7, 10) |
 | **r30 / r31** | ~~scan depth, history, discussions, territory, PR edits, flaky tests~~ — **decided 2026-10-21**: deep inside the territory and a map outside; 2 years of history in detail; titles and links unless opted in; territory enforced at the tool level; teammates' PR edits recorded and re-verified; flaky tests offered as candidates (BROWN-2, 3, 5, 11) |
 | **r29** | ~~starter templates, library skeleton, Decisions gate~~ — **decided 2026-10-21**: no templates; a library skeleton is build, test, CI, packaging and one public function; no built-in Decisions gate (GREEN-4, 5) |

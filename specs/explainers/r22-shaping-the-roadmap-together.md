@@ -11,7 +11,7 @@
 | **Release** | `kiln-v1` — position 12 of 43 in the committed order |
 | **Depends on** | [r20 — Gates on the web](./r20-gates-on-the-web.md) |
 | **Unlocks** | [r53 — The Feed](./r53-the-feed.md), [r28 — First run](./r28-first-run.md) |
-| **PRD requirements** | DIR-7 |
+| **PRD requirements** | DIR-7, EXP-5 |
 | **Proven when** | a roadmap shaped from inputs, conversation and pinned edits; approve admits exactly the version read |
 
 ## In one paragraph
@@ -34,11 +34,12 @@ A roadmap is shaped together, not handed over for a yes or no. The engineer writ
 
 ## Requirements it carries
 
-*As listed in the roadmap: DIR-7. Full text from the PRD:*
+*As listed in the roadmap: DIR-7, EXP-5. Full text from the PRD:*
 
 | ID | Requirement | Priority |
 |---|---|---|
 | DIR-7 | **Shaping the roadmap together**: a per-factory **roadmap brief** of the engineer's inputs (goals, must-haves, constraints, order preferences, appetite, own rows, pointers) read first by the planner; a recorded shaping conversation (planner questions, why/what-if, alternatives side by side); direct edits with **pins** the planner must respect and never silently change; versioned drafts with diffs; deterministic checks on every version; row origin shown in the Roadmap gate brief; approve bound to the version read; shaping possible at any time, never altering work in progress. Alternatives are drafted one at a time, each with its estimated machine time shown before it runs. | Must |
+| EXP-5 | **Journey coverage** at the Roadmap gate: the planner reads the charter and the brief shows a coverage map; deterministic, never blocking. | Should |
 
 ## How it is proven
 

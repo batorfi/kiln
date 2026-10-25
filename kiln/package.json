@@ -1,7 +1,8 @@
 {
   "name": "kiln",
-  "version": "0.1.0",
-  "description": "KILN — a local, single-lane, spec-driven development factory for Pi: one model at a time, a human at every gate, no cloud. Zero runtime dependencies.",
+  "version": "0.2.0",
+  "private": true,
+  "description": "KILN — a local software factory you own: agents work, independent judges check, people decide at every gate. The restart codebase (r12 onward); the first program lives in ../legacy. Zero runtime dependencies, nothing to install.",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -9,31 +10,28 @@
   },
   "author": "Zsolt Bátorfi",
   "type": "module",
-  "pi": {
-    "extensions": ["./pi/index.ts"]
-  },
   "engines": {
     "node": "^22.18.0 || >=23.6.0"
   },
+  "imports": {
+    "#contracts/*": "./packages/contracts/src/*",
+    "#record/*": "./packages/record/src/*",
+    "#lane/*": "./packages/lane/src/*",
+    "#durable/*": "./packages/durable/src/*",
+    "#workers/*": "./packages/workers/src/*",
+    "#director/*": "./packages/director/src/*",
+    "#server/*": "./packages/server/src/*",
+    "#cli/*": "./packages/cli/src/*",
+    "#checks/*": "./checks/*"
+  },
   "scripts": {
     "test": "node tests/run.ts",
-    "test:live": "node tests/run.ts --cost",
-    "test:pi": "node tests/run.ts --pi \"tests/pi/*.test.ts\"",
-    "live-inference": "node tests/run.ts --live --serial tests/live-inference",
-    "switch-cost": "node tests/run.ts --cost tests/switch-cost",
-    "validate:log": "node validate/log.ts",
-    "validate:roadmap": "node validate/roadmap.ts",
-    "firing-ready": "node validate/firing-ready.ts",
-    "runtime-ready": "node validate/runtime-ready.ts",
-    "overlay-ready": "node validate/overlay-ready.ts",
-    "live-ready": "node validate/live-ready.ts",
-    "ollama-ready": "node validate/ollama-ready.ts",
-    "pi-ready": "node validate/pi-ready.ts",
-    "ui-ready": "node validate/ui-ready.ts",
-    "dogfood": "node tests/dogfood/run.ts",
-    "program-walk": "node tests/dogfood/run-program.ts",
-    "live-walk": "node tests/dogfood/run-live.ts",
-    "capture-fixture": "node tests/dogfood/capture-fixture.ts"
+    "test:new": "node tests/run.ts --new-only",
+    "test:legacy": "node tests/run.ts --legacy-only",
+    "kiln": "node packages/cli/src/main.ts",
+    "check": "node packages/cli/src/main.ts check",
+    "validate:log": "node packages/record/src/log.ts",
+    "validate:roadmap": "node packages/record/src/roadmap.ts"
   },
   "dependencies": {}
 }
