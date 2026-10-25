@@ -479,6 +479,9 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | FEED-2 | **Drafted destinations**: a labelled planner step proposes where an item could go (feature candidate, roadmap input, gate evidence, knowledge page, question for a step, amendment suggestion, note) and what it found (overlap, matching ticket); no option is pre-selected. | Should |
 | FEED-3 | **Nothing is decided by feeding**: routing is a person's recorded choice; a fed item is evidence or a wish, never a requirement, approval or move; it never blocks a factory and never escalates or expires. | Must |
 | FEED-4 | **Trail**: every use of a fed item shows *from your feed* and links to the original; the original lists where it went. Sorting follows the workshop's egress policy; secrets are scanned on capture. | Should |
+| FEED-5 | **Take it back**: every reversible destination can be taken back (`feed.unrouted`), and the item returns to *waiting*. | Should |
+| FEED-6 | **Share to the team** is an explicit act on a single item and never changes a team artifact by itself. | Could |
+| FEED-7 | **Watched inbox folder** and capture from other surfaces (editor, phone) are opt-in and listed in *Models & policy → Changes* when turned on. | Could |
 
 ## 7. Non-functional requirements
 
