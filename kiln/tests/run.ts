@@ -1,28 +1,41 @@
-// kiln/tests/run.ts — the ONE way scripts and people run the suite (r12 T031; contracts/runner.md).
-// Ported in spirit from the first program's runner (legacy/tests/run.ts): it resolves everything from ITS OWN location, so it works from any
-// working directory, and it REFUSES a run that executed nothing — `node --test` exits 0 when no file matches, a silent pass in a project whose
-// central rule is "never silently approve".
+// kiln/tests/run.ts — the ONE way scripts and people run the suite (r12 T031, T045; contracts/runner.md).
+// It resolves everything from ITS OWN location, so it works from any working directory, and it REFUSES a run that executed nothing —
+// `node --test` exits 0 when no file matches, a silent pass in a project whose central rule is "never silently approve".
 //
-//   node tests/run.ts                 the new suite
-//   node tests/run.ts --new-only      the same (the legacy suite joins in T045)
-//   node tests/run.ts <path>…         restrict to these files or directories, RELATIVE TO kiln/
+//   node tests/run.ts                          the new suite, then the first program's suite (frozen, in legacy/)
+//   node tests/run.ts --new-only               only the new suite
+//   node tests/run.ts --legacy-only            only the legacy suite
+//   node tests/run.ts [--live] [--cost] [--serial] [--pi]   forwarded to the legacy runner unchanged
+//   node tests/run.ts <path>…                  restrict the NEW suite to these files or directories, RELATIVE TO kiln/
 //
-// Discovery: packages/*/tests/**/*.test.ts, checks/tests/**/*.test.ts and tests/**/*.test.ts, except tests/runner/fixtures/ and tests/tools/.
-// Pure glue: no network, no gate advanced.
+// The live-Pi tier: before the legacy suite starts, the installed Pi (KILN_PI_BIN or `pi`) is compared with the measured list. On an unmeasured
+// Pi that nobody demanded, KILN_PI=0 is set for the legacy child — the legacy gate's own off switch, which prints its reason per test — and the
+// two versions are printed once. A demanded tier (`--pi`, KILN_PI=1) is never switched off: its tests run and fail by name.
+// Pure glue: no network, no gate advanced, no legacy file touched.
 
 import { spawn } from "node:child_process";
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join, relative, resolve, sep } from "node:path";
+import { MEASURED_PI_VERSIONS } from "./measured-pi.ts";
+import { decidePiTier, installedPiVersion, piBinary } from "./pi-tier.ts";
 
 const kilnDir = fileURLToPath(new URL("..", import.meta.url));
 const args = process.argv.slice(2);
-const KNOWN_FLAGS = new Set(["--new-only"]);
-const badFlag = args.find((a) => a.startsWith("--") && !KNOWN_FLAGS.has(a));
+const NEW_FLAGS = new Set(["--new-only", "--legacy-only"]);
+const FORWARDED = new Set(["--live", "--cost", "--serial", "--pi"]);
+const badFlag = args.find((a) => a.startsWith("--") && !NEW_FLAGS.has(a) && !FORWARDED.has(a));
 if (badFlag) {
-  console.error(`unknown flag "${badFlag}"\nusage: node tests/run.ts [--new-only] [path…]`);
+  console.error(`unknown flag "${badFlag}"\nusage: node tests/run.ts [--new-only | --legacy-only] [--live] [--cost] [--serial] [--pi] [path…]`);
   process.exit(2);
 }
+if (args.includes("--new-only") && args.includes("--legacy-only")) {
+  console.error("--new-only and --legacy-only exclude each other");
+  process.exit(2);
+}
+const newOnly = args.includes("--new-only");
+const legacyOnly = args.includes("--legacy-only");
+const forwarded = args.filter((a) => FORWARDED.has(a));
 const paths = args.filter((a) => !a.startsWith("--"));
 
 const EXCLUDED = [join("tests", "runner", "fixtures") + sep, join("tests", "tools") + sep];
@@ -59,31 +72,80 @@ function discover(): string[] {
   return [...new Set(roots.flatMap(testFilesUnder))].sort();
 }
 
-const files = discover();
-const where = paths.length ? paths.join(" ") : "packages/*/tests, checks/tests, tests";
-const ZERO = `FAIL — the run executed ZERO tests (paths: ${where}, relative to ${kilnDir}). A run that ran nothing proves nothing.`;
-
-if (files.length === 0) {
-  console.error(ZERO);
-  process.exit(1);
+// A runner started from inside a test (the runner's own tests do) inherits NODE_TEST_CONTEXT, which makes a nested `node --test` emit machine
+// output and no summary — it would read as "zero tests". Strip it: every run started here is a fresh top-level run.
+function cleanEnv(extra: Record<string, string> = {}): NodeJS.ProcessEnv {
+  const env = { ...process.env, ...extra };
+  delete env.NODE_TEST_CONTEXT;
+  return env;
 }
 
-// A runner started from inside a test (the runner's own tests do) inherits NODE_TEST_CONTEXT, which makes a nested `node --test` emit
-// machine output and no summary — it would then read as "zero tests". Strip it: this run is a fresh top-level run.
-const env = { ...process.env };
-delete env.NODE_TEST_CONTEXT;
-const child = spawn(process.execPath, ["--test", ...files], { cwd: kilnDir, env, stdio: ["ignore", "pipe", "pipe"] });
-let out = "";
-child.stdout.on("data", (d: Buffer) => { out += d; process.stdout.write(d); });
-child.stderr.on("data", (d: Buffer) => process.stderr.write(d));
+/** Runs a child, passes its output through, and returns its exit code and how many tests its summary reported. */
+function runChild(cmdArgs: string[], cwd: string, env: NodeJS.ProcessEnv): Promise<{ code: number; ran: number }> {
+  return new Promise((resolveRun) => {
+    const child = spawn(process.execPath, cmdArgs, { cwd, env, stdio: ["ignore", "pipe", "pipe"] });
+    let out = "";
+    child.stdout.on("data", (d: Buffer) => { out += d; process.stdout.write(d); });
+    child.stderr.on("data", (d: Buffer) => process.stderr.write(d));
+    child.on("error", (e) => { console.error(`FAIL — could not start ${cmdArgs[0]}: ${e.message}`); resolveRun({ code: 1, ran: 0 }); });
+    child.on("close", (code) => {
+      const m = /(?:ℹ |# )tests (\d+)/.exec(out);
+      resolveRun({ code: code ?? 1, ran: m ? Number(m[1]) : 0 });
+    });
+  });
+}
 
-child.on("close", (code) => {
-  const m = /(?:ℹ |# )tests (\d+)/.exec(out);
-  const ran = m ? Number(m[1]) : 0;
-  if (code === 0 && ran === 0) {
-    console.error(ZERO);
-    process.exit(1);
+const zero = (what: string) => `FAIL — the ${what} suite executed ZERO tests. A run that ran nothing proves nothing.`;
+
+async function runNew(): Promise<{ code: number; ran: number }> {
+  const files = discover();
+  const where = paths.length ? paths.join(" ") : "packages/*/tests, checks/tests, tests";
+  if (files.length === 0) {
+    console.error(`FAIL — the run executed ZERO tests (paths: ${where}, relative to ${kilnDir}). A run that ran nothing proves nothing.`);
+    return { code: 1, ran: 0 };
   }
-  console.log(`new: ${ran} tests`);
-  process.exit(code ?? 1);
-});
+  const r = await runChild(["--test", ...files], kilnDir, cleanEnv());
+  if (r.code === 0 && r.ran === 0) {
+    console.error(`FAIL — the run executed ZERO tests (paths: ${where}, relative to ${kilnDir}). A run that ran nothing proves nothing.`);
+    return { code: 1, ran: 0 };
+  }
+  return r;
+}
+
+async function runLegacy(): Promise<{ code: number; ran: number }> {
+  const legacyDir = join(kilnDir, "..", "legacy");
+  // KILN_LEGACY_RUNNER replaces the frozen runner with a probe — for the runner's own tests only.
+  const runner = process.env.KILN_LEGACY_RUNNER ?? join(legacyDir, "tests", "run.ts");
+  const extra: Record<string, string> = {};
+  const decision = decidePiTier({
+    env: process.env,
+    demanded: forwarded.includes("--pi"),
+    installedVersion: installedPiVersion(piBinary(process.env)),
+    measured: MEASURED_PI_VERSIONS,
+  });
+  if (decision.action === "switch-off") {
+    extra.KILN_PI = "0";
+    console.log(`live-Pi tier skipped: Pi ${decision.installed} installed, measured [${decision.measured.join(", ")}]`);
+  }
+  const r = await runChild([runner, ...forwarded], legacyDir, cleanEnv(extra));
+  if (r.code === 0 && r.ran === 0) {
+    console.error(zero("legacy"));
+    return { code: 1, ran: 0 };
+  }
+  return r;
+}
+
+const results: string[] = [];
+let failed = false;
+if (!legacyOnly) {
+  const r = await runNew();
+  results.push(`new: ${r.ran} tests`);
+  if (r.code !== 0) failed = true;
+}
+if (!newOnly) {
+  const r = await runLegacy();
+  results.push(`legacy: ${r.ran} tests`);
+  if (r.code !== 0) failed = true;
+}
+console.log(results.join(" · "));
+process.exit(failed ? 1 : 0);
