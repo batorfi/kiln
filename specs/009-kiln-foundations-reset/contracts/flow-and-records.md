@@ -63,7 +63,9 @@ design-critic, code-reviewer, ui-reviewer, verifier.
 
 ```ts
 // #record/log.ts
-export function validateLog(text: string, options?: { defaultFlow?: FlowVersion }): ValidationResult;     // G1, G3, R3–R5 as in the first program
+export function validateLog(records: Record<string, unknown>[], schema?: Schema, options?: { defaultFlow?: FlowVersion }): LogResult;   // G1, G3, R3–R5 as in the first program
+export function validateLogFile(path: string, schema?: Schema, options?: { defaultFlow?: FlowVersion }): LogResult;
+// (the first program's API is kept — records in, or a file path in; T052 adds the trailing `options`. An earlier draft of this contract said `validateLog(text)`.)
 // CLI: node packages/record/src/log.ts <file> [--flow v1|v2]
 // #record/roadmap.ts
 export function validateRoadmap(markdown: string): ValidationResult;                                     // unchanged

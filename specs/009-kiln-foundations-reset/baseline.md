@@ -40,3 +40,16 @@ reported skips.
 | Legacy runs unmodified from its new location | `cd legacy && KILN_PI=0 node tests/run.ts` (`/tmp/r12-legacy-after-move.log`) | **500 tests, 470 pass, 0 fail, 30 skipped** — the 15 live-Pi tests are skipped by the legacy gate's off switch with its printed reason; identical to the research R1 measurement (layout A) |
 | Working tree after the run | `git status -s` | clean — the suite writes no tracked file |
 | Ignore patterns | `git check-ignore -v legacy/factory-log/x.jsonl` | ignored; `legacy/factory-log/.gitkeep` stays tracked |
+
+### After US1 (T020–T033, 2026-10-25)
+
+| Check | Command | Result |
+|---|---|---|
+| New suite | `cd kiln && npm run test:new` | **30 tests, 30 pass, 0 fail**: 23 ported (log 9, roadmap 3, no-silent-approval 4, roadmap-m3 7) + 3 new affinity + 4 runner (zero-tests R5, unknown flag, any working directory) |
+| Affinity tests can fail | three mutants of `affinity.ts` (swap rule inverted; guard removed; `bindAll` made `async`) | each fails ≥ 1 of the 3 tests; restored → 3 pass |
+| Zero-tests refusal | `node tests/run.ts packages/zzz` | exit 1, `FAIL — the run executed ZERO tests …` |
+| Works from any directory | `cd /tmp && node …/kiln/tests/run.ts packages/lane/tests` | 3 tests, exit 0 |
+| Validators on the evidence | `npm run validate:log -- fixtures/r7-live-inference.jsonl`; `npm run validate:roadmap -- ../specs/ROADMAP.md` | `PASS`, `PASS`; the broken fixture exits 1 |
+| Copies exact | `cmp` of the three r7 fixtures and the blank roadmap against `legacy/` | identical |
+| Legacy untouched | `git diff --stat -- legacy` | empty; tree id still `20a82c7e…` |
+

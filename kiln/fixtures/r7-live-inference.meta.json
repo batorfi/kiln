@@ -1,0 +1,8 @@
+{
+  "model": "gemma4:12b",
+  "ollamaVersion": "0.34.2",
+  "capturedAt": "2026-09-20T05:59:41.889Z",
+  "records": 25,
+  "roundTrips": 9,
+  "note": "Provenance for the committed fixture. Not part of the ledger. Regenerate ONLY via `npm run capture-fixture` — never from a test."
+}

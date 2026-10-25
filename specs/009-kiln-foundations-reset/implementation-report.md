@@ -6,7 +6,7 @@
 
 ## 1. Status in one paragraph
 
-**19 of 87 tasks are done (22%): Phase 1 (Setup, T001–T004) and Phase 2 (Foundational, T005–T019).** The move is complete and proven: the first
+**20 of 87 tasks were done when this report was first written (T001–T019 and T080); US1 (T020–T033) has since been completed — see §11.** Originally: **Phase 1 (Setup, T001–T004) and Phase 2 (Foundational, T005–T019).** The move is complete and proven: the first
 program's tree now lives in `legacy/`, byte-identical to the baseline, and its suite is green. The new `kiln/` has its skeleton, the contracts base (move
 kinds, flow **v1** as data, the tier policy, record types, both JSON schemas), the record core (schema validator, report formatter, clock), the check
 registry and a `kiln check` command. **None of the five user stories is started** (Phases 3–7, T020–T077), and neither is Polish (T078–T087). The new
@@ -180,3 +180,20 @@ At the human's request, after the twelve-gate decision:
   Roadmap gate* (the precedent of r53). `legacy/validate/roadmap.ts` → PASS.
 - **`docs/prd/kiln-prd.md`** — §8.2 (`legacy/` at the repository root, with the measurement), WORK-2 (five judges, v2.1.0), GATE-2 (the two interface gates' moves), M1, goal 1, the status line (T080 done).
 - **Explainers** regenerated (`_generate.py`): only the eight files for the edited rows changed. FR-021 and T086 now name `60a2c7e` as the baseline.
+
+## 11. User Story 1 completed (2026-10-25, T020–T033)
+
+14 tasks, 34 of 87 done. What exists now, beyond §3:
+
+| Piece | Where | Notes |
+|---|---|---|
+| Roadmap and log validators | `kiln/packages/record/src/roadmap.ts`, `log.ts` | ported with paths, imports and usage text changed; behaviour unchanged. `log.ts` passes flow `"v1"` explicitly (finding 3) and keeps the `process.argv[1]` entry guard (finding 1). The first program's API is kept (`validateLog(records)`, `validateLogFile(path)`); `contracts/flow-and-records.md` §4 was corrected to say so |
+| Fixtures | `kiln/fixtures/r7-live-*`, `packages/record/tests/fixtures/roadmap-blank.md` | byte-identical (`cmp`) |
+| Ported tests | `packages/record/tests/` | 23 cases, expectations unchanged |
+| Lane (pure) | `packages/lane/src/types.ts`, `affinity.ts`, `tests/affinity.test.ts` | `switchCount`, `bindAll` (throws synchronously), `judgeUnitsBoundStrongest`, each taking the flow's roster; 3 new tests, mutation-checked |
+| Runner | `kiln/tests/run.ts`, `tests/runner/zero-tests.test.ts` | discovers tests itself (no shell glob), fails a run with zero tests, rejects unknown flags, strips `NODE_TEST_CONTEXT` so it can run inside a test |
+
+Measured: `npm run test:new` — **30 tests, 0 failures**; `validate:log` and `validate:roadmap` print `PASS` on the r7 walk and on the (updated) roadmap; the broken fixture exits 1. Details in `baseline.md`.
+
+Not yet: `npm test` also runs the legacy suite (T045); `legacy-copies.json` records for these ports (T037); the manifest check. Two things to know for later: (1) the runner flags `--live`, `--cost`, `--serial`, `--pi` are rejected until T045 forwards them;
+(2) the runner found a real pitfall — a nested `node --test` inside a test reads as "zero tests" unless `NODE_TEST_CONTEXT` is removed.
