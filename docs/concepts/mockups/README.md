@@ -237,6 +237,6 @@ The KILN mark in every sidebar comes from [`docs/brand/kiln-mark.svg`](../../bra
 Chart colours (mockups 16 and 17) use a two-colour palette checked for colour-blind separation and contrast; every
 chart carries a legend or direct labels, so no meaning depends on colour alone.
 
-> **Note (2026-10-25):** the mockups use the earlier warm palette with an ember accent. KILN's design system now proposes the
+> **Note (2026-10-25):** the mockups use the earlier warm palette with an ember accent and the earlier ember arch logo. KILN's design system now proposes the
 > **teal-and-sand** theme (`../design-system.md` §12.1); newer samples (`../feed/`) are drawn in it. The mockups stay
 > illustrations of layout and flow, not of colour.

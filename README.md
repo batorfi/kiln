@@ -244,7 +244,7 @@ Any run that executes **zero** tests fails, so a mistyped path cannot pass silen
 | [`docs/concepts/`](./docs/concepts) | the design: vision, the flow, the front door, user experience, and one doc per area; research snapshots on models, routers and machines; the [decisions index](./docs/concepts/open-decisions.md) — with [mockups](./docs/concepts/mockups/README.md) and the [infographics](./docs/concepts/infographic/README.md) (KILN at a glance, the engineer at the center) |
 | [`docs/architecture/`](./docs/architecture) | the [architecture explainer](./docs/architecture/explainers/kiln-architecture.md), the [constitution explainer](./docs/architecture/explainers/kiln-constitution.md), the [`kiln-v1`](./docs/architecture/explainers/kiln-v1.md) and [`kiln-v1.x`](./docs/architecture/explainers/kiln-v1x.md) explainers, and the [platform architecture infographic](./docs/architecture/visualisations/README.md) |
 | [`docs/prd/`](./docs/prd/kiln-prd.md) | the product requirements for the restart |
-| [`docs/brand/`](./docs/brand/README.md) | the KILN mark and logos |
+| [`docs/brand/`](./docs/brand/README.md) | the KILN mark (the Fork K) and logos |
 | [`specs/`](./specs) | [`ROADMAP.md`](./specs/ROADMAP.md) (the program, admitted by a person at the Roadmap gate), [one explainer per roadmap row](./specs/explainers/README.md), one directory per feature with its spec, plan, tasks and evidence, and the archived first program |
 | [`kiln/`](./kiln) | the foundation's code: runtime, gate and log machinery, validators and probes, schemas and contracts, tests, and committed fixtures of real runs |
 | [`.specify/`](./.specify), [`.pi/`](./.pi) | the Spec Kit scaffolding and Pi prompts the project is built with, and KILN's constitution |

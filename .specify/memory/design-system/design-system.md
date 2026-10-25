@@ -1,6 +1,6 @@
 ---
 name: KILN design system
-version: 0.2.0
+version: 0.2.1
 owner: human@batorfi            # the named design owner (also the experience owner for now)
 charter: 0.1.0                  # the experience charter version this was made against
 modes: [light, dark]            # every semantic token has a value in each
@@ -18,7 +18,7 @@ tokens, words and states. Concept: `docs/concepts/design-system.md` (§12, §12.
 against the experience charter (`.specify/memory/experience-charter.md`) and pinned by it.
 
 **Three rules specific to KILN.** (1) Colour never carries a state alone — every state has a word and a shape. (2) No
-control pre-selects a gate move. (3) The ember is the brand mark's colour only; it is not a UI colour.
+control pre-selects a gate move. (3) The logo is made of the interface's own tokens — the Fork K in `color.action.primary` / `color.action.on-rail`, the wordmark in Charter Bold (`docs/brand/`); the old ember is retired.
 
 ## Inventory
 | Id | Kind | Status | Since |

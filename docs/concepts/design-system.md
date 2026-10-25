@@ -418,8 +418,9 @@ palette that this makes explicit.
 ### 12.1 The teal-and-sand theme
 
 Why teal: the accent is calm and cool, so it never competes with **amber *waiting*** — the one colour a person must notice
-without being alarmed — and it leaves the hot hues to state. The **ember stays in the brand mark and wordmark only**
-(`docs/brand/README.md`: do not recolour the ember); it is not a UI colour. Sand keeps the warmth of the earlier palette.
+without being alarmed — and it leaves the hot hues to state. The **logo is made of the same teal** — the *Fork K* mark
+and a Charter Bold wordmark (`docs/brand/README.md`); the earlier ember is retired, so there is no separate brand colour. Sand
+keeps the warmth of the earlier palette.
 
 Measured contrast (WCAG 2.2 relative luminance; text needs 4.5:1, large text and meaningful UI 3:1):
 
