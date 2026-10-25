@@ -10,11 +10,11 @@ existing codebase, bench to roadmap.
 
 Illustrative, not a design decision; the concept docs in `../` govern where they differ.
 
-Regenerate (4000 × 5746 px):
+Regenerate (4000 × 5782 px):
 
 ```sh
 cd src && "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --disable-gpu --hide-scrollbars \
-  --force-device-scale-factor=2 --window-size=2000,2873 --screenshot=../kiln-at-a-glance.png "file://$PWD/kiln-at-a-glance.html"
+  --force-device-scale-factor=2 --window-size=2000,2891 --screenshot=../kiln-at-a-glance.png "file://$PWD/kiln-at-a-glance.html"
 ```
 
 # The engineer at the center — infographic
