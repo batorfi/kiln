@@ -45,6 +45,7 @@ KILN's own charter, written to the structure in `docs/concepts/experience-charte
 - J8 **Work with a team** — build: J8.1 see who builds what and claims → J8.2 decide or sign a team roadmap change → J8.3 answer a request → J8.4 see overlap in my brief. Screens: S10, S6.
 - J9 **Control where models run and spend** — build: J9.1 see what may leave → J9.2 map roles to models → J9.3 see budgets and stops → J9.4 review configuration changes. Screen: S9.
 - J10 **Ask the knowledge** — build: J10.1 find a page → J10.2 read with citations → J10.3 ask and file an answer → J10.4 resolve stale findings. Screen: S8.
+- J13 **Feed an idea** — build: J13.1 drop anything into the Feed → J13.2 see KILN's drafted destinations → J13.3 choose where it goes (or keep it as a note) → J13.4 see it used, with its trail. Screen: S19. Concept: `docs/concepts/the-feed.md`.
 - J11 **Work from the terminal** — status: deferred to the CLI charter section below; same words and the same ten-part brief in text.
 - J12 **Work from the editor** — status: deferred (Zed surface via ACP/MCP follows the web surface).
 
@@ -88,6 +89,9 @@ Home: S1. Frame shared by every screen: S0. Each wireframe is greyscale boxes la
 - S11 First run — setup in the browser, step by step, from the machine to the first Roadmap gate · serves: J7.1 · J7.2 · J7.3 · J7.4 · J7.5 · J7.6
   regions: R1 Page header · R2 This step · R3 What KILN found · R4 What stays local · R5 Step bar · R6 See a whole feature first
   wireframe: wireframes/s11-first-run.svg
+- S19 Feed — everything the person fed KILN, with KILN's drafted destinations — the person decides · serves: J13.1 · J13.2 · J13.3 · J13.4
+  regions: R1 Page header and Feed KILN · R2 Filters · R3 Fed items · R4 Rule of the Feed
+  wireframe: wireframes/s19-feed.svg
 - S12 Agents — roles, prompts and models per role · serves: J9.2 · links: S9 · no wireframe: configuration list; follows pattern P1 (table + detail)
 - S13 Flows — gate sequences and conditions, read-only for built-ins · serves: J3.4 · links: S7 · no wireframe: list + diagram; follows P1
 - S14 Hosts — machines, memory, fit · serves: J9.1 · links: S9 · no wireframe: table; follows P1
@@ -100,6 +104,25 @@ Home: S1. Frame shared by every screen: S0. Each wireframe is greyscale boxes la
 
 The drawings are in `.specify/memory/experience-charter/wireframes/` (`s0-frame.svg` … `s11-first-run.svg`). Region ids `S#.R#` are stable; annotations cite principles and journeys. Greyscale only; no copy is final.
 
+## Samples
+
+High-fidelity samples of the wireframes, drawn in KILN's design system (teal and sand; `samples/`): each keeps the wireframe's regions and content, and shows the look and feel. The wireframes govern structure; the samples are illustrations and are not final copy.
+
+| Screen | Sample |
+|---|---|
+| S1 Workshop overview | `samples/s1-workshop-overview.png` |
+| S2 Needs you | `samples/s2-needs-you.png` |
+| S3 Coming back | `samples/s3-coming-back.png` |
+| S4 Factory live | `samples/s4-factory-live.png` |
+| S5 Feature record | `samples/s5-feature-record.png` |
+| S6 Gate brief | `samples/s6-gate-brief.png` |
+| S7 Roadmap | `samples/s7-roadmap.png` |
+| S8 Knowledge | `samples/s8-knowledge.png` |
+| S9 Models & policy | `samples/s9-models-and-policy.png` |
+| S10 Team space | `samples/s10-team-space.png` |
+| S11 First run | `samples/s11-first-run.png` |
+| S19 Feed | `samples/s19-feed.png` |
+
 ## Interaction patterns
 
 - P1 **List and detail** — rows with one-line headlines; Open leads to a detail page, never an inline decision.
@@ -108,6 +131,7 @@ The drawings are in `.specify/memory/experience-charter/wireframes/` (`s0-frame.
 - P4 **Waiting** — a waiting item is quiet, shows how long it waited, never changes tone.
 - P5 **Step in** — steer, pause, abort, end delegation are always grouped and always say they are recorded under the person's name.
 - P6 **Empty and error states** — say what is true and what the person can do; never a blank screen or a bare error code.
+- P8 **Proposal, not decision** — KILN drafts, the person chooses: proposals are text marked →, labelled drafts, nothing selected (the Feed, the planner's questions).
 - P7 **Confirm irreversible** — abort and reject name what will be lost and how far back it goes.
 
 ## Content voice
