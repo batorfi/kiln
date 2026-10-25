@@ -29,7 +29,7 @@
 
 ## 1. In one paragraph
 
-The ten gates are KILN's **default flow**, not a hard limit. A team can add gates that match how it builds software — a
+The twelve gates (the Roadmap gate and eleven feature gates, two of which apply only to interface work) are KILN's **default flow**, not a hard limit. A team can add gates that match how it builds software — a
 threat model, a security review, an accessibility review, a performance budget, a licence check, a product sign-off — by
 writing a **gate definition** and including it in a **flow**. Every added gate is a durable task with the same contract as
 the built-in ones, presents the same ten-part gate brief, uses moves from the same closed set, and is checked before it
@@ -238,7 +238,16 @@ flows can arrive later without reworking the director.
    gate at the next gate (§7 step 4), a recorded decision.
 3. When post-merge gates come into scope, how should they relate to the Merge gate's authority?
 
+## 14a. Built-in gates that apply conditionally
+
+Two built-in gates — **Experience design** and **UI review** (`ui-flow.md`) — carry an `applies_when` rule, the same
+deterministic predicates added gates use (§14.2). Being built in, they are never removed from the flow; when the rule is
+false for a feature, the gate is recorded as **not applicable** with its reason, shown at the Roadmap gate and in every
+later brief. This is not a skip: nothing settles, no judge runs, and a person may **require** the gate at the Roadmap gate
+even where the rule would not. Teams may add stricter `applies_when` terms (paths, labels) and may **require** the gates
+for chosen paths; they may not make a gate not-applicable where the default rule applies it.
+
 ## 15. One sentence
 
-KILN's ten gates are the default flow every feature passes; teams add gates that match how they build software, and every
+KILN's twelve gates are the default flow every feature passes (two of them where the feature touches the interface); teams add gates that match how they build software, and every
 added gate keeps the same contract, brief, moves and checks — so the flow can grow without the guarantees getting weaker.

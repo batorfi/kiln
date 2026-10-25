@@ -41,7 +41,7 @@
 ## 1. Product in one paragraph
 
 KILN is a **self-run software factory**: AI agents do the work of building features, independent judges check it, and
-a human decides at every one of ten gates — from *which features do we build?* to *do we ship this?*. Factories run
+a human decides at every one of twelve gates — from *which features do we build?* to *do we ship this?*. Factories run
 **local by default** and anywhere you choose — your machine, a team server, a cloud machine in your account — and are
 reached through a **web front door**. Every piece of work is **durable** (it survives crashes, moves and sleeping
 machines), every change is an **event** in an ordered record, and every factory keeps a **knowledge base** that
@@ -140,7 +140,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 | ID | Requirement | |
 |---|---|---|
-| GATE-1 | The **default flow**: ten gates with plain names and one question each: **Roadmap gate**, Concept, Design, Specification, Work plan, **Implementation**, Code review, Verification, Documentation, **Merge**. Internal ids stay stable (`gate0`, `1-concept` … `9-pr`). | Must |
+| GATE-1 | The **default flow**: twelve gates with plain names and one question each: **Roadmap gate**, Concept, Design, **Experience design**, Specification, Work plan, **Implementation**, Code review, **UI review**, Verification, Documentation, **Merge**. Experience design and UI review carry a deterministic `applies_when` rule and are recorded as *not applicable* for features that do not touch the interface. Internal ids stay stable (`gate0`, `1-concept` … `9-pr`); the two experience gates are `2a-experience` and `6a-ui-review`. | Must |
 | GATE-2 | Each gate offers only its own moves (the existing move vocabulary), including the special cases: Implementation `approve · split+revise`; Code review `approve · revise · restart` (revise goes to the workers); Verification `approve · reject` with **2** automatic fix rounds; Merge `approve · reject`. | Must |
 | GATE-3 | Triage may skip Concept and Design for small features, recorded with its reasoning. | Must |
 | GATE-4 | The **unattended tail** may be armed only at the Specification gate, for Work plan → Documentation; merge excluded unless explicitly delegated; any judge's objection ends it. Auto-crossed gates are recorded as delegated, never as human. | Must |
@@ -720,7 +720,7 @@ Consolidated from the concept docs; each needs an answer before the milestone th
 | Feature | row (roadmap field and ids only) | one roadmap item, walked through nine gates |
 | Step | unit (code only) | one piece of work by one role |
 | Gate | gate task | a stop that waits for a human move |
-| Flow | flow | the gates a feature passes: the default ten plus any the team added |
+| Flow | flow | the gates a feature passes: the default twelve plus any the team added |
 | Move kind | move kind | the fixed meaning behind a move — approve, revise, reject, restart, split+revise, mitigate |
 | Move | move | a human decision at a gate |
 | Gate brief | brief | the full context presented with a gate |

@@ -53,20 +53,22 @@ other's work, share what they learn and review each other's changes.
 
 ## How it works
 
-### The flow: ten gates, one feature at a time
+### The flow: twelve gates, one feature at a time
 
-A factory works on one codebase. The **Roadmap gate** admits the next feature; then the feature walks nine gates in three
-phases. At every gate a person reads a complete **gate brief** and makes a move.
+A factory works on one codebase. The **Roadmap gate** admits the next feature; then the feature walks eleven gates in three
+phases (two of them only where it touches the interface). At every gate a person reads a complete **gate brief** and makes a move.
 
 | Phase | Gate | The question |
 |---|---|---|
 | Program | **Roadmap** | Which feature next, in what order — and how does this factory run? |
 | Contract | **Concept** | Is this worth building, on these premises? |
 | | **Design** *(judged)* | Is this the right structure? |
+| | **Experience design** *(judged, interface work)* | Is this the right experience for these users and journeys, within the charter? |
 | | **Specification** | What exactly counts as done? |
 | | **Work plan** | In what pieces and order will it be built? |
 | Build and prove | **Implementation** | Do we start from a safe point — and is this still one feature? |
 | | **Code review** *(judged)* | Is the code right, measured against the specification? |
+| | **UI review** *(judged, interface work)* | Does the built interface match the approved experience, and is it accessible and consistent? |
 | | **Verification** *(judged)* | Does it actually work as specified? |
 | Release | **Documentation** | Do the docs describe what was actually built? |
 | | **Merge** | Do we ship it? |
@@ -159,7 +161,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | | [The web front door](./docs/concepts/web-front-door.md) | the main design: Pi 1.0 and Pi Durable, the factory as a durable task graph, events, many factories, models beyond the machine |
 | | [The user experience](./docs/concepts/user-experience.md) | personas, vocabulary, core experiences, the ten-part gate brief, trust and safety |
 | | [KILN in Zed](./docs/concepts/zed-integration.md) | briefs, moves and knowledge inside the Zed editor — an ACP agent, an MCP server, deep links, Code review decided where the code is (proposal) |
-| **The process** | [The flow](./docs/concepts/the-flow.md) | the ten gates in depth, what runs between them, where every move leads |
+| **The process** | [The flow](./docs/concepts/the-flow.md) | the twelve gates in depth, what runs between them, where every move leads |
 | | [An extensible flow](./docs/concepts/extensible-flow.md) | gates teams add to the default flow, with the same guarantees |
 | | [The director and Needs you](./docs/concepts/the-director.md) | deterministic orchestration, the planner, shaping the roadmap together, the one inbox |
 | **Foundations** | [The constitution, explained](./docs/architecture/explainers/kiln-constitution.md) | the twelve principles, the flow's invariants and governance — what each rule means for the code you write |
@@ -259,7 +261,7 @@ what was right.
 1. [Vision](./docs/concepts/vision.md) — why KILN exists and where it is going
 2. [KILN at a glance](./docs/concepts/infographic/kiln-at-a-glance.png) — the whole concept on one page
 3. [The engineer at the center](./docs/concepts/infographic/kiln-engineer-at-the-center.png) — the user experience on one page: roles, a real day, the full lifecycle
-4. [The flow](./docs/concepts/the-flow.md) — the ten gates, gate by gate
+4. [The flow](./docs/concepts/the-flow.md) — the twelve gates, gate by gate
 5. [The user experience](./docs/concepts/user-experience.md) — what working with KILN is like, and the gate brief
 6. [Platform architecture](./docs/architecture/visualisations/kiln-platform-architecture.png) and the [architecture explainer](./docs/architecture/explainers/kiln-architecture.md) — how KILN is built, and why
 7. [The web front door](./docs/concepts/web-front-door.md) — the design on Pi Durable, events and the record

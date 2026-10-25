@@ -1,32 +1,34 @@
-> Status: concept — **approved by human@batorfi (2026-10-25)**. Admitting it into the program is decided only
-> at the Roadmap gate (`add-row` / `edit-rows`). Direction **A** (one added design gate) plus the **UI review** gate were
-> chosen in review on 2026-10-25.
+> Status: concept — **approved by human@batorfi (2026-10-25)**; revised the same day: the two gates are **built into the
+> default flow**, not an extension. Admitting the work into the program is decided only at the Roadmap gate (`add-row` /
+> `edit-rows`). Direction **A** (one design gate) plus the **UI review** gate were chosen in review.
 > Type: concept
 >
-> Scope note: this doc defines **the UI flow** — a flow, in the sense of `extensible-flow.md`, that extends the standard
-> flow with two added gates: **Experience design** (after Design, before Specification) and **UI review** (after Code
-> review, before Verification). It gives their gate definitions, the roles and checks behind them, what their briefs
-> show, where their moves lead, how they join a feature, and how they are held to the same contract as every built-in
-> gate. It is a concept, not a schema or a spec; the gate files here are drafts.
+> Scope note: this doc defines the two **built-in interface gates** of the default flow — **Experience design** (after
+> Design, before Specification) and **UI review** (after Code review, before Verification). It gives their gate
+> definitions, the roles and checks behind them, what their briefs show, where their moves lead, when they apply to a
+> feature, and how they keep the contract of every gate. It is a concept, not a schema or a spec; the gate files here are
+> drafts. (The file keeps its name, `ui-flow.md`, for existing links.)
 >
 > Companion docs:
 >   - The experience charter:  `experience-charter.md` (what these gates measure against)
->   - An extensible flow:      `extensible-flow.md` (the rules every added gate keeps) · The flow: `the-flow.md`
+>   - An extensible flow:      `extensible-flow.md` (the rules every gate keeps; §14a for conditionally applicable built-in gates) · The flow: `the-flow.md`
 >   - Configuration:           `configuration.md` (where gate, flow and role files live)
 >   - The record:              `the-record.md` · Teams: `team-space.md` · Insights: `insights.md`
 >   - The constitution:        `../../.specify/memory/constitution.md` · The PRD: `../prd/kiln-prd.md`
 
-# KILN — the UI flow: Experience design and UI review
+# KILN — the interface gates: Experience design and UI review
 
 ## 1. In one paragraph
 
-KILN's ten gates are the default flow; a team that builds user interfaces adds two gates to it. **Experience design**
+KILN's default flow has twelve gates, two of which are about the interface and **apply when a feature touches it**.
+**Experience design**
 sits between Design and Specification: a designer role drafts the journeys, screens, states and mockups a feature needs,
 an independent critic judges them against the **experience charter**, and a person decides — so the Specification gate
 can fix *what done looks like* in terms of approved screens. **UI review** sits between Code review and Verification:
 deterministic checks and an independent judge compare what was built with what was approved — accessibility, tokens,
 states, visual match — and a person decides again. Both gates keep the full gate contract: durable, waiting, settled only
-by a person's move, recorded. The flow is a file, `flows/ui.yaml`; features join it by what they touch.
+by a person's move, recorded. They are part of the standard flow; each carries a deterministic `applies_when` rule, and for
+a feature that does not touch the interface they are recorded as **not applicable** (§3, §6).
 
 ## 2. Where the gates sit
 
@@ -45,25 +47,29 @@ Roadmap · Concept · Design · ▸ Experience design ◂ · Specification · Wo
 | **Artifact** | `experience.md`, mockups, a states matrix | `ui-review-report.md`, screenshots, check results |
 | **Delegable** | no (and it sits before the arming point) | no by default (§8) |
 
-Neither gate can be removed from a flow that includes it, neither is an arming point, and neither moves the Roadmap
+Both are built-in gates: they are never removed from the flow, neither is an arming point, and neither moves the Roadmap
 gate or Merge (`extensible-flow.md` §3).
 
-## 3. The flow file
+## 3. Built in, and when they apply
 
-```yaml
-# kiln.config/flows/ui.yaml
-extends: standard
-add:
-  - experience-design     # after design
-  - ui-review             # after code-review
+```
+# the standard flow (kiln.config/flows/standard.yaml) — built-in gates in order
+roadmap · concept · design · experience-design · specification · work-plan · implementation
+        · code-review · ui-review · verification · documentation · merge
 ```
 
-- Features whose paths or journeys touch the interface **join it automatically** (§6); a factory may name it the default
-  flow if everything it builds is UI.
-- Triage may still skip Concept and Design for a small feature (`the-flow.md`), but **cannot skip the added gates**: a
-  flow can be stricter about skipping, never looser. Whether a small UI change needs the gates is decided by
-  `applies_when`, not by triage.
-- A team that wants Experience design only, or UI review only, writes a different flow; nothing here requires both.
+- The gate ids are `2a-experience` and `6a-ui-review`; the existing ids (`gate0`, `1-concept` … `9-pr`) are unchanged. The
+  gate files are `gates/experience-design.md` and `gates/ui-review.md`, shipped with KILN like every built-in gate.
+- Each carries `applies_when` (§4.1, §5.1). When it is true, the gate runs like any other. When it is false, the gate is
+  recorded as **not applicable** with the reason, shown at the Roadmap gate and in every later brief; nothing settles, no
+  judge runs, and the walk continues. A person may **require** a gate at the Roadmap gate even where the rule would not
+  apply it. This is not triage skip (`the-flow.md` §8.1), which routes past Concept and Design only.
+- Triage may still skip Concept and Design for a small feature, but it **cannot make an applicable gate not applicable**:
+  whether a small UI change needs the gates is decided by `applies_when`, not by triage.
+- A team may add stricter terms (more paths or labels) and may **require** the gates for chosen paths; it may not narrow
+  the default rule so that an interface feature escapes them.
+- A factory with no interface at all sees the gates as not applicable on every feature, and the walk is the ten-gate walk
+  it always was.
 
 ## 4. Experience design gate
 
@@ -232,17 +238,19 @@ reads that evidence against the approved experience and the charter…
 
 Following `extensible-flow.md` §7:
 
-1. **Proposed.** At the Roadmap gate the director proposes each row's flow with its reasons — *touches `web/**`; serves
-   J1.3 and J2.1 → ui flow* — and shows the two gates as part of it.
-2. **Decided.** The person decides the flow with the roadmap. A team may make the gates **required** for certain paths
-   (§9); required gates cannot be dropped.
-3. **Pinned.** The feature keeps the flow, both gate versions and the charter version until it merges.
+1. **Proposed.** At the Roadmap gate the director shows, per row, whether each interface gate applies and why — *touches
+   `web/**`; serves J1.3 and J2.1 → Experience design and UI review apply* — or that it is not applicable, with the reason.
+2. **Decided.** The person decides with the roadmap, and may require a gate the rule would not apply. A team may make the
+   gates **required** for certain paths (§9); required gates cannot be made not-applicable.
+3. **Pinned.** The feature keeps the flow, both gate versions, the applicability decisions and the charter version until it
+   merges.
 4. **Refined.** If a feature turns out to touch the interface — a work plan that now changes `web/**` — the brief says so
-   and offers to add the gates. **UI review** can always be added, since its slot is still ahead. **Experience design**'s
-   slot is behind by then, so the person decides: carry on without it (recorded, shown in later briefs), or send the feature
-   back (**reject → Design**) so the gate joins on the way through. Gates are never removed from a feature in flight.
+   and the gate becomes applicable. **UI review** can always become applicable, since its slot is still ahead.
+   **Experience design**'s slot is behind by then, so the person decides: carry on without it (recorded, shown in later
+   briefs), or send the feature back (**reject → Design**) so the gate runs on the way through. A gate that applied is
+   never made not-applicable in flight.
 
-`applies_when` combines three deterministic predicates, never an LLM: **paths and labels** of the row, **journeys** — the
+`applies_when` (`extensible-flow.md` §14a) combines three deterministic predicates, never an LLM: **paths and labels** of the row, **journeys** — the
 row cites at least one charter journey step (a computed predicate over the roadmap, proposed here as an addition to
 `extensible-flow.md` §14.2) — and, for UI review only, **diff predicates** on what was actually changed.
 
@@ -273,7 +281,7 @@ delegation for that gate and every gate after it, as always.
 
 ## 9. Teams and layering
 
-A team space can **require** both gates for matching paths (*`web/**` always runs the UI flow*) and share the gate and flow
+A team space can **require** both gates for matching paths (*`web/**` always runs both interface gates*) and share the gate and flow
 files by quorum; a workshop may add stricter gates and may never drop a required one. The charter's team floor
 (`experience-charter.md` §8) sets the accessibility floor and tokens these gates measure against. Reviews from a designer
 teammate arrive as a **person's evidence** in either brief, never as a model's verdict and never as the decision
@@ -295,7 +303,7 @@ teammate arrive as a **person's evidence** in either brief, never as a model's v
 
 ## 11. How it fits KILN's rules
 
-| Rule | How the UI flow keeps it |
+| Rule | How the interface gates keep it |
 |---|---|
 | **I · No self-approval** | author and judge are separate roles in separate conversations; only a person decides either gate |
 | **II · Judges on the strongest model** | `design-critic` and `ui-reviewer` bind to the strongest model; a weaker binding is a refused configuration; an image-less judge says so |
@@ -304,13 +312,13 @@ teammate arrive as a **person's evidence** in either brief, never as a model's v
 | **VII · Everything recorded** | gate, flow and charter versions on every event |
 | **VIII · Local by default** | rendering and checks run on the host, on loopback; no outbound traffic; a role that needs more flags it unavailable |
 | **X · Knowledge is context** | the gates cite the charter, a committed artifact, not a wiki page |
-| **Flow invariants** | added gates only between built-in ones; Roadmap first, Merge last; closed set of move kinds; no built-in gate removed |
+| **Flow invariants** | built-in gates never removed (an inapplicable one is recorded, not dropped); Roadmap first, Merge last; closed set of move kinds |
 
 ## 12. Proposed requirements
 
 | ID | Requirement | |
 |---|---|---|
-| UXG-1 | **UI flow**: `flows/ui.yaml` extending the standard flow with `experience-design` and `ui-review`; passes `kiln check flow` | Must |
+| UXG-1 | **Built-in gates**: `experience-design` and `ui-review` in the standard flow at their places, with `applies_when` and a recorded *not applicable* outcome; the standard flow passes `kiln check flow` | Must |
 | UXG-2 | **Experience design gate**: author, judge, deterministic checks, artifacts, brief and moves as §4; the approved experience is input to the Specification gate | Must |
 | UXG-3 | **UI review gate**: checker, judge, brief and moves as §5; findings cite the approved experience and charter ids | Must |
 | UXG-4 | **Joining**: `applies_when` by paths, labels, charter journeys and diff predicates; flow proposed with reasons at the Roadmap gate; refinement in flight as §6 | Must |
@@ -323,17 +331,19 @@ teammate arrive as a **person's evidence** in either brief, never as a model's v
 
 ## 13. Where it lands in the program
 
-Proposals for the Roadmap gate, like those in `experience-charter.md` §11:
+Proposals for the Roadmap gate, like those in `experience-charter.md` §11. Because the gates are part of the **default
+flow**, they land with it, not after it:
 
 | Row | Proposed change |
 |---|---|
-| **r26 Agents and flows** | the first real added gates: `experience-design` and `ui-review` are its worked example, with the four roles and `flows/ui.yaml` (UXG-1, UXG-4, UXG-5) |
-| **r20 Gates on the web** | the brief renders mockups and approved-against-built comparisons (UXG-2, UXG-3) |
-| **r28 / r29** | first run and new codebases offer the UI flow when the repository has an interface, and require the charter first |
+| **r14 Gates as data, walked headless** | the standard flow has twelve gates, with `applies_when` and the *not applicable* outcome; the scripted walk covers both an interface feature (eleven feature gates) and a non-interface one (UXG-1) |
+| **r15 / r16 / r17 (roles, judges)** | `ux-designer`, `design-critic`, `ui-reviewer` and the deterministic `ui-checker` as built-in roles (UXG-5, UXG-6) |
 | **r18 The director** | `applies_when` predicates, including the journey predicate, computed from the roadmap (UXG-4) |
+| **r20 Gates on the web** | the brief renders mockups and approved-against-built comparisons (UXG-2, UXG-3) |
+| **r28 / r29** | first run and new codebases make the charter, and offer the interface gates' defaults for the repository |
 
-Either folded into r26 with `edit-rows`, or one new row — *the UI flow* — added after r26 and r28 with `add-row`
-(it depends on added-gate support from r26 and on the charter from r28/r29). The Roadmap gate decides.
+Row numbers are indicative; the Roadmap gate decides which `edit-rows` or `add-row` moves land this, and `ROADMAP.md`,
+`specs/explainers/` and the infographic still say "ten gates" until it does.
 
 ## 14. Open questions
 
@@ -352,9 +362,10 @@ Either folded into r26 with `edit-rows`, or one new row — *the UI flow* — ad
 7. **Who decides UI review.** Any decider, as drafted, or the experience owner as at Experience design?
 8. **Visual match thresholds.** Per-screen difference limits belong in the charter's quality bars or in the gate
    definition; which?
+9. ~~Extension or built in?~~ **Decided 2026-10-25:** built into the default flow, conditionally applicable (§3).
 
 ## 15. One sentence
 
-The UI flow adds two ordinary gates to KILN's flow — Experience design before Specification and UI review before
-Verification — so a feature's experience is approved against the charter before it is specified, and what is built is
+KILN's default flow includes two ordinary gates for the interface — Experience design before Specification and UI review
+before Verification, applying whenever a feature touches the interface — so a feature's experience is approved against the charter before it is specified, and what is built is
 checked against what was approved before it is proved, with every guarantee of the built-in gates unchanged.

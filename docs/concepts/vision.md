@@ -24,7 +24,7 @@
 ## 1. The vision in one paragraph
 
 **KILN is a software factory you run yourself, where AI agents do the work and a human makes every decision that
-matters.** You give it a roadmap; it walks each feature through ten clear gates — from *is this worth building?* to
+matters.** You give it a roadmap; it walks each feature through twelve clear gates — from *is this worth building?* to
 *do we ship it?* — on local models by default, and on private or cloud models only where you choose. Every piece of
 work survives a crash, every decision is recorded with who made it and why, and the whole process is visible, live, in
 a browser. Each factory keeps a knowledge base — written by an LLM, curated by engineers — that remembers what it has
@@ -75,26 +75,28 @@ each other's work, share what they learn and review each other's changes.
 
 ## 4. The process, in plain words
 
-A feature passes through ten gates. Each gate asks the human one question.
+A feature passes through twelve gates (two of them only where it touches the interface). Each gate asks the human one question.
 
 | Gate | The human's question |
 |---|---|
 | **Roadmap gate** | Which features do we build, in what order? |
 | **Concept gate** | Is this worth building, on these premises? |
 | **Design gate** | Is this the right structure? |
+| **Experience design gate** *(interface work)* | Is this the right experience for these users and journeys, within the charter? |
 | **Specification gate** | What exactly counts as done? |
 | **Work plan gate** | In what pieces, and in what order, will it be built? |
 | **Implementation gate** | Do we start building — from a safe, restorable point — and is this still one feature? |
 | **Code review gate** | Is the code right, measured against the specification? |
+| **UI review gate** *(interface work)* | Does the built interface match the approved experience, and is it accessible and consistent? |
 | **Verification gate** | Does it actually work as specified? |
 | **Documentation gate** | Do the docs describe what was actually built? |
 | **Merge gate** | Do we ship this feature? |
 
-The first four gates settle *what to build* before any code exists. The next three *build it and prove it*. The
+The first five gates settle *what to build* before any code exists. The next four *build it and prove it*. The
 last two *describe it and ship it*. The Roadmap gate sits above all of them and is the only gate that is never
 automatic.
 
-These ten gates are the **default flow**. Teams can add gates that match how they build software — a threat model, a
+These twelve gates are the **default flow**. Teams can add gates that match how they build software — a threat model, a
 security or accessibility review, a performance budget, a product sign-off — between the built-in ones; every added gate
 keeps the same guarantees, and no built-in gate can be removed (`extensible-flow.md`).
 

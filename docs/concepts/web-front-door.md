@@ -118,7 +118,7 @@ long-running agentic applications. The primitives KILN uses:
 
 ### 3.1 The gates, by name — the default flow
 
-*These ten gates are the **default flow**. Teams may add gates of their own between the built-in ones; the Roadmap gate
+*These twelve gates are the **default flow** (Experience design and UI review apply when a feature touches the interface; otherwise they are recorded as not applicable — `the-flow.md` §4). Teams may add gates of their own between the built-in ones; the Roadmap gate
 stays first, the Merge gate last, and no built-in gate can be removed — see `extensible-flow.md`. The full flow — what runs
 between gates, each gate in depth, and where every move leads — is in `the-flow.md`.*
 
@@ -128,11 +128,11 @@ the name comes first. Three gates get new names because their old ones described
 decision: **architecture → Design**, **checkpoint → Implementation**, **PR → Merge**. **Plan** becomes **Work plan**
 so it is never confused with the roadmap.
 
-The ten gates fall into three phases:
+The twelve gates fall into three phases:
 
 - **Program** — the Roadmap gate decides *what the factory will work on*.
-- **Contract** (Gates 1–4) — decide *what to build*, before any code exists.
-- **Build and prove** (Gates 5–7) — make it, and prove it is right.
+- **Contract** (Gates 1–4, with 2a) — decide *what to build*, before any code exists.
+- **Build and prove** (Gates 5–7, with 6a) — make it, and prove it is right.
 - **Release** (Gates 8–9) — describe it, and ship it.
 
 | # | Gate | The human's question | Artifact judged | Produced by | Judge (line of defense) | Moves |
@@ -140,10 +140,12 @@ The ten gates fall into three phases:
 | — | **Roadmap gate** | *Which features do we build, in what order?* | the roadmap (rows, order, dependencies) | the director's planner | — (program-level, human only) | approve · revise · reject · edit-rows · add-row · drop-row |
 | 1 | **Concept gate** | *Is this worth building, on these premises?* | concept | concept writer (after researcher) | — | approve · revise · reject |
 | 2 | **Design gate** | *Is this the right structure?* | architecture design | architecture designer | architecture critic · holds the lane | approve · revise · reject |
+| 2a | **Experience design gate** *(interface work)* | *Is this the right experience for these users and journeys, within the charter?* | experience, mockups, states matrix | ux designer | design critic · holds the lane | approve · approve with note · revise · reject |
 | 3 | **Specification gate** | *What exactly counts as done?* | specification | spec writer | — | approve · revise · reject |
 | 4 | **Work plan gate** | *In what pieces, and in what order, will it be built?* | work plan (tasks and their order) | the director's planner | — | approve · revise · reject |
 | 5 | **Implementation gate** | *Do we start building — from a safe, restorable point — and is this still one feature?* | a restorable commit | the director | — | approve · split+revise |
 | 6 | **Code review gate** | *Is the code right, measured against the specification?* | the diff and review notes | worker(s) | code reviewer · holds the lane | approve · revise · restart |
+| 6a | **UI review gate** *(interface work)* | *Does the built interface match the approved experience, and is it accessible and consistent?* | UI review report, screenshots, check results | worker(s) | UI reviewer · holds the lane | approve · approve with note · revise · restart |
 | 7 | **Verification gate** | *Does it actually work as specified?* | verification report | worker(s) | verifier · holds the lane | approve · reject (≤ 2 automatic fix rounds first) |
 | 8 | **Documentation gate** | *Do the docs describe what was actually built?* | documentation changes | techwriter / docs synthesizer | — | approve · revise · reject |
 | 9 | **Merge gate** | *Do we ship this feature?* | the pull request | PR writer | — | approve (= merge) · reject |

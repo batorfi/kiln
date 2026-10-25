@@ -391,5 +391,5 @@ are one atomic commit, keyed exactly once, first move wins* — stays the same w
 - [The web front door](../../concepts/web-front-door.md) — the full design, §4–§12
 - [KILN on Pi Durable](../../concepts/pi-durable.md) — why the substrate is the key enabler
 - [The record](../../concepts/the-record.md) — events, envelope, projections in depth
-- [The flow](../../concepts/the-flow.md) — the ten gates, gate by gate
+- [The flow](../../concepts/the-flow.md) — the twelve gates, gate by gate
 - [The PRD](../../prd/kiln-prd.md) — requirements, architecture, codebase layout, milestones

@@ -576,7 +576,7 @@ change upholds — and at the test that would fail if it stopped upholding it.
 | 1.0.0 | 2026-09-12 | Ratified with the first program: KILN as a Pi extension with a terminal UI. |
 | 2.0.0 | 2026-10-21 | The restart: a local web front door on Pi Durable, many factories per host, an event-based record, knowledge per factory, teams of sovereign workshops. II, III, VII, VIII, IX redefined; X, XI, XII added; flow and roles reduced to invariants; pinned dependencies allowed. |
 | 2.0.1 | 2026-10-21 | The closed move-kind list aligned with the flow (`split+revise`, `mitigate`). |
-| 2.1.0 | 2026-10-25 | MINOR: a section on the experience charter — a person-approved, versioned setup artifact (users, principles, journeys, screen map, wireframes) that features are measured against. No principle changes. |
+| 2.1.0 | 2026-10-25 | MINOR: a section on the experience charter — a person-approved, versioned setup artifact (users, principles, journeys, screen map, wireframes) — and two built-in, conditionally applicable gates, Experience design and UI review, that measure features against it. The default flow becomes the Roadmap gate and eleven feature gates. No principle changes. |
 
 ---
 
