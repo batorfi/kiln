@@ -74,7 +74,7 @@ claims on code, team knowledge and requests between teammates. A solo engineer i
   GitHub Spec Kit and confirming its constitution — up to a first Roadmap gate. Nothing leaves the machine.
 - **Shape a roadmap with a planner.** Write goals and constraints, talk them through with the planner, edit and pin rows;
   every draft is checked deterministically; the Roadmap gate admits exactly the version the engineer read.
-- **Walk features through ten gates.** Concept, Design, Specification, Work plan, Implementation, Code review,
+- **Walk features through ten gates.** Concept, Architecture, Specification, Work plan, Implementation, Code review,
   Verification, Documentation and Merge — each with a complete **gate brief**, decided in the browser or with
   `kiln gate`.
 - **Step in or step back.** Watch work live, steer a worker, approve or refuse a risky tool call, or arm **delegation**
@@ -148,7 +148,7 @@ A short walk through what actually happens, end to end, for one feature in an ex
 1. **Admission.** The planner drafts the next feature from the engineer's roadmap brief, the knowledge base and the
    team roadmap. The engineer opens the **Roadmap gate**, reads the brief — the feature, why now, its flow, the policy —
    and approves. That admits **one** feature. If it is a team feature, a **claim** is published to the team space.
-2. **Contract.** A researcher and concept writer produce the **Concept**; a designer produces the **Design**, which the
+2. **Contract.** A researcher and concept writer produce the **Concept**; a designer produces the **Architecture** design, which the
    **architecture critic** judges on the strongest model; a spec writer produces the **Specification** with Spec Kit; the
    planner produces the **Work plan**, which refines the claim with the files it will touch — and surfaces overlap with a
    teammate's claim if there is one. The engineer decides each gate. At Specification they may **arm delegation**.

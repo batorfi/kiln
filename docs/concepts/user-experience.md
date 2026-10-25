@@ -118,7 +118,7 @@ The experience stands or falls on a small, stable set of ideas the human can hol
 | **Move** | the human's decision at a gate — approve, send back, stop, and the gate-specific variants | move |
 | **Step** | one piece of work done by one agent in one role, between two gates | unit |
 | **Role** | the kind of agent doing a step — researcher, designer, worker, reviewer, verifier … | role |
-| **Judge** | an independent agent whose verdict informs a judged gate (Design, Code review, Verification) | line-of-defense role |
+| **Judge** | an independent agent whose verdict informs a judged gate (Architecture, Code review, Verification) | line-of-defense role |
 | **Director** | the factory's orchestrator: plans steps, orders them, keeps the line moving; never decides a gate | row and roadmap tasks |
 | **The lane** | the factory's single line of work: one step at a time | lane |
 | **The record** | everything that happened, in order, with who caused it and why | event stream |
@@ -579,7 +579,7 @@ The structure is fixed; the emphasis follows the gate's question.
 |---|---|
 | **Roadmap gate** | the features, their order and dependencies; what changed since the last approval; **the wiki context behind the proposal, with citations**; **evidence and readiness per proposed feature** (ready · thin · unknown), unproven assumptions, and **what was learned since the last approval** from the bench; what the next feature needs from the human; the factory's profile, egress policy, budget — and **where it runs**, with the fit of each candidate host |
 | **Concept gate** | the problem, the premises and the scope; the research it rests on; what is explicitly out of scope |
-| **Design gate** | the proposed structure and its alternatives; the architecture critic's objections and how the design answers them |
+| **Architecture gate** | the proposed structure and its alternatives; the architecture critic's objections and how the design answers them |
 | **Experience design gate** *(interface work)* | the journey steps served; mockups beside the screens they change; the states matrix; charter ids; the design critic's findings; new patterns proposed as charter amendments |
 | **Specification gate** | what "done" means, requirement by requirement; how each will be verified; that this is where the unattended tail can be armed, and what arming it would cover |
 | **Work plan gate** | the pieces and their order; the model order this implies and its expected cost in time and swaps; **overlap with teammates' claims** |

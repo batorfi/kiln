@@ -164,7 +164,7 @@ How the gates use it:
 | Gate | Spec Kit | KILN adds |
 |---|---|---|
 | **Roadmap** | `specs/ROADMAP.md`; admitting a feature creates its `specs/NNN-name/` directory (Spec Kit's `create-new-feature`, sequential numbering) | readiness, flow and placement per feature |
-| **Concept · Design** | — | `concept.md`, `design.md` in the feature directory; the approved design is input to the plan |
+| **Concept · Architecture** | — | `concept.md`, `design.md` in the feature directory; the approved design is input to the plan |
 | **Specification** | `speckit.specify` → `spec.md`; `speckit.clarify` questions go to the person as step questions; `speckit.checklist` as evidence | preserved behaviour (`brownfield.md` §7), the arming option |
 | **Work plan** | `speckit.plan` → `plan.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`; `speckit.tasks` → `tasks.md`; `speckit.analyze` as a consistency check | model order, swaps, claims |
 | **Implementation → Verification** | workers carry out `tasks.md` (the `speckit.implement` discipline: tasks in order, ticked as done) | restorable commit, judges, `code-review-report.md`, `verification-report.md` in the feature directory |

@@ -217,7 +217,7 @@ settle a gate in anyone's workshop.
 
 ### II. Every judge runs on the strongest model
 
-**The rule.** Every **judge role** — the architecture critic at Design, the code reviewer at Code review, the verifier
+**The rule.** Every **judge role** — the architecture critic at Architecture, the code reviewer at Code review, the verifier
 at Verification, and any judge on a gate a team adds — must be bound to the **strongest model available to the
 factory**, on every substrate, including a purely local one. A weaker binding is a **refused configuration**, not a
 warning. A judge is **never silently downgraded**: if the strongest model is unavailable, the judged step **waits and
@@ -442,7 +442,7 @@ convenience may break.
 ### The default flow
 
 ```
- Roadmap ─► 1 Concept ─► 2 Design ─► 3 Specification ─► 4 Work plan ─► 5 Implementation
+ Roadmap ─► 1 Concept ─► 2 Architecture ─► 3 Specification ─► 4 Work plan ─► 5 Implementation
  gate                    (judged)                                       │
    ▲                                                                    ▼
    │       9 Merge ◄─ 8 Documentation ◄─ 7 Verification ◄─ 6 Code review
@@ -481,8 +481,8 @@ the note — validators reason over kinds, people read their own words.
 
 KILN has three ways to move faster. Each is bounded, recorded and visible in every later brief.
 
-- **Triage skip.** A small feature may skip **Concept and Design only**, with the reasoning recorded. A person may
-  override it, and a flow may forbid it. No judged gate after Design is ever skippable.
+- **Triage skip.** A small feature may skip **Concept and Architecture only**, with the reasoning recorded. A person may
+  override it, and a flow may forbid it. No judged gate after Architecture is ever skippable.
 - **Delegation (the unattended tail).** Only the person who approves a feature's **Specification gate** may arm it. It
   covers only the **approve side** of the gates after Specification — Merge only if explicitly included. **Any
   objection ends it** for that gate and every gate after: a judge's objection, a code reviewer's `restart`, a verifier's

@@ -140,9 +140,9 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 | ID | Requirement | |
 |---|---|---|
-| GATE-1 | The **default flow**: twelve gates with plain names and one question each: **Roadmap gate**, Concept, Design, **Experience design**, Specification, Work plan, **Implementation**, Code review, **UI review**, Verification, Documentation, **Merge**. Experience design and UI review carry a deterministic `applies_when` rule and are recorded as *not applicable* for features that do not touch the interface. Internal ids stay stable (`gate0`, `1-concept` … `9-pr`); the two experience gates are `2a-experience` and `6a-ui-review`. | Must |
+| GATE-1 | The **default flow**: twelve gates with plain names and one question each: **Roadmap gate**, Concept, Architecture, **Experience design**, Specification, Work plan, **Implementation**, Code review, **UI review**, Verification, Documentation, **Merge**. Experience design and UI review carry a deterministic `applies_when` rule and are recorded as *not applicable* for features that do not touch the interface. Internal ids stay stable (`gate0`, `1-concept` … `9-pr`); the two experience gates are `2a-experience` and `6a-ui-review`. | Must |
 | GATE-2 | Each gate offers only its own moves (the existing move vocabulary), including the special cases: Implementation `approve · split+revise`; Code review `approve · revise · restart` (revise goes to the workers); Verification `approve · reject` with **2** automatic fix rounds; Merge `approve · reject`. | Must |
-| GATE-3 | Triage may skip Concept and Design for small features, recorded with its reasoning. | Must |
+| GATE-3 | Triage may skip Concept and Architecture for small features, recorded with its reasoning. | Must |
 | GATE-4 | The **unattended tail** may be armed only at the Specification gate, for Work plan → Documentation; merge excluded unless explicitly delegated; any judge's objection ends it. Auto-crossed gates are recorded as delegated, never as human. | Must |
 | GATE-5 | Corrective moves carry a note that becomes the next step's instruction. | Must |
 | GATE-6 | **Where moves lead** (`the-flow.md` §7, §11–12, accepted 2026-10-21): reject targets a fresh author at the same gate or an earlier gate named in the note — the roadmap at Concept and Merge — and a person may make a reject to an earlier gate at any time; Code review offers `approve · revise · restart`, `revise` going to the workers; every gate after a reject's target is **re-crossed**, its brief showing what changed, with no lighter confirmation; triage never skips Documentation; fix-round cap a factory setting (0–3, default 2). | Must |
@@ -209,7 +209,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 
 | ID | Requirement | |
 |---|---|---|
-| LANE-1 | **Lane task** per factory: at most one running generation; holds resident model, hold flag (Design, Code review, Verification), swap count; survives restarts. | Must |
+| LANE-1 | **Lane task** per factory: at most one running generation; holds resident model, hold flag (Architecture, Code review, Verification), swap count; survives restarts. | Must |
 | LANE-2 | **Affinity scheduler** reused from the existing code: swap only on a genuine tier change; swaps are priced and recorded. | Must |
 | LANE-3 | **Model pool per host**: resident set within a memory budget; shared **leases**; KILN — not Ollama — owns residency (explicit load, pin, unload); the strongest local model may be pinned for judges. **Every** model request, including harness-internal ones (compaction), goes through a KILN provider in front of Ollama, holds the lane lease and targets the resident model; another model is refused or becomes a recorded swap; housekeeping runs on the resident model. | Must (one host) |
 | LANE-4 | Host scheduler: affinity across factories, admission control (queue, never fail), concurrency cap, fair share, no mid-generation preemption. | Should |
@@ -332,7 +332,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | BENCH-3 | **Promotion** of notes by ingest into the workshop, factory or team tier, linked back to the notes. | Should |
 | BENCH-4 | **Research steps**: plan shown first; read-only tools; below feature work, never on a held judge's lane; results in the notebook with sources and labels; per-person caps. | Should |
 | BENCH-5 | **Spikes**: worktree on a `spike/` branch, question and time box, engineer and/or agent, risky actions held; **no pull request to `main` from a spike branch**; archived on conclusion. | Should |
-| BENCH-6 | **Spike report** with spike-measured results; *propose as a feature* seeds a roadmap entry and its Concept or Design brief. | Should |
+| BENCH-6 | **Spike report** with spike-measured results; *propose as a feature* seeds a roadmap entry and its Concept or Architecture brief. | Should |
 | BENCH-7 | **Origin and maturity labels** on all knowledge, carried into briefs and director citations; lint ages exploratory knowledge faster. | Should |
 | BENCH-8 | **Links to gates**, gate-time research suggestions, and focus mode (only judged gates and policy stops interrupt). | Should |
 | BENCH-9 | **In a team**: research claims, sharing bench output by choice, handing a spike to a teammate. | Should |
@@ -405,7 +405,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | BROWN-8 | **Base drift**: rebase at defined points; drift in touched files shown in the next brief; conflicts decided by a person. | Must |
 | BROWN-9 | **A small, reviewed footprint**: Spec Kit and the constitution enter through an *Add Spec Kit* pull request on entering Contribute (scratch worktree only before); opt-in committed `.kiln/` and `kilnignore`. | Should |
 | BROWN-10 | Issues imported as bench candidates; review comments on KILN pull requests returned to the factory as notes. | Could |
-| BROWN-11 | **Full scan** of the codebase and repository in seven passes — inventory, structure, repository history, build/CI/tests, understanding, reconciliation, synthesis — written into the factory knowledge base (`raw/scan/<commit>/` facts, `pages/codebase/` pages incl. one per module, open questions and a scan report with coverage); estimated before start, durable and resumable, local by default, deep in the territory and mapped elsewhere; pages cited at the scanned commit, labelled measured or inferred; no per-person rankings. Deep inside the territory, a map outside (deep-scanned before Design when a feature will touch it); history read in detail for 2 years (configurable), summarised beyond; code-host discussions as titles, labels and links unless opted in. | Must |
+| BROWN-11 | **Full scan** of the codebase and repository in seven passes — inventory, structure, repository history, build/CI/tests, understanding, reconciliation, synthesis — written into the factory knowledge base (`raw/scan/<commit>/` facts, `pages/codebase/` pages incl. one per module, open questions and a scan report with coverage); estimated before start, durable and resumable, local by default, deep in the territory and mapped elsewhere; pages cited at the scanned commit, labelled measured or inferred; no per-person rankings. Deep inside the territory, a map outside (deep-scanned before Architecture when a feature will touch it); history read in detail for 2 years (configurable), summarised beyond; code-host discussions as titles, labels and links unless opted in. | Must |
 | BROWN-12 | **Keeping the scan true**: incremental re-scan after each merge to main; full re-scan on request or director suggestion; re-scans never overwrite people's edits — conflicts become contradictions. | Should |
 
 ### 6.20 New codebases
@@ -417,7 +417,7 @@ Requirements are numbered per area (`GATE-1`, …) for traceability into the roa
 | GREEN-1 | **Start empty**: create the repository, add Spec Kit (files shown before the first commit), local-only by default; always a KILN-managed worktree. | Must |
 | GREEN-2 | **Product brief**: problem, users, outcomes, non-goals, constraints, quality attributes, success measures — written or drafted with the planner, approved, a knowledge page *from a person*; feeds the roadmap brief. | Must |
 | GREEN-3 | **Constitution written from the brief** with `speckit.constitution`, each principle citing its origin; approved before the first feature; amendments recorded and versioned. | Must |
-| GREEN-4 | **Technology decisions**: open choices listed, evidence from research steps and spikes where the bench is available (M13), decided by a person, recorded as decision pages (and constitution amendments where binding); later Design gates measure against them. No starter templates: choices start open; prior decisions in workshop knowledge are evidence, never defaults; no built-in Decisions gate (decision pages appear in the Design brief). | Must |
+| GREEN-4 | **Technology decisions**: open choices listed, evidence from research steps and spikes where the bench is available (M13), decided by a person, recorded as decision pages (and constitution amendments where binding); later Architecture gates measure against them. No starter templates: choices start open; prior decisions in workshop knowledge are evidence, never defaults; no built-in Decisions gate (decision pages appear in the Architecture brief). | Must |
 | GREEN-5 | **Walking skeleton first**, on a **foundation flow** (standard + `no_triage_skip`): layout, build, tests, CI, formatter/linter, one end-to-end path, quickstart, conventions page; Verification from a clean clone. For a library, build, test, CI, packaging and one public function end to end through the public API is a complete skeleton. | Must |
 | GREEN-6 | **Conventions from day one**: written by the skeleton, checked by the code reviewer and CI from feature two; changes are recorded decisions. | Should |
 | GREEN-7 | **Slices and risk**: the planner proposes vertical slices, riskiest assumptions first; tests-first work plans by default. | Should |
@@ -627,7 +627,7 @@ degenerate case.
 From the vision, made measurable:
 
 - **Humans decide where it matters** — share of human time spent at gates versus monitoring.
-- **Judges earn their keep** — problems caught at Design, Code review and Verification versus found after merge.
+- **Judges earn their keep** — problems caught at Architecture, Code review and Verification versus found after merge.
 - **Nothing is lost** — rework after a crash or move, in minutes; zero lost decisions.
 - **Every decision is explainable** — any merged feature fully reconstructed from the record alone.
 - **Local is enough, or the record says why** — outcomes per model and locality.

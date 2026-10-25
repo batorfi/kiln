@@ -99,7 +99,7 @@ Each measure below names its definition and its source events. "Feature" means a
 | **Time in gate and step** | per gate and per step kind | gate, unit events |
 | **Paths taken** | process-mining view: which gate sequences features actually followed, where they looped | gate and move events |
 | **Bottleneck** | the gate or step with the largest share of lead time across features | as above |
-| **Triage** | how often Concept and Design were skipped, and how those features fared later | triage, feature events |
+| **Triage** | how often Concept and Architecture were skipped, and how those features fared later | triage, feature events |
 
 ### 4.5 Models, localities and roles
 

@@ -1,5 +1,8 @@
 # KILN UX concept — illustrative mockups
 
+> **Note (2026-10-25):** the mockups predate two changes to the flow — the *Design* gate is now the **Architecture** gate, and
+> Experience design and UI review were added. They are illustrations and have not been redrawn.
+>
 > **Illustrations, not design decisions.** These mockups make the ideas in [`../user-experience.md`](../user-experience.md)
 > concrete enough to discuss. They are not interaction design, a visual language or a layout to build. Every
 > layout, control and colour here is open; what they are meant to show is the *content and the guarantees* the

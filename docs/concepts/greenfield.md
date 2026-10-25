@@ -129,12 +129,12 @@ are **decisions**, not things an agent picks while writing code.
 4. **Decision** — the person decides, with the planner's recommendation shown as advice. The decision is recorded as a
    **decision page** in the knowledge base — context, options, evidence, choice, consequences, who and when — and, where it
    constrains all future work, as an amendment to the constitution.
-5. **Used** — the Design gate of every later feature measures the design against the recorded decisions; changing one is a
+5. **Used** — the Architecture gate of every later feature measures the design against the recorded decisions; changing one is a
    new decision, never a silent drift.
 
 Decisions taken **before** the skeleton are made at the bench and confirmed at the Roadmap gate that admits the skeleton
 (its readiness shows which choices are decided and which are not). Decisions that arise **inside** a feature are made at
-its Design gate and recorded the same way.
+its Architecture gate and recorded the same way.
 
 ## 7. The walking skeleton
 
@@ -151,7 +151,7 @@ The first feature is always a walking skeleton — proposed by the planner, shap
 - Spec Kit's first feature directory, and the factory's conventions page.
 
 **It runs a stricter flow.** The skeleton uses a **foundation flow** — the standard flow with `no_triage_skip` (Concept and
-Design always run) — and its Specification includes *how we build*: test strategy, CI, conventions, quality-attribute
+Architecture always run) — and its Specification includes *how we build*: test strategy, CI, conventions, quality-attribute
 checks that can run from day one.
 
 **It is proven from scratch.** Verification clones the repository fresh, builds it, runs the tests and walks the thin path —
@@ -185,7 +185,7 @@ nothing is accepted that only works in the factory's worktree.
 | **Frame** | the product brief, the constitution, the roadmap brief | *from a person* |
 | **Explore** | research results, spike reports, documentation of the chosen technologies, workshop learnings from earlier projects | *from research* · *from docs* |
 | **Decisions** | decision pages | *from a person*, with evidence linked |
-| **Skeleton and after** | implementation digests: feature stories, the architecture overview (intended at Design, actual after Code review), explainers, how-tos (`factory-wiki.md` §9) | *factory-produced*, cited at a commit |
+| **Skeleton and after** | implementation digests: feature stories, the architecture overview (intended at Architecture, actual after Code review), explainers, how-tos (`factory-wiki.md` §9) | *factory-produced*, cited at a commit |
 
 In a greenfield factory the knowledge base **is** the design record: anyone joining later reads why the foundations are
 what they are, from the decisions and the feature stories, without archaeology. Lint checks decisions against the code
@@ -195,7 +195,7 @@ from the start, so drift between *what we decided* and *what we built* is caught
 
 - **Design matters most early.** The foundation decisions and the skeleton's design shape everything after them; their
   briefs carry the most evidence. Where policy allows, a team may ask for a **second critic from another model family** at
-  the skeleton's Design gate (`user-experience.md` §8.4, *request more evidence*).
+  the skeleton's Architecture gate (`user-experience.md` §8.4, *request more evidence*).
 - **New code is larger.** Early features write more code than later ones; the Implementation gate's size check and
   `split+revise` keep features reviewable.
 - **Spikes are cheap and disposable.** They run on the bench, ungated, and their code never merges.
@@ -244,7 +244,7 @@ Continuing from `first-run.md` Step 4 with *Start empty*:
 - **Events:** `brief.approved`, `constitution.approved`, `constitution.amended`, `decision.recorded`,
   `decision.superseded`, `skeleton.verified_from_clean_clone`, `practice.enabled` (scan, baseline, territory).
 - **Insights** (`insights.md`): decisions made and revisited; spikes that changed a decision; rounds per gate in the
-  skeleton versus later features; how often Design gates cite recorded decisions — evidence, never targets.
+  skeleton versus later features; how often Architecture gates cite recorded decisions — evidence, never targets.
 
 ## 16. How it fits KILN's rules
 
@@ -262,7 +262,7 @@ Continuing from `first-run.md` Step 4 with *Start empty*:
    researched evidence; prior decisions in workshop knowledge may be cited as evidence, never pre-filled as defaults.
 2. ~~How small may a library's skeleton be?~~ **Decided 2026-10-21** (human@batorfi): **build, test, CI, packaging and one public function exercised
    end to end through the public API** is enough for a library; a service still needs its full path.
-3. ~~A Decisions gate before Design?~~ **Decided 2026-10-21** (human@batorfi): **no** — decision pages a person approves, shown in the Design gate
+3. ~~A Decisions gate before Architecture?~~ **Decided 2026-10-21** (human@batorfi): **no** — decision pages a person approves, shown in the Architecture gate
    brief; a team that wants a Decisions gate adds it as an added gate.
 4. When should a greenfield factory **revisit** an early decision automatically suggested by evidence (for example, a
    spike-backed choice that later features keep fighting)?

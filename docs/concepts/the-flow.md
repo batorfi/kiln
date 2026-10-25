@@ -32,7 +32,7 @@
 ## 1. In one paragraph
 
 A KILN factory builds one feature at a time along a single lane. The **Roadmap gate** admits the next feature; then the
-feature walks **eleven gates** in three phases — **contract** (Concept, Design, Experience design, Specification, Work
+feature walks **eleven gates** in three phases — **contract** (Concept, Architecture, Experience design, Specification, Work
 plan), **build and prove** (Implementation, Code review, UI review, Verification) and **release** (Documentation, Merge).
 The two experience gates — Experience design and UI review — are built in and **apply when a feature touches the
 interface**; for any other feature they are recorded as *not applicable* (§4). Between gates, agents do the
@@ -56,7 +56,7 @@ gate for the next one.
 
 ```
   PROGRAM    CONTRACT
-  Roadmap ─► 1 Concept ─► 2 Design ─► 2a Experience design ─► 3 Specification ─► 4 Work plan
+  Roadmap ─► 1 Concept ─► 2 Architecture ─► 2a Experience design ─► 3 Specification ─► 4 Work plan
   gate        ╰─ triage may skip both ─╯   (when UI)              │
      ▲                                                             ▼  arm the unattended tail (Gates 4–9, clean path)
      │      BUILD AND PROVE
@@ -74,7 +74,7 @@ continues. Their internal ids are `2a-experience` and `6a-ui-review`; the other 
 |---|---|---|---|---|---|---|
 | — | **Roadmap** | Which features do we build, in what order — and how does this factory run? | the roadmap | planner | — | approve · revise · reject · edit/add/drop rows |
 | 1 | **Concept** | Is this worth building, on these premises? | concept | researcher → concept writer | — | approve · revise · reject |
-| 2 | **Design** | Is this the right structure? | design | designer | **architecture critic** | approve · revise · reject |
+| 2 | **Architecture** | Is this the right structure? | architecture design (`design.md`) | designer | **architecture critic** | approve · revise · reject |
 | 2a | **Experience design** *(when the feature touches the interface)* | Is this the right experience for these users and journeys, within the charter? | experience, mockups, states matrix | ux designer | **design critic** | approve · approve with note · revise · reject |
 | 3 | **Specification** | What exactly counts as done? | specification | spec writer | — (deterministic checks) | approve · revise · reject · *arm the tail* |
 | 4 | **Work plan** | In what pieces and order will it be built? | work plan | planner | — (deterministic checks) | approve · revise · reject |
@@ -95,7 +95,7 @@ continues. Their internal ids are `2a-experience` and `6a-ui-review`; the other 
    changed). The Roadmap gate brief shows, per feature, which gates apply and why; a person may **require** a gate that
    the rule would not (never the reverse for a gate that applies). A gate that does not apply is recorded as *not
    applicable* with its reason — it is not a skip, never settles by itself, and the record shows it for every later brief.
-3. **Triage.** The first step of the feature. It judges size and clarity and may **skip Concept and Design** for small,
+3. **Triage.** The first step of the feature. It judges size and clarity and may **skip Concept and Architecture** for small,
    well-scoped features. The skip and its reasoning are recorded and shown in every later brief. A flow may forbid
    skipping (`no_triage_skip`); nothing else can skip a gate.
 4. **The row starts.** The director creates the feature's row task and runs its steps one at a time on the lane.
@@ -149,12 +149,12 @@ lead**, and **what it hands forward**.
   states the problem, the premises, the scope and what is out of scope.
 - **Brief first.** The problem and premises; what the concept rests on (cited pages, research, spikes) and which
   premises are unproven; what is explicitly out of scope.
-- **Moves.** approve → Design · revise (note → the same writer) · reject → back to the **Roadmap gate**: the feature
+- **Moves.** approve → Architecture · revise (note → the same writer) · reject → back to the **Roadmap gate**: the feature
   leaves the lane, its work stays in the record (§11, P1).
 - **Hands forward.** The concept: the premises every later gate inherits.
 - *Mockup:* 68.
 
-### 6.2 Design gate — *contract · judged*
+### 6.2 Architecture gate — *contract · judged*
 
 - **Why.** Catch a build that would work but have the wrong shape — module boundaries, data flow, abstractions — while
   changing it costs a document, not a rewrite.
@@ -176,7 +176,7 @@ lead**, and **what it hands forward**.
 - **Brief first.** The journey steps served, the mockups beside the screens they change, the states matrix, charter ids
   and the critic's findings.
 - **Moves.** approve → Specification · approve with open points (note carried to UI review) · revise → the same ux
-  designer · reject → Design, or an earlier gate the note names.
+  designer · reject → Architecture, or an earlier gate the note names.
 - **Hands forward.** The approved experience the specification must cite.
 - *Full definition:* `ui-flow.md` §4.
 
@@ -188,7 +188,7 @@ lead**, and **what it hands forward**.
   deterministic checks confirm every requirement is testable and traces to the concept.
 - **Brief first.** Requirement by requirement, what done means and how it will be proven; what the specification does
   not promise; the arming option.
-- **Moves.** approve → Work plan · revise · reject → a fresh spec writer, or back to Design · **and, with approve, the
+- **Moves.** approve → Work plan · revise · reject → a fresh spec writer, or back to Architecture · **and, with approve, the
   option to arm the unattended tail** (§8.2).
 - **Hands forward.** The yardstick for Code review and Verification.
 - *Mockup:* 07.
@@ -302,7 +302,7 @@ judges changed, it says so plainly, and the decision is still a person's (§11, 
 
 ### 8.1 Triage skip
 
-For small, well-scoped features, triage skips Concept and Design. Recorded with its reasoning; shown in every later
+For small, well-scoped features, triage skips Concept and Architecture. Recorded with its reasoning; shown in every later
 brief; impossible where the flow sets `no_triage_skip`. Small features still pass Gates 3–9 (and 2a and 6a where they apply).
 
 ### 8.2 The unattended tail
@@ -351,7 +351,7 @@ gate move, and all of which appear in the next brief's provenance (`web-front-do
 | **P2** | **Re-crossing**: every gate after a reject's target opens again; nothing is carried across a change it did not see; briefs show what changed. | an approval is an approval *of something*; it must not silently cover new work |
 | **P3** | **Fix-round cap** stays **2** by default; a factory may set it to 0–3 at the Roadmap gate; the brief always shows the cap and the rounds used. | some factories want every failure in front of a person; a hard upper bound prevents loops |
 | **P4** | **Documentation and Merge stay separate**, even for small features; under delegation, Documentation is the gate most often crossed automatically. | the Documentation gate is where the knowledge base is completed — merging it into Merge would hide it |
-| **P5** | The Design gate gives the designer **one answer round** to the critic before the person sees it; the brief shows the objection, the answer and whether the critic accepts it. | the person decides on a dialogue, not on a raw objection the author never saw |
+| **P5** | The Architecture gate gives the designer **one answer round** to the critic before the person sees it; the brief shows the objection, the answer and whether the critic accepts it. | the person decides on a dialogue, not on a raw objection the author never saw |
 | **P6** | **"Leave the lane"** — at any gate, *pause the factory* plus a Roadmap-gate decision is the way to stop a feature; it is not a move kind. | keeps the move kinds closed (`extensible-flow.md` §5) |
 
 What this revisit settles from the open questions of `gates-why-how-what.md` §5:
@@ -382,7 +382,7 @@ All four were decided on 2026-10-21 (human@batorfi); none adds a move kind.
 3. ~~A lighter confirmation for an unchanged re-crossed gate?~~ **No.** The brief and the move stay the same; the brief
    leads with *unchanged since the approval on <date>* and what changed upstream. Armed delegation may cover it.
 4. ~~Triage skipping Documentation?~~ **No.** Documentation also completes the knowledge base and the feature story (P4);
-   triage skips Concept and Design only (constitution, *The Flow*).
+   triage skips Concept and Architecture only (constitution, *The Flow*).
 
 ## 13. One sentence
 

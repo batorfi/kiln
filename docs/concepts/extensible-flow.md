@@ -12,7 +12,7 @@
 >   2. **Gates after Merge** (deployment, release approval) are **out of scope** for now.
 >   3. Moves come from a **closed set of move kinds**; teams may label them in their own words.
 >   4. **Built-in gates cannot be removed** from a flow; flows can only **add** gates. Skipping stays as today: triage may
->      skip Concept and Design for small features, recorded with its reasoning.
+>      skip Concept and Architecture for small features, recorded with its reasoning.
 >   5. Flows and gates are changed by an **Operator**, and team-shared ones by the **team quorum**.
 >   6. A flow is chosen **per feature**, at the Roadmap gate, from a factory default.
 >
@@ -51,7 +51,7 @@ flow extensible brings them inside: with an author, a judge where needed, a brie
 | **The Roadmap gate is first**, human-only, per factory | it admits work; delegation never reaches it |
 | **The Merge gate is last**, the only place *ship it* is authorised | one point of release authority; nothing runs after it (deployment gates are out of scope) |
 | **The nine built-in gates stay** in every flow, in their order | the default flow is the floor every feature passes |
-| **Skipping** only as today — triage may skip Concept and Design for small features | a flow cannot remove gates |
+| **Skipping** only as today — triage may skip Concept and Architecture for small features | a flow cannot remove gates |
 | **The gate contract** for every gate — a durable task, the move and its completion in one atomic commit, first move wins, no clock settles it, headless means waiting | the core promise does not depend on who wrote the gate |
 | **Author and judge are different roles**; judges run on the strongest model | no model approves its own work |
 | **Every gate has a full gate brief** | no gate is a bare yes/no |
@@ -130,7 +130,7 @@ gates: [roadmap, concept, design, specification, work-plan, implementation,
 
 # flows/security-sensitive.yaml — a team's own
 extends: standard
-no_triage_skip: true      # Concept and Design always run
+no_triage_skip: true      # Concept and Architecture always run
 add:
   - threat-model          # after design
   - security-review       # after code-review
@@ -143,7 +143,7 @@ add:
 ```
 
 - A flow **extends** the standard flow and **adds** gates; it cannot remove or reorder built-in ones.
-- A flow may be **stricter about skipping** — for example `no_triage_skip: true`, so Concept and Design always run for
+- A flow may be **stricter about skipping** — for example `no_triage_skip: true`, so Concept and Architecture always run for
   security-sensitive work; it can never be looser.
 - Gates with `applies_when` can join a feature automatically when it matches, whatever flow it runs.
 - A factory names a **default flow**; each feature may run a different one.
@@ -222,7 +222,7 @@ flows can arrive later without reworking the director.
 
 | Gate | Placed | Author / judge | Moves |
 |---|---|---|---|
-| **Threat model** | after Design | threat modeller / security critic | approve · approve with note · revise · reject → Design |
+| **Threat model** | after Architecture | threat modeller / security critic | approve · approve with note · revise · reject → Architecture |
 | **Security review** | after Code review | — / security reviewer | approve · restart |
 | **Accessibility review** | after Code review | — / accessibility reviewer | approve · restart |
 | **Performance budget** | after Verification | benchmark role (deterministic) / — | approve · mitigate (2) · reject |

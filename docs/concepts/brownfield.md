@@ -234,7 +234,7 @@ Common brownfield work fits the default flow, with flows the team can choose per
 
 | Kind of work | Flow |
 |---|---|
-| **Bug fix** | standard; triage usually skips Concept and Design; the specification starts with a failing test that reproduces the bug |
+| **Bug fix** | standard; triage usually skips Concept and Architecture; the specification starts with a failing test that reproduces the bug |
 | **Refactor** | standard; the specification is *no behaviour change* plus the structural goal; characterization is required |
 | **Dependency upgrade** | standard, plus an added gate where a team wants one (e.g. a licence check); changelogs of the dependency are research inputs |
 | **Migration** | a team flow with an added rollout or data-migration gate before Merge's pull request is opened |
@@ -344,7 +344,7 @@ Continuing from `first-run.md` Step 4, with an existing repository:
    gate brief as a person's change with its author, and checks (and Verification, if code changed) re-run before Merge can
    be approved. No new feature round.
 5. ~~How deep outside the territory?~~ **Decided 2026-10-21** (human@batorfi): **deep inside, a map outside** (structure, interfaces, owners,
-   dependencies); a feature that will touch a mapped module gets a deep scan of it before its Design gate.
+   dependencies); a feature that will touch a mapped module gets a deep scan of it before its Architecture gate.
 6. ~~PR and issue discussions?~~ **Decided 2026-10-21** (human@batorfi): **titles, labels, states and links by default**; full discussions only by a
    recorded opt-in, and always under the egress policy when the code host is remote.
 7. ~~Territory at the tool level?~~ **Decided 2026-10-21** (human@batorfi): **yes** — workers' write tools refuse paths outside the territory; the

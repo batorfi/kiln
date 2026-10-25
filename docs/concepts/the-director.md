@@ -192,7 +192,7 @@ their team space. It is the heart of working with KILN: if Needs you is empty, n
 | **Director suggestion** | *run research to size "Pin judges"* | nothing — optional | director |
 | **Spike time box ended** | extend, conclude or abandon | that spike | bench |
 | **Promotion suggestion** | *these notes look ready to promote* | nothing — optional | keeper |
-| **Opinion request** | Anna asks your view on her Design | nothing — optional | team space |
+| **Opinion request** | Anna asks your view on her Architecture | nothing — optional | team space |
 
 ### 5.2 Three sections
 

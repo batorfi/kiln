@@ -176,7 +176,7 @@ roadmap task                      holds the Roadmap gate; admits one feature at 
      ├─ unit task → conversation  a step: triage, researcher, concept writer, designer, critic, worker, …
      ├─ gate task                 Concept gate
      ├─ unit task → conversation
-     ├─ gate task                 Design gate
+     ├─ gate task                 Architecture gate
      │   …
      └─ gate task                 Merge gate
  lane task                        the factory's single lane: holder, resident model, hold flag, swaps
@@ -201,7 +201,7 @@ its replay rules; nothing is approved by the restart.
 
 One factory, one running generation. Before a step's first model request it **acquires the lane** and a **lease** on its
 model from the host's model pool; it releases both when it settles. The **affinity scheduler** orders waiting work to avoid
-needless model swaps — a swap happens only when a different tier is genuinely needed. On the **judged gates** (Design, Code
+needless model swaps — a swap happens only when a different tier is genuinely needed. On the **judged gates** (Architecture, Code
 review, Verification) the lease is **held**, so the judge's model stays resident through the verdict and any automatic fix
 rounds.
 

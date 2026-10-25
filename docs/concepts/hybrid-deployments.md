@@ -108,7 +108,7 @@ A medium feature — a few hundred lines changed across several files — with j
 
 | Judged step | Input tokens | Output tokens |
 |---|---|---|
-| Design: critic reads concept, design and relevant knowledge; one answer round (P5) | ~90K | ~6K |
+| Architecture: critic reads concept, design and relevant knowledge; one answer round (P5) | ~90K | ~6K |
 | Code review: diff, specification, design, surrounding code; one `revise` round | ~300K | ~15K |
 | Verification: specification, test results, relevant code; two automatic fix rounds re-checked | ~210K | ~12K |
 | **Total per feature** | **~600K** | **~33K** |
@@ -271,7 +271,7 @@ different gates.
 
 | Leaves (to the pinned judge provider, under policy) | Stays local |
 |---|---|
-| the material a judge reads: the concept and design (Design gate), the diff, the specification and the code around the change (Code review), test results and the code under test (Verification), and the knowledge pages a brief cites | the full repository; worker conversations; the durable store and transcripts; the record; secrets (scanned and refused) |
+| the material a judge reads: the concept and design (Architecture gate), the diff, the specification and the code around the change (Code review), test results and the code under test (Verification), and the knowledge pages a brief cites | the full repository; worker conversations; the durable store and transcripts; the record; secrets (scanned and refused) |
 | | restricted paths and features (a `local-only` factory) |
 
 Recorded per request: model requested and served, provider, region, generation id, tokens, cost. The Merge gate shows

@@ -171,7 +171,7 @@ row, a reorder — and may never change a row the engineer wrote (DIR-5).
 | Where | What changes |
 |---|---|
 | **Concept and Specification briefs** | *the yardstick* part cites the principles and journey steps the feature serves, and the accessibility floor |
-| **Design brief** | cites the screen map, the wireframes and the interaction patterns the design must follow, as it cites the constitution |
+| **Architecture brief** | cites the screen map, the wireframes and the interaction patterns the design must follow, as it cites the constitution |
 | **Judges** | the architecture critic and the code reviewer are given the charter as part of their inputs and report findings against its ids |
 | **Experience design and UI review gates** *(built in, [`ui-flow.md`](./ui-flow.md))* | the gates measure against the charter: mockups keep the regions of the wireframes (a departure is shown as a proposed amendment, never introduced silently) and UI review checks the built screens' regions against them; a factory with no charter still gets the gates, measured against the existing screens and tokens |
 | **Verification** | the accessibility floor and quality bars become checks where they can be run deterministically |
@@ -217,7 +217,7 @@ Identifiers use `XCH-` to avoid the PRD's `EXPL-` (explore) prefix.
 | XCH-3 | **Versioning and amendment**: semantic versions; amendments decided at the Roadmap gate with a diff and affected rows; pinned per feature at admission; `charter.approved` and `charter.amended` in the catalog | Must |
 | XCH-4 | **Planner input**: the planner reads the charter first and proposes slices along the top journeys, tagging rows with journey-step ids; it never changes a row the engineer wrote | Must |
 | XCH-5 | **Coverage map**: the six deterministic checks of §6 in the Roadmap gate brief, shown as gaps, never blocking | Must |
-| XCH-6 | **Briefs cite it**: the yardstick part of Concept, Design and Specification briefs cites the principles, journey steps and floor that apply | Must |
+| XCH-6 | **Briefs cite it**: the yardstick part of Concept, Architecture and Specification briefs cites the principles, journey steps and floor that apply | Must |
 | XCH-7 | **Judges and checks**: judges receive the charter; the accessibility floor and quality bars run as deterministic checks at Verification where possible | Should |
 | XCH-8 | **Drift lint** between screen map and shipped screens, as findings only | Should |
 | XCH-9 | **Team floor** for the shared parts, stricter-only, changed by quorum | Could |

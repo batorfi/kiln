@@ -39,7 +39,7 @@ other's work, share what they learn and review each other's changes.
 ## What KILN believes
 
 1. **Humans decide; models work.** No model approves its own work, and no missing person ever counts as a yes.
-2. **Independent judges hold the line.** Design, code review and verification are judged by separate agents on the
+2. **Independent judges hold the line.** Architecture, code review and verification are judged by separate agents on the
    strongest available model.
 3. **You decide where your models run.** Local by default; private or cloud models only for the roles you choose, under a
    policy that records everything that leaves.
@@ -62,7 +62,7 @@ phases (two of them only where it touches the interface). At every gate a person
 |---|---|---|
 | Program | **Roadmap** | Which feature next, in what order — and how does this factory run? |
 | Contract | **Concept** | Is this worth building, on these premises? |
-| | **Design** *(judged)* | Is this the right structure? |
+| | **Architecture** *(judged)* | Is this the right structure? |
 | | **Experience design** *(judged, interface work)* | Is this the right experience for these users and journeys, within the charter? |
 | | **Specification** | What exactly counts as done? |
 | | **Work plan** | In what pieces and order will it be built? |
@@ -74,7 +74,7 @@ phases (two of them only where it touches the interface). At every gate a person
 | | **Merge** | Do we ship it? |
 
 Every move has a known consequence — *approve*, *revise*, *reject*, *restart*, *split* — and nothing moves forward on its
-own: not a clock, not a restart, not a missing screen. Small features may skip Concept and Design; after the Specification
+own: not a clock, not a restart, not a missing screen. Small features may skip Concept and Architecture; after the Specification
 gate a person may delegate the routine gates, and any judge's objection ends the delegation. Teams can add gates of their
 own — a threat model, a security review — without removing any. → [`the-flow.md`](./docs/concepts/the-flow.md)
 

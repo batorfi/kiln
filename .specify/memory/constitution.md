@@ -149,7 +149,7 @@ space event appears as the cause of a settlement.
 ## The Flow & The Roadmap
 
 The flow is KILN's spine. KILN ships one **default flow** — the **Roadmap gate** and eleven feature gates in order: Concept,
-Design, Experience design, Specification, Work plan, Implementation, Code review, UI review, Verification, Documentation,
+Architecture, Experience design, Specification, Work plan, Implementation, Code review, UI review, Verification, Documentation,
 Merge. The constitution fixes
 its **invariants**; the gates' questions, artifacts, judges and moves are specified in the **gate-rail contract**
 (`kiln/contracts/gate-rail.md`) and explained in `docs/concepts/the-flow.md`.
@@ -170,8 +170,8 @@ its **invariants**; the gates' questions, artifacts, judges and moves are specif
 - **A flow is chosen per feature** at the Roadmap gate, from the factory's default.
 
 **Shortcuts are decisions, not defaults.** Both are bounded, recorded and visible in every later brief:
-- **Triage skip** may route a small feature past **Concept and Design only**, with its reasoning recorded; a person may
-  override it, and a flow may forbid it. No judged gate after Design is skippable; *not applicable* is a recorded, deterministic outcome of a gate's own rule, not a skip.
+- **Triage skip** may route a small feature past **Concept and Architecture only**, with its reasoning recorded; a person may
+  override it, and a flow may forbid it. No judged gate after Architecture is skippable; *not applicable* is a recorded, deterministic outcome of a gate's own rule, not a skip.
 - **Delegation (the unattended tail)** may be armed only by the person who approves a feature's **Specification gate**,
   and covers only the **approve side** of the gates after it — Merge only if explicitly included. **Any objection** — a
   judge's objection, a code reviewer's `restart`, a verifier's `reject`, a split proposed at Implementation, a blocked
@@ -254,7 +254,7 @@ a feature that violates it is "fired in the wrong atmosphere" — the defect is 
 ## Amendment record
 
 **2.1.0 (2026-10-25)** — MINOR: adds *The Experience Charter* section, so the charter is referenced from the constitution, and adds the **design system** as the charter's companion, and makes **Experience
-design** (after Design) and **UI review** (after Code review) built-in, conditionally applicable gates, so the default
+design** (after Architecture) and **UI review** (after Code review) built-in, conditionally applicable gates, so the default
 flow is the Roadmap gate and eleven feature gates; the judge list in Principle II names the design critic and UI reviewer
 (decided by human@batorfi, 2026-10-25; `docs/concepts/experience-charter.md` §9, `docs/concepts/ui-flow.md`). No
 principle changes; no migration.

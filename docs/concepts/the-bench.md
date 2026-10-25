@@ -158,7 +158,7 @@ The report goes to the notebook; promoted, it becomes a knowledge source of orig
 
 ### 5.6 From spike to feature
 
-*Propose as a feature* drafts a factory- or team-roadmap entry. When it is adopted, its Concept or Design gate brief
+*Propose as a feature* drafts a factory- or team-roadmap entry. When it is adopted, its Concept or Architecture gate brief
 starts with the spike report as evidence. The spike's code does **not** carry over: it is linked for reference, and the
 feature is built properly through the gates. Concluded spike branches are **archived**, not deleted, so provenance
 stays intact.
@@ -183,7 +183,7 @@ The bench makes knowledge carry two labels everywhere it travels — in pages, g
 
 ## 7. Connections to the rest of KILN
 
-- **Gates.** A research result, a spike or a note can be **linked to the gate it is for** (*researching for r10's Design
+- **Gates.** A research result, a spike or a note can be **linked to the gate it is for** (*researching for r10's Architecture
   gate*). Once promoted, it appears in that gate's brief as context, with its labels. When a gate opens, KILN can suggest
   what to look into — related pages, open questions, the judge's findings.
 - **Factory learnings** and judge findings can appear in the engineer's notebook as prompts — *worth understanding: why

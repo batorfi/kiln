@@ -36,7 +36,7 @@ source of truth**: the record, the gates and the rules do not move.
 |---|---|---|
 | **Code review gate** | reads findings in the brief, then finds each file and line in the editor | the most expensive switch: dozens of jumps per review |
 | **Verification gate** | reads failing requirements in the brief, opens the tests and the code under test | the same, plus terminal output |
-| **Design and Work plan gates** | reads the design or plan, checks it against the current code | context lost between reading and checking |
+| **Architecture and Work plan gates** | reads the design or plan, checks it against the current code | context lost between reading and checking |
 | **Watching work happen** | follows a worker in the front door's live view, opens files to see what it changed | split attention |
 | **Knowledge and exploring** | reads a module page or a tour in the browser, then navigates the code | every citation is a manual lookup |
 | **Their own coding** | edits code with Zed's agent or another assistant that knows nothing about KILN's knowledge, territories or claims | duplicated understanding; avoidable conflicts with teammates' factories |
