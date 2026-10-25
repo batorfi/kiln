@@ -11,13 +11,14 @@ export const DEFAULT_FLOW: FlowVersion = "v1";
 export const MITIGATION_CAP_DEFAULT = 2;
 
 export function flowOf(version: FlowVersion): FlowDefinition {
-  const f = (flows as Record<string, FlowDefinition | undefined>)[version];
+  // Own keys only: a plain-object lookup would accept "toString" or "constructor".
+  const f = Object.hasOwn(flows, version) ? (flows as Record<string, FlowDefinition>)[version] : undefined;
   if (!f) throw new Error(`unknown flow: ${String(version)}`);
   return f;
 }
 
 function gateOf(gate: GateId, flow: FlowVersion): GateDefinition {
-  const key = GATE_KEY_OF[gate];
+  const key = Object.hasOwn(GATE_KEY_OF, gate) ? GATE_KEY_OF[gate] : undefined;
   if (!key) throw new Error(`unknown gate id: ${String(gate)}`);
   const def = flowOf(flow).gates.find((x) => x.key === key);
   if (!def) throw new Error(`no gate ${key} in flow ${flow}`);
