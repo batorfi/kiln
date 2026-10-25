@@ -231,11 +231,45 @@ The team can set rules every member workshop honours for work on the shared code
 - **Protected paths**, where claims are exclusive (§7).
 - **Required gates and shared flows** — gates every member workshop's flows include for matching features, and flows the
   team shares; changed by the quorum (`extensible-flow.md` §8).
+- **The experience floor** — the accessibility floor, content voice and an optional team design system (tokens, components) every member's charter and design system must meet or extend, and gates required for matching paths, including Experience design and UI review (`experience-charter.md` §8, `ui-flow.md` §9).
+- **The shared foundations** — the constitution, the charter and the design system as protected paths with named owners (§11a).
 - **Claim expiry** and **publishing minimums** (for example, gate outcomes for adopted features are always published).
 
 Rules live in the team space and are recorded. They — and the list of roadmap deciders and the quorum threshold — change
 **only with the current quorum's signatures**; the founder's first list of deciders is the team space's genesis act. A workshop that would break a floor is
 told so at the Roadmap gate, before any work starts.
+
+## 11a. Shared foundations: constitution, charter, design system
+
+The **constitution**, the **experience charter** and the **design system** are meant to be *the same for every member's
+factory* working on the codebase. They are, **by construction**, because they are not workshop or team-space state: they
+are **committed files in the product's repository** (`.specify/memory/constitution.md`, `experience-charter.md`,
+`design-system/`), and every factory works in its own worktree of that one repository.
+
+- **One source: `main`.** Each factory reads the three from the base it was admitted on. There is no per-workshop copy to
+  drift: a workshop cannot hold a different charter than the repository's, only a *branch* that proposes one.
+- **Changed only through a pull request.** An amendment is decided at the **author's own Roadmap gate** (charter,
+  design-system MAJOR) or Experience design gate (design-system additions) — a sovereign workshop decision (Principle XII) —
+  and then **lands like any change, through the Merge gate to `main`**. Nothing is shared by a team-space message.
+- **Protected, and owned.** The team marks the three as **protected paths** with a named owner each (the experience owner,
+  the design owner, the constitution's Deciders). Claims on them are **exclusive**, so two workshops do not amend the same
+  file at once (§7), and the team's merge rules **require the owner's approval** on any pull request touching them — a
+  required review, shown as a condition in the Merge gate brief (§8, §12). That review is a person's evidence and a merge
+  condition on the shared `main`; it settles no gate in anyone's workshop.
+- **Adopted at the next admission, never mid-flight.** A feature **pins** the constitution, charter and design-system
+  versions at admission (§8 of each doc). A merged amendment reaches other workshops' *next* Roadmap gate, whose brief
+  says **which of the three have moved on `main` since each in-flight feature was admitted**; in-flight features keep
+  their pinned versions and are re-crossed only by a person's decision.
+- **Drift is detected, not trusted.** At admission and before Merge the factory checks, deterministically, that the three
+  files in its worktree match the versions it pinned and that its base has not moved them (`kiln check foundations`);
+  a mismatch — a stale base, or a branch that edits one without the owner's approval — is shown in the brief, never
+  silently accepted.
+- **Stricter, never looser.** A workshop that wants *more* than the team's foundations — a tighter accessibility floor, an
+  extra token set — keeps it in its own **extension** (workshop-local, marked as such, `design-system.md` §10) and the
+  team floor holds underneath; it can never loosen or redefine what `main` says.
+- **Several repositories.** Where a team has several products, a **shared design system or constitution** may live in the
+  team space (as the team floor) and be *extended* by each product's repository; the extension rules above apply, and
+  changing the shared one needs the quorum (§11).
 
 ## 12. Merging into the same `main`
 

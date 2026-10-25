@@ -22,7 +22,7 @@
 >     The nine lane gates keep their numbers (Gates 1–9). The existing code's identifier `gate0`
 >     (`move-vocabulary.ts`, the log schema, validators, the committed replay) is unchanged by this doc;
 >     the new event catalog (§6.4) uses the new name.
->   - **Every gate has a plain name** (rev 7, §3.1): Concept · Design · Specification · Work plan ·
+>   - **Every gate has a plain name** (rev 7, §3.1): Concept · Architecture · Specification · Work plan ·
 >     Implementation · Code review · Verification · Documentation · Merge.
 >   - **KILN may use non-local models when configured** (rev 9, §13): local by default; egress only by a
 >     configured, recorded, policy-checked choice.
@@ -118,32 +118,34 @@ long-running agentic applications. The primitives KILN uses:
 
 ### 3.1 The gates, by name — the default flow
 
-*These ten gates are the **default flow**. Teams may add gates of their own between the built-in ones; the Roadmap gate
+*These twelve gates are the **default flow** (Experience design and UI review apply when a feature touches the interface; otherwise they are recorded as not applicable — `the-flow.md` §4). Teams may add gates of their own between the built-in ones; the Roadmap gate
 stays first, the Merge gate last, and no built-in gate can be removed — see `extensible-flow.md`. The full flow — what runs
 between gates, each gate in depth, and where every move leads — is in `the-flow.md`.*
 
 Every gate has a **name a human understands without the manual**, and each name answers one question.
 Numbers stay only as the *order* along a row (Gates 1–9) and as the identifiers in existing code; in prose,
-the name comes first. Three gates get new names because their old ones described a mechanism, not a
-decision: **architecture → Design**, **checkpoint → Implementation**, **PR → Merge**. **Plan** becomes **Work plan**
+the name comes first. Two gates get new names because their old ones described a mechanism, not a
+decision: **checkpoint → Implementation**, **PR → Merge**. The **Architecture** gate was briefly called *Design* and took its name back on 2026-10-25, when Experience design joined the flow and *Design* became ambiguous; its internal id stays `2-design`. **Plan** becomes **Work plan**
 so it is never confused with the roadmap.
 
-The ten gates fall into three phases:
+The twelve gates fall into three phases:
 
 - **Program** — the Roadmap gate decides *what the factory will work on*.
-- **Contract** (Gates 1–4) — decide *what to build*, before any code exists.
-- **Build and prove** (Gates 5–7) — make it, and prove it is right.
+- **Contract** (Gates 1–4, with 2a) — decide *what to build*, before any code exists.
+- **Build and prove** (Gates 5–7, with 6a) — make it, and prove it is right.
 - **Release** (Gates 8–9) — describe it, and ship it.
 
 | # | Gate | The human's question | Artifact judged | Produced by | Judge (line of defense) | Moves |
 |---|---|---|---|---|---|---|
 | — | **Roadmap gate** | *Which features do we build, in what order?* | the roadmap (rows, order, dependencies) | the director's planner | — (program-level, human only) | approve · revise · reject · edit-rows · add-row · drop-row |
 | 1 | **Concept gate** | *Is this worth building, on these premises?* | concept | concept writer (after researcher) | — | approve · revise · reject |
-| 2 | **Design gate** | *Is this the right structure?* | architecture design | architecture designer | architecture critic · holds the lane | approve · revise · reject |
+| 2 | **Architecture gate** | *Is this the right structure?* | architecture design | architecture designer | architecture critic · holds the lane | approve · revise · reject |
+| 2a | **Experience design gate** *(interface work)* | *Is this the right experience for these users and journeys, within the charter?* | experience, mockups, states matrix | ux designer | design critic · holds the lane | approve · approve with note · revise · reject |
 | 3 | **Specification gate** | *What exactly counts as done?* | specification | spec writer | — | approve · revise · reject |
 | 4 | **Work plan gate** | *In what pieces, and in what order, will it be built?* | work plan (tasks and their order) | the director's planner | — | approve · revise · reject |
 | 5 | **Implementation gate** | *Do we start building — from a safe, restorable point — and is this still one feature?* | a restorable commit | the director | — | approve · split+revise |
 | 6 | **Code review gate** | *Is the code right, measured against the specification?* | the diff and review notes | worker(s) | code reviewer · holds the lane | approve · revise · restart |
+| 6a | **UI review gate** *(interface work)* | *Does the built interface match the approved experience, and is it accessible and consistent?* | UI review report, screenshots, check results | worker(s) | UI reviewer · holds the lane | approve · approve with note · revise · restart |
 | 7 | **Verification gate** | *Does it actually work as specified?* | verification report | worker(s) | verifier · holds the lane | approve · reject (≤ 2 automatic fix rounds first) |
 | 8 | **Documentation gate** | *Do the docs describe what was actually built?* | documentation changes | techwriter / docs synthesizer | — | approve · revise · reject |
 | 9 | **Merge gate** | *Do we ship this feature?* | the pull request | PR writer | — | approve (= merge) · reject |
@@ -153,8 +155,8 @@ The ten gates fall into three phases:
 - **Roadmap gate.** The human admits the program before any lane starts, and re-checks it at every boundary
   between rows. Never automatic, never delegated, per factory. *(Formerly "Gate 0".)*
 - **Concept gate.** The cheapest place to stop a wrong idea: scope, intent and premises are judged before any
-  design exists. Skipped for small features by triage, together with the Design gate.
-- **Design gate.** The structure — module boundaries, data flow, abstractions — is judged by the architecture
+  design exists. Skipped for small features by triage, together with the Architecture gate.
+- **Architecture gate.** The structure — module boundaries, data flow, abstractions — is judged by the architecture
   critic on the strongest model, then decided by the human. Catches a build that would work but have the
   wrong shape. *(Formerly "architecture".)*
 - **Specification gate.** Fixes the contract that the work plan, the code review and the verification all
@@ -179,8 +181,8 @@ The ten gates fall into three phases:
 
 **Naming rules used in this doc.** Renaming the checkpoint gate to *Implementation* also frees the word
 *checkpoint* for its durable meaning: in this doc a checkpoint is always a durable task's saved step.
-Write the name, not the number ("the Design gate", not "Gate 2"); use the
-number only when order matters ("Gates 4–9"). The three **judged gates** — Design, Code review,
+Write the name, not the number ("the Architecture gate", not "Gate 2"); use the
+number only when order matters ("Gates 4–9"). The three **judged gates** — Architecture, Code review,
 Verification — are the ones with a line-of-defense judge and a held lane. Existing code keeps its keys
 (`gate0`, `1-concept` … `9-pr` in `move-vocabulary.ts`); the new event catalog (§6.4) carries both, as
 `gate: { order: 2, key: "design" }`.
@@ -233,7 +235,7 @@ roadmap task (holds the Roadmap gate)
      ├─ gate task  (Concept gate)
      ├─ unit task  → conversation (architecture designer)
      ├─ unit task  → conversation (architecture critic)      ← lane: hold
-     ├─ gate task  (Design gate)
+     ├─ gate task  (Architecture gate)
      │   …
      └─ gate task  (Merge gate)
 ```
@@ -298,7 +300,7 @@ gate task's steps:
 | Gate | Moves | Gate-task specifics |
 |---|---|---|
 | Roadmap gate | approve · revise · reject · edit-rows · add-row · drop-row | owned by the roadmap task; roadmap edits committed with the move |
-| Concept · Design · Specification · Work plan · Documentation | approve · revise · reject | corrective moves require a note |
+| Concept · Architecture · Specification · Work plan · Documentation | approve · revise · reject | corrective moves require a note |
 | Implementation | approve · split+revise | no reject; split carries the split definition |
 | Code review | approve · revise · restart | revise goes to the workers, never the reviewer; every review round is a fresh reviewer conversation |
 | Verification | approve · reject | on reject, the row task runs up to **2** auto-mitigation rounds before this gate opens again for a human; the round count lives in the row task's checkpoint |
@@ -311,7 +313,7 @@ task** is the factory's only gate on model work:
 
 - every unit task **acquires the lane** before its conversation's first model request, and releases it when
   its run settles;
-- the lane task's checkpoint holds the resident model, the holder, the hold flag (the judged gates: Design, Code review, Verification) and the
+- the lane task's checkpoint holds the resident model, the holder, the hold flag (the judged gates: Architecture, Code review, Verification) and the
   swap count — so affinity and hold survive a restart;
 - the affinity scheduler decides which waiting unit gets the lane next; a swap is a committed lane event.
 
@@ -838,7 +840,7 @@ possible:
 
 - **Remote judges, local workers.** Principle II says the judges always run on the strongest model; with
   remote models allowed, the strongest may be a remote frontier model. The high-volume work (research,
-  drafts, code) stays local; the few, high-leverage verdicts at the judged gates — Design, Code review,
+  drafts, code) stays local; the few, high-leverage verdicts at the judged gates — Architecture, Code review,
   Verification — use the best model available. Principle II gets stronger, not weaker.
 - **Local judges, remote workers.** Fast remote generation, with verdicts that never leave the machine.
 - **Cross-family judging.** The judge runs on a **different model family** from the author. Models from one
@@ -1028,7 +1030,7 @@ there into knowledge. This section records how it fits the design.
 - **Spikes.** An isolated worktree on a `spike/` branch with a question and a time box; the engineer and/or an agent work
   in it at research priority; risky actions stay held. KILN refuses pull requests from `spike/` branches to `main`. Concluding
   a spike produces a **spike report** with spike-measured results; *propose as a feature* drafts a roadmap entry whose
-  Concept or Design brief starts from the report. Spike code never carries over; branches are archived.
+  Concept or Architecture brief starts from the report. Spike code never carries over; branches are archived.
 - **Labels.** Knowledge carries an **origin** (external · factory-produced · human research · research step ·
   spike-measured) and a **maturity** (exploratory · validated · decided) into pages, briefs and director citations.
 - **Gates.** Bench items can be linked to the gate they are for; only promoted knowledge is cited in a brief.

@@ -127,6 +127,7 @@ Each event type has a versioned JSON schema in `contracts/events/`.
 | **Gate** | `gate.opened` (brief reference) · `gate.waiting` · `move.committed` · `move.refused` · `gate.auto_approved` · `gate.vetoed` · `gate.settled` |
 | **Step** | `unit.queued` · `unit.started` · `unit.steered` · `unit.settled` · `unit.failed` · `unit.aborted` · `unit.resumed_after_crash` |
 | **Lane and models** | `lane.acquired` · `lane.released` · `lane.held` · `lane.swap_started` · `lane.swapped` · `model.request.started` · `model.request.settled` |
+| **Experience** | `charter.approved` · `charter.amended` · `design_system.approved` · `design_system.amended` · `gate.not_applicable` (an interface gate whose rule was false, with its reason) |
 | **Delegation and fix rounds** | `delegation.armed` · `delegation.interdicted` · `mitigation.round_started` · `mitigation.exhausted` |
 | **Human in the loop** | `tool_approval.requested` · `tool_approval.decided` · `egress.blocked` · `budget.reached` · `model.fallback` |
 | **Commands** | `command.accepted` · `command.refused` |

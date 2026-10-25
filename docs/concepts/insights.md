@@ -99,7 +99,7 @@ Each measure below names its definition and its source events. "Feature" means a
 | **Time in gate and step** | per gate and per step kind | gate, unit events |
 | **Paths taken** | process-mining view: which gate sequences features actually followed, where they looped | gate and move events |
 | **Bottleneck** | the gate or step with the largest share of lead time across features | as above |
-| **Triage** | how often Concept and Design were skipped, and how those features fared later | triage, feature events |
+| **Triage** | how often Concept and Architecture were skipped, and how those features fared later | triage, feature events |
 
 ### 4.5 Models, localities and roles
 
@@ -116,6 +116,7 @@ Each measure below names its definition and its source events. "Feature" means a
 | **Per gate** | runs, wait, send-back rate, confirmed problems caught, approved despite objection, machine and human time | gate, move, finding events |
 | **Added gates** | the same for gates teams added — *does it earn its place?* (mockup 60) | as above + flow events |
 | **Flows** | lead time and escapes per flow (standard, security-sensitive, …) | `flow.chosen`, feature events |
+| **Interface gates** | applicable vs not-applicable counts, rejection and revision at Experience design and UI review, findings by charter principle, deviations accepted, charter amendments proposed — counts and sample sizes, never rankings of people (`ui-flow.md` §10) | gate, finding, `charter.*` events |
 | **Gates added in flight** | how often, and why (team floor, decider's choice) | `flow.gate_added_in_flight` |
 
 ### 4.7 Knowledge and the bench

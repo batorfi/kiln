@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Durable core |
-| **Release** | `kiln-v1` — position 5 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 5 of 43 in the committed order |
 | **Depends on** | [r14 — Gates as data, walked headless](./r14-gates-as-data-walked-headless.md) |
 | **Unlocks** | [r16 — Real local workers](./r16-real-local-workers.md), [r19 — Web front door, read-only](./r19-web-front-door-read-only.md), [r27 — Health and broken guarantees](./r27-health-and-broken-guarantees.md) |
 | **PRD requirements** | EVT-1…5, EVT-3a, CORE-7 (archive; record size measured) |

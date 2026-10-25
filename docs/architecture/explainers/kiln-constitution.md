@@ -2,7 +2,7 @@
 
 > **Type:** explainer — for understanding, not a specification. **Audience:** software engineers who build, review or
 > extend KILN and want to know what each rule of the constitution means, why it exists, and what it asks of their code.
-> **Status:** explains [constitution **v2.0.1**](../../../.specify/memory/constitution.md) (amended 2026-10-21). **Where
+> **Status:** explains [constitution **v2.1.0**](../../../.specify/memory/constitution.md) (amended 2026-10-25). **Where
 > this explainer and the constitution differ, the constitution governs** — this page paraphrases; the constitution is
 > the law.
 >
@@ -217,7 +217,7 @@ settle a gate in anyone's workshop.
 
 ### II. Every judge runs on the strongest model
 
-**The rule.** Every **judge role** — the architecture critic at Design, the code reviewer at Code review, the verifier
+**The rule.** Every **judge role** — the architecture critic at Architecture, the design critic at Experience design, the code reviewer at Code review, the UI reviewer at UI review, the verifier
 at Verification, and any judge on a gate a team adds — must be bound to the **strongest model available to the
 factory**, on every substrate, including a purely local one. A weaker binding is a **refused configuration**, not a
 warning. A judge is **never silently downgraded**: if the strongest model is unavailable, the judged step **waits and
@@ -442,11 +442,13 @@ convenience may break.
 ### The default flow
 
 ```
- Roadmap ─► 1 Concept ─► 2 Design ─► 3 Specification ─► 4 Work plan ─► 5 Implementation
- gate                    (judged)                                       │
-   ▲                                                                    ▼
-   │       9 Merge ◄─ 8 Documentation ◄─ 7 Verification ◄─ 6 Code review
-   │                                      (judged)          (judged)
+
+ Roadmap ─► 1 Concept ─► 2 Architecture ─► 2a Experience design ─► 3 Specification ─► 4 Work plan
+ gate                    (judged)          (judged · when UI)                                │
+   ▲                                                                                         ▼
+   │   9 Merge ◄─ 8 Documentation ◄─ 7 Verification ◄─ 6a UI review ◄─ 6 Code review ◄─ 5 Implementation
+   │                                  (judged)          (judged · when UI)  (judged)
+   └──────────────── re-opens after every merged or abandoned feature
    └──────────────── re-opens after every merged or abandoned feature
 ```
 
@@ -455,10 +457,18 @@ convenience may break.
 | Invariant | What it means |
 |---|---|
 | **Fixed anchors** | The Roadmap gate is always first; the Merge gate is always last. Nothing goes before or after them. |
-| **Built-in gates are never removed** | Teams may **add** gates (a threat model, a security review) by a recorded decision. They may not remove or reorder the built-in ones. Every added gate keeps the full gate contract: durable, waiting, settled only by a committed move, recorded. |
+| **Built-in gates are never removed** | Experience design and UI review are built in and apply when a feature touches the interface; otherwise they are recorded as *not applicable*, never dropped. Teams may **add** gates (a threat model, a security review) by a recorded decision. They may not remove or reorder the built-in ones. Every added gate keeps the full gate contract: durable, waiting, settled only by a committed move, recorded. |
 | **A closed set of move kinds** | Every move is one of a fixed set of kinds, each with a known consequence. Teams may label moves in their own words; they may not invent new kinds. Changing the set is a constitutional amendment. |
 | **One feature at a time** | The Roadmap gate admits one feature; it re-opens after that feature. No unattended chaining. |
 | **A flow per feature** | The flow is chosen per feature at the Roadmap gate, from the factory's default, and pinned for that feature. |
+
+### The experience charter and the design system
+
+Two companion artifacts sit beside the constitution in the repository — the **experience charter** (who the product is for,
+its journeys, screens and wireframes) and the **design system** (tokens, components, patterns). They are **yardsticks, never
+gates**: briefs cite them, the Experience design and UI review gates measure against them, a feature pins their versions
+at admission, and only a person approves or amends them. In a team they are the repository's files, shared by every
+member's factory (`team-space.md` §11a).
 
 ### The move kinds
 
@@ -481,8 +491,8 @@ the note — validators reason over kinds, people read their own words.
 
 KILN has three ways to move faster. Each is bounded, recorded and visible in every later brief.
 
-- **Triage skip.** A small feature may skip **Concept and Design only**, with the reasoning recorded. A person may
-  override it, and a flow may forbid it. No judged gate after Design is ever skippable.
+- **Triage skip.** A small feature may skip **Concept and Architecture only**, with the reasoning recorded. A person may
+  override it, and a flow may forbid it. No judged gate after Architecture is ever skippable.
 - **Delegation (the unattended tail).** Only the person who approves a feature's **Specification gate** may arm it. It
   covers only the **approve side** of the gates after Specification — Merge only if explicitly included. **Any
   objection ends it** for that gate and every gate after: a judge's objection, a code reviewer's `restart`, a verifier's
@@ -576,6 +586,7 @@ change upholds — and at the test that would fail if it stopped upholding it.
 | 1.0.0 | 2026-09-12 | Ratified with the first program: KILN as a Pi extension with a terminal UI. |
 | 2.0.0 | 2026-10-21 | The restart: a local web front door on Pi Durable, many factories per host, an event-based record, knowledge per factory, teams of sovereign workshops. II, III, VII, VIII, IX redefined; X, XI, XII added; flow and roles reduced to invariants; pinned dependencies allowed. |
 | 2.0.1 | 2026-10-21 | The closed move-kind list aligned with the flow (`split+revise`, `mitigate`). |
+| 2.1.0 | 2026-10-25 | MINOR: a section on the experience charter — a person-approved, versioned setup artifact (users, principles, journeys, screen map, wireframes) — with its companion design system, and two built-in, conditionally applicable gates, Experience design and UI review, that measure features against it. The default flow becomes the Roadmap gate and eleven feature gates. No principle changes. |
 
 ---
 

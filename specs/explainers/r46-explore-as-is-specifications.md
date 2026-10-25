@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | kiln-v1.x |
-| **Release** | `kiln-v1.x` — position 33 of 41 in the committed order |
+| **Release** | `kiln-v1.x` — position 35 of 43 in the committed order |
 | **Depends on** | [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md) |
 | **Unlocks** | [r48 — Explore: readiness](./r48-explore-readiness.md) |
 | **PRD requirements** | EXPL-6, EXPL-7 |

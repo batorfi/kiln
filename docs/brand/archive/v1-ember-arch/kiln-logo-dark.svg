@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232 64" role="img" aria-label="KILN">
+  <title>KILN</title>
+  <defs>
+    <linearGradient id="kiln-shell" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FB923C"/><stop offset="1" stop-color="#B8380B"/></linearGradient>
+    <radialGradient id="kiln-ember" cx="0.5" cy="0.42" r="0.6"><stop offset="0" stop-color="#FFF1C2"/><stop offset="0.45" stop-color="#FDBA4A"/><stop offset="1" stop-color="#EA580C"/></radialGradient>
+  </defs>
+  <path fill="url(#kiln-shell)" fill-rule="evenodd" d="M8 58V31a24 24 0 0 1 48 0v27H44V32a12 12 0 0 0-24 0v26Z"/>
+  <circle cx="32" cy="47" r="7" fill="url(#kiln-ember)"/>
+  <text x="76" y="46" fill="#F5F0EA" font-family="-apple-system, 'SF Pro Display', Inter, 'Helvetica Neue', Arial, sans-serif" font-size="36" font-weight="700" letter-spacing="9">KILN</text>
+</svg>

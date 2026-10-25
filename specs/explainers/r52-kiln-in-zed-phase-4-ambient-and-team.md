@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | kiln-v1.x |
-| **Release** | `kiln-v1.x` — position 41 of 41 in the committed order |
+| **Release** | `kiln-v1.x` — position 43 of 43 in the committed order |
 | **Depends on** | [r51 — KILN in Zed, phase 3: decide where the code is](./r51-kiln-in-zed-phase-3-decide-where-the-code-is.md) |
 | **Unlocks** | — |
 | **PRD requirements** | EDIT-7, EDIT-8 |

@@ -8,9 +8,9 @@
 | | |
 |---|---|
 | **Phase** | Team |
-| **Release** | `kiln-v1` — position 25 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 26 of 43 in the committed order |
 | **Depends on** | [r38 — Team space, part 1](./r38-team-space-part-1.md), [r31 — Existing codebases, part 2: baseline, territory, process](./r31-existing-codebases-part-2-baseline-territory-process.md) |
-| **Unlocks** | [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md), [r41 — New codebases, the rest](./r41-new-codebases-the-rest.md) |
+| **Unlocks** | [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md), [r54 — The Feed, the rest](./r54-the-feed-the-rest.md), [r41 — New codebases, the rest](./r41-new-codebases-the-rest.md) |
 | **PRD requirements** | TEAM-4…7, HITL-4 |
 | **Proven when** | overlapping claims surface at the Work plan gate; a required teammate review conditions *approve*; the Merge gate uses the code host's queue |
 

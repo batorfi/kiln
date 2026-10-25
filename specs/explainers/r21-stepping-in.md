@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | Front door |
-| **Release** | `kiln-v1` — position 11 of 41 in the committed order |
+| **Release** | `kiln-v1` — position 11 of 43 in the committed order |
 | **Depends on** | [r20 — Gates on the web](./r20-gates-on-the-web.md) |
 | **Unlocks** | [r31 — Existing codebases, part 2: baseline, territory, process](./r31-existing-codebases-part-2-baseline-territory-process.md), [r32 — Cut the kiln-v1 release](./r32-cut-the-kiln-v1-release.md) |
 | **PRD requirements** | HITL-1/2, GATE-4, WEB-5 |

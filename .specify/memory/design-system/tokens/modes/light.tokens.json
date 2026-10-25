@@ -1,0 +1,4 @@
+{
+  "$description": "Light mode is the semantic file itself; this file exists so every listed mode has a file.",
+  "$extends": "../semantic.tokens.json"
+}

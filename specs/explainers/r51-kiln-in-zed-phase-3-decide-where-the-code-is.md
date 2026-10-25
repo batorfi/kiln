@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Phase** | kiln-v1.x |
-| **Release** | `kiln-v1.x` — position 40 of 41 in the committed order |
+| **Release** | `kiln-v1.x` — position 42 of 43 in the committed order |
 | **Depends on** | [r50 — KILN in Zed, phase 2: the Agent Panel](./r50-kiln-in-zed-phase-2-the-agent-panel.md) |
 | **Unlocks** | [r52 — KILN in Zed, phase 4: ambient and team](./r52-kiln-in-zed-phase-4-ambient-and-team.md) |
 | **PRD requirements** | EDIT-5, EDIT-6 |

@@ -1,5 +1,8 @@
 # KILN UX concept — illustrative mockups
 
+> **Note (2026-10-25):** the mockups predate two changes to the flow — the *Design* gate is now the **Architecture** gate, and
+> Experience design and UI review were added. They are illustrations and have not been redrawn.
+>
 > **Illustrations, not design decisions.** These mockups make the ideas in [`../user-experience.md`](../user-experience.md)
 > concrete enough to discuss. They are not interaction design, a visual language or a layout to build. Every
 > layout, control and colour here is open; what they are meant to show is the *content and the guarantees* the
@@ -233,3 +236,7 @@ The KILN mark in every sidebar comes from [`docs/brand/kiln-mark.svg`](../../bra
 
 Chart colours (mockups 16 and 17) use a two-colour palette checked for colour-blind separation and contrast; every
 chart carries a legend or direct labels, so no meaning depends on colour alone.
+
+> **Note (2026-10-25):** the mockups are **re-themed** in KILN's teal-and-sand design system (`../design-system.md` §12.1) with
+> the nested-gates logo; layout and content are unchanged. Hi-fi samples of the charter's wireframes are in
+> `.specify/memory/experience-charter/samples/`. Regenerate with `python3 src/render.py` (or `sh src/render.sh` on a Mac).

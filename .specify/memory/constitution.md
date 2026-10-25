@@ -19,7 +19,7 @@ the same unit or conversation.
 
 ### II. Every judge runs on the strongest model
 
-Every **judge role** — the architecture critic, the code reviewer and the verifier on the built-in gates, and any judge on
+Every **judge role** — the architecture critic, the design critic, the code reviewer, the UI reviewer and the verifier on the built-in gates, and any judge on
 a gate a team adds — MUST be bound to the **strongest model available to the factory**, on every substrate, including a
 local one, while producer roles are free to be cheaper. A weaker binding is a refused configuration, not a warning, and a
 judge is **never silently downgraded**: when the strongest model is unavailable, the judged step waits and says why. A
@@ -148,14 +148,17 @@ space event appears as the cause of a settlement.
 
 ## The Flow & The Roadmap
 
-The flow is KILN's spine. KILN ships one **default flow** — the **Roadmap gate** and nine feature gates in order: Concept,
-Design, Specification, Work plan, Implementation, Code review, Verification, Documentation, Merge. The constitution fixes
+The flow is KILN's spine. KILN ships one **default flow** — the **Roadmap gate** and eleven feature gates in order: Concept,
+Architecture, Experience design, Specification, Work plan, Implementation, Code review, UI review, Verification, Documentation,
+Merge. The constitution fixes
 its **invariants**; the gates' questions, artifacts, judges and moves are specified in the **gate-rail contract**
 (`kiln/contracts/gate-rail.md`) and explained in `docs/concepts/the-flow.md`.
 
 **Flow invariants.**
 - **Fixed anchors.** The Roadmap gate is always first and the Merge gate always last.
-- **Built-in gates are never removed.** A flow may only **add** gates, by a recorded decision of an Operator (or the team
+- **Built-in gates are never removed.** Experience design and UI review are built in and carry a deterministic
+  `applies_when` rule (the feature touches the interface); where it is false the gate is recorded as **not applicable**
+  with its reason — shown at the Roadmap gate, never a skip, and a person may require the gate anyway. A flow may only **add** gates, by a recorded decision of an Operator (or the team
   quorum for team-shared flows); every added gate keeps the full gate contract — durable, waiting, settled only by a
   committed move, recorded.
 - **A closed set of move kinds.** Every move is one of a closed set of kinds with a known consequence — *approve*,
@@ -167,8 +170,8 @@ its **invariants**; the gates' questions, artifacts, judges and moves are specif
 - **A flow is chosen per feature** at the Roadmap gate, from the factory's default.
 
 **Shortcuts are decisions, not defaults.** Both are bounded, recorded and visible in every later brief:
-- **Triage skip** may route a small feature past **Concept and Design only**, with its reasoning recorded; a person may
-  override it, and a flow may forbid it. No judged gate after Design is skippable.
+- **Triage skip** may route a small feature past **Concept and Architecture only**, with its reasoning recorded; a person may
+  override it, and a flow may forbid it. No judged gate after Architecture is skippable; *not applicable* is a recorded, deterministic outcome of a gate's own rule, not a skip.
 - **Delegation (the unattended tail)** may be armed only by the person who approves a feature's **Specification gate**,
   and covers only the **approve side** of the gates after it — Merge only if explicitly included. **Any objection** — a
   judge's objection, a code reviewer's `restart`, a verifier's `reject`, a split proposed at Implementation, a blocked
@@ -181,6 +184,30 @@ its **invariants**; the gates' questions, artifacts, judges and moves are specif
 reviewed artifact (`ROADMAP.md`) and admitted only at the Roadmap gate (Principle VI). A row fires only when its
 dependencies are done; each row is one full walk of its flow; the Roadmap gate sits **between** rows, never inside one.
 The program gate and a feature's gates are never conflated in state or in the move vocabulary.
+
+## The Experience Charter
+
+A factory may have an **experience charter** (`.specify/memory/experience-charter.md`, explained in
+`docs/concepts/experience-charter.md`): a short, versioned document of who the product is for and how it should work as
+a whole — users, principles, journeys, screen map and high-level wireframes — made at setup and approved by a person
+before the factory's first Roadmap gate. It is a **yardstick, never a gate**; the built-in Experience design and UI
+review gates measure features against it. Where a factory has one:
+- every gate brief's yardstick **cites the parts that apply**, and judges receive it as an input;
+- it is **approved and amended only by a person** — the named experience owner, or a Decider — as a recorded decision;
+  amendments are taken at the Roadmap gate, and no model approves or amends it (Principle I);
+- a feature **pins the charter version at admission**, and a newer version never alters a feature in progress;
+- it is a committed repository artifact, not a knowledge page: knowledge may cite it and never overrides it
+  (Principle X).
+
+A factory without a charter works as before; briefs say so.
+
+**The design system** is the charter's companion (`.specify/memory/design-system/`, explained in
+`docs/concepts/design-system.md`): the foundations, tokens, components and patterns the interface is built from, in a
+standard structure, approved by a person at setup beside the charter. It is under the same rules — a yardstick, never a
+gate; briefs cite its ids and pinned version; approved and amended only by a person (the named design owner, or a
+Decider), with **additions** decided at a feature's Experience design gate and **renames, removals and changes of
+meaning** only at the Roadmap gate; a feature pins its version at admission; a committed artifact that knowledge may cite
+and never overrides. A factory without one works as before; briefs say so.
 
 ## Roles & Model Tiers
 
@@ -208,6 +235,9 @@ a feature that violates it is "fired in the wrong atmosphere" — the defect is 
 
 ## Governance
 
+- **In a team, the constitution, the experience charter and the design system are the repository's, not a workshop's:**
+  committed files every member's factory reads from `main`, changed only by a pull request that their named owners approve,
+  pinned per feature at admission (`docs/concepts/team-space.md` §11a). A workshop may be stricter, never looser.
 - **This constitution supersedes all other KILN practices.** Where a concept doc and this constitution disagree, the
   constitution governs. The concept set (`docs/concepts/`) is read to *understand* the system; it never overrides a
   principle here.
@@ -222,6 +252,12 @@ a feature that violates it is "fired in the wrong atmosphere" — the defect is 
   decision is justified; and **the record is the compliance evidence** (Principle VII).
 
 ## Amendment record
+
+**2.1.0 (2026-10-25)** — MINOR: adds *The Experience Charter* section, so the charter is referenced from the constitution, and adds the **design system** as the charter's companion, and makes **Experience
+design** (after Architecture) and **UI review** (after Code review) built-in, conditionally applicable gates, so the default
+flow is the Roadmap gate and eleven feature gates; the judge list in Principle II names the design critic and UI reviewer
+(decided by human@batorfi, 2026-10-25; `docs/concepts/experience-charter.md` §9, `docs/concepts/ui-flow.md`). No
+principle changes; no migration.
 
 **2.0.1 (2026-10-21)** — PATCH: the closed set of move kinds names `split+revise` and `mitigate` as the flow and the PRD
 (FLOW-3) do; no change in meaning.
@@ -240,4 +276,4 @@ loopback front door replaces the three terminal layers).
 
 **1.0.0 (2026-09-12)** — ratified with the first program.
 
-**Version**: 2.0.1 | **Ratified**: 2026-09-12 | **Last Amended**: 2026-10-21
+**Version**: 2.1.0 | **Ratified**: 2026-09-12 | **Last Amended**: 2026-10-25

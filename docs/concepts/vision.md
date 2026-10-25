@@ -24,7 +24,7 @@
 ## 1. The vision in one paragraph
 
 **KILN is a software factory you run yourself, where AI agents do the work and a human makes every decision that
-matters.** You give it a roadmap; it walks each feature through ten clear gates — from *is this worth building?* to
+matters.** You give it a roadmap; it walks each feature through twelve clear gates — from *is this worth building?* to
 *do we ship it?* — on local models by default, and on private or cloud models only where you choose. Every piece of
 work survives a crash, every decision is recorded with who made it and why, and the whole process is visible, live, in
 a browser. Each factory keeps a knowledge base — written by an LLM, curated by engineers — that remembers what it has
@@ -58,7 +58,7 @@ each other's work, share what they learn and review each other's changes.
 
 1. **Humans decide; models work.** Agents research, design, write, review and verify. A human approves the
    roadmap and every gate. No model ever approves its own work, and no missing human ever counts as a yes.
-2. **Independent judges hold the line.** Design, code review and verification are judged by separate agents on
+2. **Independent judges hold the line.** Architecture, code review and verification are judged by separate agents on
    the strongest available model — never by the agent that produced the work.
 3. **You decide where your models run.** Local by default: your code, prompts and decisions stay on your
    machine, and a feature costs machine time, not a token bill. Private or cloud models when you choose —
@@ -75,30 +75,34 @@ each other's work, share what they learn and review each other's changes.
 
 ## 4. The process, in plain words
 
-A feature passes through ten gates. Each gate asks the human one question.
+A feature passes through twelve gates (two of them only where it touches the interface). Each gate asks the human one question.
 
 | Gate | The human's question |
 |---|---|
 | **Roadmap gate** | Which features do we build, in what order? |
 | **Concept gate** | Is this worth building, on these premises? |
-| **Design gate** | Is this the right structure? |
+| **Architecture gate** | Is this the right structure? |
+| **Experience design gate** *(interface work)* | Is this the right experience for these users and journeys, within the charter? |
 | **Specification gate** | What exactly counts as done? |
 | **Work plan gate** | In what pieces, and in what order, will it be built? |
 | **Implementation gate** | Do we start building — from a safe, restorable point — and is this still one feature? |
 | **Code review gate** | Is the code right, measured against the specification? |
+| **UI review gate** *(interface work)* | Does the built interface match the approved experience, and is it accessible and consistent? |
 | **Verification gate** | Does it actually work as specified? |
 | **Documentation gate** | Do the docs describe what was actually built? |
 | **Merge gate** | Do we ship this feature? |
 
-The first four gates settle *what to build* before any code exists. The next three *build it and prove it*. The
+The first five gates settle *what to build* before any code exists. The next four *build it and prove it*. The
 last two *describe it and ship it*. The Roadmap gate sits above all of them and is the only gate that is never
 automatic.
 
-These ten gates are the **default flow**. Teams can add gates that match how they build software — a threat model, a
+Before the first Roadmap gate, a product with an interface also gets two short, person-approved documents beside the constitution — the **experience charter** (who it is for, the journeys, the screens and wireframes) and the **design system** (the tokens, components and patterns it is built from) — which Experience design and UI review measure features against (`experience-charter.md`, `design-system.md`).
+
+These twelve gates are the **default flow**. Teams can add gates that match how they build software — a threat model, a
 security or accessibility review, a performance budget, a product sign-off — between the built-in ones; every added gate
 keeps the same guarantees, and no built-in gate can be removed (`extensible-flow.md`).
 
-For simple features the human can shorten the path: triage skips the Concept and Design gates, and after
+For simple features the human can shorten the path: triage skips the Concept and Architecture gates, and after
 approving the specification the human can let the remaining gates pass automatically — as long as every
 judge agrees. Any objection from a judge stops the line and hands it back to the human.
 
@@ -270,7 +274,7 @@ KILN builds on Pi's durable substrate while it is still experimental, and evolve
 
 - **Humans decide where it matters.** Most human time is spent at the gates where it changes outcomes, and
   almost none is spent babysitting agents.
-- **The judges earn their keep.** Problems are caught at the Design, Code review and Verification gates, not
+- **The judges earn their keep.** Problems are caught at the Architecture, Code review and Verification gates, not
   after merge — and the record shows it.
 - **Nothing is lost.** A crash costs minutes of rework at most, never a feature.
 - **Every decision is explainable.** For any merged feature, anyone can see who approved each gate, what the

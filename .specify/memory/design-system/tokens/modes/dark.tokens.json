@@ -1,0 +1,143 @@
+{
+  "$description": "Dark mode: overrides every semantic token.",
+  "color": {
+    "surface": {
+      "page": {
+        "$type": "color",
+        "$value": "#0E1A19"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#152624"
+      },
+      "sunken": {
+        "$type": "color",
+        "$value": "#0B1514"
+      },
+      "rail": {
+        "$type": "color",
+        "$value": "#0B1514"
+      },
+      "rail-raised": {
+        "$type": "color",
+        "$value": "#1B3331"
+      }
+    },
+    "text": {
+      "primary": {
+        "$type": "color",
+        "$value": "#E9EFEC"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#C9D6D2"
+      },
+      "muted": {
+        "$type": "color",
+        "$value": "#9DB1AC"
+      },
+      "on-accent": {
+        "$type": "color",
+        "$value": "#06201D"
+      },
+      "on-rail": {
+        "$type": "color",
+        "$value": "#E9EFEC"
+      },
+      "muted-on-rail": {
+        "$type": "color",
+        "$value": "#9DB1AC"
+      },
+      "link": {
+        "$type": "color",
+        "$value": "#2DD4BF"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#27403D"
+      },
+      "strong": {
+        "$type": "color",
+        "$value": "#5E7873"
+      }
+    },
+    "action": {
+      "primary": {
+        "$type": "color",
+        "$value": "#2DD4BF"
+      },
+      "primary-hover": {
+        "$type": "color",
+        "$value": "#5EEAD4"
+      },
+      "subtle": {
+        "$type": "color",
+        "$value": "#16403B"
+      },
+      "on-rail": {
+        "$type": "color",
+        "$value": "#2DD4BF"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "#2DD4BF"
+      }
+    },
+    "status": {
+      "wait": {
+        "fg": {
+          "$type": "color",
+          "$value": "#F2B24A"
+        },
+        "bg": {
+          "$type": "color",
+          "$value": "#3A2A0E"
+        }
+      },
+      "ok": {
+        "fg": {
+          "$type": "color",
+          "$value": "#86D08A"
+        },
+        "bg": {
+          "$type": "color",
+          "$value": "#163019"
+        }
+      },
+      "delegated": {
+        "fg": {
+          "$type": "color",
+          "$value": "#C2A9F5"
+        },
+        "bg": {
+          "$type": "color",
+          "$value": "#2A1F4A"
+        }
+      },
+      "info": {
+        "fg": {
+          "$type": "color",
+          "$value": "#8FB0F5"
+        },
+        "bg": {
+          "$type": "color",
+          "$value": "#16284D"
+        }
+      },
+      "danger": {
+        "fg": {
+          "$type": "color",
+          "$value": "#F59E92"
+        },
+        "bg": {
+          "$type": "color",
+          "$value": "#4A1B16"
+        }
+      }
+    }
+  }
+}

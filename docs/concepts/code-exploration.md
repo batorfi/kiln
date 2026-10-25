@@ -192,6 +192,11 @@ actually show**, plus answers from the team's interviews: *errors are never swal
 *every public endpoint is versioned*. Each principle cites its evidence. The team edits and adopts it — its first
 spec-driven artifact, and one it recognises as its own.
 
+The same applies to the experience: for a codebase with an interface, the explore maps (screens, routes, flows,
+components, tokens) feed a **discovered experience charter** — as-is journeys, a screen map and inferred wireframes,
+labelled *measured* or *inferred* — that the team confirms before it becomes a yardstick for the Experience design and UI
+review gates (`experience-charter.md` §4). The same maps yield a **discovered design system** — tokens consolidated into tiers, a component inventory, near-duplicates and unnamed literals listed as findings — confirmed the same way (`design-system.md` §7).
+
 ### 6.3 Learning spec-driven development by replaying the past
 
 For a team new to SDD, the gentlest lesson is a change it has already made. KILN takes a **merged change from history**
