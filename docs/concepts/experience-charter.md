@@ -183,7 +183,9 @@ row, a reorder — and may never change a row the engineer wrote (DIR-5).
 In a team (`team-space.md`) the **team floor** may carry a **shared charter floor** — the accessibility floor, content voice (and, in its own right, a team design system — `design-system.md` §10) — that every member workshop's charter may only make **stricter**, like configuration layering
 (`configuration.md`). Journeys and the screen map belong to the product's factory. Changing the floor is a decision of
 the team quorum; a workshop's amendments stay its own (Principle XII). A teammate's comment on an amendment is a person's
-evidence, never a decision.
+evidence, never a decision. The charter is a committed file in the one shared repository, so every member's factory reads the
+same one; amendments land through a pull request the charter's owner must approve, and other workshops adopt them at their
+next admission (`team-space.md` §11a).
 
 ## 9. How it fits KILN's rules
 

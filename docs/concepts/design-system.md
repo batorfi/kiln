@@ -382,7 +382,7 @@ screens use (§7).
 
 **Teams** (`team-space.md`). A team space may publish a **team design system** — a floor and a base: tokens, components
 and the contrast requirement. A workshop's design system **extends** it (adds, never loosens or redefines), exactly as the
-charter's team floor works (`experience-charter.md` §8). Changes to a team design system need the team's quorum.
+charter's team floor works (`experience-charter.md` §8). Changes to a team design system need the team's quorum. Within one repository the design system is a committed file every member's factory reads from `main`; changes land by pull request with the design owner's approval and are adopted at the next admission (`team-space.md` §11a).
 
 ## 11. Where it fits the constitution
 

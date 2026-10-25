@@ -235,6 +235,9 @@ a feature that violates it is "fired in the wrong atmosphere" — the defect is 
 
 ## Governance
 
+- **In a team, the constitution, the experience charter and the design system are the repository's, not a workshop's:**
+  committed files every member's factory reads from `main`, changed only by a pull request that their named owners approve,
+  pinned per feature at admission (`docs/concepts/team-space.md` §11a). A workshop may be stricter, never looser.
 - **This constitution supersedes all other KILN practices.** Where a concept doc and this constitution disagree, the
   constitution governs. The concept set (`docs/concepts/`) is read to *understand* the system; it never overrides a
   principle here.
