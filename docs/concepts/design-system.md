@@ -150,7 +150,7 @@ Tokens Community Group — so any design tool, transformer or checker can read t
 ```json
 {
   "color": {
-    "ember": { "600": { "$type": "color", "$value": "#C2410C", "$description": "KILN brand, action" } }
+    "teal": { "600": { "$type": "color", "$value": "#0F766E", "$description": "KILN accent, action" } }
   }
 }
 ```
@@ -159,7 +159,7 @@ Tokens Community Group — so any design tool, transformer or checker can read t
 {
   "color": {
     "action": {
-      "primary": { "$type": "color", "$value": "{color.ember.600}", "$description": "primary action fill" }
+      "primary": { "$type": "color", "$value": "{color.teal.600}", "$description": "primary action fill" }
     }
   }
 }
@@ -173,7 +173,7 @@ Community Group report, not a W3C standard; KILN pins the version it validates a
 
 | Tier | Holds | Named by | Used by |
 |---|---|---|---|
-| **Primitive** | raw values — the palette, the type scale, the spacing scale | what it *is*: `color.ember.600`, `space.4` | only the semantic tier |
+| **Primitive** | raw values — the palette, the type scale, the spacing scale | what it *is*: `color.teal.600`, `space.4` | only the semantic tier |
 | **Semantic** | the roles a design uses — `color.action.primary`, `color.status.wait.bg`, `space.component.gap` | what it is *for* | components, patterns, mockups, screens |
 | **Component** | a component's own aliases — `button.primary.bg → color.action.primary` | the component and its part | that component alone |
 
@@ -184,7 +184,7 @@ mockup or built CSS is a finding.
 ### 5.3 Naming
 
 `category.role.variant.state` in lower-case, dot-separated, **named by role, never by value** (`color.action.primary`,
-not `color.orange`; not `color.ember.600` in a component). Scales use numbers (`space.4`), status uses words (`ok`, `wait`,
+not `color.orange`; not `color.teal.600` in a component). Scales use numbers (`space.4`), status uses words (`ok`, `wait`,
 `error`, `info`). A name is stable: renaming is a MAJOR change (§8).
 
 ### 5.4 Required semantic roles
