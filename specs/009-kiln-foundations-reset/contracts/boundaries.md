@@ -59,6 +59,7 @@ comment is not an import) — `import … from "x"`, `export … from "x"`, `imp
 | `boundary-package-undeclared` | a `packages/<dir>` not in `layers` | directory |
 | `boundary-responsibility-missing` | a directory under `packages/`, or `checks/`, without a non-empty `responsibility` in its `kiln.json` | directory |
 | `boundary-zero-files` | the scan examined no file | — (never-vacuous) |
+| `boundary-rules-invalid` | the rule file is unreadable, not schema 1, names an undeclared layer, or its layers form a cycle | file and reason |
 
 ## Required behaviours (each is a test with a scratch tree)
 

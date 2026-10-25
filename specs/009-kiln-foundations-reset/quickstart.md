@@ -110,6 +110,7 @@ Prove it can fail:
 cp -R .. /tmp/kiln-scratch && cd /tmp/kiln-scratch/kiln
 printf 'import "#lane/affinity.ts";\nexport const z = 1;\n' > packages/record/src/oops.ts
 npm run kiln -- check boundaries     # FAIL boundary-forbidden-import  packages/record/src/oops.ts
+rm packages/record/src/oops.ts
 printf 'import fs from "node:fs";\nexport const z = fs;\n' > packages/contracts/src/oops.ts
 npm run kiln -- check boundaries     # FAIL boundary-contracts-io
 rm -rf /tmp/kiln-scratch

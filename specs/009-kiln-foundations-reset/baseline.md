@@ -91,3 +91,13 @@ reported skips.
 | Mutation | seven mutants of `network-lint.ts` (zero-files guard, primitive, module denylist, allowlist-everything, computed access, bare-name check, no tokenizer) | each fails ≥ 1 test (1, 3, 4, 15, 3, 1, 9) |
 | Legacy | `git rev-parse HEAD:legacy` | `20a82c7e…` unchanged |
 
+### After US5 (T072–T077, 2026-10-25)
+
+| Check | Command | Result |
+|---|---|---|
+| New suite | `cd kiln && npm run test:new` | **170 tests, 170 pass, 0 fail** (was 150) |
+| Boundaries tests | `checks/tests/boundaries.test.ts` (16, B1–B10 and the rule-file/seam/test-file cases) and `packages/cli/tests/check-boundaries.test.ts` (4) | each violation fails by its own rule name with file and what the package may import; the real packages pass; the rule file equals `contracts/boundaries.md` (17 layers) |
+| **All three checks** | `cd kiln && npm run check` | **exit 0**: `PASS network — scanned 22 files`, `PASS boundaries — scanned 22 files`, `PASS legacy — scanned 168 files` |
+| Quickstart §5 | scratch copy with `import "#lane/affinity.ts"` in `record`, then `import fs from "node:fs"` in `contracts` | `FAIL boundary-forbidden-import packages/record/src/oops.ts …`; `FAIL boundary-contracts-io packages/contracts/src/oops.ts …`, exit 1 |
+| Mutation | nine mutants of `boundaries.ts` (allowed-list, contracts I/O, bare specifiers, legacy imports, zero-files, undeclared packages, empty responsibility, relative cross-package imports, no tokenizer) | each fails ≥ 1 test (4, 2, 2, 1, 1, 1, 1, 1, 8) |
+

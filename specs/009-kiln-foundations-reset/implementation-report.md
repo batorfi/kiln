@@ -254,3 +254,22 @@ Next: US4 (T059–T071, the network lint — ports 20 cases, so ported total bec
 
 Next: US5 (T072–T077, `kiln check boundaries`), then Polish (T081–T087).
 
+## 15. User Story 5 completed — package boundaries (2026-10-25, T072–T077)
+
+77 of 87 tasks done; **all five user stories are complete**. New suite **170 tests, 0 failures**; `npm run check` is green with all three checks.
+
+| Piece | Where |
+|---|---|
+| The rule file: 17 layers following PRD §8.2, `contracts` with `builtins: "none"`, no external seams, `legacy/` forbidden — equal to the contract's content | `kiln/checks/boundaries.json` |
+| The check: classifies every import specifier (relative → resolved to its package, `#pkg/…`, `node:`, bare), applies the rules, verifies every `packages/*` directory is declared and every unit (and `checks/`) has a non-empty `responsibility`, validates the rule file itself (shape, dangling layer names, cycles) | `kiln/checks/boundaries.ts`; registered in `checks/index.ts` |
+| Tests | `checks/tests/boundaries.test.ts` (16), `packages/cli/tests/check-boundaries.test.ts` (4) |
+
+**Choices worth knowing:**
+- A relative import into another package is judged exactly like the `#pkg/…` form, so the imports map cannot be bypassed with `../../lane/…`.
+- An unprefixed builtin (`"fs"`) is a bare specifier — the tree uses `node:` everywhere, and the check keeps it that way.
+- The rule file is itself checked (`boundary-rules-invalid`): a layer that names an undeclared layer, or a cycle, fails — a dependency direction that loops has no direction. This code is new; it is not in the contract's failure list and should be added to `boundaries.md`.
+- The responsibility is read from the top-level `responsibility` of each `kiln.json` (the tasks' `kiln.responsibility` wording was loose).
+- The tests and the lint/boundary checks scan the same files (`networkScanFiles`), so a file can never be seen by one and missed by the other.
+
+Remaining: **Polish T081–T087** — explainers (`kiln-v1.md` §5.2, `kiln-architecture.md` §13, `_generate.py`), the plan's "Implementation notes", the ported-case census tool, a fresh-clone run of every quickstart scenario, the Node 22.18 run (and, per code-review finding 1, 23.6 and 24.1), the roadmap-untouched confirmation, and the verification report.
+
