@@ -368,5 +368,5 @@ still say ten gates.
 **Alternatives.** (2) Keep v2 as the ten-gate v2.0.1 flow and add a v3 in r14 — rejected: the tests that read the live constitution could not pass, and r12 would
 ship a "current" flow the constitution no longer calls current. (3) Wait for the next Roadmap gate — rejected by the human.
 
-**Follow-ups outside this row** (listed in the verification report): an `edit-rows` proposal for r14's text; the PRD's WORK-2 line (T080); the explainers
-(T081); `kiln check flow` (r14) will check the twelve-gate invariants.
+**Follow-ups outside this row** (listed in the verification report): the next Roadmap gate decides the `edit-rows` text of `60a2c7e` (r12, r14, r15, r17, r19, r20, r22, r28–r30, r32, r43); the explainers
+(T081, partly regenerated in `60a2c7e`); `kiln check flow` (r14) will check the twelve-gate invariants.

@@ -303,7 +303,7 @@ management API, only `server` and `host` open listeners) — without reading eve
 - **FR-020**: The PRD's WORK-2 was corrected on 2026-10-22 to drop `docs-synthesizer` as a judge, matching constitution
   v2.0.1; this row MUST implement the corrected requirement, extended by constitution v2.1.0's judges (design critic, UI reviewer). The
   PRD's WORK-2 text still names v2.0.1 and three judges; the constitution governs, and the PRD line is brought in step in T080.
-- **FR-021**: The row MUST leave the admitted program (`specs/ROADMAP.md`) unchanged and MUST NOT record any gate decision.
+- **FR-021**: The row's own implementation MUST leave the admitted program (`specs/ROADMAP.md`) unchanged — row `r12` stays `queued`, `gate0` and its log are untouched — and MUST NOT record any gate decision. *Exception recorded 2026-10-25:* at human@batorfi's request, commit `60a2c7e` folded the twelve-gate flow and the experience-charter proposals into the rows as `edit-rows` text (no row, dependency or order changed, nothing logged), proposed for the next Roadmap gate; the row's tasks do not touch the file again.
 
 ### Key Entities
 

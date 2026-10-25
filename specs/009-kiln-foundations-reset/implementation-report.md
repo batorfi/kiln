@@ -171,3 +171,12 @@ After this report was first written, `main` gained constitution **v2.1.0** (PR #
   are unchanged.
 - **Not done, by design (FR-021 and scope):** `specs/ROADMAP.md` (its r14 text still says "ten gates" — an `edit-rows` proposal for the next Roadmap gate), the PRD's WORK-2 line (T080),
   the explainers (T081), `v2.ts` and the tests (US3, T048–T058), evaluating `applies_when`, and the `kiln check design-system` / `foundations` checks.
+
+## 10. Roadmap and PRD updated (2026-10-25, commit `60a2c7e`)
+
+At the human's request, after the twelve-gate decision:
+- **`specs/ROADMAP.md`** — the `edit-rows` text of the three concept docs' proposals (charter §11, design system §14, interface gates §13) was folded into rows **r12, r14, r15, r17, r19, r20, r22, r28, r29, r30, r32, r43** (and the prose "ten gates" → the
+  twelve-gate flow; the r12/r14 decision row now says constitution v2.1.0, five judges). No row, dependency or order changed; `gate0` and its log are untouched; the header says plainly the text is *proposed for the next
+  Roadmap gate* (the precedent of r53). `legacy/validate/roadmap.ts` → PASS.
+- **`docs/prd/kiln-prd.md`** — §8.2 (`legacy/` at the repository root, with the measurement), WORK-2 (five judges, v2.1.0), GATE-2 (the two interface gates' moves), M1, goal 1, the status line (T080 done).
+- **Explainers** regenerated (`_generate.py`): only the eight files for the edited rows changed. FR-021 and T086 now name `60a2c7e` as the baseline.
