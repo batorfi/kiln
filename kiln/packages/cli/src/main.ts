@@ -1,8 +1,8 @@
 // kiln — the command line. r12: `kiln check [name…] [--json]` (contracts/cli-check.md).
-import { fileURLToPath } from "node:url";
 import { CHECK_NAMES, runChecks } from "#checks/index.ts";
 import type { CheckName, CheckResult } from "#checks/index.ts";
 import { PASS } from "#record/report.ts";
+import { isEntryPoint } from "#record/entry.ts";
 
 const USAGE = `usage: kiln check [${CHECK_NAMES.join("|")}]… [--json]`;
 
@@ -39,5 +39,5 @@ export function main(argv: readonly string[]): number {
   return results.every((r) => r.ok) ? 0 : 1;
 }
 
-// Not `import.meta.main`: it is undefined on Node 23.x and 24.0–24.1, inside the declared engines range, where the command would exit 0 silently.
-if (process.argv[1] !== undefined && fileURLToPath(import.meta.url) === process.argv[1]) process.exitCode = main(process.argv.slice(2));
+// The entry guard is shared and symlink-safe (see #record/entry.ts); `import.meta.main` is not available on every supported Node.
+if (isEntryPoint(import.meta.url)) process.exitCode = main(process.argv.slice(2));

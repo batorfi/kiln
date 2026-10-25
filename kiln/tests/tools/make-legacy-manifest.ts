@@ -10,6 +10,7 @@ import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { isEntryPoint } from "#record/entry.ts";
 
 const kilnDir = fileURLToPath(new URL("../..", import.meta.url));
 const IGNORE = ["factory-log/*.jsonl", "factory-log/*.log"];
@@ -45,7 +46,7 @@ export function buildManifest(commitish: string) {
   };
 }
 
-if (process.argv[1] !== undefined && fileURLToPath(import.meta.url) === process.argv[1]) {
+if (isEntryPoint(import.meta.url)) {
   const args = process.argv.slice(2);
   const outAt = args.indexOf("--out");
   const out = outAt >= 0 ? args[outAt + 1] : fileURLToPath(new URL("../../checks/legacy-manifest.json", import.meta.url));

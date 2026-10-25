@@ -11,7 +11,7 @@
 // CLI: `node packages/record/src/log.ts <file.jsonl>` (or `npm run validate:log -- <file.jsonl>`) — prints PASS or FAIL + reasons.
 
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { isEntryPoint } from "./entry.ts";
 import { validate, isValid, type ValidationError } from "./validate-core.ts";
 import { moveAllowed } from "#contracts/flow/index.ts";
 import { nameRecord, nameSeq, nameMove, fmt, PASS } from "./report.ts";
@@ -176,13 +176,7 @@ export function validateLogFile(path: string, schema?: Record<string, unknown>):
 }
 
 // ---- CLI entry (T012) ----
-function isMain(): boolean {
-  try {
-    return process.argv[1] !== undefined && fileURLToPath(import.meta.url) === process.argv[1];
-   } catch {
-    return false;
-   }
-}
+const isMain = (): boolean => isEntryPoint(import.meta.url);
 if (isMain()) {
   const path = process.argv[2];
   if (!path) {

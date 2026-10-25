@@ -1,0 +1,205 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "kind": "ported",
+      "legacy": "contracts/move-vocabulary.ts",
+      "ported": "packages/contracts/src/moves.ts",
+      "since": "719ee13",
+      "retiresWith": "legacy-retirement",
+      "note": "v1 flow data; the v2 flow joins in US3"
+    },
+    {
+      "kind": "ported",
+      "legacy": "contracts/move-vocabulary.ts",
+      "ported": "packages/contracts/src/flow/v1.ts",
+      "since": "719ee13",
+      "retiresWith": "legacy-retirement",
+      "note": "v1 flow data; the v2 flow joins in US3"
+    },
+    {
+      "kind": "ported",
+      "legacy": "contracts/move-vocabulary.ts",
+      "ported": "packages/contracts/src/flow/index.ts",
+      "since": "719ee13",
+      "retiresWith": "legacy-retirement",
+      "note": "v1 flow data; the v2 flow joins in US3"
+    },
+    {
+      "kind": "ported",
+      "legacy": "src/roles.ts",
+      "ported": "packages/contracts/src/roles.ts",
+      "since": "719ee13",
+      "retiresWith": "legacy-retirement",
+      "note": "the roster is now flow data; the message says judge role"
+    },
+    {
+      "kind": "ported",
+      "legacy": "src/types.ts",
+      "ported": "packages/contracts/src/types.ts",
+      "since": "719ee13",
+      "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "ported",
+      "legacy": "schemas/factory-log.schema.json",
+      "ported": "packages/contracts/schemas/factory-log.schema.json",
+      "since": "719ee13",
+      "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "ported",
+      "legacy": "schemas/roadmap.schema.json",
+      "ported": "packages/contracts/schemas/roadmap.schema.json",
+      "since": "719ee13",
+      "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "ported",
+      "legacy": "validate/_core.ts",
+      "ported": "packages/record/src/validate-core.ts",
+      "since": "719ee13",
+      "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "ported",
+      "legacy": "validate/_report.ts",
+      "ported": "packages/record/src/report.ts",
+      "since": "719ee13",
+      "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "ported",
+      "legacy": "src/clock.ts",
+      "ported": "packages/record/src/clock.ts",
+      "since": "719ee13",
+      "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "ported",
+      "legacy": "validate/roadmap.ts",
+      "ported": "packages/record/src/roadmap.ts",
+      "since": "493bb7b",
+      "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "ported",
+      "legacy": "validate/log.ts",
+      "ported": "packages/record/src/log.ts",
+      "since": "493bb7b",
+      "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "ported",
+      "legacy": "src/scheduler.ts",
+      "ported": "packages/lane/src/affinity.ts",
+      "since": "493bb7b",
+      "retiresWith": "legacy-retirement",
+      "note": "only the pure part (switchCount, bindAll, judgeUnitsBoundStrongest); schedule stays in legacy until the lane task (r13/r16)"
+    },
+    {
+      "kind": "ported",
+      "legacy": "src/stub-resident.ts",
+      "ported": "packages/lane/src/types.ts",
+      "since": "493bb7b",
+      "retiresWith": "legacy-retirement",
+      "note": "only the WorkUnit shape"
+    },
+    {
+      "kind": "ported",
+      "legacy": "fixtures/r7-live-inference.jsonl",
+      "ported": "fixtures/r7-live-inference.jsonl",
+      "since": "493bb7b",
+      "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "ported",
+      "legacy": "fixtures/r7-live-broken.jsonl",
+      "ported": "fixtures/r7-live-broken.jsonl",
+      "since": "493bb7b",
+      "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "ported",
+      "legacy": "fixtures/r7-live-inference.meta.json",
+      "ported": "fixtures/r7-live-inference.meta.json",
+      "since": "493bb7b",
+      "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "ported",
+      "legacy": "ROADMAP.md",
+      "ported": "packages/record/tests/fixtures/roadmap-blank.md",
+      "since": "493bb7b",
+      "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "ported",
+      "legacy": "tests/contract/log.test.ts",
+      "ported": "packages/record/tests/log-contract.test.ts",
+      "since": "493bb7b",
+      "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "ported",
+      "legacy": "tests/contract/roadmap.test.ts",
+      "ported": "packages/record/tests/roadmap-contract.test.ts",
+      "since": "493bb7b",
+      "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "ported",
+      "legacy": "tests/negative/no-silent-approval.test.ts",
+      "ported": "packages/record/tests/no-silent-approval.test.ts",
+      "since": "493bb7b",
+      "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "ported",
+      "legacy": "tests/negative/roadmap-m3.test.ts",
+      "ported": "packages/record/tests/roadmap-m3.test.ts",
+      "since": "493bb7b",
+      "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "wait",
+      "legacy": "tests/negative/async-await.test.ts",
+      "portedBy": "r16",
+      "cases": 4,
+      "retiresWith": "legacy-retirement",
+      "note": "subject validate/runtime-ready.ts, a readiness probe on the lane runtime"
+    },
+    {
+      "kind": "wait",
+      "legacy": "tests/negative/not-silent.test.ts",
+      "portedBy": "r16",
+      "cases": 5,
+      "retiresWith": "legacy-retirement",
+      "note": "subject: the live resident"
+    },
+    {
+      "kind": "wait",
+      "legacy": "tests/netscan/allowlist.test.ts",
+      "portedBy": "r16",
+      "cases": 6,
+      "retiresWith": "legacy-retirement",
+      "note": "subject: the Ollama resident's allowlist entry"
+    },
+    {
+      "kind": "wait",
+      "legacy": "tests/scheduler/scheduler.test.ts",
+      "portedBy": "r13",
+      "cases": 3,
+      "retiresWith": "legacy-retirement",
+      "note": "subject: schedule and the stub resident; the pure part has 3 new tests in lane/tests/affinity.test.ts"
+    },
+    {
+      "kind": "wait",
+      "legacy": "tests/switch-cost/switch-cost.test.ts",
+      "portedBy": "r16",
+      "cases": 1,
+      "retiresWith": "legacy-retirement",
+      "note": "live-gated; subject: the Ollama and live residents"
+    }
+  ]
+}

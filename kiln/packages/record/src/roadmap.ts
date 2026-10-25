@@ -10,7 +10,7 @@
 // CLI: `node packages/record/src/roadmap.ts <file.md>` (or `npm run validate:roadmap -- <file.md>`) — prints PASS or FAIL + reasons.
 
 import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import { isEntryPoint } from "./entry.ts";
 import { validate, type Schema } from "./validate-core.ts";
 import { fmt, PASS } from "./report.ts";
 
@@ -117,13 +117,7 @@ export function validateRoadmapFile(path: string, schema?: Schema): RoadmapResul
 }
 
 // ---- CLI entry (T017) ----
-function isMain(): boolean {
-  try {
-    return process.argv[1] !== undefined && fileURLToPath(import.meta.url) === process.argv[1];
-    } catch {
-      return false;
-    }
-}
+const isMain = (): boolean => isEntryPoint(import.meta.url);
 if (isMain()) {
   const path = process.argv[2];
   if (!path) {
