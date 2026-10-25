@@ -5,7 +5,7 @@
 
 ## 1. Verdict
 
-> **Update 2026-10-25:** finding 1 is **fixed** (`main.ts` now uses the `process.argv[1]` guard; verified on Node 22.18, 23.6, 24.1 and 25.9 — all print the `FAIL … check-not-registered` block and exit 1). Finding 3 is **addressed in `tasks.md`** (T021 and T050 reworded). Findings 2 and 4 are **fixed** (`TierPolicyError` in `roles.ts`; `Object.hasOwn` lookups in `flow/index.ts`; re-run parity: 0 mismatches, a wrong roster now surfaces a `TypeError`, `flowOf("toString")` throws `unknown flow`). Finding 5 is open.
+> **Update 2026-10-25:** finding 1 is **fixed** (`main.ts` now uses the `process.argv[1]` guard; verified on Node 22.18, 23.6, 24.1 and 25.9 — all print the `FAIL … check-not-registered` block and exit 1). Finding 3 is **addressed in `tasks.md`** (T021 and T050 reworded). Findings 2 and 4 are **fixed** (`TierPolicyError` in `roles.ts`; `Object.hasOwn` lookups in `flow/index.ts`; re-run parity: 0 mismatches, a wrong roster now surfaces a `TypeError`, `flowOf("toString")` throws `unknown flow`). Finding 5: F3's source is decided (parse the legacy file's text, as T044 does) and written into T053; the remaining parts (Phase 2 tests, the runner) arrive with their tasks.
 
 **The work done so far is sound, with one defect that must be fixed before the next entry point is written.** The move is clean (tree id equal to the baseline,
 legacy suite green), the copies are exact, and flow v1 / the tier policy reproduce the first program's behaviour with zero mismatches. The defect: the new CLI
@@ -18,7 +18,7 @@ smaller correctness hazards and one forward-looking ordering risk are listed bel
 | 2 | Medium — fixed | Confirmed (run) | `contracts` | `weakerBindingRejected` treats every thrown error as a correct rejection |
 | 3 | Medium — tasks reworded | Plausible (task order) | `contracts` / `record` | one `DEFAULT_FLOW` serves two meanings; T050 flips it before T052 makes T021's call explicit |
 | 4 | Low — fixed | Confirmed (run) | `contracts` | plain-object lookups accept prototype keys (`flowOf("toString")`) |
-| 5 | Low | Confirmed | process | no test covers any Phase 2 code; `npm test` in `kiln/` cannot start; F3 as written needs legacy data the new code may not import |
+| 5 | Low — F3 decided | Confirmed | process | no test covers any Phase 2 code; `npm test` in `kiln/` cannot start; F3 as written needs legacy data the new code may not import |
 | 6 | Info | — | various | stale provenance comments in copied files; escaped em dashes; interim README |
 
 ## 2. What was reviewed and how
