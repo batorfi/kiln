@@ -267,3 +267,27 @@ Order matters; each phase leaves the repository green.
 
 Re-evaluated against the Phase 1 artifacts: the data model adds only static, checked-in structures and one optional record field; the contracts add one read-only command
 and one runner; no principle's evaluation changed. **Still no violations.**
+
+## Implementation notes (2026-10-25)
+
+What was built differs from the plan above in the ways listed here; each has its reason, and none changes a requirement.
+
+| # | Plan said | Built | Why |
+|---|---|---|---|
+| 1 | each package states its responsibility in its `package.json` | in a `kiln.json` (nine packages and `checks/`) | a `package.json` in a package directory would make Node treat it as a package boundary for the `imports` map (research R3, decided before coding) |
+| 2 | the manifest generated at P0 | generated right after the move, from the baseline commit's blobs, by `kiln/tests/tools/make-legacy-manifest.ts` | the new `kiln/` could not hold the generator until the old one had moved; git objects are unaffected by the move |
+| 3 | flow v2 = constitution v2.0.1, ten gates | **twelve gates**, five judges, `applies_when` declared (Amendment 2026-10-25, A1–A8) | constitution v2.1.0 landed on `main` mid-row; the human chose v2 = the twelve-gate flow |
+| 4 | one default flow constant | `CURRENT_FLOW` (v2, for calls) and `DEFAULT_RECORD_FLOW` (v1, for records) | code-review finding 3: a single default would have silently judged history by v2 |
+| 5 | `weakerBindingRejected` returns true when a binding throws | returns true only for `TierPolicyError`; anything else rethrows | code-review finding 2 |
+| 6 | the CLI's entry guard unspecified | `record/src/entry.ts` (`isEntryPoint`: realpath on both sides), used by the CLI, both validators and the manifest generator | `import.meta.main` is missing on Node 23.x/24.0–24.1; the first program's `argv[1] === import.meta.url` idiom fails through a symlinked path (macOS temp dirs) — both would exit 0 silently |
+| 7 | `validateLog(text)` | the first program's API kept: `validateLog(records, schema?, options?)`, `validateLogFile(path, …)`; `nameMove` in `report.ts` now names the flow | keeps the ported tests' call sites; the contract was corrected |
+| 8 | `checks/legacy-identity.ts` takes a root | `checkLegacy({legacyDir?, kilnDir?, manifest?, copies?})` | lets tests tamper with a temporary copy; the CLI test runs from a copy of `kiln/` + `legacy/` |
+| 9 | the runner has `--new-only`, forwarded flags | also `--legacy-only`, exclusive flags, unknown flags exit 2, `KILN_LEGACY_RUNNER` (a probe for the runner's own tests), `NODE_TEST_CONTEXT` stripped for nested runs | the legacy suite takes ~35 s; the runner's tests must observe the Pi decision without running it three times |
+| 10 | the lint keeps the first program's "alias" rule whole | `globalThis[…]` is `network-computed`; `#…` imports are internal; imports are read from an offset-aligned `masked` view; the one-entry allowlist rule and the Pi-driver exemption dropped | the task and quickstart name `network-computed`; the new tree uses the imports map; B7 needs a statement inside a string not to be read as an import |
+| 11 | failure names of the contracts | added: `legacy-manifest-invalid`, `network-external-dependency`, `network-nonloopback-url`, `network-allowlist-invalid`, `boundary-rules-invalid`, `check-not-registered` | every failure path must have a name; documented in the contracts |
+| 12 | copy-record shape | `cases` added to `wait` records (the 19 are summed from it) | lets `kiln check legacy` and the census tool state the 19 without reading legacy tests |
+| 13 | phases P0–P10 in one order | built by user story (US1…US5), then polish | the tasks' organisation; every phase still left the repository green except between T019 and T031, when `npm test` in `kiln/` had no runner yet |
+| 14 | tests listed per package | more tests than planned: 170+ new/ported in the new suite (the plan counted 54 ported + a few new) | every check has a falsify hook and every new module a mutation-checked test |
+
+Not done in this row, by design: evaluating `applies_when`, the *not applicable* outcome, the experience charter and design-system artifacts, `kiln check flow` (r14), `agents/` (r17).
+

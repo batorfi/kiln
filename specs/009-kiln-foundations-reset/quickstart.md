@@ -70,7 +70,7 @@ rm -rf /tmp/kiln-scratch
 node --test packages/contracts/tests/        # flow v1/v2 against the first program's vocabulary, the constitution and PRD GATE-1/GATE-2
 node packages/record/src/log.ts fixtures/r7-live-inference.jsonl                  # PASS — flow v1 by default (the record names none)
 node packages/record/src/log.ts fixtures/r7-live-inference.jsonl --flow v2        # PASS — v2's moves contain v1's
-printf '%s\n' '{"ts":"2026-01-01T00:00:00Z","seq":1,"recordType":"gate-completion","gate-completion":{"gate":6,"move":"revise","cost":{"switches":0,"wallClock":"0"},"decidedBy":"human@x"}}' > /tmp/rev.jsonl
+printf '%s\n' '{"ts":"2026-01-01T00:00:00Z","seq":1,"recordType":"gate-completion","gate-completion":{"gate":6,"move":"revise","cost":{"switches":0,"wallClock":"00:01"},"decidedBy":"human@x"}}' > /tmp/rev.jsonl
 node packages/record/src/log.ts /tmp/rev.jsonl                 # FAIL — G3 … move "revise" not in MoveVocabulary(gate=6, flow=v1); allowed: approve, restart
 node packages/record/src/log.ts /tmp/rev.jsonl --flow v2       # PASS
 ```
@@ -121,7 +121,7 @@ rm -rf /tmp/kiln-scratch
 ## 6. Nothing was lost *(US1.3 · SC-002 · FR-015)*
 
 ```bash
-node -e 'const c=require("./checks/legacy-copies.json"); console.log(c.copies.filter(x=>x.kind==="wait").length, "deferred;", c.copies.filter(x=>x.kind==="ported").length, "ported")'
+node tests/tools/count-ported.ts      # the census: every ported file with its case count on both sides, the 19 waiting files, and PASS or FAIL
 ```
 
 **Expect**: the 19 deferred test cases appear by file, each with the row that will port it (`r13`, `r16`); the ported entries cover the 54. Both sets still pass:
