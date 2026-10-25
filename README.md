@@ -7,7 +7,7 @@ Durable, recorded, local by default — one feature at a time, in your own works
 > **Status: design final, roadmap admitted, restart starting.** KILN is being rebuilt around a new design: a local **web front door** on
 > **[Pi](https://pi.dev) and Pi Durable**, with gates as durable tasks, an event-based record, a knowledge base per factory,
 > and teams of personal workshops. The concept documents, the PRD and the [constitution](./.specify/memory/constitution.md)
-> (v2.0.1) were **finalized on 2026-10-21**, with every decision that shapes `kiln-v1` made and
+> (v2.1.0) were **finalized on 2026-10-21** (constitution amended 2026-10-25), with every decision that shapes `kiln-v1` made and
 > [recorded](./docs/concepts/open-decisions.md). The [roadmap](./specs/ROADMAP.md) was **admitted at the Roadmap gate on 2026-10-22**
 > (human@batorfi): 41 rows, r12 next. The implementation starts with r12. Since then, research snapshots of
 > [models](./docs/concepts/model-landscape.md) and [dev machines](./docs/concepts/dev-machines.md) and proposals for
@@ -193,7 +193,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 |---|---|
 | **The design** | **final** (2026-10-21) as concepts: [vision](./docs/concepts/vision.md), [the flow](./docs/concepts/the-flow.md), [the web front door](./docs/concepts/web-front-door.md), [user experience](./docs/concepts/user-experience.md) and companions in [`docs/concepts/`](./docs/concepts); [decisions settled and still open](./docs/concepts/open-decisions.md) |
 | **The product definition** | the [PRD](./docs/prd/kiln-prd.md), **final**: principles, requirements, architecture, what to keep from today's code, milestones |
-| **The law** | the [constitution](./.specify/memory/constitution.md) **v2.0.1**, amended for the restart on 2026-10-21 — [explained for engineers](./docs/architecture/explainers/kiln-constitution.md) |
+| **The law** | the [constitution](./.specify/memory/constitution.md) **v2.1.0**, amended for the restart on 2026-10-21 and for the experience charter on 2026-10-25 — [explained for engineers](./docs/architecture/explainers/kiln-constitution.md) |
 | **The roadmap** | **admitted** at the Roadmap gate on 2026-10-22 by human@batorfi — [the program](./specs/ROADMAP.md) ([what `kiln-v1` delivers](./docs/architecture/explainers/kiln-v1.md)) of 41 feature-sized rows (r12–r52; `kiln-v1` is 26 of them, including the r42 spike, the team space, the explore space and Zed phase 1), `kiln-v1` at r32 — **r12 is the admitted next row** |
 | **Beyond `kiln-v1`** | [what `kiln-v1.x` adds](./docs/architecture/explainers/kiln-v1x.md); proposals for [exploring codebases before adoption](./docs/concepts/code-exploration.md), [hybrid deployments](./docs/concepts/hybrid-deployments.md) and [KILN in Zed](./docs/concepts/zed-integration.md); research snapshots of [models](./docs/concepts/model-landscape.md), [routers](./docs/concepts/model-routers.md) and [dev machines](./docs/concepts/dev-machines.md) (2026-10) |
 | **The code** | the **foundation from the first program** (rows r1–r8, KILN as a Pi extension): the single-lane runtime, the gate and log machinery, a real local-model worker, KILN loading into Pi, validators and readiness probes, and the test suite — reused by the restart (PRD §10) |

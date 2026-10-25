@@ -1,4 +1,4 @@
-> Status: concept — **proposal** (2026-10-25, drafted for human@batorfi). Admitting it into the program is decided only
+> Status: concept — **approved by human@batorfi (2026-10-25)**. Admitting it into the program is decided only
 > at the Roadmap gate (`add-row` / `edit-rows`). Direction **A** (one added design gate) plus the **UI review** gate were
 > chosen in review on 2026-10-25.
 > Type: concept

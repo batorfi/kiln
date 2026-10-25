@@ -1,4 +1,4 @@
-> Status: concept — **proposal** (2026-10-25, drafted for human@batorfi). Admitting it into the program is decided only at
+> Status: concept — **approved by human@batorfi (2026-10-25)**, including wireframes and the constitution 2.1.0 amendment. Admitting it into the program is decided only at
 > the Roadmap gate (`add-row` / `edit-rows`); the four questions below were decided in review on 2026-10-25.
 > Type: concept
 >
