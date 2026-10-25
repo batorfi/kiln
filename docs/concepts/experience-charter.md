@@ -147,7 +147,7 @@ row, a reorder — and may never change a row the engineer wrote (DIR-5).
 | **Concept and Specification briefs** | *the yardstick* part cites the principles and journey steps the feature serves, and the accessibility floor |
 | **Design brief** | cites the screen map and interaction patterns the design must follow, as it cites the constitution |
 | **Judges** | the architecture critic and the code reviewer are given the charter as part of their inputs and report findings against its ids |
-| **Experience design and UI review gates** *(proposed separately)* | the added gates measure against the charter; without them the charter still informs every built-in brief |
+| **Experience design and UI review gates** *(proposed in [`ui-flow.md`](./ui-flow.md))* | the added gates measure against the charter; without them the charter still informs every built-in brief |
 | **Verification** | the accessibility floor and quality bars become checks where they can be run deterministically |
 | **Documentation and knowledge** | feature stories link the journeys a feature completed; the knowledge base cites the charter version |
 | **Bench** | a journey with unproven assumptions is offered as *research this* / *spike this* in the Roadmap-gate evidence view |
