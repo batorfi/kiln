@@ -22,7 +22,8 @@ whole unless `--new-only`. `--live`, `--cost`, `--serial` and `--pi` are passed 
 | legacy | the first program's whole `tests/**/*.test.ts` | the frozen `legacy/tests/run.ts` as a second child, `cwd = legacy/` |
 
 Each suite is held to the first program's rule: **a suite that executed zero tests fails** (`FAIL — the run executed ZERO tests …`), so a mistyped path or an
-empty glob cannot pass silently. The exit code is non-zero if either suite fails. A one-line summary is printed at the end: `new: N tests · legacy: M tests`.
+empty glob cannot pass silently. The exit code is non-zero if either suite fails. A one-line summary is printed at the end: `new: N tests · legacy: M tests`. Skipped tests are counted in N and M and shown beside them when there are any —
+`new: 170 tests (5 skipped) · legacy: 500 tests (30 skipped)` — so a run that skipped the git cross-checks (a shallow clone, an archive) says so on the line a person reads.
 
 ## The Pi tier decision (US2, FR-006)
 

@@ -38,12 +38,13 @@ declared fails `boundary-package-undeclared`. `cli` importing `server` is declar
 
 ## Scan
 
-For every non-test `.ts` file under `packages/*/src` and `checks/*.ts`: read import specifiers with the lint's tokenizer (so a specifier inside a string or
-comment is not an import) — `import … from "x"`, `export … from "x"`, `import("x")`, `require("x")` — and classify each:
+For every non-test `.ts` file anywhere under `packages/<name>/` and `checks/` (recursively; `tests/` directories, `*.test.*` files, `node_modules` and `.git` are the only things skipped): read import specifiers with the lint's
+tokenizer (so a specifier inside a string or comment is not an import) — `import … from "x"`, `export … from "x"`, `import "x"`, `import("x")`, `require("x")`, with or without whitespace between the tokens (`import{a}from"x"`,
+`import ("x")`) — and classify each:
 
 | Specifier | Class | Rule |
 |---|---|---|
-| `./…`, `../…` | relative | resolved to a path; within the same package ⇒ fine; into another package ⇒ treated as that package's import (same rule as `#`); into `legacy/` ⇒ `boundary-legacy-import` |
+| `./…`, `../…` | relative | resolved to a path; within the same package ⇒ fine; into another package ⇒ treated as that package's import (same rule as `#`); into `legacy/` ⇒ `boundary-legacy-import`; into `kiln/tests/`, `kiln/fixtures/` or the root of `kiln/` ⇒ `boundary-forbidden-import` (source imports only from `packages/` and `checks/`) |
 | `#<pkg>/…` | package import | `<pkg>` must be in this package's `imports` list, else `boundary-forbidden-import` |
 | `node:<module>` | builtin | `contracts` (`builtins: "none"`) may import **none** — `boundary-contracts-io`; others free |
 | anything else | bare | `boundary-bare-specifier`, unless an `externals` entry allows that specifier **in that package** (empty in r12: FR-002) |
@@ -75,3 +76,4 @@ comment is not an import) — `import … from "x"`, `export … from "x"`, `imp
 | B8 | a `packages/` directory not in `layers` | fails `boundary-package-undeclared` |
 | B9 | a package whose `kiln.json` lacks `responsibility` | fails `boundary-responsibility-missing` |
 | B10 | an empty scan root | fails `boundary-zero-files` |
+| B11 | `import{a}from"#lane/x.ts"` in `record` (no spaces); `import "../../../tests/x.ts"` in `lane` | fail `boundary-forbidden-import` (code review finding 1, 3; `checks/tests/network-spellings.test.ts`) |

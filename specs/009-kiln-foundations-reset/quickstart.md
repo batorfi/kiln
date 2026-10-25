@@ -27,11 +27,11 @@ cat packages/*/kiln.json checks/kiln.json | grep responsibility       # one sent
 npm test
 ```
 
-**Expect** (on a machine with Pi 1.1.0, as the author's):
+**Expect** (on a machine with an installed Pi that is not on the measured list — here Pi 1.4.0; the version in the first line is whatever `pi --version` says):
 
 ```text
-live-Pi tier skipped: Pi 1.1.0 installed, measured [0.85.1]
-new: 170 tests · legacy: 500 tests
+live-Pi tier skipped: Pi 1.4.0 installed, measured [0.85.1]
+new: 184 tests · legacy: 500 tests (30 skipped)
 exit 0   — 0 failures
 ```
 
@@ -40,7 +40,7 @@ exit 0   — 0 failures
 - On a machine with Pi 0.85.1 the line is absent and the Pi tier runs as the first program's did.
 
 ```bash
-npm test -- --pi              # DEMAND the tier on this host (Pi 1.1.0)
+npm test -- --pi              # DEMAND the tier on this host (an unmeasured Pi)
 ```
 
 **Expect**: the live-Pi tests run and **fail by name** — `pi-version-unmeasured` — instead of skipping (*US2.4*): a demanded tier is never silently skipped.
@@ -92,6 +92,10 @@ printf 'export const x = () => fetch("http://example.com");\n' > packages/lane/s
 npm run kiln -- check network        # FAIL network-call  packages/lane/src/oops.ts
 printf 'export const y = globalThis["fe" + "tch"];\n' > packages/lane/src/oops.ts
 npm run kiln -- check network        # FAIL network-computed
+printf 'export const m = () => import("node:" + "http");\n' > packages/lane/src/oops.ts
+npm run kiln -- check network        # FAIL network-computed   (a load built at run time cannot be read from the source)
+printf 'export const m = () => import ("node:http");\n' > packages/lane/src/oops.ts
+npm run kiln -- check network        # FAIL network-import
 rm -rf /tmp/kiln-scratch
 ```
 
@@ -113,6 +117,9 @@ npm run kiln -- check boundaries     # FAIL boundary-forbidden-import  packages/
 rm packages/record/src/oops.ts
 printf 'import fs from "node:fs";\nexport const z = fs;\n' > packages/contracts/src/oops.ts
 npm run kiln -- check boundaries     # FAIL boundary-contracts-io
+rm packages/contracts/src/oops.ts
+printf 'import{a}from"#lane/affinity.ts";export const z=a;\n' > packages/record/src/oops.ts
+npm run kiln -- check boundaries     # FAIL boundary-forbidden-import   (no spaces needed to hide it)
 rm -rf /tmp/kiln-scratch
 ```
 
@@ -138,5 +145,5 @@ npx -y node@22.18.0 tests/run.ts --new-only      # the new suite on the oldest s
 ## Done when
 
 - Scenarios 1–7 behave as stated, on a fresh clone.
-- `npm test` exits 0 here (Pi 1.1.0) and the SC table in [plan.md](./plan.md) §Verification is ticked.
+- `npm test` exits 0 here (with an unmeasured Pi) and the SC table in [plan.md](./plan.md) §Verification is ticked.
 - `specs/ROADMAP.md` is unchanged and row r12 is still `queued` (constitution VI; FR-021) — closing the row is the human's Roadmap-gate move.
