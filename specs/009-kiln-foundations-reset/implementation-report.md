@@ -219,3 +219,21 @@ Not yet: `npm test` also runs the legacy suite (T045); `legacy-copies.json` reco
 
 Full numbers: `baseline.md`. Next: US3 (T048–T058, the twelve-gate flow data and tests), US4 (T059–T071, the network lint), US5 (T072–T077, boundaries), Polish (T078–T087, minus T080).
 
+## 13. User Story 3 completed — the twelve-gate flow as data (2026-10-25, T048–T058)
+
+58 of 87 tasks done. New suite: **107 tests, 0 failures**; **34 of the 54** ported cases live.
+
+| Piece | Where |
+|---|---|
+| Flow v2: twelve gates, five judges, `applies_when` declared on the two interface gates | `kiln/packages/contracts/src/flow/v2.ts`; `flow/index.ts` now has `CURRENT_FLOW` = v2 and `DEFAULT_RECORD_FLOW` = v1 (the two defaults the contract names; the single `DEFAULT_FLOW` is gone) |
+| The test that reads the governing documents | `packages/contracts/tests/flow-vs-constitution.test.ts` — constitution (default-flow sentence, Principle II, closed set), PRD GATE-1/GATE-2, `ui-flow.md` |
+| Ports | `gate-rail.test.ts` (6 → v1, plus v2, F3, F10 cases), `strongest-model.test.ts` (5 → v1 roster, plus F7, F8, invalid-roster cases) |
+| Records | schema copy: `flow` (v1/v2, absent = v1) and gate ids `"2a"`/`"6a"`; `log.ts` resolves `record.flow ?? defaultFlow ?? v1`, fails an absent gate or unknown flow by name, prints the contract's G3 message, `--flow v1|v2`; `flow-records.test.ts` |
+| The v2 contract document | `kiln/packages/contracts/gate-rail.md` |
+
+**Review findings paid off:** finding 3 (the default-flow trap) is closed — `log.ts` never relies on a default; finding 4 and 2 have named tests. **Observed while building:** the PRD's own GATE-1 row now matches the constitution, so the test's extraction of the twelve names is a real cross-check, not a restatement.
+
+Known deviations recorded in `legacy-copies.json`: `report.ts`'s `nameMove`, `log.ts` and the schema copy are no longer byte-identical to their originals (by design, noted per record).
+
+Next: US4 (T059–T071, the network lint — ports 20 cases, so ported total becomes 54), US5 (T072–T077, boundaries), then Polish (T081–T087).
+

@@ -66,3 +66,16 @@ reported skips.
 | Demanded tier (US2.4) | `npm test -- --pi` | **exit 1**; no skip line; legacy 500 tests, 477 pass, **8 fail**, 15 skipped — the 8 `PI-LIVE:` tests fail by name `pi-version-unmeasured` (the baseline's numbers exactly) |
 | Legacy untouched | `git rev-parse HEAD:legacy` | `20a82c7e…` |
 
+### After US3 (T048–T058, 2026-10-25)
+
+| Check | Command | Result |
+|---|---|---|
+| New suite | `cd kiln && npm run test:new` | **107 tests, 107 pass, 0 fail** (was 67 after US2) |
+| Ported cases | gate-rail 6 + strongest-model 5 added to US1's 23 | **34 of 54** |
+| v2 equals the documents | `packages/contracts/tests/flow-vs-constitution.test.ts` (7 cases) | reads the constitution, PRD GATE-1/GATE-2 and `ui-flow.md` §4.1/§5.1 as text; every extraction asserts it found something. Five mutants of `v2.ts` (old name *Design*, wrong judge, Code review without `revise`, cut diff predicates, three-judge roster) each fail ≥ 1 case |
+| Flow handling | six mutants (record flow beaten by the default, history defaulting to v2, absent-gate check off, `moveAllowed` without `hasGate`, swallow-all `catch`, prototype lookup) | each fails ≥ 1 test |
+| SC-008 (quickstart §3) | `validate:log` on the r7 walk, no flag and `--flow v2` | `PASS`, `PASS` |
+| F5 | a hand-made Code review `revise` record | v1: `FAIL — G3 … move "revise" not in MoveVocabulary(gate=6, flow=v1); allowed: approve, restart` (exit 1); `--flow v2`: `PASS` |
+| F3 | v1 data against the legacy `MOVE_VOCABULARY` and `GATE_NAME`, parsed from the legacy file's text | equal, 10 gates |
+| `kiln check legacy` | `npm run kiln -- check legacy` | `PASS`, 30 records in the copy record |
+

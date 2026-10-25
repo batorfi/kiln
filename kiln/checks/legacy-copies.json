@@ -45,7 +45,8 @@
       "legacy": "schemas/factory-log.schema.json",
       "ported": "packages/contracts/schemas/factory-log.schema.json",
       "since": "719ee13",
-      "retiresWith": "legacy-retirement"
+      "retiresWith": "legacy-retirement",
+      "note": "US3 adds the optional gate-completion.flow and the gate ids 2a/6a; otherwise identical"
     },
     {
       "kind": "ported",
@@ -66,7 +67,8 @@
       "legacy": "validate/_report.ts",
       "ported": "packages/record/src/report.ts",
       "since": "719ee13",
-      "retiresWith": "legacy-retirement"
+      "retiresWith": "legacy-retirement",
+      "note": "nameMove names the flow and lists the allowed moves (US3); otherwise identical"
     },
     {
       "kind": "ported",
@@ -87,7 +89,8 @@
       "legacy": "validate/log.ts",
       "ported": "packages/record/src/log.ts",
       "since": "493bb7b",
-      "retiresWith": "legacy-retirement"
+      "retiresWith": "legacy-retirement",
+      "note": "flow-aware (US3): record.flow ?? defaultFlow ?? v1; the G3 message names the flow; usage and paths changed"
     },
     {
       "kind": "ported",
@@ -160,6 +163,30 @@
       "ported": "packages/record/tests/roadmap-m3.test.ts",
       "since": "493bb7b",
       "retiresWith": "legacy-retirement"
+    },
+    {
+      "kind": "ported",
+      "legacy": "contracts/gate-rail.md",
+      "ported": "packages/contracts/gate-rail.md",
+      "since": "015b743",
+      "retiresWith": "legacy-retirement",
+      "note": "superseded: v2 states constitution v2.1.0; the legacy file stays with the legacy probe that reads it (FR-019)"
+    },
+    {
+      "kind": "ported",
+      "legacy": "tests/contract/gate-rail.test.ts",
+      "ported": "packages/contracts/tests/gate-rail.test.ts",
+      "since": "015b743",
+      "retiresWith": "legacy-retirement",
+      "note": "six cases assert flow v1, expectations unchanged; v2, F3 and F10 cases are new"
+    },
+    {
+      "kind": "ported",
+      "legacy": "tests/negative/strongest-model.test.ts",
+      "ported": "packages/contracts/tests/strongest-model.test.ts",
+      "since": "015b743",
+      "retiresWith": "legacy-retirement",
+      "note": "five cases take the v1 roster as a new argument (a changed call site); v2, F7, F8 and the invalid-roster cases are new"
     },
     {
       "kind": "wait",
