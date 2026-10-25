@@ -31,7 +31,7 @@ npm test
 
 ```text
 live-Pi tier skipped: Pi 1.1.0 installed, measured [0.85.1]
-new: 1xx tests · legacy: 500 tests
+new: 170 tests · legacy: 500 tests
 exit 0   — 0 failures
 ```
 
@@ -51,7 +51,7 @@ npm test -- --pi              # DEMAND the tier on this host (Pi 1.1.0)
 npm run kiln -- check legacy
 ```
 
-**Expect**: `PASS legacy — 168 files match the manifest (baseline 299b0a5…)`.
+**Expect**: `PASS legacy — scanned 168 files`, with a note naming the baseline (`299b0a5…`), the ignored globs and the 19 deferred cases.
 
 Prove it can fail — in a scratch copy, so nothing real changes:
 
@@ -67,7 +67,7 @@ rm -rf /tmp/kiln-scratch
 ## 3. The flow and the judges as data *(US3 · SC-004, SC-005, SC-008)*
 
 ```bash
-node --test packages/contracts/tests/        # flow v1/v2 against the first program's vocabulary, the constitution and PRD GATE-1/GATE-2
+node tests/run.ts --new-only packages/contracts/tests   # flow v1/v2 against the first program's vocabulary, the constitution and PRD GATE-1/GATE-2
 node packages/record/src/log.ts fixtures/r7-live-inference.jsonl                  # PASS — flow v1 by default (the record names none)
 node packages/record/src/log.ts fixtures/r7-live-inference.jsonl --flow v2        # PASS — v2's moves contain v1's
 printf '%s\n' '{"ts":"2026-01-01T00:00:00Z","seq":1,"recordType":"gate-completion","gate-completion":{"gate":6,"move":"revise","cost":{"switches":0,"wallClock":"00:01"},"decidedBy":"human@x"}}' > /tmp/rev.jsonl
@@ -81,7 +81,7 @@ node packages/record/src/log.ts /tmp/rev.jsonl --flow v2       # PASS
 ## 4. The network lint *(US4 · SC-006)*
 
 ```bash
-npm run kiln -- check network        # PASS network — scanned N files; allowlist: 0 entries
+npm run kiln -- check network        # PASS network — scanned N files   (note: allowlist: 0 entries)
 ```
 
 Prove it can fail (scratch tree; the lint reads source, it does not run it):
@@ -101,7 +101,7 @@ runtime monitor; runtime enforcement arrives with the residency manager (r16).
 ## 5. Package boundaries *(US5 · SC-007)*
 
 ```bash
-npm run kiln -- check boundaries     # PASS boundaries — N files; rules: 17 layers, 0 external seams, legacy forbidden
+npm run kiln -- check boundaries     # PASS boundaries — scanned N files   (note: 17 layers declared; 0 external seams; rules: …)
 ```
 
 Prove it can fail:

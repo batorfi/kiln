@@ -45,3 +45,4 @@
   `netscan`, `scheduler`, `switch-cost`.
 - **Validation run 2 (2026-10-22):** all items pass; ready for `/speckit.plan`.
 - **Validation run 3 (2026-10-23, after `/speckit-clarify`):** 16/16 items pass; no regressions.
+- **Closed 2026-10-25:** all 87 tasks done and verified on a fresh clone — see [verification-report.md](../verification-report.md). Every item above still holds; the row's close is the human's Roadmap-gate move.

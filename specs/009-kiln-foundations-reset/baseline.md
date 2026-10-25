@@ -101,3 +101,14 @@ reported skips.
 | Quickstart §5 | scratch copy with `import "#lane/affinity.ts"` in `record`, then `import fs from "node:fs"` in `contracts` | `FAIL boundary-forbidden-import packages/record/src/oops.ts …`; `FAIL boundary-contracts-io packages/contracts/src/oops.ts …`, exit 1 |
 | Mutation | nine mutants of `boundaries.ts` (allowed-list, contracts I/O, bare specifiers, legacy imports, zero-files, undeclared packages, empty responsibility, relative cross-package imports, no tokenizer) | each fails ≥ 1 test (4, 2, 2, 1, 1, 1, 1, 1, 8) |
 
+### After Polish (T078–T087, 2026-10-25)
+
+| Check | Command | Result |
+|---|---|---|
+| Census (SC-002) | `node tests/tools/count-ported.ts` | **ported 54 of 54 · waiting in legacy 19 of 19 · 73 of 73**; `PASS — every census case is accounted for; none was dropped` |
+| Fresh clone | `git clone --branch 009-kiln-foundations-reset … /tmp/kiln-fresh`, quickstart §0–§6 | all as stated (see `verification-report.md`) |
+| Node floor | `npx node@<v> tests/run.ts --new-only` and `kiln check` | 22.18.0, 23.6.0, 24.1.0, 25.9.0: 170 / 170 pass, all three checks `PASS` |
+| Roadmap | `git diff 60a2c7e -- specs/ROADMAP.md`; row r12; `validate:roadmap` | empty; `queued`; `PASS` |
+| **Closing run** | `cd kiln && npm test` | exit 0 · `new: 170 tests · legacy: 500 tests` (legacy 470 pass, 0 fail, 30 skipped) |
+| **Closing run** | `cd kiln && npm run check` | exit 0 · `PASS network` (22) · `PASS boundaries` (22) · `PASS legacy` (168) |
+

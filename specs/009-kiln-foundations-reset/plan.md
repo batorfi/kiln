@@ -233,16 +233,16 @@ Order matters; each phase leaves the repository green.
 
 ## Verification
 
-| Criterion | Settled by |
-|---|---|
-| **SC-001** 0 failures with an unmeasured Pi and with the measured Pi | quickstart §1; runner tests R2/R3/R7; the legacy suite through the new runner |
-| **SC-002** ≥ 54 ported cases; all 73 pass | the census ([research R13](./research.md)); per-file counts in each phase's commit; legacy still runs all 73 |
-| **SC-003** 100% of legacy byte-identical | `kiln check legacy` (L1–L5); baseline test (L6) |
-| **SC-004** flow data matches v2.1.0 for all twelve gates | contract tests F1, F2 (read the constitution, the PRD and `docs/concepts/ui-flow.md`) |
-| **SC-005** a weaker judge binding refused 100% (each of the five v2 judges); `docs-synthesizer` never a judge under v2 | F7, F8 |
-| **SC-006** the lint catches every disallowed construct; fails on zero files | bypass/hardened ports + the negative suite; quickstart §4 |
-| **SC-007** the boundary check catches every forbidden import | B1–B10; quickstart §5 |
-| **SC-008** committed walks pass v1 (and v2); a Code review `revise` fails v1, passes v2 | F3–F6; quickstart §3 |
+| Criterion | Settled by | Verified |
+|---|---|---|
+| **SC-001** 0 failures with an unmeasured Pi and with the measured Pi | quickstart §1; runner tests R2/R3/R7; the legacy suite through the new runner | ✔ (measured-Pi half stub-tested) |
+| **SC-002** ≥ 54 ported cases; all 73 pass | the census ([research R13](./research.md)); per-file counts in each phase's commit; legacy still runs all 73 | ✔ 54 of 54, 19 of 19 |
+| **SC-003** 100% of legacy byte-identical | `kiln check legacy` (L1–L5); baseline test (L6) | ✔ |
+| **SC-004** flow data matches v2.1.0 for all twelve gates | contract tests F1, F2 (read the constitution, the PRD and `docs/concepts/ui-flow.md`) | ✔ twelve gates |
+| **SC-005** a weaker judge binding refused 100% (each of the five v2 judges); `docs-synthesizer` never a judge under v2 | F7, F8 | ✔ |
+| **SC-006** the lint catches every disallowed construct; fails on zero files | bypass/hardened ports + the negative suite; quickstart §4 | ✔ |
+| **SC-007** the boundary check catches every forbidden import | B1–B10; quickstart §5 | ✔ |
+| **SC-008** committed walks pass v1 (and v2); a Code review `revise` fails v1, passes v2 | F3–F6; quickstart §3 | ✔ |
 
 ## Risks
 
