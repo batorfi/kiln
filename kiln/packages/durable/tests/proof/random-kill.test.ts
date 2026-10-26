@@ -10,7 +10,7 @@ import { killNow, makeStore, runThenKill, spawnOwner } from "./support/harness.t
 
 export const TRIALS = 300;
 export const SEED = 20261026;
-const MAX_DELAY_MS = 120;
+const MAX_DELAY_MS = 60;
 const GATE = "gate:demo:gate0:1";
 const BRIEF = { title: "Roadmap" };
 const OPEN = { op: "open", key: "o1", spec: { gateId: GATE, gateKey: "gate0", flow: "v2", brief: BRIEF, openedBy: "factory" } };
@@ -48,7 +48,7 @@ test(`${TRIALS} random kills (seed ${SEED}): every wreck is absent, waiting-whol
         tally[wreck.gate]++;
         const v = checkInvariants(wreck);
         if (v.length) violations.push(`trial ${n} (delay ${delays[n]} ms): ${v.join(",")} ${JSON.stringify(wreck.documents)}`);
-        const again = await runThenKill(ts, { script: [OPEN, MOVE, { op: "sleep", ms: 1500 }] });
+        const again = await runThenKill(ts, { script: [OPEN, MOVE, { op: "sleep", ms: 400 }] });
         const [opened, moved] = again.results as [{ status: string }, { status: string }];
         if (!["opened", "repeat"].includes(opened.status) || !["committed", "repeat"].includes(moved.status)) violations.push(`trial ${n}: retry gave ${JSON.stringify([opened, moved])}`);
         const after = await inspectStore(ts.store, GATE);
@@ -61,7 +61,7 @@ test(`${TRIALS} random kills (seed ${SEED}): every wreck is absent, waiting-whol
       }
     }
   };
-  await Promise.all(Array.from({ length: 6 }, worker));
+  await Promise.all(Array.from({ length: 8 }, worker));
   console.log(`random kills: ${TRIALS} trials, seed ${SEED}, delays 0–${MAX_DELAY_MS} ms after start; wrecks: ${tally.absent} absent, ${tally.waiting} waiting, ${tally.settled} settled`);
   assert.deepEqual(violations, [], violations.slice(0, 5).join("\n"));
   // a run where every kill landed on the same side proves little: the kills must straddle the commit
