@@ -22,8 +22,8 @@ export interface FactoryOptions {
   now?: () => number;
   /** TEST-ONLY injection of kill and fault points; a no-op by default. */
   hooks?: Hooks;
-  /** Extra task kinds (the lane registers itself here). */
-  tasks?: TaskKind<any, any, any>[];
+  /** Extra task kinds (the lane registers itself here) — or a function that builds them from the factory's services. A kind with the name of a built-in replaces it (tests use this for a deliberately broken gate). */
+  tasks?: TaskKind<any, any, any>[] | ((services: Services) => TaskKind<any, any, any>[]);
   /** The lane port: implemented in packages/lane, injected here (durable cannot import lane). */
   lane?: LaneApi;
   /** How long start-up may take before the owner says it is not ready instead of claiming to be (FR-043). Default 5000 ms. */
@@ -57,7 +57,7 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   const services: Services = { store: undefined as unknown as Store, hooks, now: opts.now ?? Date.now, slots: new Slots(), ready: false, lane: opts.lane };
   let store: Store;
   try {
-    store = await openStore({ dir: opts.store, now: services.now, kinds: [...builtinKinds(services), ...(opts.tasks ?? [])], installedLibraryVersion: opts.installedLibraryVersion });
+    store = await openStore({ dir: opts.store, now: services.now, kinds: [...builtinKinds(services), ...(typeof opts.tasks === "function" ? opts.tasks(services) : (opts.tasks ?? []))], installedLibraryVersion: opts.installedLibraryVersion });
   } catch (e) {
     lock.release();
     throw e;

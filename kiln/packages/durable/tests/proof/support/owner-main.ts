@@ -1,7 +1,7 @@
 // The TEST-ONLY child owner. It opens a factory through the seam, runs a SCRIPT of steps given as JSON on argv, prints one `R <json>` line per step, and — when armed — dies by SIGKILL at a named
 // kill point, which is what a crash looks like to the store (no handler, no flush, no close). It is the ONE place that reads arming from the environment: the product has no kill switch (research R7).
 //   node owner-main.ts --store <dir> --script '<json array of steps>'
-// env: STAY_ALIVE=1 (after the script, wait to be killed) · KILL_AT=<point> · KILL_LOG=<file> · FAULT_AT=<point> · HOLD_AT=<point> HOLD_MS=<n> (delay a step) · CLOCK_OFFSET_MS=<n> · LIBRARY_VERSION=<v> · READY_TIMEOUT_MS=<n> · LANE_MODULE=<file>
+// env: BROKEN_GATE=1 (replace the decision step with the deliberately half-applying one) · STAY_ALIVE=1 (after the script, wait to be killed) · KILL_AT=<point> · KILL_LOG=<file> · FAULT_AT=<point> · HOLD_AT=<point> HOLD_MS=<n> (delay a step) · CLOCK_OFFSET_MS=<n> · LIBRARY_VERSION=<v> · READY_TIMEOUT_MS=<n> · LANE_MODULE=<file>
 // steps: {op:"open",key,spec} {op:"submit",gate,key,move} {op:"submitMany",gate,moves:[{key,move}],concurrency?} {op:"state",gate} {op:"createTask",key,kind,input,owner}
 //        {op:"inspect",gate?} {op:"tasks"} {op:"early",gate,key,move} (a move BEFORE ready, then the same after) {op:"hold"} (stay alive until killed) {op:"sleep",ms}
 import { appendFileSync } from "node:fs";
@@ -35,6 +35,11 @@ const hooks: Hooks = {
 const offset = Number(env.CLOCK_OFFSET_MS ?? 0);
 const extraKinds: any[] = [];
 let lane: any;
+let extra: any = extraKinds;
+if (env.BROKEN_GATE) {
+  const m = await import("./broken-gate.ts");
+  extra = (s: any) => [m.brokenDecision(s)];
+}
 if (env.LANE_MODULE) {
   const m = await import(env.LANE_MODULE);
   extraKinds.push(...(m.laneKinds?.() ?? []));
@@ -43,7 +48,7 @@ if (env.LANE_MODULE) {
 
 let factory: Factory;
 try {
-  factory = await openFactory({ store, hooks, now: () => Date.now() + offset, tasks: extraKinds, lane, installedLibraryVersion: env.LIBRARY_VERSION, readyTimeoutMs: env.READY_TIMEOUT_MS ? Number(env.READY_TIMEOUT_MS) : undefined });
+  factory = await openFactory({ store, hooks, now: () => Date.now() + offset, tasks: extra, lane, installedLibraryVersion: env.LIBRARY_VERSION, readyTimeoutMs: env.READY_TIMEOUT_MS ? Number(env.READY_TIMEOUT_MS) : undefined });
 } catch (e) {
   console.log(`ERR ${(e as Error).name} ${(e as Error).message}`);
   process.exit(1);
