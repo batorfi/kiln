@@ -18,19 +18,26 @@ export interface Store {
   /** Which kill points fired, one per line (written by src/kill.ts just before dying). */
   killLog: string;
   killed(): string[];
+  /** Every process started on this store. `cleanup()` kills any still alive, so a FAILING test can never leak an owner and hang the run. */
+  procs: ChildProcess[];
   cleanup(): void;
 }
 
 export function makeStore(): Store {
   const dir = mkdtempSync(join(tmpdir(), "r42-"));
   const killLog = join(dir, "kill.log");
+  const procs: ChildProcess[] = [];
   return {
     dir,
     store: join(dir, "s"),
     socket: join(dir, "o.sock"),
     killLog,
     killed: () => (existsSync(killLog) ? readFileSync(killLog, "utf8").split("\n").filter(Boolean) : []),
-    cleanup: () => rmSync(dir, { recursive: true, force: true }),
+    procs,
+    cleanup: () => {
+      for (const p of procs) if (p.exitCode === null && p.signalCode === null) p.kill("SIGKILL");
+      rmSync(dir, { recursive: true, force: true });
+    },
   };
 }
 
@@ -52,6 +59,8 @@ export interface OwnerOptions {
   env?: Record<string, string>;
   /** How long to wait for `ready`. */
   readyTimeoutMs?: number;
+  /** Return as soon as the socket accepts connections (`listening`), before the strategy has started — to observe `not-ready`. Default: wait for `ready`. */
+  waitFor?: "ready" | "listening";
 }
 
 export interface Owner {
@@ -63,6 +72,8 @@ export interface Owner {
   exited: Promise<{ code: number | null; signal: NodeJS.Signals | null }>;
   /** Resolves when the owner prints `listening` (its socket accepts connections, though the strategy may not be started). */
   listening: Promise<void>;
+  /** Resolves true when the owner prints `ready`, false if it dies first. */
+  whenReady: Promise<boolean>;
   stdout(): string;
   stderr(): string;
 }
@@ -80,6 +91,7 @@ export async function startOwner(opts: OwnerOptions): Promise<Owner> {
   Object.assign(env, opts.env ?? {});
 
   const proc = spawn(process.execPath, [OWNER, "--store", opts.store.store, "--strategy", opts.strategy, "--socket", opts.store.socket], { env, stdio: ["ignore", "pipe", "pipe"] });
+  opts.store.procs.push(proc);
   let out = "";
   let err = "";
   const exited = new Promise<{ code: number | null; signal: NodeJS.Signals | null }>((resolve) => proc.once("exit", (code, signal) => resolve({ code, signal })));
@@ -98,8 +110,12 @@ export async function startOwner(opts: OwnerOptions): Promise<Owner> {
   void exited.then(() => markReady(false));
 
   const timeout = new Promise<boolean>((resolve) => setTimeout(() => resolve(false), opts.readyTimeoutMs ?? 10_000).unref());
+  if (opts.waitFor === "listening") {
+    await Promise.race([listening, exited, timeout]);
+    return { proc, pid: proc.pid!, socket: opts.store.socket, ready: false, exited, listening, whenReady: readyOrDead, stdout: () => out, stderr: () => err };
+  }
   const ready = await Promise.race([readyOrDead, timeout]);
-  const owner: Owner = { proc, pid: proc.pid!, socket: opts.store.socket, ready, exited, listening, stdout: () => out, stderr: () => err };
+  const owner: Owner = { proc, pid: proc.pid!, socket: opts.store.socket, ready, exited, listening, whenReady: readyOrDead, stdout: () => out, stderr: () => err };
   if (!ready) {
     const dead = proc.exitCode !== null || proc.signalCode !== null;
     if (!dead) {

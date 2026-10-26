@@ -106,3 +106,31 @@ test("C4 a request to an owner that is killed mid-conversation resolves (never h
     s.cleanup();
   }
 });
+
+test("C5 store.cleanup() kills every owner started on the store — a failing test can never leak an owner and hang the run", async () => {
+  const s = makeStore();
+  const owner = await startOwner({ strategy: "control-sqlite", store: s });
+  assert.equal(owner.proc.exitCode, null, "alive before cleanup");
+  s.cleanup(); // note: no killNow — this is what a test that failed an assertion would have done
+  const death = await owner.exited;
+  assert.equal(death.signal, "SIGKILL");
+});
+
+test("C6 not-ready: a request that arrives before the strategy has started is refused 'not-ready', then the same key succeeds once ready", async () => {
+  const s = makeStore();
+  try {
+    const owner = await startOwner({ strategy: "control-sqlite", store: s, startDelayMs: 1200, waitFor: "listening" });
+    assert.equal(owner.ready, false, "returned inside the window: listening, not yet ready");
+    const c = await connect(s.socket);
+    assert.deepEqual(await c.ping(), { pong: true, ready: false });
+    assert.deepEqual(await c.submit("g1", "k1", MOVE), { status: "refused", reason: "not-ready" });
+    const opened = await c.open("g1");
+    assert.equal(opened.status, "refused");
+    assert.equal(await owner.whenReady, true, "the strategy finishes starting");
+    assert.deepEqual(await c.open("g1"), { status: "opened" });
+    assert.equal((await c.submit("g1", "k1", MOVE)).status, "committed", "the very same key now succeeds: the refusal left no trace");
+    c.close();
+  } finally {
+    s.cleanup();
+  }
+});

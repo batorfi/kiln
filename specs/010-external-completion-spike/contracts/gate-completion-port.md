@@ -10,10 +10,10 @@ fallback) implements this port, and the **same tests run against each** — that
 ```text
 open(gateId)                        → opened | refused(unknown-gate | store-error)
 submit(gateId, key, move)           → Outcome
-state(gateId)                       → GateState        // read from the store, never from memory
+state(gateId)                       → GateState        // read from the store, never from memory; `unknown` for a gate that was never opened
 ```
 
-`open` creates the gate in `waiting`. It is idempotent: opening an already-open gate changes nothing. `state` is a pure read.
+`GateState` is `waiting`, `settled` (with the one record), or `unknown` (never opened). `open` creates the gate in `waiting`. It is idempotent: opening an already-open gate changes nothing. `state` is a pure read.
 
 `submit` is the only operation that can settle a gate, and it is **one atomic step**: either the move is recorded *and* the gate is settled, or nothing at all is written.
 
@@ -29,6 +29,7 @@ state(gateId)                       → GateState        // read from the store,
 | `refused(invalid-move)` | `decidedBy` empty or `kind` outside the vocabulary | none — a move with no decider is refused (constitution V) |
 | `refused(unknown-gate)` | no such gate | none |
 | `refused(not-ready)` | the owner is up but cannot yet accept (a restart in progress) | none; the caller may retry with the same key |
+| `refused(store-error, "connection-lost" \| "timeout")` | *(client side)* the owner died or did not answer: **the outcome is unknown** — the move may or may not have been committed; the caller must ask `state` or retry with the same key | none known |
 | `refused(store-error, reason)` | the store failed when the move was written (tested by an injected failure; a genuinely full disk is not simulated) | none; the gate is still `waiting`, and the same key commits once the fault is gone |
 
 ## Guarantees (each is a test, for every strategy)
