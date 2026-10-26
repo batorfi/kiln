@@ -16,7 +16,7 @@ What this verdict does **not** claim: it was run on **macOS, Node 25.9.0** only.
 | | |
 |---|---|
 | Pinned library | `@earendil-works/pi-durable` **1.4.0**, integrity `sha512-EtIyXH1MBSXdJSkodmy+CYXuwfve3gPrD4GNCZ0XmuRWLPupwRlNQ7fdaXjRcLoKb6SWkT/yEzK+sMmrqvYK+Q==` (exact pin and committed lockfile, `spikes/r42/`) |
-| Time box | limit **16 working hours** of active session time; started **2026-10-26T07:39:56Z**; ended **TIMEBOX_END**; ledger total **TIMEBOX_TOTAL** — **kept** (`spikes/r42/TIMEBOX.md`) |
+| Time box | limit **16 working hours** of active session time; started **2026-10-26T07:39:56Z**; ended **2026-10-26T11:44:34Z**; ledger total **1.35 h of 16 h** — **kept** (`spikes/r42/TIMEBOX.md`) |
 | Platform | macOS (Darwin 25.6.0), Node v25.9.0, npm 11.14.1 |
 
 ## 2. The five guarantees
@@ -132,7 +132,23 @@ npm test                    # 87 tests
 npm run report-check        # compares this report with out/evidence.json
 ```
 
-Expected: the table of §2 (the `held` / `not-held` cells are the claim). **Platform of record: macOS (Darwin 25.6.0), Node v25.9.0.** The evidence refuses to claim another platform. FRESH_CLONE
+Expected: the table of §2 (the `held` / `not-held` cells are the claim). **Platform of record: macOS (Darwin 25.6.0), Node v25.9.0.** The evidence refuses to claim another platform.
+
+**Fresh clone (T064, 2026-10-26, commit `4c6835f`, `git clone --branch 010-external-completion-spike` into `/tmp/kiln-r42-fresh`)** — the quickstart, section by section:
+
+| § | Result |
+|---|---|
+| 0 | exact pin (`"@earendil-works/pi-durable": "1.4.0"`), lockfile tracked (1), `node_modules` and `out` ignored, `kiln/` has `"dependencies": {}` (1) and no mention of the spike |
+| 1 | `npm ci` added 91 packages; `@earendil-works/pi-durable 1.4.0` |
+| 2 | `npm run evidence` printed the same table as §2 (same statuses, 6/7/10/11 of N kill points, 300 random kills each), exit 0 |
+| 3 | `kill-list --strategy native-signal` printed the 10 points; `--only kill-point` exercised 10 of 10, a `held`, e `held` |
+| 4 | `npm test`: 87 pass, 0 fail — includes the negative proofs: the broken strategy is `not-held` for a with `I3` at `between-commits`; a strategy with no kill points fails `evidence-zero-kill-points`; no scenarios fails `evidence-zero-tests` |
+| 5 | `--strategy fallback-document` exits 2, `strategy "fallback-document" is not built yet` — an unbuilt strategy fails by name and is never silently skipped |
+| 6 | `npm run report-check` passes against the clone's own evidence |
+| 7 | `kiln/`: `npm test` exit 0 (`new: 184 tests · legacy: 500 tests (30 skipped)`), `npm run check` exit 0 (three PASS), `git rev-parse HEAD:legacy` = `20a82c7e…`, `git diff --stat origin/main -- legacy kiln specs/ROADMAP.md` empty |
+| 7a | the no-network tests pass (the static scan finds no network API; `lsof` lists no TCP/UDP socket on the owner, also after a kill and a restart). Passing a file to `npm test --` runs the whole glob as well (87), so the check was run as part of the suite |
+| 8 | **not run** (§10): the command downloads and runs an external package and was denied |
+
 
 ## 10. Unproven
 

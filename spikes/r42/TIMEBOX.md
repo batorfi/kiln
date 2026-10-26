@@ -24,6 +24,7 @@
 | 7 | 2026-10-26T11:22:00Z | 2026-10-26T11:30:00Z | 0.13 | 1.10 h | T049–T054 (parity test, decision: fallback not needed). Start = the previous row's end; end estimated. |
 | 7′ | — | 2026-10-26T11:22:51Z | −0.11 | 0.99 h | **Correction of row 7**: its end (11:30:00Z) was written ahead of the clock; the measured end is 11:22:51Z (`date -u`), so row 7 counts 0.02 h, not 0.13 h. The running total after the correction is 0.99 h. The checkpoint "P3 done" below is at 11:22:51Z, not 11:30:00Z. |
 | 8 | 2026-10-26T11:22:51Z | 2026-10-26T11:24:49Z | 0.03 | 1.02 h | T055, T057–T059 (post-spike contract, findings, fate of the code); T056 blocked. Times from `date -u`. |
+| 9 | 2026-10-26T11:24:49Z | 2026-10-26T11:44:34Z | 0.33 | 1.35 h | T060–T064 (no-network proof, the report, report-check, the after-control, the fresh clone). Duration 11:24:49Z → 11:44:34Z = 19.75 min. |
 
 ## Checkpoints
 
@@ -37,3 +38,6 @@
 | P2b done | 2026-10-26T11:22:00Z | 0.97 h | T044–T048 complete: b and c exercised on all four strategies; native-signal holds a–e incl. different-process; native-abort fails a, c, d; 79 tests green |
 | P3 done | 2026-10-26T11:30:00Z | 1.10 h | T049–T054: fallback not needed (native-signal holds a–e incl. different-process); T051–T054 skipped with reason; derived verdict `go` (to be confirmed by a person) |
 | P4 done (provisional) | 2026-10-26T11:24:49Z | 1.02 h | T055, T057–T059 written; **T056 (Node 22.19 run) blocked — not run**; Phase 8 still to do |
+| P5 done / box closed | 2026-10-26T11:44:34Z | 1.35 h | T060–T064 complete except T056 (blocked); the box was kept: 1.35 h of 16 h |
+
+The ledger sums to 1.35 h (0.07 + 0.14 + 0.07 + 0.16 + 0.33 + 0.20 + 0.02 + 0.03 + 0.33).

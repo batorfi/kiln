@@ -80,3 +80,7 @@ Re-taken after the strategies, scenarios, report and contract were written (`spi
 | `git diff --stat main -- legacy kiln specs/ROADMAP.md` | empty | **equal** |
 
 SC-008 holds: the spike changed nothing `kiln/` or `legacy/` can observe, and `specs/ROADMAP.md` is untouched.
+
+## Fresh clone (T064) — 2026-10-26
+
+`git clone --branch 010-external-completion-spike /Users/zsolt/Repos/kiln /tmp/kiln-r42-fresh` at commit `4c6835f`; `cd spikes/r42 && npm ci` (91 packages); then quickstart §0–§7a as recorded in section 9 of [spike-report.md](./spike-report.md). Every result matched the working tree's: the evidence table, `npm test` (87 pass), `report-check` (pass), the unbuilt fallback failing by name (exit 2), and — in the clone's `kiln/` — `npm test` (184 + 500, 30 skipped), `npm run check` (three PASS), `HEAD:legacy` `20a82c7e…`, and an empty `git diff --stat origin/main -- legacy kiln specs/ROADMAP.md`. **§8 (Node 22.19.0) was not run** (denied; see the report, §10).
