@@ -25,6 +25,7 @@
 | 7′ | — | 2026-10-26T11:22:51Z | −0.11 | 0.99 h | **Correction of row 7**: its end (11:30:00Z) was written ahead of the clock; the measured end is 11:22:51Z (`date -u`), so row 7 counts 0.02 h, not 0.13 h. The running total after the correction is 0.99 h. The checkpoint "P3 done" below is at 11:22:51Z, not 11:30:00Z. |
 | 8 | 2026-10-26T11:22:51Z | 2026-10-26T11:24:49Z | 0.03 | 1.02 h | T055, T057–T059 (post-spike contract, findings, fate of the code); T056 blocked. Times from `date -u`. |
 | 9 | 2026-10-26T11:24:49Z | 2026-10-26T11:44:34Z | 0.33 | 1.35 h | T060–T064 (no-network proof, the report, report-check, the after-control, the fresh clone). Duration 11:24:49Z → 11:44:34Z = 19.75 min. |
+| 10 | 2026-10-26T12:33:00Z | 2026-10-26T12:39:52Z | 0.11 | 1.46 h | T056 (the allow rule, the Node 22.19.0 run 12:34:22Z–12:35:20Z, the regenerated Node 25.9.0 evidence, the write-up). Start estimated (just before the first command at 12:34:07Z); end measured with `date -u`. The time between 11:44:34Z and 12:33Z was no session. |
 
 ## Checkpoints
 
@@ -41,3 +42,4 @@
 | P5 done / box closed | 2026-10-26T11:44:34Z | 1.35 h | T060–T064 complete except T056 (blocked); the box was kept: 1.35 h of 16 h |
 
 The ledger sums to 1.35 h (0.07 + 0.14 + 0.07 + 0.16 + 0.33 + 0.20 + 0.02 + 0.03 + 0.33).
+| T056 closed | 2026-10-26T12:39:52Z | 1.46 h | Node 22.19.0: `native-signal` a–e held; all 65 tasks done |

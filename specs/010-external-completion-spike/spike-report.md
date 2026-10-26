@@ -12,13 +12,13 @@
 
 A person's decision can be made at the Roadmap gate on this basis: **one native composition of Pi Durable 1.4.0 — a waiting step that holds the "wait" in the owner process's memory and completes the gate in a single commit — keeps all five guarantees (atomic, keyed exactly once, first wins, no clock, resumes as it was), including with the completer in a different process**, at every one of its 10 named kill points and under 300 randomised kills. It holds them **with one caveat that r13 can enforce structurally: the library's crash-loop guard must be switched off (`restartLimit = Infinity`)** — at its default of 5, a gate killed 7 times in a row with no move is parked and every move is then refused. No fallback is needed and none was built; no upstream request is needed (§7).
 
-What this verdict does **not** claim: it was run on **macOS, Node 25.9.0** only. The same evidence on the library's own floor, **Node 22.19.0, was not run** (§10, the run was blocked by a permission check, not by a failure), host power loss was not tested, and the `go` is the rules' output, awaiting a person's confirmation.
+What this verdict does **not** claim: it was run on **macOS** only — all four strategies on Node 25.9.0, and the strategy the verdict rests on, `native-signal`, also on the library's own floor, **Node 22.19.0**, where a–e are `held` at 10 of 10 kill points and 300 random kills (§6, finding 1). Host power loss was not tested, and the `go` is the rules' output, awaiting a person's confirmation.
 
 | | |
 |---|---|
 | Pinned library | `@earendil-works/pi-durable` **1.4.0**, integrity `sha512-EtIyXH1MBSXdJSkodmy+CYXuwfve3gPrD4GNCZ0XmuRWLPupwRlNQ7fdaXjRcLoKb6SWkT/yEzK+sMmrqvYK+Q==` (exact pin and committed lockfile, `spikes/r42/`) |
-| Time box | limit **16 working hours** of active session time; started **2026-10-26T07:39:56Z**; ended **2026-10-26T11:44:34Z**; ledger total **1.35 h of 16 h** — **kept** (`spikes/r42/TIMEBOX.md`) |
-| Platform | macOS (Darwin 25.6.0), Node v25.9.0, npm 11.14.1 |
+| Time box | limit **16 working hours** of active session time; started **2026-10-26T07:39:56Z**; ended **2026-10-26T12:39:52Z**; ledger total **1.46 h of 16 h** — **kept** (`spikes/r42/TIMEBOX.md`) |
+| Platform | macOS (Darwin 25.6.0), Node v25.9.0 (all strategies) and Node v22.19.0 (`native-signal`), npm 11.14.1 |
 
 ## 2. The five guarantees
 
@@ -105,7 +105,7 @@ The port, after the spike, in KILN's terms only. The full text, including the ta
 
 ## 6. Findings for r13
 
-1. **Node floor.** The library declares `engines.node >= 22.19.0`; `kiln/` declares `^22.18.0 || >=23.6.0`. Adopting the library makes the floor **≥ 22.19.0**, and r12's Node-floor verification (done on 22.18.0) must be repeated on 22.19.0. The spike's own evidence on 22.19.0 was **not run** (§10); a smoke check (open and close a store) passed there in the first session.
+1. **Node floor.** The library declares `engines.node >= 22.19.0`; `kiln/` declares `^22.18.0 || >=23.6.0`. Adopting the library makes the floor **≥ 22.19.0**, and r12's Node-floor verification (done on 22.18.0) must be repeated on 22.19.0. **The evidence was run on 22.19.0** (`npx -y node@22.19.0 src/evidence.ts --strategy native-signal`, 2026-10-26, 59 s; kept as `spikes/r42/out/evidence-node-22.19.0.json`): `native-signal` **a–e `held`**, 10 of 10 kill points, 300 randomised kills, the different-process and second-opener cases included; Node printed the `node:sqlite` ExperimentalWarning once, as expected. Only `native-signal` was run there (the strategy the verdict rests on), and the spike's own test suite was not run on 22.19.0.
 2. **Dependency tree.** 91 packages in the lockfile (3 direct: `chord`, `pi-ai`, `pi-durable`, all 1.4.0); the library's own runtime dependencies are `chord`, `pi-ai`, `pi-codemode`, `pi-telemetry` (1.4.0), `@silvia-odwyer/photon` 0.3.3 (Apache-2.0), `diff` 8.0.4 (BSD-3-Clause) and `typebox` 1.3.27 (MIT); the bulk of the rest arrives through `pi-ai` (provider SDKs: `openai` 27 MB, `@anthropic-ai/sdk` 14 MB, `@google/genai` 11 MB). Licences: MIT 42, Apache-2.0 35, BSD-3-Clause 12, 0BSD 1, Unlicense 1. Install size **112 MB**, of which `pi-durable` itself is 4.2 MB. `kiln/` would **stop being dependency-free**. r12's rules r13 would have to amend: the `externals` seam in `kiln/checks/boundaries.json` (empty today), the `network-external-dependency` code of the network lint, and the "nothing to install" statements of r12's quickstart and implementation report. **That is r13's decision.**
 3. **The storage rests on an experimental Node module.** Durable storage uses Node's built-in `node:sqlite`; on Node 22.19.0 Node prints `ExperimentalWarning: SQLite is an experimental feature and might change at any time` (observed); on 25.9.0 it printed nothing. Other versions were not checked. r13 must decide: accept it, pin a Node where it is stable, or isolate it behind the seam.
 4. **`restartLimit: Infinity` (the caveat of the verdict).** At the library's default of 5, a gate cut off by 5 consecutive crashes without a state change is parked; after 7 kills the next valid move was refused `not-ready` (observed) and the library reported the task parked. With the limit disabled the gate waited through any number of kills and the move committed. The seam must always set it.
@@ -133,7 +133,7 @@ npm test                    # 87 tests
 npm run report-check        # compares this report with out/evidence.json
 ```
 
-Expected: the table of §2 (the `held` / `not-held` cells are the claim). **Platform of record: macOS (Darwin 25.6.0), Node v25.9.0.** The evidence refuses to claim another platform.
+Expected: the table of §2 (the `held` / `not-held` cells are the claim). **Platform of record: macOS (Darwin 25.6.0), Node v25.9.0; `native-signal` also on Node v22.19.0.** The evidence refuses to claim another platform.
 
 **Fresh clone (T064, 2026-10-26, commit `4c6835f`, `git clone --branch 010-external-completion-spike` into `/tmp/kiln-r42-fresh`)** — the quickstart, section by section:
 
@@ -148,12 +148,12 @@ Expected: the table of §2 (the `held` / `not-held` cells are the claim). **Plat
 | 6 | `npm run report-check` passes against the clone's own evidence |
 | 7 | `kiln/`: `npm test` exit 0 (`new: 184 tests · legacy: 500 tests (30 skipped)`), `npm run check` exit 0 (three PASS), `git rev-parse HEAD:legacy` = `20a82c7e…`, `git diff --stat origin/main -- legacy kiln specs/ROADMAP.md` empty |
 | 7a | the no-network tests pass (the static scan finds no network API; `lsof` lists no TCP/UDP socket on the owner, also after a kill and a restart). Passing a file to `npm test --` runs the whole glob as well (87), so the check was run as part of the suite |
-| 8 | **not run** (§10): the command downloads and runs an external package and was denied |
+| 8 | **run in the working tree after the clone was taken** (the fresh clone itself stops at §7a): `native-signal` on Node v22.19.0 — a–e `held`, 10 of 10 kill points, 300 random kills, exit 0 (see §6, finding 1). The first attempt was denied by the session's permission check; after a project-local allow rule for exactly that command it ran |
 
 
 ## 10. Unproven
 
-- **The whole evidence on Node 22.19.0** (the library's floor). `npx -y node@22.19.0 src/evidence.ts --strategy native-signal` was denied by the session's permission check (it downloads and runs an external package) and no Node 22.19 is installed. *Effect on the verdict:* the `go` is for Node 25.9.0 on macOS until a person runs that command and records the result; the library's own floor makes ≥ 22.19.0 the requirement anyway.
+- **The other strategies and the spike's own test suite on Node 22.19.0.** Only `native-signal` (the strategy the verdict rests on) was run there; it holds a–e. *Effect on the verdict:* none; the controls and `native-abort` were not needed on the floor, and the suite tests the harness, not the library.
 - **Host power loss** — outside the library's guarantee; not tested. *Effect:* none on the verdict, a boundary r13 must state.
 - **Platforms other than macOS.** *Effect:* none claimed.
 - **`native-submission`, `fallback-document`, `fallback-table`** — not tried, because C1 held every guarantee. *Effect:* none on the verdict; they matter only if the verdict is reversed.

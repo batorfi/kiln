@@ -8,7 +8,7 @@
 
 ## 1. Status in one paragraph
 
-**63 of 65 tasks are done; the other two are T056 (blocked) and T065 (open only because of T056).** The spike answers the row's question — *can a move committed from outside a waiting gate complete it, atomically, exactly once, with no clock, surviving restarts, using Pi Durable 1.4.0?* — with **`go`**: one native composition (`native-signal`) holds all five guarantees at 10 of 10 named kill points, under 300 randomised kills and with the completer in a separate process, on **macOS / Node 25.9.0**, with one structurally enforceable caveat (`restartLimit = Infinity`). No fallback and no upstream proposal were needed. `kiln/`, `legacy/` and `specs/ROADMAP.md` are unchanged (`npm test` 184 + 500, `npm run check` three `PASS`, empty diff vs `main`). The spike's own suite is **87 tests, all green**; a fresh clone reproduces the evidence table, the tests and the report check. The time box (16 active hours) was kept with a wide margin: **1.35 h**. **Not done:** the evidence on Node 22.19.0 (denied by the session's permission check — §8), and the human confirmation of the verdict (the Roadmap gate's move, not this row's).
+**All 65 tasks are done** (T051–T054 skipped by design, each ticked with its reason). The spike answers the row's question — *can a move committed from outside a waiting gate complete it, atomically, exactly once, with no clock, surviving restarts, using Pi Durable 1.4.0?* — with **`go`**: one native composition (`native-signal`) holds all five guarantees at 10 of 10 named kill points, under 300 randomised kills and with the completer in a separate process, on **macOS**, Node 25.9.0 and — for `native-signal` — also Node 22.19.0 (the library's floor), with one structurally enforceable caveat (`restartLimit = Infinity`). No fallback and no upstream proposal were needed. `kiln/`, `legacy/` and `specs/ROADMAP.md` are unchanged (`npm test` 184 + 500, `npm run check` three `PASS`, empty diff vs `main`). The spike's own suite is **87 tests, all green**; a fresh clone reproduces the evidence table, the tests and the report check. The time box (16 active hours) was kept with a wide margin: **1.46 h**. **Not done:** the human confirmation of the verdict (the Roadmap gate's move, not this row's). The Node 22.19.0 run, first blocked by a permission check, was done afterwards (§8).
 
 ## 2. What exists
 
@@ -115,14 +115,14 @@ Numbers worth quoting: 100 concurrent same-key submissions → **1 `committed`, 
 | 4 US2 — a, d, e | T031–T043 | 13 | control gate passed; C1 holds; C2 fails; C3 not tried (70 tests) |
 | 5 US3 — b, c, other process | T044–T048 | 5 | exactly-once, different-process, second-opener (79 tests) |
 | 6 US4 — decision | T049–T054 | 6 | **4 skipped by design** (T051–T054: fallback/proposal not needed) — ticked with their reason |
-| 7 US5 — for r13 | T055–T059 | **4 of 5** | **T056 blocked** (Node 22.19 run) |
-| 8 Polish + report | T060–T065 | 5 of 6 | T065 open only because of T056 (87 tests) |
+| 7 US5 — for r13 | T055–T059 | 5 | T056 done after a first block (Node 22.19.0 run: `native-signal` a–e held) |
+| 8 Polish + report | T060–T065 | 6 | all done (87 tests) |
 
 Commit trail (24 commits since `main`): spec/plan/analysis (4) → `P0` pin → `P1` harness → `P1′` evidence machinery → `P2a` controls + C1 + C2 → `P2b` exactly-once → `P3` decision → `P4` findings → `P5` proofs, report, fresh clone → close-out. Each phase has a WIP commit and a checkpoint commit with the test count in its subject.
 
-## 8. Open items — each needs a person
+## 8. Open items (one closed since the first version of this report)
 
-1. **T056 — the evidence on Node 22.19.0 (the library's floor).** `npx -y node@22.19.0 src/evidence.ts --strategy native-signal` downloads and runs an external package; the session's permission check denied it and no Node 22.19 is installed. Everything else about 22.19 is known (the smoke passed there in the first session; Node prints the `node:sqlite` experimental warning there). **Until it is run, the `go` is for Node 25.9.0.** Either run that command and record the result in `NOTES.md` (Phase 7 note 2) and the report §10, or provide a Node 22.19.
+1. **T056 — the evidence on Node 22.19.0 — done.** The first attempt was denied by the session's permission check (`npx -y node@22.19.0` downloads and runs an external package). A project-local allow rule for exactly that command (`.claude/settings.local.json`, git-ignored) was then added at the user's request, and `native-signal` was run on Node v22.19.0: **a–e `held`, 10 of 10 kill points, 300 random kills, exit 0, 59 s**, the `node:sqlite` ExperimentalWarning printed as expected. Result file: `spikes/r42/out/evidence-node-22.19.0.json` (git-ignored, like all of `out/`). Only that strategy and not the test suite was run there.
 2. **Confirm the verdict.** `go` is the rules' output. The data model says a person confirms it at the Roadmap gate; this row never edits the roadmap. `r42` is still `queued`.
 3. **Decisions the report hands to r13 (not made here):** raise the Node floor to ≥ 22.19 and repeat r12's Node-floor run; accept that `kiln/` stops being dependency-free (91 packages, 112 MB; amend the `externals` seam, the `network-external-dependency` rule, the "nothing to install" statements); accept, pin around or isolate the experimental `node:sqlite`; enforce one owner per store structurally.
 
@@ -146,7 +146,7 @@ Commit trail (24 commits since `main`): spec/plan/analysis (4) → `P0` pin → 
 | 1 | A failing test leaked its owner process and the whole run hung | mutation check on the correct control | `Store.cleanup()` kills every process started on the store; `--test-timeout=60000` as a backstop; test C5 |
 | 2 | An **uncommitted edit had switched off the invariant check** in `no-clock.ts` (a mutation experiment never undone) | `git diff` at the start of this session | reverted before anything ran; since then every mutation is committed first and undone first |
 | 3 | The random-kill figure read **600** — 300 trials counted once for a and once for e | writing the report | the runner counts each batch once; the report says 300 |
-| 4 | Three ledger rows were missing or ahead of the clock | re-reading `date -u` against the ledger | corrected with new rows (nothing edited after the fact); total 1.35 h |
+| 4 | Three ledger rows were missing or ahead of the clock | re-reading `date -u` against the ledger | corrected with new rows (nothing edited after the fact); total 1.46 h |
 | 5 | `Case.connect(n)` — my own helper — tripped the no-network rule | first run of `no-network.test.ts` | helper renamed, **rule kept** |
 | 6 | Node type stripping rejects constructor parameter properties | first run of the exactly-once scenarios | explicit fields |
 | 7 | `client.ts` rejected an empty `decidedBy` as a usage error, so `invalid-move` was refused by the CLI, not the owner | designing the separate-process variant | the CLI now sends it; no assertion weakened |

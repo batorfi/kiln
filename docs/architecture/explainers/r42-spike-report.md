@@ -11,7 +11,7 @@ KILN promises that **a gate waits for a person for as long as it takes, and is s
 
 ## 2. The answer in a paragraph
 
-**Yes — `go`.** [derived] One way of using the library keeps every promise we care about, including when the person's move arrives from a different process and when the program is killed at any instant: park the gate on a small "decision" task whose waiting step is held **in the memory of the one process that owns the store**, and let a move wake that step so it writes the move and finishes itself **in one commit**. It works only if the library's crash-loop guard is switched off, only if exactly one process owns the store, and only on the platform and Node version tested (macOS, Node 25.9). The other way the library offers — marking the task aborted from outside — **fails**, for reasons that are instructive (§6). No fallback and no change to the library is needed.
+**Yes — `go`.** [derived] One way of using the library keeps every promise we care about, including when the person's move arrives from a different process and when the program is killed at any instant: park the gate on a small "decision" task whose waiting step is held **in the memory of the one process that owns the store**, and let a move wake that step so it writes the move and finishes itself **in one commit**. It works only if the library's crash-loop guard is switched off, only if exactly one process owns the store, and only on the platform tested (macOS; Node 25.9, and Node 22.19.0 for the strategy the verdict rests on). The other way the library offers — marking the task aborted from outside — **fails**, for reasons that are instructive (§6). No fallback and no change to the library is needed.
 
 ## 3. The five promises ("guarantees"), in plain words
 
@@ -119,7 +119,7 @@ Examples of what sits behind a cell [observed]: 100 concurrent identical submiss
 | `go` **does** mean | `go` **does not** mean |
 |---|---|
 | r13 can build the gate contract directly on Pi Durable, using the port in the contract file | that the library offers this primitive natively — it is a *composition*, with the costs in §6 |
-| no KILN-owned decision table and no upstream change is needed | that it was run on Node **22.19.0** (the library's own floor): that run was blocked by a permission check and is **[not tested]** |
+| no KILN-owned decision table and no upstream change is needed | that every strategy was run on Node **22.19.0** (the library's own floor): `native-signal` was (a–e held, observed); the others, and the spike's own test suite, were not **[not tested]** |
 | the five promises held at every named kill point, under random kills, and from a separate process | that power loss is covered — only abrupt process death is (**[not tested]**: a host losing power) |
 | the result is reproducible from a fresh clone | that a person has confirmed it — the verdict is **[derived]**; confirming it is the Roadmap gate's move, and `r42` is still `queued` |
 
@@ -152,4 +152,4 @@ Examples of what sits behind a cell [observed]: 100 concurrent identical submiss
 - *"`native-abort` is nearly working."* — two commits are not one; it fails the guarantee the row exists to test, and also waits on a clock.
 - *"`go` means the library supports external completion."* — it means a composition works, at a stated cost.
 - *"All green means the harness is lenient."* — the same harness reads the broken control `not-held`, and was sabotaged 17 ways without ever passing.
-- *"It was tested on the minimum Node."* — it was not; see §8.
+- *"It was tested on the minimum Node."* — the verdict's strategy was, and held; the other strategies and the test suite were not; see §8.
