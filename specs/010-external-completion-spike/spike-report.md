@@ -2,6 +2,7 @@
 
 **Branch**: `010-external-completion-spike` | **Status**: **FOR THE ROADMAP GATE — verdict derived by the rules, not yet confirmed by a person** | **Date**: 2026-10-26 | **Spec**: [spec.md](./spec.md) · **Plan**: [plan.md](./plan.md) · **Contract**: [contracts/spike-report.md](./contracts/spike-report.md)
 
+> New to this report? [An explainer](../../docs/architecture/explainers/r42-spike-report.md) walks through the question, the method, the table and what `go` does and does not mean.
 > This is the **product** of row r42. It states a verdict; it never records a gate decision and never edits the roadmap (constitution VI) — a person does both at the Roadmap gate.
 > Every status below is produced by `npm run evidence` and checked against `spikes/r42/out/evidence.json` by `npm run report-check`.
 

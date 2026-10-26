@@ -2,7 +2,7 @@
 
 **Branch**: `010-external-completion-spike` | **Report date**: 2026-10-26 | **Head**: `87c9c9b` | **Base**: `main` (merge-base `39ed86a`)
 **Spec**: [spec.md](./spec.md) · **Plan**: [plan.md](./plan.md) · **Tasks**: [tasks.md](./tasks.md) · **Baseline log**: [baseline.md](./baseline.md)
-**The product of the row**: [spike-report.md](./spike-report.md) (verdict and evidence). **This file** is about the *work*: what was built, how it is put together, how far the evidence can be trusted, what went wrong on the way, and what is still open.
+**The product of the row**: [spike-report.md](./spike-report.md) (verdict and evidence; [explainer](../../docs/architecture/explainers/r42-spike-report.md)). **This file** is about the *work*: what was built, how it is put together, how far the evidence can be trusted, what went wrong on the way, and what is still open.
 
 > **Reading guide.** Five minutes: §1 and §9. Reviewing the code: §2–§4 and §10. Judging the evidence: §5–§6. Picking up the open items: §8–§9.
 
