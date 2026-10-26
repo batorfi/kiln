@@ -62,3 +62,23 @@ Running notes, in the order things were learned. This is the source of the repor
 
 † native-signal: d holds only with `settings.restartLimit = Infinity` (enforceable by the seam). † native-abort: the gate waits on a clock (not enforceable structurally).
 5. **Not a task in `tasks.md`, added:** `tests/native-strategies.test.ts` (3 cases) pins the two native results — C1 clean at every declared point; C1's caveat real (the default restartLimit parks the gate, `Infinity` does not); C2 caught at `between-record-and-abort` and clean before the record commit. Test count 67 → 70.
+
+## Phase 5 — exactly once, first wins, a different process (T044–T048, 2026-10-26)
+
+1. **A completer abstraction was added (`src/completer.ts`)** so one scenario runs with the completer in this process (many sockets) or as `node src/client.ts` in a process of its own (at most 20 at a time). The kill-point scenario got an optional completer; the different-process variant reports as kind `different-process` (so a point is not counted as exercised twice) and the same oracle judges it. `client.ts` accepted an *empty* `decidedBy` as a usage error; it now sends it, because `invalid-move` must be refused by the owner, not by the CLI (a harness fix, no assertion weakened).
+2. **Cases (`src/scenarios/exactly-once.ts`):** `repeat:concurrent` (100 concurrent same-key submissions over 10 sockets), `repeat:after-restart` (100 more after SIGKILL + restart), `conflict:key`, `race:distinct-keys` (100 keys at once), `conflict:stale`, `conflict:invalid-move`, `conflict:unknown-gate`, `conflict:not-ready` (owner started with a delay), `store-error:store-write` (`FAULT_AT`; then restart without the fault and the same key commits). Each case reads the store **after** killing the owner, so "records == 1" is the store's count.
+3. **The cases were shown able to fail, by mutating the correct control** (committed first, each reverted): same key + different move reported as `repeat` → `conflict:key` fails; the existing-record check removed (duplicates hit the primary key) → `repeat:concurrent`, `repeat:after-restart`, `conflict:key`, `race:distinct-keys`, `conflict:stale` fail; the winner dropped from `stale` → `race:distinct-keys`, `conflict:stale` fail; the injected failure swallowed → `store-error:store-write` fails (the move is `committed`). Nothing else failed in any mutation.
+4. **`--only repeat|race|conflict|store-error` each run just their kind** (the registry has one scenario per kind; `runExactlyOnce(…, only)`), `--only different-process` runs the separate-process variants of everything.
+5. **R-6, observed (`second-opener:file`, informational — not a guarantee input; the runner puts it in the strategy's notes):** while the owner ran, a second process opened the store file directly (`control.sqlite`, `pi.sqlite`) and saw `{"opened":true,"read":4|26,"writeLock":"obtained"}` — it could open it, read it, and **take the write lock** (then rolled back). Neither SQLite nor the library stops a second opener while the owner is idle; the gate was unharmed and the owner still committed the next move. So "one owner per storage" is **a rule r13 must enforce structurally** (a lock file, a single server process), not something the library or SQLite refuses.
+6. **Results of the full run (`npm run evidence`, 2026-10-26T11:15:48Z → 11:19:02Z):**
+
+| Strategy | a | b | c | d | e | Kill points | Random kills |
+|---|---|---|---|---|---|---|---|
+| control-sqlite (control) | held | held | held | held | held | 6 of 6 | 600 |
+| broken-two-commit (control) | not-held (I1, I3) | held | held | held | held | 7 of 7 | 600 |
+| native-signal † | held | held | held | held | held | 10 of 10 | 600 |
+| native-abort † | not-held (I2, I3, I7) | held | not-held (I2, I3, I7) | not-held (I7) | held | 11 of 11 | 600 |
+
+   † as in Phase 4. Every row's different-process variant ran and passed for the rows marked `held`.
+7. **Why `native-abort` also fails c (new, read from the cases):** `conflict:invalid-move` and `conflict:unknown-gate` fail with **I7** only — the waiting gate carries a sleep, in every reading. `conflict:not-ready` and `store-error:store-write` fail with **I2 + I3 + I7**: the owner acknowledged `committed` after the abort *mark* and the test killed it before the abort handler's terminal commit — so the acknowledgement of C2 precedes the completion. The ack-before-completion is C2's second weakness besides the clock: a caller is told "committed" while the decision task is not yet terminal.
+8. **No harness bug surfaced in this phase** beyond note 1; no assertion was weakened. Tests: `tests/exactly-once.test.ts` (EO0–EO2), `tests/different-process.test.ts` (DP1–DP3); 79 tests green.
