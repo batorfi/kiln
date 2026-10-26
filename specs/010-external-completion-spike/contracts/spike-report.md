@@ -13,7 +13,7 @@ The report is the product of the row. It states a verdict; it never records a ga
 | 3 | **What was tried** | each strategy, in order, why it was tried, and exactly where it failed or held — no strategy omitted because it failed |
 | 4 | **Kill points** | the enumerated list per strategy, how many were exercised, and the randomised-kill counts (labelled supporting evidence) |
 | 5 | **The contract for r13** | the port ([gate-completion-port.md](./gate-completion-port.md)) as it stands after the spike, in KILN's terms only; which guarantees depend on the fallback; what replaces it if upstream lands; **which source is authoritative if a fallback and a native path ever disagree, and why** |
-| 6 | **Findings for r13** | at least: the Node floor (`engines >=22.19.0` against `kiln/`'s `^22.18.0`), the transitive dependency tree, the restart-limit setting (`Infinity`), the one-owner-per-storage rule, power-loss boundary, anything the spike found that the PRD/roadmap should hear |
+| 6 | **Findings for r13** | at least: the Node floor (`engines >=22.19.0` against `kiln/`'s `^22.18.0`), the transitive dependency tree, the **experimental `node:sqlite`** the storage rests on (a warning on Node 22.19.0), the restart-limit setting (`Infinity`), the one-owner-per-storage rule, power-loss boundary, anything the spike found that the PRD/roadmap should hear |
 | 7 | **Upstream proposal** | present iff the verdict is `go-with-fallback`; attached, marked *not filed* |
 | 8 | **Fate of the code** | what (if anything) becomes product code and in which row; what is discarded; default: nothing |
 | 9 | **Reproduce** | the one command, its expected output, and the platform it was run on |

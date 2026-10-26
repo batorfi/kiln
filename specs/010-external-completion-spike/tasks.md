@@ -23,7 +23,7 @@ its prose deliverable, the report, is written last (Phase 8) because it needs ev
 
 ## Rules that hold in every task
 
-- **The time box is 16 working hours of active session time** — "two working days", counted as active time and logged in a ledger, not as calendar days (spec Clarifications, 2026-10-26). T002 records the start and the ledger; each phase ends with a checkpoint line in `spikes/r42/TIMEBOX.md`. **When the box ends: stop, mark what is unfinished `not-proven`, go to Phase 8.** Never trade an
+- **The time box is 16 working hours of active session time** — "two working days", counted as active time and logged in a ledger, not as calendar days (spec Clarifications, 2026-10-26). T002 records the start and the ledger; each phase ends with a checkpoint line in `spikes/r42/TIMEBOX.md`. **When the box ends: stop, mark what is unfinished `not-proven`, go to Phase 8.** Never trade an When hours run short, cut stretch work in the order given in **Priority under the time box** below.
   unproven guarantee for a favourable verdict (FR-009).
 - **Nothing under `kiln/`, `legacy/` or `specs/ROADMAP.md` is edited** (FR-010, FR-011). If a task seems to need it, stop: the plan has a gap.
 - **Nothing in the spike imports from `kiln/` or `legacy/`**, and nothing under `kiln/` imports from the spike.
@@ -32,6 +32,30 @@ its prose deliverable, the report, is written last (Phase 8) because it needs ev
 - **A scenario that did not run is a failure, not a skip.** `not-proven` is a status, never a pass.
 - **Commit before mutating** (r12's lesson): commit at each checkpoint; mutation checks of the oracle happen on committed code.
 - **No gate is decided here.** The report states a verdict; a person records it at the Roadmap gate.
+
+---
+
+## Priority under the time box — the essential path (analysis T1)
+
+Every task is in exactly one tier. The tier says **what to protect when the 16 hours run short**; it does not change the order in which tasks are done (that is the phases and dependencies below).
+
+| Tier | Meaning | Tasks (54 · 3 · 8) |
+|---|---|---|
+| **E — essential** | without it there is no defensible, checkable verdict: the pin and control readings, the proven harness, the runner and rules, **C1 with guarantees a–e (including a different-process completer)**, the contract, the findings r13 needs, the report | T001–T004, T006–T029, T031, T033–T034, T036–T040, T043–T048, T050, T055–T065 |
+| **R — required if triggered** | needed only when no native strategy holds a–e (T050 decides): the fallback's parity test, F1, and its evidence run | T049, T051, T053 |
+| **S — stretch** | valuable, but the verdict does not stand on it; cut in the order below | T005, T030, T032, T035, T041–T042, T052, T054 |
+
+**Cut order when hours run short** (earliest cut first). Never cut an E task, and never cut an R task whose trigger fired in order to keep an S task.
+
+1. **T054** — the upstream proposal draft (the report then says "not drafted: time box" and lists FR-007 as unmet; the verdict is unaffected).
+2. **T052** — fallback F2 (the shared-connection table). F1 alone is enough to hold or fail the fallback verdict; F2 only tests the roadmap's literal wording.
+3. **T042** — C3 (the keyed write-submission). It is conditional anyway.
+4. **T032 and T035** — the randomised kills. They are supporting evidence; the enumerated kill points are the proof.
+5. **T041** — the C2 (abort-driven) run **if the fallback is triggered and hours are short**; the report then lists C2 as "not run: time box". If the fallback is *not* triggered, C2 runs as the clarification of 2026-10-26 requires.
+6. **T005 and T030** — README/tsconfig polish and the contract line for the report checker.
+7. Inside T045/T047, the *second-opener* negative case (R-6). Its absence is recorded in the report's "Unproven".
+
+A cut task is **ticked `skipped: time box`** with the ledger total at the moment of the cut; whatever it would have proven is `not-proven` in the report.
 
 ---
 
@@ -44,7 +68,7 @@ its prose deliverable, the report, is written last (Phase 8) because it needs ev
 - [ ] T003 Create `spikes/r42/package.json`: `"private": true`, `"type": "module"`, `"engines": {"node": ">=22.19.0"}`, `scripts` `evidence` (`node src/evidence.ts`), `test` (`node --test tests/`), `kill-list` (`node src/evidence.ts --kill-list`), `report-check` (`node src/report-check.ts`), `smoke` (`node src/smoke.ts`); no `dependencies` yet. Append to the repository `.gitignore`: `spikes/r42/node_modules/` and `spikes/r42/out/`. (Edits one existing file: the root `.gitignore`.)
 - [ ] T004 Install and **pin exactly** (the one network act): in `spikes/r42/` run `npm install --save-exact @earendil-works/pi-durable@1.4.0 @earendil-works/pi-ai@1.4.0 @earendil-works/chord@1.4.0` (the spike imports `pi-ai` and `chord` directly, as the library's quick start does). Confirm `package.json` has **no `^` or `~`**, commit `package-lock.json`, and record in `baseline.md` ("Pin (T004)"): the three names, versions, `integrity` from the lockfile, and the number of packages in the tree (`npm ls --all --parallel false | wc -l`). From now on use `npm ci`.
 - [ ] T005 [P] Create `spikes/r42/README.md` (what this is: a time-boxed experiment for row r42, **not product code**; how to run `npm ci && npm run evidence`; links to the spec, plan, quickstart and report) and `spikes/r42/tsconfig.json` (editors only, `noEmit`, equal to `kiln/tsconfig.json`).
-- [ ] T006 Write `spikes/r42/src/smoke.ts`: import `openNodeSqliteStorage` from `@earendil-works/pi-durable/storage/sqlite/node`, open a store in a private temporary directory, close it, delete it, and print the installed `@earendil-works/pi-durable` name and version read from its `package.json`. Run `npm run smoke` on the installed Node and on `npx -y node@22.19.0 src/smoke.ts`; record both results (or the first version at which it works) in `baseline.md` ("Smoke (T006)"). If it does not load at all, stop and write that finding: it decides the verdict.
+- [ ] T006 Write `spikes/r42/src/smoke.ts`: import `openNodeSqliteStorage` from `@earendil-works/pi-durable/storage/sqlite/node`, open a store in a private temporary directory, close it, delete it, and print the installed `@earendil-works/pi-durable` name and version read from its `package.json`. Run `npm run smoke` on the installed Node and on `npx -y node@22.19.0 src/smoke.ts`; record both results (or the first version at which it works) in `baseline.md` ("Smoke (T006)"), **including whether Node prints `ExperimentalWarning: SQLite is an experimental feature` on each** (observed on 22.19.0 in the pre-implementation dry run; the library's SQLite storage uses Node's built-in `node:sqlite`). If it does not load at all, stop and write that finding: it decides the verdict.
 - [ ] T007 Re-take the control with the spike present: from `kiln/` run `npm run check` and `npm test` again and append "After setup (T007)" to `baseline.md`; the counts and the three `PASS` lines must equal T001 (`spikes/` is outside `kiln check`'s scan roots — verified here, not assumed). Commit (`r42 P0: …`) and add the checkpoint "P0 done" to `TIMEBOX.md`.
 
 **Checkpoint**: the dependency is pinned and recorded, `kiln/` is demonstrably unaffected, the clock is running.
@@ -179,8 +203,8 @@ its prose deliverable, the report, is written last (Phase 8) because it needs ev
 
 - [ ] T055 [US5] Update [contracts/gate-completion-port.md](./contracts/gate-completion-port.md) to its **post-spike form**: add any refusal code a strategy needed (mapping onto the existing codes unless truly new — a new code is a contract change and goes in the report); state which guarantees depend on the fallback and what replaces it if upstream lands; keep it free of library names (T028 checks section 5 of the report, this file is checked by `grep -nE 'pi-durable|@earendil-works|Harness|runtime\.commit|defineTask|sleepUntil|abortTask|waitForTask' ` returning nothing). Also state, for each fallback built, which source is **authoritative** if the fallback and a native path ever disagree, and why (spec edge case); confirm `stale` names the winner and `store-error` is exercised.
 - [ ] T056 [P] [US5] Findings — **Node floor**: run `npx -y node@22.19.0 src/evidence.ts --strategy <the strategy the verdict rests on>` and, if the declared floor fails, find the first Node at which it works; write the result and "kiln/ declares ^22.18.0 → must become ≥ 22.19.0, and r12's Node-floor run (22.18) repeated" in `NOTES.md`.
-- [ ] T057 [P] [US5] Findings — **dependency tree**: from `package-lock.json` count the packages, list the direct and notable transitive ones (`chord`, `pi-ai`, `pi-codemode`, `pi-telemetry`, `photon`, `diff`, `typebox`), their licences (`npm ls --all --long` or the lockfile) and the install size (`du -sh node_modules`); note that `kiln/` would stop being dependency-free and which of r12's rules (the `externals` seam in `kiln/checks/boundaries.json`, the `network-external-dependency` code, "nothing to install" in README) r13 would have to amend, and that this is r13's decision.
-- [ ] T058 [P] [US5] Findings — **operating rules for r13**: `restartLimit: Infinity` and why (T040's observation); one owner per storage and the second-opener result (T045); the power-loss boundary (WAL + `synchronous = NORMAL`: abrupt process kill is covered, host power loss may lose the newest commit — **not tested**); waiting inside a phase and the changelog's caution; the startup race and `not-ready`.
+- [ ] T057 [P] [US5] Findings — **dependency tree**: from `package-lock.json` count the packages, list the direct and notable transitive ones (`chord`, `pi-ai`, `pi-codemode`, `pi-telemetry`, `photon`, `diff`, `typebox`), their licences (`npm ls --all --long` or the lockfile) and the install size (`du -sh node_modules`); note that `kiln/` would stop being dependency-free and which of r12's rules (the `externals` seam in `kiln/checks/boundaries.json`, the `network-external-dependency` code, "nothing to install" in README) r13 would have to amend, and that this is r13's decision. Also record the **`node:sqlite` status**: it is Node's built-in SQLite (experimental on 22.19.0, where Node prints a warning), so the library's only durable storage rests on an experimental Node module on the declared floor — state on which Node versions the warning appears.
+- [ ] T058 [P] [US5] Findings — **operating rules for r13**: `restartLimit: Infinity` and why (T040's observation); one owner per storage and the second-opener result (T045); the power-loss boundary (WAL + `synchronous = NORMAL`: abrupt process kill is covered, host power loss may lose the newest commit — **not tested**); waiting inside a phase and the changelog's caution; the startup race and `not-ready`. Add the **experimental `node:sqlite`** point: r13 must decide whether to accept it, pin a Node version where it is stable, or isolate it behind the seam.
 - [ ] T059 [US5] **Fate of the code**: list every file of `spikes/r42/src/` as *becomes product code in row rN* / *discarded after r13* / *kept as the reproducible evidence* (default: nothing becomes product code; the port is **re-created** in `kiln/packages/durable` from the report, not copied); write it in `NOTES.md`. Then close `TIMEBOX.md`: end instant, whether the 16 working hours were kept (the ledger total), and every scenario left `not-proven` with the reason. "P4 done" checkpoint.
 
 **Checkpoint**: the contract, findings, fate and time-box close are all written in notes; the report can now be assembled mechanically.
@@ -252,7 +276,7 @@ Task: "Create spikes/r42/src/table.ts"
 
 ### Time-box discipline
 
-Budget (plan, at 8 h a day): P0 ≈ 2 h, P1 + US1 ≈ 4 h, US2 + US3 ≈ 6 h, US4 ≈ 2 h, US5 + report ≈ 2 h = 16 h. If the box ends mid-phase: stop, record the unfinished scenarios as `not-proven`, run Phase 8. **Cut the fallback and the proposal first; never cut the evidence for a guarantee the verdict claims.**
+Budget (plan, at 8 h a day): P0 ≈ 2 h, P1 + US1 ≈ 4 h, US2 + US3 ≈ 6 h, US4 ≈ 2 h, US5 + report ≈ 2 h = 16 h. If the box ends mid-phase: stop, record the unfinished scenarios as `not-proven`, run Phase 8. **Cut by the tiers and the cut order in *Priority under the time box*; never cut an essential task, and never cut the evidence for a guarantee the verdict claims.**
 
 ### Finishing
 
@@ -260,7 +284,7 @@ The row closes only by the **human's** Roadmap-gate move; these tasks end with a
 
 ## Summary
 
-- **Total tasks**: 65
+- **Total tasks**: 65 — **54 essential · 3 required-if-triggered · 8 stretch** (see *Priority under the time box*)
 - **Per phase**: Setup 7 · Foundational 12 · US1 11 · US2 13 · US3 5 · US4 6 · US5 5 · Polish 6
 - **Conditional tasks**: T042 (C3), T051–T054 (the fallback and the proposal) — each records "skipped: reason" when its condition is false
 - **Parallelisable ([P])**: 28 tasks

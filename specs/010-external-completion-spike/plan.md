@@ -201,7 +201,7 @@ Sized to the two-working-day box ([research.md](./research.md) R10); a `TIMEBOX.
 | R-2 | C1 passes on Node but waiting **inside a phase** holds an invocation and the library discourages it (changelog) | report it as a caveat on guarantee (d)/(e) and let the verdict rule decide (`contracts/spike-report.md` §3); test the restart limit explicitly |
 | R-3 | **Node floor**: Pi Durable needs ≥ 22.19, `kiln/` declares ^22.18 | the spike runs on its own floor; the finding goes to r13 and the report |
 | R-4 | A kill *inside* the library cannot be named | the randomised kills; labelled supporting evidence; the report does not claim a proof there |
-| R-5 | The time box ends before the fallback is proven | the order D2 puts native first, fallback second; unproven guarantees are reported as such and the verdict is no more favourable (FR-009) |
+| R-5 | The time box ends before the fallback is proven | the order D2 puts native first, fallback second; unproven guarantees are reported as such and the verdict is no more favourable (FR-009); tasks are tiered essential / required-if-triggered / stretch with an explicit cut order ([tasks.md](./tasks.md) *Priority under the time box*) |
 | R-6 | Two processes on one file corrupt it (no cross-process lock) | the outside client never opens the file; one negative case documents what happens, for r13 |
 | R-7 | `npm ci` fails or the registry changes under the pinned version | lockfile with integrity; `evidence-install-mismatch`; the report records the install |
 | R-8 | Flaky timing in the random kills | they are supporting evidence only; the proof is the enumerated points, which are deterministic |

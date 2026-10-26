@@ -164,6 +164,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | | [KILN in Zed](./docs/concepts/zed-integration.md) | briefs, moves and knowledge inside the Zed editor — an ACP agent, an MCP server, deep links, Code review decided where the code is (proposal) |
 | **The process** | [The flow](./docs/concepts/the-flow.md) | the twelve gates in depth, what runs between them, where every move leads |
 | | [The interface gates](./docs/concepts/ui-flow.md) | Experience design and UI review: the two built-in gates that apply to interface work |
+| | [The gate brief](./docs/concepts/the-gate-brief.md) | the ten-part brief every gate comes with: what each part answers, where its facts come from, the headline, what it must never do, and how it is recorded as seen |
 | | [An extensible flow](./docs/concepts/extensible-flow.md) | gates teams add to the default flow, with the same guarantees |
 | | [The experience charter](./docs/concepts/experience-charter.md) | the product's users, principles, journeys, screen map and wireframes that those gates measure against |
 | | [The design system](./docs/concepts/design-system.md) | the standard structure of tokens, components and patterns the interface is built from and checked against |
@@ -172,6 +173,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | | [KILN on Pi Durable](./docs/concepts/pi-durable.md) | why durable tasks and conversations are the key enabler |
 | | [Pi Durable tasks, explained](./docs/architecture/explainers/pi-durable-tasks.md) | what a task is, its states and commits, ownership, waiting, aborts and restarts — and the one thing a task cannot do from outside (the r42 question) |
 | | [Pi Durable flows, explained](./docs/architecture/explainers/pi-durable-flows.md) | step by step: opening and resuming, one input answered, busy conversations, tools and replay, sleeping, aborting, failures — and how a KILN step and gate ride on them |
+| | [The durable task graph, explained](./docs/architecture/explainers/pi-durable-task-graph.md) | the live map of unfinished tasks — owners, waits, conversations — and KILN's factory-as-a-tree built on it: roadmap, row, unit, gate and lane |
 | | [The record](./docs/concepts/the-record.md) | events, the envelope, projections, replay and audit |
 | | [Configuration](./docs/concepts/configuration.md) | hosts, providers, models and roles as files, checked and recorded |
 | | [Health](./docs/concepts/health.md) | the watcher that observes and never acts; broken-guarantee signals |
