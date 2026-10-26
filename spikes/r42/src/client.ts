@@ -14,6 +14,8 @@ export interface Client {
   submit(gate: GateId, key: MoveKey, move: Move): Promise<Outcome>;
   state(gate: GateId): Promise<GateState>;
   ping(): Promise<{ pong: boolean; ready: boolean } | null>;
+  /** Test-only seam: move the clock the owner hands its strategy. */
+  setClock(offsetMs: number): Promise<boolean>;
   close(): void;
 }
 
@@ -95,6 +97,10 @@ export async function connect(socketPath: string, opts: { timeoutMs?: number } =
       const r = await request({ op: "state", gate });
       if (!r.ok) throw new Error(r.error ?? "state failed");
       return r.result as GateState;
+    },
+    async setClock(offsetMs) {
+      const r = await request({ op: "clock", offsetMs });
+      return r.ok;
     },
     async ping() {
       const r = await request({ op: "ping" });

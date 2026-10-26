@@ -4,7 +4,8 @@
 //   → {"id":1,"op":"open","gate":"g"} · {"id":2,"op":"submit","gate":"g","key":"k","move":{…}} · {"id":3,"op":"state","gate":"g"} · {"id":4,"op":"ping"}
 //   ← {"id":1,"ok":true,"result":…}  or  {"id":1,"ok":false,"error":"…"}
 // Usage: node src/owner.ts --store <dir> --strategy <name> --socket <path>
-// Test-only environment: KILL_AT / KILL_LOG / FAULT_AT (src/kill.ts) and OWNER_START_DELAY_MS (delays the strategy start so "not-ready" is observable).
+// Test-only environment: KILL_AT / KILL_LOG / FAULT_AT (src/kill.ts), OWNER_START_DELAY_MS (delays the strategy start so "not-ready" is observable) and
+// OWNER_CLOCK_OFFSET_MS (the clock the strategy is handed runs this far ahead; `{"op":"clock","offsetMs":…}` moves it LIVE — the clock-jump scenario).
 import { unlinkSync } from "node:fs";
 import net from "node:net";
 import { killPoint } from "./kill.ts";
@@ -29,6 +30,7 @@ killPoint("recovery-start");
 
 let gate: GateCompletion | undefined;
 let started = false;
+let clockOffsetMs = Number(process.env.OWNER_CLOCK_OFFSET_MS ?? 0);
 
 type Reply = { id: unknown; ok: boolean; result?: unknown; error?: string };
 const reply = (socket: net.Socket, msg: Reply, afterWrite?: () => void): void => {
@@ -46,6 +48,10 @@ async function handle(socket: net.Socket, line: string): Promise<void> {
   if (typeof req !== "object" || req === null || typeof req.op !== "string") return reply(socket, { id: null, ok: false, error: "bad request: no op" });
   const id = req.id ?? null;
   if (req.op === "ping") return reply(socket, { id, ok: true, result: { pong: true, ready: started } });
+  if (req.op === "clock") {
+    clockOffsetMs = Number((req as { offsetMs?: unknown }).offsetMs ?? 0);
+    return reply(socket, { id, ok: true, result: { offsetMs: clockOffsetMs } });
+  }
   if (req.op === "submit") killPoint("move-received"); // the request line has been read; nothing has been dispatched
   if (!started || !gate) return reply(socket, { id, ok: false, error: "not-ready" });
   try {
@@ -90,7 +96,7 @@ server.listen(socketPath, async () => {
     const delay = Number(process.env.OWNER_START_DELAY_MS ?? 0);
     if (delay > 0) await new Promise((r) => setTimeout(r, delay));
     const strategy = await loadStrategy(strategyName);
-    gate = await strategy.start({ store });
+    gate = await strategy.start({ store, now: () => Date.now() + clockOffsetMs });
     started = true;
     console.log("ready");
   } catch (e) {
