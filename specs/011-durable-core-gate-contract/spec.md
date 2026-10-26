@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-26
 
-**Status**: Draft — one open question (see *Clarifications*). Roadmap row **`r13`** is the **admitted next row** (Roadmap gate, `human@batorfi`, entry 4 of `gate0.note` in [specs/ROADMAP.md](../ROADMAP.md), merged 2026-10-26T12:46:25Z). It stays `queued` — never `active` — until its own first gate opens (`chain_unattended=false`). **Nothing here admits a program, advances a gate, decides a gate or edits the roadmap** (constitution VI).
+**Status**: **Clarified (2026-10-26)** — one question asked and answered on the recommended option (see *Clarifications*); ready for `/speckit-plan`. Roadmap row **`r13`** is the **admitted next row** (Roadmap gate, `human@batorfi`, entry 4 of `gate0.note` in [specs/ROADMAP.md](../ROADMAP.md), merged 2026-10-26T12:46:25Z). It stays `queued` — never `active` — until its own first gate opens (`chain_unattended=false`). **Nothing here admits a program, advances a gate, decides a gate or edits the roadmap** (constitution VI).
 
 **Input**: the row **`r13`** — *"Durable core — the Pi Durable seam and the gate contract: roadmap, row, unit, gate and lane tasks; a move and its gate's completion in one atomic commit, first move wins, no clock settles a gate, headless means waiting; proven by kill-and-resume with nothing approved by a restart."* Dependencies **r12** (`done`, `@PR#2`) and **r42** (`done`, `@PR#4`, verdict **`go`**). PRD requirements carried: **CORE-1 … CORE-5**, **CORE-7 (the store; the archive is r15)** and **LANE-1**. Governing text: [`docs/concepts/pi-durable.md`](../../docs/concepts/pi-durable.md) §5–§11, [`docs/prd/kiln-prd.md`](../../docs/prd/kiln-prd.md) §6.2, constitution V, VI, VII, VIII, IX and *Dependencies*.
 
@@ -17,7 +17,7 @@
 
 ### Session 2026-10-26
 
-- Q: Node's built-in SQLite — the library's only durable storage — is **experimental** on the declared Node floor (Node prints a warning on 22.19.0). Which posture does r13 take? → A: *pending — see the question put to the person at the end of the specification step.*
+- Q: Node's built-in SQLite — the library's only durable storage — is **experimental** on the declared Node floor (Node prints a warning on 22.19.0; none on 25.9.0). Which posture does r13 take? → A: **Option A — accept it, record it, and watch it**: the floor stays `^22.19.0 || >=23.6.0`, the warning is accepted and documented as part of the recorded dependency decision, the storage is opened in exactly one place, and a test fails if the module disappears or its behaviour changes. No narrower Node range and no second SQLite binding in r13; a later row may revisit either.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -225,7 +225,7 @@ A factory has exactly one durable store, and exactly one process owns it at a ti
 - **FR-051**: The platform floor of `kiln/` MUST rise to what the library requires (at least Node 22.19.0), and r12's own floor run (done on 22.18.0) MUST be repeated on the new floor with the result recorded.
 - **FR-052**: The boundary check MUST list the library as the one declared external seam (today `externals` is empty); the network check MUST keep refusing network use anywhere in `kiln/` — the library's provider SDKs, present on disk through its dependencies, MUST never be reached by KILN code; r12's three checks MUST stay never-vacuous and keep their own tests.
 - **FR-053**: Every statement that `kiln/` has "no dependency" or "nothing to install" (README, quickstarts, package metadata) MUST be made true again, stating the one install step.
-- **FR-054**: [NEEDS CLARIFICATION: posture toward Node's experimental built-in SQLite under the library's only durable storage — accept it with its warning on the supported Node range, require a Node version where it is stable, or isolate it behind the seam so it can be swapped?] The chosen posture MUST be recorded as part of the dependency decision and enforced by a test or a check, not by prose alone.
+- **FR-054**: Node's built-in SQLite, on which the library's only durable storage rests and which is **experimental** on the declared floor, MUST be **accepted with its warning** on the supported range (Clarifications, 2026-10-26), recorded as part of the dependency decision, opened in **exactly one place**, and guarded by a test that fails if the module is missing or behaves differently — not by prose alone. The warning MUST be documented where the install is documented.
 
 **Proof (the row's acceptance)**
 
