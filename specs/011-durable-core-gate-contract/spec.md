@@ -19,6 +19,10 @@
 
 - Q: Node's built-in SQLite — the library's only durable storage — is **experimental** on the declared Node floor (Node prints a warning on 22.19.0; none on 25.9.0). Which posture does r13 take? → A: **Option A — accept it, record it, and watch it**: the floor stays `^22.19.0 || >=23.6.0`, the warning is accepted and documented as part of the recorded dependency decision, the storage is opened in exactly one place, and a test fails if the module disappears or its behaviour changes. No narrower Node range and no second SQLite binding in r13; a later row may revisit either.
 
+### Session 2026-10-26 *(clarify)*
+
+- Q: Should r13 itself ship the small local channel through which another process hands a move to the owner of the store, or only the in-process contract? → A: **Option A — ship a minimal local-only channel in r13**: the owner serves it on a private local socket (no TCP or UDP port, reachable only by the same user on the same machine), carrying just the port's operations (open a gate, submit a move, read a state) plus a ping and a ready signal; a thin CLI command uses it; the web server of r19/r20 reuses it later. Operator surfaces (listing gates, showing a gate) stay out of r13.
+
 ## User Scenarios & Testing *(mandatory)*
 
 The "users" of this row are the **Operator** (the person who runs a factory and decides its gates, possibly days later, possibly from a different process than the one that opened them) and the **engineer** of the rows after r13 (r14 walks the flow, r15 records, r16 runs workers, r18 directs), who must build on a core they can trust without reading the library. Nothing here has a graphical surface; the proofs are crashes and restarts, and the interface is the contract.
@@ -138,7 +142,8 @@ A factory has exactly one durable store, and exactly one process owns it at a ti
 
 1. **Given** an owned store, **When** a second process tries to become its owner, **Then** it is refused with a message naming the store and the current owner, and the store is untouched.
 2. **Given** an owner killed abruptly, **When** another process starts, **Then** it becomes the owner (a dead owner does not hold the store forever) and resumes everything.
-3. **Given** a completer that is a different process, **When** it submits a move, **Then** it goes through the owner and never touches the store file.
+3. **Given** a completer that is a different process, **When** it submits a move, **Then** it goes through the owner's local channel and never touches the store file.
+4. **Given** the owner's channel, **When** another user on the machine, or any host on the network, tries to use it, **Then** it is unreachable: the channel is a private local socket owned by the factory's user, and the owner holds no TCP or UDP port.
 
 ---
 
@@ -216,6 +221,8 @@ A factory has exactly one durable store, and exactly one process owns it at a ti
 - **FR-040**: The durable core MUST be configured so that a waiting gate is **never parked** by repeated crashes, and this MUST be enforced where the library is opened (one place), not left to callers.
 - **FR-041**: A factory MUST have exactly one durable store, and exactly one process MUST own it at a time; a second process attempting to own an owned store MUST be refused with a message naming the store and the owner, and MUST NOT open it. A dead owner MUST NOT hold the store forever.
 - **FR-042**: Completers (CLI, server workers) MUST reach gates through the owner and MUST NOT open the store file themselves.
+- **FR-045**: The owner MUST serve a minimal **local-only channel** carrying exactly the port's operations — open a gate, submit a move, read a gate's state — plus a liveness probe and a ready signal. The channel MUST be a private local socket reachable only by the factory's own user on the same machine; the owner MUST NOT hold any network (TCP or UDP) port; and the network check MUST keep passing. Every outcome and refusal of FR-016 MUST cross the channel unchanged, and a caller whose owner dies mid-request MUST receive an explicit *outcome unknown* (retry the same key) rather than hang.
+- **FR-046**: A thin command-line client MUST wrap the channel for scripted use (the headless walk of r14 drives it); operator surfaces beyond the port's three operations (listing gates, showing a gate's brief) are out of scope.
 - **FR-043**: The owner MUST answer `not-ready` to moves between its start and the moment waiting gates can accept moves again, MUST report ready only after that, and the window MUST be bounded and observable.
 - **FR-044**: The core MUST state its **power-loss boundary** (abrupt process death is covered; loss of host power may lose the newest commit and is not tested) in the seam's documentation.
 
@@ -248,6 +255,7 @@ A factory has exactly one durable store, and exactly one process owns it at a ti
 - **Lease**: the right to run one generation; released if its holder dies with the process.
 - **Seam**: the one KILN module through which the library is reached; the home of the contract's types.
 - **Owner**: the one process that holds the store; completers talk to it.
+- **Channel**: the owner's private local socket and its small request/response vocabulary (the port's three operations, a liveness probe and a ready signal); the only way another process reaches a gate.
 
 ## Success Criteria *(mandatory)*
 
@@ -259,14 +267,14 @@ A factory has exactly one durable store, and exactly one process owns it at a ti
 - **SC-004**: **No restart, timeout or clock jump (ten years, forward or backward) ever settles a gate** — 0 settlements in the proof; a read of the store finds 0 timers, sleeps or deadlines on any gate or decision.
 - **SC-005**: A restarted owner reports ready, and accepts moves on every waiting gate, within **2 seconds** for a factory of at least 100 live tasks; a move that arrives earlier is refused `not-ready` and the same key succeeds afterwards.
 - **SC-006**: **One** module of `kiln/` imports the library; a planted import elsewhere is refused by the boundary check by name in 100 % of the spellings the check already covers for other imports.
-- **SC-007**: A second process tries to own an owned store **20 times** — refused 20 times, the first owner unharmed; after the first owner is killed, a new process takes over on its first attempt.
+- **SC-007**: A second process tries to own an owned store **20 times** — refused 20 times, the first owner unharmed; after the first owner is killed, a new process takes over on its first attempt. The owner's open network ports number **0**, while serving, after a kill and after a restart; a request whose owner dies mid-way ends with an explicit *outcome unknown* within 5 seconds, never a hang.
 - **SC-008**: Two steps asking for the lane at once: **0** instants with two holders across ≥ 100 trials; after a kill during a held lease, the lane reports **0** running generations until the resumed step re-acquires it.
 - **SC-009**: On a fresh clone, the documented install plus `npm test` and `npm run check` pass on the new floor with **at least 184 new + 500 legacy** tests (r12's counts) plus the row's own, and the three checks report `PASS`; `legacy/` tree id is unchanged.
 - **SC-010**: A reader who has never seen the library can write the next row's first task from this row's contract and documentation alone: the seam's public types contain **0** library names.
 
 ## Assumptions
 
-- **Scope.** r13 delivers the **core**: the seam, the five task types, the gate contract, the lane, one-store-one-owner, and the dependency adoption. It does **not** deliver: walking the twelve-gate flow headless (r14), the event record, outbox, catalog and the feature archive (r15 — CORE-7's archive half), real local workers and model residency (r16), configuration as files (r17), the director's logic (r18), the content of briefs and the web or CLI surfaces that show them (r19, r20), delegations (r21). Task *bodies* here are shells with scripted behaviour for the proof.
+- **Scope.** r13 delivers the **core**: the seam, the five task types, the gate contract, the lane, one-store-one-owner, and the dependency adoption. It also delivers the owner's minimal local channel and a thin CLI client over it (Clarifications). It does **not** deliver: operator surfaces such as listing gates or showing a brief, walking the twelve-gate flow headless (r14), the event record, outbox, catalog and the feature archive (r15 — CORE-7's archive half), real local workers and model residency (r16), configuration as files (r17), the director's logic (r18), the content of briefs and the web or CLI surfaces that show them (r19, r20), delegations (r21). Task *bodies* here are shells with scripted behaviour for the proof.
 - **`gate.opened`.** The PRD names it at gate opening; the event catalog arrives in r15. Here it is a **minimal durable record committed with the gate** (its name, the gate it is about, when), so that opening is atomic and r15 can adopt it without migration; its schema is not frozen here.
 - **The brief** is an opaque, committed, versioned piece of content in this row (what is shown); its structure belongs to the gate-brief rows. The move references it by identity.
 - **Move vocabulary** comes from r12's flow data (`moveAllowed`, the closed set of nine move kinds); this row does not change it. A move needs a named decider; a person's identity and session handling are the surfaces' concern (r19/r20), the core only refuses a move with none.

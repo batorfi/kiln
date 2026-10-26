@@ -17,7 +17,7 @@
 - [x] Requirements are testable and unambiguous — FR-001…FR-063, each with a pass/fail observation (a check, a kill point, a count).
 - [x] Success criteria are measurable — SC-001 (every named step + ≥ 300 random kills, 0 half-applied), SC-002 (≥ 7 consecutive kills), SC-003 (100/100/100 counts), SC-005 (2 s), SC-007 (20/20 refusals), SC-009 (≥ 184 + 500 tests).
 - [x] Success criteria are technology-agnostic — *note:* SC-006, SC-009 and SC-010 name the project's own `kiln check`, `npm test` and the library's absence from public types because they verify guarantees of the repository itself; no library API or code structure is used as a measure.
-- [x] All acceptance scenarios are defined — eight stories, 32 scenarios.
+- [x] All acceptance scenarios are defined — eight stories, 33 scenarios.
 - [x] Edge cases are identified — twelve, including a kill while opening, a move during start-up, a restart storm, a months-long wait, a damaged store, a backwards clock and power loss.
 - [x] Scope is clearly bounded — Assumptions → *Scope* lists what r14, r15, r16, r17, r18, r19/r20 and r21 own; task bodies are shells; the lane is proven with scripted generations.
 - [x] Dependencies and assumptions identified — r12 (done), r42 (done, `go`), the post-spike contract, the constitution's *Dependencies*, macOS only.
