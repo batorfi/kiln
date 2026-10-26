@@ -46,7 +46,7 @@ The rest of the row is **proof and honesty**: the kill-and-resume proof is re-cr
 | **VI** Roadmap gate human-only | pass | the roadmap task has no delegation field *by construction*; a test asserts it |
 | **VII** everything recorded, atomically | pass (partly r15) | `gate.opened` is committed **in the same commit** as the gate document and brief (outbox entry); the full event catalog and rebuilds are r15; no migration needed (R3) |
 | **VIII** local by default | pass | the only IPC is a `0600` Unix socket; **0** network ports (lsof test + lint); the library's provider SDKs sit on disk, unreachable, the network lint still covers every KILN source file |
-| **IX** one committed state; event-driven surfaces | pass | the channel is not a front door and holds no truth; `state` reads the store; nothing polls (the proof's waits are on readiness events, with bounded retry only in *tests*) |
+| **IX** one committed state; event-driven surfaces | pass | the channel is not a front door and holds no truth; `state` reads the store; **no surface polls** — the CLI makes one request and exits. The one internal wait is the owner's start-up convergence (bounded at 5 s, R13), which is not a surface and settles nothing; the *tests* retry `not-ready` with bounded backoff |
 | **X** knowledge is not authority | n/a | — |
 | **XI** a factory is portable | pass | the lock file travels with the store and names its host, so a foreign-host lock is **refused, never taken**; the socket is *not* in the store; a clean close removes the lock (the handover protocol) |
 | **XII** workshops sovereign | n/a | no team space exists yet |
