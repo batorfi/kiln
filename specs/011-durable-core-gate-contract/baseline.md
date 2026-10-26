@@ -77,3 +77,18 @@ What is proven so far (child owner, SIGKILL, fresh reader):
 - A library behaviour not in r42's notes: **values assigned into a document draft become part of its overlay and are unusable once the commit settles** ("Cannot use a settled overlay"). Every value that crosses the commit boundary (a stored ledger outcome, an outbox entry, a gate document, a move record) is therefore copied through JSON (`plain()`) on the way in and on the way out. The first run of the ledger repeat path crashed on exactly this.
 - The not-ready test first failed because it had no gate to find after the restart (`unknown-gate` is the correct answer to a gate that does not exist): the test was rewritten to open the gate first, close the factory, then reopen with registration held back.
 - The decision step's `wait.before-register` hook returns a promise so a test can hold registration back deterministically (FR-043); `Hooks.at` is therefore `void | Promise<void>` and the product awaits it.
+
+## Phase 5 checkpoint (T037–T043): the gate is attacked and holds — MVP of the row — 2026-10-26
+
+| Reading | Result |
+|---|---|
+| `npm test` | exit **0** — `new: 387 tests · legacy: 500 tests (30 skipped)`; wall time **2 min 38 s** for the whole run (≈ 125 s the new suite; T074's 3-minute budget not yet exceeded) |
+| `npm run check` | three `PASS` (47 · 47 · 168 files) |
+
+The proof, as run:
+- **Every declared kill point fires** — `kill points exercised: 14 of 14` (`open.begin`, `open.after-write`, `open.committed`, `wait.before-register`, `wait.registered`, `move.received`, `move.commit-begin`, `move.commit-after-read`, `move.commit-after-write`, `move.committed`, `move.ack-sent`, `gate.wake`, `gate.settled`, `recover.start`). After each: the wreck is clean (I1–I9), a restart changes nothing it should not (I5/I6), the same keys are safe to retry (`repeat` if stored, `committed` if not), and in the end exactly one `gate.opened`, one `move.committed`, one `gate.settled`, one record.
+- **300 random kills** (seed 20261026, 0–60 ms): 14 absent · 60 waiting-whole · 226 settled — 0 violations.
+- **7 consecutive kills** with no move: waiting each time, `reports` empty, the next valid move **commits**; on a settled gate the record is unchanged.
+- **Clock ±10 years**, 2 s of real time, a headless gate: still waiting, **0 timers**; `decidedAt` is the injected clock (a fact).
+- **Controls:** the deliberately half-applying gate is caught as **I2 + I3** at its seam and clean elsewhere; a vacuous run fails by name (`proof-zero-kill-points`, `proof-no-point-fired`, `proof-point-not-fired`); the declared list equals the points the source uses; no `process.env` under `src/`.
+- **7 mutation checks**, all caught (see `notes.md`).
