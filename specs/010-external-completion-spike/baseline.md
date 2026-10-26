@@ -67,3 +67,16 @@ Re-taken with `spikes/r42/` present (including its 112 MB `node_modules`), comma
 | `git rev-parse HEAD:legacy` | `20a82c7e214be256c804f6e8f1cd4cce9c8e9874` | **yes** |
 | `git diff --stat main -- legacy kiln specs/ROADMAP.md` | empty | **yes** |
 | T003 (amended) | `test` script as above | `node --test --test-timeout=60000 "tests/**/*.test.ts"` | added 2026-10-26 after a failing test leaked an owner process and the run hung; the timeout is a backstop, the real fix is `Store.cleanup()` killing every process started on the store (test C5) |
+
+## After (T063) — 2026-10-26
+
+Re-taken after the strategies, scenarios, report and contract were written (`spikes/r42/` holds its tests, its evidence and its 112 MB `node_modules`; `specs/010-external-completion-spike/` holds the report and the updated contract), commands as in T001.
+
+| Reading | Result | Equal to T001? |
+|---|---|---|
+| `cd kiln && npm test` | exit **0** — `new: 184 tests · legacy: 500 tests (30 skipped)`; `live-Pi tier skipped: Pi 1.4.0 installed, measured [0.85.1]` | **equal** |
+| `cd kiln && npm run check` | exit **0** — `PASS network — scanned 22 files` · `PASS boundaries — scanned 22 files` · `PASS legacy — scanned 168 files` | **equal** |
+| `git rev-parse HEAD:legacy` | `20a82c7e214be256c804f6e8f1cd4cce9c8e9874` | **equal** |
+| `git diff --stat main -- legacy kiln specs/ROADMAP.md` | empty | **equal** |
+
+SC-008 holds: the spike changed nothing `kiln/` or `legacy/` can observe, and `specs/ROADMAP.md` is untouched.

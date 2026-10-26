@@ -44,7 +44,7 @@ class Case {
     this.owner = await startOwner({ strategy: this.strategy.name, store: this.s, ...opts });
   }
   /** `n` completers over which concurrent calls are spread (sockets for the in-process completer; the separate-process one holds no connection). */
-  async connect(n = CONNECTIONS): Promise<Completer[]> {
+  async openPool(n = CONNECTIONS): Promise<Completer[]> {
     this.pool = await Promise.all(Array.from({ length: n }, () => this.factory(this.s.socket)));
     return this.pool;
   }
@@ -88,7 +88,7 @@ export async function runExactlyOnce(strategy: Strategy, factory: CompleterFacto
     const r = mk("repeat:concurrent", "repeat", "b");
     try {
       await c.start();
-      const pool = await c.connect();
+      const pool = await c.openPool();
       await pool[0]!.open(GATE);
       const rs = await Promise.all(Array.from({ length: REPEATS }, (_, i) => pool[i % pool.length]!.submit(GATE, KEY, MOVE)));
       const t = tally(rs);
@@ -109,13 +109,13 @@ export async function runExactlyOnce(strategy: Strategy, factory: CompleterFacto
     const r = mk("repeat:after-restart", "repeat", "b");
     try {
       await c.start();
-      let pool = await c.connect(1);
+      let pool = await c.openPool(1);
       await pool[0]!.open(GATE);
       const first = await settleWith(pool[0]!);
       c.closePool();
       await killNow(c.owner);
       await c.start();
-      pool = await c.connect();
+      pool = await c.openPool();
       const rs = await Promise.all(Array.from({ length: REPEATS }, (_, i) => pool[i % pool.length]!.submit(GATE, KEY, MOVE)));
       const t = tally(rs);
       const i = await c.killAndInspect();
@@ -134,7 +134,7 @@ export async function runExactlyOnce(strategy: Strategy, factory: CompleterFacto
     const r = mk("conflict:key", "conflict", "b");
     try {
       await c.start();
-      const [cl] = await c.connect(1);
+      const [cl] = await c.openPool(1);
       await cl!.open(GATE);
       const first = await settleWith(cl!);
       const other: Move = { ...MOVE, kind: "reject" };
@@ -155,7 +155,7 @@ export async function runExactlyOnce(strategy: Strategy, factory: CompleterFacto
     const r = mk("race:distinct-keys", "race", "c");
     try {
       await c.start();
-      const pool = await c.connect();
+      const pool = await c.openPool();
       await pool[0]!.open(GATE);
       const kinds = ["approve", "revise", "reject"] as const;
       const rs = await Promise.all(Array.from({ length: RACERS }, (_, n) => pool[n % pool.length]!.submit(GATE, `race-${n}`, { kind: kinds[n % 3]!, decidedBy: `person-${n}`, briefRef: "brief:spike" })));
@@ -178,7 +178,7 @@ export async function runExactlyOnce(strategy: Strategy, factory: CompleterFacto
     const r = mk("conflict:stale", "conflict", "c");
     try {
       await c.start();
-      const [cl] = await c.connect(1);
+      const [cl] = await c.openPool(1);
       await cl!.open(GATE);
       const first = await settleWith(cl!);
       const late = await settleWith(cl!, "late-key", { kind: "revise", decidedBy: "someone-else", briefRef: "brief:spike" });
@@ -196,7 +196,7 @@ export async function runExactlyOnce(strategy: Strategy, factory: CompleterFacto
     const r = mk("conflict:invalid-move", "conflict", "c");
     try {
       await c.start();
-      const [cl] = await c.connect(1);
+      const [cl] = await c.openPool(1);
       await cl!.open(GATE);
       const noDecider = await settleWith(cl!, "k-invalid", { ...MOVE, decidedBy: "" });
       const blank = await settleWith(cl!, "k-blank", { ...MOVE, decidedBy: "   " });
@@ -216,7 +216,7 @@ export async function runExactlyOnce(strategy: Strategy, factory: CompleterFacto
     const r = mk("conflict:unknown-gate", "conflict", "c");
     try {
       await c.start();
-      const [cl] = await c.connect(1);
+      const [cl] = await c.openPool(1);
       await cl!.open(GATE);
       const lost = await cl!.submit("no-such-gate", KEY, MOVE);
       const st = await cl!.state("no-such-gate");
@@ -233,7 +233,7 @@ export async function runExactlyOnce(strategy: Strategy, factory: CompleterFacto
     const r = mk("conflict:not-ready", "conflict", "c");
     try {
       await c.start({ startDelayMs: 900, waitFor: "listening" });
-      const [cl] = await c.connect(1);
+      const [cl] = await c.openPool(1);
       const early = await settleWith(cl!);
       const ready = await Promise.race([c.owner.whenReady, new Promise<boolean>((res) => setTimeout(() => res(false), 10_000).unref())]);
       if (!ready) {
@@ -255,13 +255,13 @@ export async function runExactlyOnce(strategy: Strategy, factory: CompleterFacto
     const r = mk("store-error:store-write", "store-error", "c");
     try {
       await c.start({ faultAt: "store-write" });
-      let [cl] = await c.connect(1);
+      let [cl] = await c.openPool(1);
       await cl!.open(GATE);
       const failed = await settleWith(cl!);
       const st = await cl!.state(GATE);
       const afterFault = await c.killAndInspect();
       await c.start(); // no fault this time
-      [cl] = await c.connect(1);
+      [cl] = await c.openPool(1);
       const retried = await settleWith(cl!);
       const final = await c.killAndInspect();
       const bad = [...new Set([...checkInvariants(afterFault), ...checkInvariants(final)])].sort() as Invariant[];
