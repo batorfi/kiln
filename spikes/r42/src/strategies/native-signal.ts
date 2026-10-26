@@ -21,14 +21,14 @@ import { faultPoint, killPoint } from "../kill.ts";
 import { refused, sameMove, validateMove, type GateCompletion, type GateId, type GateState, type Move, type MoveKey, type MoveRecord, type Outcome } from "../port.ts";
 import type { KillPoint, StartOptions, Strategy } from "../strategy.ts";
 
-const ctx = BACKGROUND_CONTEXT;
-const GATE_KIND = "spike.gate";
-const DECISION_KIND = "spike.decision";
+export const ctx = BACKGROUND_CONTEXT;
+export const GATE_KIND = "spike.gate";
+export const DECISION_KIND = "spike.decision";
 
 type MoveDocState = { gateId: string; record: { gate: string; key: string; move: { kind: string; decidedBy: string; briefRef: string }; seq: 1 } | null };
 
 /** One gate's move, keyed by the gate id, in the root conversation. */
-const MoveDoc = defineDocFamily<MoveDocState, string>({
+export const MoveDoc = defineDocFamily<MoveDocState, string>({
   kind: "spike.move",
   version: 1,
   scope: "conversation",
@@ -138,9 +138,9 @@ const Gate = defineTask<{ gateId: string }, GateCheckpoint, { key: string }>({
 const spike = defineExtension({ name: "spike", tasks: [Gate, Decision] });
 
 // ---- reading the store -------------------------------------------------------------------------------------------------------------------------------
-type AnyTaskRecord = TaskRecord<unknown, unknown, unknown>;
+export type AnyTaskRecord = TaskRecord<unknown, unknown, unknown>;
 
-async function scanKind(storage: Storage, kind: string): Promise<AnyTaskRecord[]> {
+export async function scanKind(storage: Storage, kind: string): Promise<AnyTaskRecord[]> {
   const out: AnyTaskRecord[] = [];
   let cursor;
   do {
@@ -150,14 +150,14 @@ async function scanKind(storage: Storage, kind: string): Promise<AnyTaskRecord[]
   } while (cursor);
   return out;
 }
-const forGate = (records: AnyTaskRecord[], gateId: GateId): AnyTaskRecord | undefined => records.find((r) => (r.input as { gateId?: string }).gateId === gateId);
+export const forGate = (records: AnyTaskRecord[], gateId: GateId): AnyTaskRecord | undefined => records.find((r) => (r.input as { gateId?: string }).gateId === gateId);
 
-interface Facts {
+export interface Facts {
   gate: AnyTaskRecord | undefined;
   decision: AnyTaskRecord | undefined;
   record: MoveRecord | undefined;
 }
-async function readFacts(storage: Storage, session: Pick<Session, "snapshot">, gateId: GateId): Promise<Facts> {
+export async function readFacts(storage: Storage, session: Pick<Session, "snapshot">, gateId: GateId): Promise<Facts> {
   const gate = forGate(await scanKind(storage, GATE_KIND), gateId);
   const decision = forGate(await scanKind(storage, DECISION_KIND), gateId);
   const doc = await session.snapshot(MoveDoc, ROOT_CONVERSATION_ID, gateId, ctx);
@@ -165,8 +165,8 @@ async function readFacts(storage: Storage, session: Pick<Session, "snapshot">, g
   return { gate, decision, record: r ? { gateId: r.gate, key: r.key, move: r.move as Move, seq: 1 } : undefined };
 }
 
-const piFile = (store: string): string => join(store, "pi.sqlite");
-const limitFile = (store: string): string => join(store, "restart-limit");
+export const piFile = (store: string): string => join(store, "pi.sqlite");
+export const limitFile = (store: string): string => join(store, "restart-limit");
 
 export const NATIVE_SIGNAL_KILL_POINTS: KillPoint[] = [
   { name: "idle-before-move", where: "submit entered; nothing read or written yet", phase: "move" },
@@ -297,7 +297,7 @@ async function create(opts: StartOptions): Promise<GateCompletion> {
   };
 }
 
-async function inspect(store: string, gateId: GateId): Promise<Inspection> {
+export async function inspect(store: string, gateId: GateId): Promise<Inspection> {
   mkdirSync(store, { recursive: true });
   let limit = Infinity;
   try {

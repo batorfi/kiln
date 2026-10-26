@@ -18,6 +18,8 @@
 | 1 | 2026-10-26T07:39:56Z | 2026-10-26T07:43:55Z | 0.07 | 0.07 h | Phase 1 (T001–T007); no time spent waiting for a person |
 | 2 | 2026-10-26T07:47:13Z | 2026-10-26T07:55:53Z | 0.14 | 0.21 h | Phase 2 (T008–T019); no time spent waiting for a person |
 | 3 | 2026-10-26T07:58:18Z | 2026-10-26T08:02:22Z | 0.07 | 0.28 h | Phase 3 (T020–T030); no time spent waiting for a person |
+| 4 | 2026-10-26T08:02:22Z | 2026-10-26T08:11:42Z | 0.16 | 0.44 h | T031–T036 (kill-point, random-kill, clock and restart-limit scenarios). **Row added late**: no row was written at the time; the end is the commit instant of 05925d5, the start is the previous row's end (an upper bound). |
+| 5 | 2026-10-26T10:50:00Z | 2026-10-26T11:10:00Z | 0.33 | 0.77 h | T037–T043: control gate, `native-signal` (C1), `native-abort` (C2). **Start and end are estimates** (first evidence run 10:55:38Z; end = the last command, 11:09:54Z); the time between 08:11 and 10:50 was no session and is not counted. |
 
 ## Checkpoints
 
@@ -27,3 +29,4 @@
 | P0 done | 2026-10-26T07:43:55Z | 0.07 h | T001–T007 complete; `kiln/` unchanged (control equal to T001); dependency pinned (91 packages); smoke passes on Node 25.9.0 and 22.19.0 |
 | P1 done | 2026-10-26T07:55:53Z | 0.21 h | T008–T019 complete: 21 tests green; the harness shown to catch 4 sabotages (kill hook, I3, I4, a control that never commits) |
 | P1′ done | 2026-10-26T08:02:22Z | 0.28 h | T020–T030 complete: 55 tests green; 7 more sabotages of the status/verdict/runner/install rules all caught; report skeleton fails report-check on purpose |
+| P2a done | 2026-10-26T11:10:00Z | 0.77 h | T031–T043 complete: control gate passed; C1 `native-signal` holds a, d, e (with restartLimit = Infinity); C2 `native-abort` fails a (I2, I3) and d (I7); C3 not tried |
