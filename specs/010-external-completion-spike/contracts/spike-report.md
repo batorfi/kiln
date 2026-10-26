@@ -19,6 +19,8 @@ The report is the product of the row. It states a verdict; it never records a ga
 | 9 | **Reproduce** | the one command, its expected output, and the platform it was run on |
 | 10 | **Unproven** | every scenario not run or not finished, and the effect on the verdict (empty only if nothing is unproven) |
 
+**Machine-checked formats.** Section 1 must contain exactly one line `**Verdict:** `go`` (or `go-with-fallback`, `no-go`). Section 2 must contain the status table pasted verbatim from `npm run evidence -- --markdown`. Section 5 must not contain any library name. `npm run report-check` enforces all three ([evidence-cli.md](./evidence-cli.md)).
+
 ## 2. Statuses
 
 A guarantee is **held** for a strategy only if every scenario that targets it **ran** (count > 0) and passed. It is **not-held** if any scenario ran and violated an invariant. It is **not-proven** if any scenario did not run, the
