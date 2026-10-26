@@ -31,3 +31,7 @@ kiln/factory-log/*.log
 
 # Spec Kit catalog cache (written by `specify integration list/info/search`) — machine-local
 .specify/integrations/.cache/
+
+# r42 spike (outside kiln/): installed dependencies and generated evidence are not committed
+spikes/r42/node_modules/
+spikes/r42/out/
