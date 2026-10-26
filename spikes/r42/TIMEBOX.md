@@ -21,6 +21,7 @@
 | 4 | 2026-10-26T08:02:22Z | 2026-10-26T08:11:42Z | 0.16 | 0.44 h | T031–T036 (kill-point, random-kill, clock and restart-limit scenarios). **Row added late**: no row was written at the time; the end is the commit instant of 05925d5, the start is the previous row's end (an upper bound). |
 | 5 | 2026-10-26T10:50:00Z | 2026-10-26T11:10:00Z | 0.33 | 0.77 h | T037–T043: control gate, `native-signal` (C1), `native-abort` (C2). **Start and end are estimates** (first evidence run 10:55:38Z; end = the last command, 11:09:54Z); the time between 08:11 and 10:50 was no session and is not counted. |
 | 6 | 2026-10-26T11:10:00Z | 2026-10-26T11:22:00Z | 0.20 | 0.97 h | T044–T048 (exactly-once, different-process, second-opener, full evidence). Start = the previous row's end; end estimated from the last command (11:21:12Z). |
+| 7 | 2026-10-26T11:22:00Z | 2026-10-26T11:30:00Z | 0.13 | 1.10 h | T049–T054 (parity test, decision: fallback not needed). Start = the previous row's end; end estimated. |
 
 ## Checkpoints
 
@@ -32,3 +33,4 @@
 | P1′ done | 2026-10-26T08:02:22Z | 0.28 h | T020–T030 complete: 55 tests green; 7 more sabotages of the status/verdict/runner/install rules all caught; report skeleton fails report-check on purpose |
 | P2a done | 2026-10-26T11:10:00Z | 0.77 h | T031–T043 complete: control gate passed; C1 `native-signal` holds a, d, e (with restartLimit = Infinity); C2 `native-abort` fails a (I2, I3) and d (I7); C3 not tried |
 | P2b done | 2026-10-26T11:22:00Z | 0.97 h | T044–T048 complete: b and c exercised on all four strategies; native-signal holds a–e incl. different-process; native-abort fails a, c, d; 79 tests green |
+| P3 done | 2026-10-26T11:30:00Z | 1.10 h | T049–T054: fallback not needed (native-signal holds a–e incl. different-process); T051–T054 skipped with reason; derived verdict `go` (to be confirmed by a person) |
