@@ -112,7 +112,8 @@ export async function runEvidence(opts: RunOptions): Promise<RunResult> {
       testOnly: Boolean(strategy.testOnly),
       killPoints: strategy.killPoints.map((k) => ({ name: k.name, phase: k.phase })),
       exercised: exercisedSet.size,
-      randomKills: results.filter((r) => r.kind === "random-kill" && r.ran).reduce((n, r) => n + (r.counts?.trials ?? 1), 0),
+      // one batch of trials is reported once per guarantee it speaks for (a and e): count each distinct batch ONCE, or 300 kills would read as 600
+      randomKills: [...new Map(results.filter((r) => r.kind === "random-kill" && r.ran).map((r) => [r.detail ?? r.scenario, r.counts?.trials ?? 1])).values()].reduce((n, t) => n + t, 0),
       caveats: strategy.caveats,
       guarantees,
       notes,
