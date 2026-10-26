@@ -15,7 +15,7 @@ built from. Neither is product code; the domain data is the *contract the report
 | **MoveKey** | opaque string chosen by the caller | the identity of one *submission*; the same key with an equal move is a **repeat**; the same key with a different move is a **conflict** |
 | **MoveRecord** | `gateId` · `key` · `move` · `seq` (always 1 for a gate) · `outcomeOf: "committed"` | written **at most once per gate**; atomic with the completion of the gate's decision (guarantee a) |
 | **Outcome** | `committed` · `repeat` · `refused(reason)` | returned to the caller for every submission, including those that lose |
-| **RefusalReason** | `lost-race(winner)` · `stale` (gate already settled) · `key-conflict(original)` · `invalid-move` · `unknown-gate` · `not-ready` (owner not yet serving) · `store-error` | every refusal changes nothing (guarantee c) |
+| **RefusalReason** | `lost-race(winner)` · `stale(winner)` (gate already settled; names the key that settled it) · `key-conflict(original)` · `invalid-move` · `unknown-gate` · `not-ready` (owner not yet serving) · `store-error` | every refusal changes nothing (guarantee c) |
 | **GateState** | `waiting` · `settled(record)` | derived from the store, never from memory (guarantee e) |
 
 ### Gate state machine
@@ -47,12 +47,13 @@ Checked by `src/invariants.ts` on a store reopened read-only by a fresh process;
 
 | Entity | Fields | Notes |
 |---|---|---|
-| **Strategy** | `name` (`native-signal` · `native-abort` · `native-submission` · `fallback-document` · `fallback-table`) · `killPoints: KillPoint[]` · implements the port | the list of kill points is part of the strategy and is printed |
+| **Strategy** | `name` (`native-signal` · `native-abort` · `native-submission` · `fallback-document` · `fallback-table`) · `killPoints: KillPoint[]` · `caveats: Caveat[]` · implements the port |
+| **Caveat** | `text` · `enforceable: boolean` | a condition under which a guarantee holds (for example "d holds only with `restartLimit = Infinity`"); `enforceable` ⇔ r13 can guarantee it structurally; a native strategy with a non-enforceable caveat cannot yield `go` | the list of kill points is part of the strategy and is printed |
 | **KillPoint** | `name` · `where` (a sentence: "inside the commit, after the writes, before it returns") · `phase: "move" \| "completion" \| "recovery"` | each is a `killPoint(name)` call in the harness code |
-| **Scenario** | `id` · `guarantee: a\|b\|c\|d\|e` · `strategy` · `kind: "kill-point" \| "random-kill" \| "repeat" \| "race" \| "conflict" \| "different-process" \| "no-clock" \| "restart-limit"` | one test case |
+| **Scenario** | `id` · `guarantee: a\|b\|c\|d\|e` · `strategy` · `kind: "kill-point" \| "random-kill" \| "repeat" \| "race" \| "conflict" \| "store-error" \| "different-process" \| "no-clock" \| "restart-limit"` | one test case |
 | **ScenarioResult** | `scenario` · `ran: boolean` · `passed: boolean` · `violated: Ix[]` · `detail` | `ran = false` is a failure, not a skip |
 | **GuaranteeStatus** | `held` · `not-held` · `not-proven` | `held` only if every targeting scenario ran (count > 0) and passed; `not-proven` if any did not run or the time box ended first; otherwise `not-held` |
-| **Evidence** | `pi-durable: {name, version, integrity}` · `node` · `platform` · `startedAt` · `finishedAt` · `strategies: {name → {killPoints[], exercised, guarantees: {a..e → {status, scenarios, counts}}}}` | serialised to `out/evidence.json`; a copy is embedded in the report |
+| **Evidence** | `pi-durable: {name, version, integrity}` · `node` · `platform` · `startedAt` · `finishedAt` · `strategies: {name → {killPoints[], exercised, caveats[], guarantees: {a..e → {status, scenarios, counts}}}}` | serialised to `out/evidence.json`; a copy is embedded in the report |
 | **Verdict** | `go` · `go-with-fallback` · `no-go` | derived by the rules in [contracts/spike-report.md](./contracts/spike-report.md) §3, then confirmed by a person |
 
 ## 4. Counts the criteria quantify
@@ -63,6 +64,7 @@ Checked by `src/invariants.ts` on a store reopened read-only by a fresh process;
 | Repeats of one move under one key | `repeat` scenario | ≥ **100**, exactly one `committed`, the rest `repeat`; records = 1 (SC-003) |
 | Competing different moves for one gate | `race` scenario | ≥ **100**, exactly one `committed`, the rest `refused(lost-race)`; records = 1 (SC-003) |
 | Randomised kills | `random-kill` scenarios | a few hundred per strategy (supporting evidence only) |
+| Injected store failure at the moment of the move | `store-error` scenario | 1 per strategy: `refused(store-error)`, gate `waiting`, no record; same key commits after the fault is gone |
 | Consecutive kills without a move | `restart-limit` scenario | **> 5** (the library's default limit), gate still `waiting` (I6) |
 
 ## 5. Mapping to the library (for the report, not for the contract)

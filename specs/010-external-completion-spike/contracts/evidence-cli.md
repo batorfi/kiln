@@ -7,7 +7,7 @@
 | `npm ci` | installs exactly the lockfile (the **one network act**; recorded in the report) | 0 / npm's |
 | `npm run evidence` | runs every strategy against every guarantee, writes `out/evidence.json`, prints the table | 0 only if the run examined something and the evidence file was written; **the exit code does not say whether a guarantee held — the table does** (a spike reports `not-held`; it does not fail on it) |
 | `npm run evidence -- --strategy <name>` | one strategy (`native-signal` · `native-abort` · `native-submission` · `fallback-document` · `fallback-table`) | as above |
-| `npm run evidence -- --only <kind>` | one scenario kind (`kill-point` · `random-kill` · `repeat` · `race` · `conflict` · `different-process` · `no-clock` · `restart-limit`) | as above |
+| `npm run evidence -- --only <kind>` | one scenario kind (`kill-point` · `random-kill` · `repeat` · `race` · `conflict` · `store-error` · `different-process` · `no-clock` · `restart-limit`) | as above |
 | `npm test` | the harness's own tests (the oracle, the kill hook, the never-vacuous rules) | 0 / 1 |
 | `npm run kill-list` | prints each strategy's declared kill points, one per line, with its phase | 0 |
 

@@ -4,7 +4,7 @@
 
 **Created**: 2026-10-25
 
-**Status**: **CLARIFIED (2026-10-25)** — three questions asked and answered, all on the recommended option (see *Clarifications*); ready for `/speckit-plan`. Roadmap row **`r42`** was named the **admitted next row** at the Roadmap gate
+**Status**: **CLARIFIED (2026-10-25, 2026-10-26), PLANNED, TASKED and ANALYSED** — six questions asked and answered, all on the recommended option (see *Clarifications*); ready for `/speckit-implement`. Roadmap row **`r42`** was named the **admitted next row** at the Roadmap gate
 (`human@batorfi`, 2026-10-25T18:37:45Z, entry 3 of `gate0.note` in [specs/ROADMAP.md](../ROADMAP.md)). It stays `queued` — never `active` — until its own first gate opens
 (`chain_unattended=false`). **Nothing here admits a program, advances a gate, decides a gate or edits the roadmap** (constitution VI): the spike's report *states* a verdict;
 a person records it at the Roadmap gate.
@@ -25,7 +25,13 @@ needs a dependency; it keeps it **outside `kiln/`** (see *Clarifications*), so r
 
 - Q: Where should the spike's test harness and its Pi Durable dependency live in the repository? → A: **Option A — a separate spike directory outside `kiln/`** (for example `spikes/r42/`) with its own pinned dependency. `kiln/` and its three checks are untouched, and nothing in `kiln/` imports from it or from Pi Durable.
 - Q: Which Pi Durable version should the spike measure and pin? → A: **Option A — exactly `@earendil-works/pi-durable` 1.4.0**, the current release (also the version of the Pi installed on the author's machine), pinned now and recorded with its name, version and integrity hash. A newer release appearing mid-spike is a later, deliberate upgrade and is not part of this verdict.
-- Q: How long should the spike's time box be? → A: **Option B — two working days** of elapsed effort, with its start time recorded in the report. When it ends, work stops and the report lists what is not proven.
+- Q: How long should the spike's time box be? → A: **Option B — two working days** (counted as 16 working hours of active session time, see Session 2026-10-26), with its start time recorded in the report. When it ends, work stops and the report lists what is not proven.
+
+### Session 2026-10-26 *(after the cross-artifact analysis)*
+
+- Q: If the first native strategy (C1, a signal into a running phase) holds all five guarantees, should the second native strategy (C2, abort-driven) still be built and run? → A: **Option B — always run C2**, after C1's results are recorded and only within the native-strategies phase's time budget; it feeds the report's "what was tried". The third (C3, a keyed write-submission) stays conditional on no native strategy holding a, d, e.
+- Q: How is "two working days" measured, so the end of the time box can be computed? → A: **Option A — 16 working hours of active session time**, logged in a ledger at each checkpoint; nights and idle time do not count, and the box ends when the running total reaches 16 h.
+- Q: Do we test "store damaged or full at the moment of the move"? → A: **Option A — yes, one scenario**: a store failure is injected at the moment of the move; the move is refused with `store-error`, the gate is still waiting, nothing is recorded, and the same key commits once the fault is gone. A genuinely full disk is not simulated.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -66,6 +72,7 @@ are there. Never one without the other.
 1. **Given** a waiting gate, **When** a valid move is committed from outside, **Then** the decision completes and the move is recorded in the same commit, and the gate then settles on that move.
 2. **Given** a factory killed at each enumerated step of that sequence, **When** it restarts, **Then** the gate is either still waiting with no move recorded, or settled with the move recorded — in 100 % of the kill points.
 3. **Given** a gate that is waiting, **When** the factory restarts any number of times with no move, **Then** the gate is still waiting, and no clock, timeout or restart ever settles it.
+4. **Given** a waiting gate and a store that fails at the moment the move is written, **When** a valid move is submitted, **Then** it is refused with a named reason (`store-error`), nothing is recorded, the gate is still waiting — and once the fault is gone the same key commits normally.
 
 ---
 
@@ -131,7 +138,7 @@ names, plus the exact Pi Durable version to pin. The spike also finished inside 
 - Library defaults include timers or timeouts on waiting tasks: if any can settle a gate, that is a failure of the "no clock settles a gate" guarantee even if it never fired in the tests.
 - The same key arrives with an identical move after a restart and after a long wait: still the original outcome.
 - The library's version moves during the spike: results apply only to the version they were measured on, and the report says which.
-- The store is damaged or full at the moment of the move: the move is refused with a named reason, and the gate is still waiting.
+- The store fails at the moment of the move (simulated by an injected failure; a genuinely full disk is not): the move is refused with a named reason, and the gate is still waiting.
 - A fallback and a native path disagree on an outcome: the contract in the report says which one is authoritative and why.
 
 ## Requirements *(mandatory)*
@@ -140,7 +147,7 @@ names, plus the exact Pi Durable version to pin. The spike also finished inside 
 
 - **FR-001**: The spike MUST produce one **spike report** that states exactly one verdict — **go**, **go-with-fallback** or **no-go** — and the exact version of Pi Durable it applies to (`@earendil-works/pi-durable` 1.4.0). The report is the product of the row.
 - **FR-002**: The report MUST grade the primitive against five guarantees, each *held* / *not held* / *not proven*, with evidence: **(a)** the move and the gate's completion are one atomic commit; **(b)** keyed exactly once; **(c)** first move wins and a stale or competing move is refused; **(d)** no clock, timeout or restart settles a gate; **(e)** a killed-and-restarted gate resumes as waiting.
-- **FR-003**: Each guarantee MUST be exercised by tests that **kill the factory at every enumerated step boundary** of the sequence (and during the commit), restart it, and assert the store is in one of the two allowed states. The report MUST list the enumerated kill points and how many were exercised; a run that exercised none MUST fail.
+- **FR-003**: Each guarantee MUST be exercised by tests that **kill the factory at every enumerated step boundary** of the sequence (and during the commit), restart it, and assert the store is in one of the two allowed states. "During the commit" means *inside the commit callback* (a named kill point, after the writes and before it returns) and *at random instants* (supporting evidence — a named point cannot reach inside the store's own commit statement). The report MUST list the enumerated kill points and how many were exercised; a run that exercised none MUST fail.
 - **FR-004**: The tests MUST include a completer that is **a different process** from the one that owns the store, and a case of **many repeated** and **many competing** submissions of moves for one gate.
 - **FR-005**: A repeat of a committed move (same key, same move) MUST return the original outcome and commit nothing; the same key with a *different* move MUST be refused as a conflict.
 - **FR-006**: A move against a gate that has already settled, or that loses a race, MUST be refused with the winner named, and MUST leave the store unchanged.
@@ -179,7 +186,7 @@ names, plus the exact Pi Durable version to pin. The spike also finished inside 
 
 ## Assumptions
 
-- **Time box** (confirmed): **two working days** of elapsed effort, recorded with its start time in the report. The row says "time-boxed" without a length; two days is enough to try the native path, the fallback and the kill tests once, and short enough that a no-go costs little.
+- **Time box** (confirmed): **two working days, counted as 16 working hours of active session time** (not calendar days), recorded as a ledger with its start time in the report. The row says "time-boxed" without a length; two days is enough to try the native path, the fallback and the kill tests once, and short enough that a no-go costs little.
 - **Which Pi Durable** (confirmed): `@earendil-works/pi-durable` **1.4.0**, recorded exactly (name, version, integrity) in the report. Results apply to that version only; a later version is a new, deliberate upgrade with its own review (`pi-durable.md` §11).
 - The Operator and the engineer starting r13 are the readers; the spike has no end-user interface.
 - The store is a local SQLite file (constitution VIII, local by default); one process owns it, others reach it through that owner — the guarantees are about that arrangement.

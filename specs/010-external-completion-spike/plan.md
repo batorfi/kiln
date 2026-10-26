@@ -42,11 +42,11 @@ are tested, including a deliberately broken strategy that must be caught.
 
 **Performance Goals**: none. Wall-clock budget only: the full evidence run completes in minutes on a laptop (hundreds of kills at tens of milliseconds each); the time box is two working days of effort.
 
-**Constraints**: the **two-working-day time box**; local only (no network except the one `npm ci`, recorded; tests use a Unix socket and no model); the owner is killed with SIGKILL (abrupt); `legacy/` byte-identical; `kiln/` and its three
+**Constraints**: the **time box: two working days = 16 hours of active session time**, kept in a ledger (clarification 2026-10-26); local only (no network except the one `npm ci`, recorded; tests use a Unix socket and no model); the owner is killed with SIGKILL (abrupt); `legacy/` byte-identical; `kiln/` and its three
 checks untouched; `specs/ROADMAP.md` untouched by this row; nothing from the spike is product code unless the report says so.
 
-**Scale/Scope**: 4 strategies (3 native attempts + the fallback in two variants, tried in order and stopped when a native strategy holds everything), ~10 kill points per strategy, ≥ 100 repeats and ≥ 100 competitors per strategy, a few
-hundred random kills per strategy, one report, one upstream-proposal draft (if needed). ~25 source files (3 of them the report/evidence machinery), 12 test files, 64 tasks ([tasks.md](./tasks.md)).
+**Scale/Scope**: 4–5 strategies (C1 and C2 always; C3 only if no native strategy holds a, d, e; the fallback in two variants only if a native gap remains), all after the two controls, ~10 kill points per strategy, ≥ 100 repeats and ≥ 100 competitors per strategy, a few
+hundred random kills per strategy, one report, one upstream-proposal draft (if needed). ~25 source files (3 of them the report/evidence machinery), 13 test files, 65 tasks ([tasks.md](./tasks.md)).
 
 No `NEEDS CLARIFICATION` remains.
 
@@ -110,7 +110,7 @@ spikes/r42/                              # NEW, outside kiln/ — the harness (n
 │   ├── harness.ts                       # test helpers: start/kill/restart owners, private temp stores
 │   ├── invariants.ts                    # I1–I7 over an Inspection (pure) 
 │   ├── status.ts · verdict.ts · table.ts · install-check.ts   # status rules, verdict rules, rendering, install guard
-│   ├── scenarios/                       # strategy-agnostic: kill-point · random-kill · no-clock · exactly-once · different-process
+│   ├── scenarios/                       # strategy-agnostic: kill-point · random-kill · no-clock · exactly-once (+ store-error) · different-process
 │   ├── evidence.ts                      # the runner: never-vacuous rules, out/evidence.json, the printed table
 │   ├── report-check.ts                  # report ⇄ evidence consistency; no library names in the contract (SC-001, SC-009)
 │   └── strategies/
@@ -125,7 +125,8 @@ spikes/r42/                              # NEW, outside kiln/ — the harness (n
 │   ├── kill-hook.test.ts · oracle.test.ts · owner-client.test.ts      # the harness itself
 │   ├── status.test.ts · verdict.test.ts · never-vacuous.test.ts       # the evidence rules
 │   ├── kill-points.test.ts · kill-random.test.ts · no-clock.test.ts   # guarantees a, d, e
-│   ├── exactly-once.test.ts · different-process.test.ts               # guarantees b, c; the outside completer
+│   ├── exactly-once.test.ts · different-process.test.ts               # guarantees b, c (+ store-error); the outside completer
+│   ├── no-network.test.ts               # FR-011: static scan + `lsof` on the running owner — no network socket
 │   └── fallback-parity.test.ts          # every strategy runs the identical scenarios; no strategy-name branches
 └── out/                                 # git-ignored: evidence.json
 
@@ -143,7 +144,7 @@ not by copying spike code (FR-012). `spikes/` is not scanned by `kiln check` (it
 | # | Decision | Why (research) |
 |---|---|---|
 | D1 | One **port** (`open` · `submit` · `state`), every strategy implements it, **one suite** runs against all | FR-007/SC-005 become checkable; the contract outlives the API (CORE-6) — R3, R4 |
-| D2 | Try **C1 first**, then C2, then (if a gap remains) C3, then the fallback F1, then F2; stop trying strategies once a native one holds a–e *and* the different-process case | time box; the report still states what was not tried and why — R3, R10 |
+| D2 | Try **C1 first**, then C2, then (if a gap remains) C3, then the fallback F1, then F2; C2 is **always** run after C1's results (clarification 2026-10-26); C3 only if no native strategy holds a, d, e; the fallback only if a native gap remains — and stop adding strategies once a native one holds a–e *and* the different-process case and C2 has been run | time box; the report still states what was not tried and why — R3, R10 |
 | D3 | **Owner process + outside client over a Unix-domain socket** | one process owns a storage, no cross-process locking — R5 |
 | D4 | **Two kill methods**: named points (the proof) + random instants (supporting evidence) | a named point cannot reach the library's interior; randomness cannot prove absence — R6 |
 | D5 | An **oracle on the reopened store** (I1–I7), never on memory | guarantee (e); constitution IX — R6 |
@@ -159,7 +160,7 @@ Sized to the two-working-day box ([research.md](./research.md) R10); a `TIMEBOX.
 
 | Phase | Work | Budget | Done when |
 |---|---|---|---|
-| **P0 — Setup and pin** | `spikes/r42/` skeleton; `package.json` with the exact pin; `npm ci`; `.gitignore`; `TIMEBOX.md` starts; record name/version/integrity; verify `kiln check` + suites unchanged (the SC-008 control, before) | ~0.25 d | `evidence-install-mismatch` can fire and doesn't; the "before" numbers are written down |
+| **P0 — Setup and pin** *(budgets in days; 1 day = 8 of the 16 active hours)* | `spikes/r42/` skeleton; `package.json` with the exact pin; `npm ci`; `.gitignore`; `TIMEBOX.md` starts; record name/version/integrity; verify `kiln check` + suites unchanged (the SC-008 control, before) | ~0.25 d | `evidence-install-mismatch` can fire and doesn't; the "before" numbers are written down |
 | **P1 — Port, owner, client, oracle, kill hook** | `port.ts`, `kill.ts`, `owner.ts`, `client.ts`, `invariants.ts`, `evidence.ts` skeleton; `broken-two-commit.ts`; the oracle and hook tests | ~0.5 d | the oracle catches the broken strategy (I3); a killed owner leaves a store a fresh owner can reopen |
 | **P2 — Native strategies and the guarantees** | `native-signal` (C1) and its kill points; scenarios a–e; different-process; exactly-once at 100/100; no-clock; restart-limit; then `native-abort` (C2); `native-submission` (C3) only if a gap remains | ~0.75 d | every scenario kind runs for C1 and C2 and produces statuses |
 | **P3 — Fallback (only if a guarantee is `not-held`/`not-proven` natively)** | `fallback-document` (F1), then `fallback-table` (F2) if F1 fails; the same tests unchanged; draft `upstream-proposal.md` | ~0.25 d | a–e `held` on a fallback, or the report says why none does |
@@ -179,7 +180,7 @@ Sized to the two-working-day box ([research.md](./research.md) R10); a `TIMEBOX.
 | FR-008 contract in KILN terms | `contracts/gate-completion-port.md`, report §5 | report review (SC-009): no library name in the contract |
 | FR-009 time box | `TIMEBOX.md`; report §10 | the dates; "not proven" when the box ends |
 | FR-010 outside `kiln/`, pinned, checks unchanged | `spikes/r42/`, exact pin, lockfile | quickstart §0, §7; SC-008 control |
-| FR-011 no legacy/roadmap edit, no network in tests | no imports of `kiln/`/`legacy/`; Unix socket only | `git diff` empty for `legacy kiln specs/ROADMAP.md`; code review |
+| FR-011 no legacy/roadmap edit, no network in tests | no imports of `kiln/`/`legacy/`; Unix socket only | `git diff` empty for `legacy kiln specs/ROADMAP.md`; **`tests/no-network.test.ts`** (T060: static scan + `lsof` on the owner) |
 | FR-012 fate of the code | report §8; default "nothing" | report review |
 | FR-013 one command, honest about not running | `npm run evidence`; `evidence-*` failures | quickstart §1–§4 |
 | SC-001 … SC-009 | see [quickstart.md](./quickstart.md) §0–§8 | each scenario names its SC |

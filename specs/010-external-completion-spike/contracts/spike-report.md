@@ -12,7 +12,7 @@ The report is the product of the row. It states a verdict; it never records a ga
 | 2 | **The five guarantees** | for each of a–e and for **each strategy tried**: `held` · `not-held` · `not-proven`, the scenario counts, and a pointer to the evidence (file and test name) |
 | 3 | **What was tried** | each strategy, in order, why it was tried, and exactly where it failed or held — no strategy omitted because it failed |
 | 4 | **Kill points** | the enumerated list per strategy, how many were exercised, and the randomised-kill counts (labelled supporting evidence) |
-| 5 | **The contract for r13** | the port ([gate-completion-port.md](./gate-completion-port.md)) as it stands after the spike, in KILN's terms only; which guarantees depend on the fallback; what replaces it if upstream lands |
+| 5 | **The contract for r13** | the port ([gate-completion-port.md](./gate-completion-port.md)) as it stands after the spike, in KILN's terms only; which guarantees depend on the fallback; what replaces it if upstream lands; **which source is authoritative if a fallback and a native path ever disagree, and why** |
 | 6 | **Findings for r13** | at least: the Node floor (`engines >=22.19.0` against `kiln/`'s `^22.18.0`), the transitive dependency tree, the restart-limit setting (`Infinity`), the one-owner-per-storage rule, power-loss boundary, anything the spike found that the PRD/roadmap should hear |
 | 7 | **Upstream proposal** | present iff the verdict is `go-with-fallback`; attached, marked *not filed* |
 | 8 | **Fate of the code** | what (if anything) becomes product code and in which row; what is discarded; default: nothing |
@@ -32,7 +32,7 @@ strategy declared zero kill points, or the time box ended first. *An unproven gu
 | **go-with-fallback** | no native strategy holds all five, **and** a fallback strategy holds all five under the same tests; the proposal is attached; r13 may start on the fallback |
 | **no-go** | no strategy holds all five, or a guarantee needed by CORE-3 is `not-proven` for every strategy when the time box ends. The report states what re-planning the Roadmap gate must consider **before r13** |
 
-If a native strategy holds a–e *with a stated caveat* (for example "d holds only because `restartLimit` is `Infinity`"), the caveat is part of the verdict sentence, and the verdict stays `go` only when the caveat is something r13 can
+A **caveat** is declared by the strategy (`Strategy.caveats`) as `{text, enforceable}`; `enforceable` means r13 can guarantee the condition structurally (for example a setting the seam always sets). If a native strategy holds a–e *with a stated caveat* (for example "d holds only because `restartLimit` is `Infinity`"), the caveat is part of the verdict sentence, and the verdict stays `go` only when the caveat is something r13 can
 enforce structurally. Otherwise it is `go-with-fallback`.
 
 ## 4. After the report

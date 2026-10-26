@@ -47,6 +47,7 @@ exit 0   evidence written to out/evidence.json
 
 - Every cell is derived from scenarios that **ran**; a cell with zero scenarios reads `not-proven`.
 - A different-process completer is part of every row *(SC-004)*.
+- A store failure injected at the moment of the move is refused with `store-error`, the gate still waiting, and the same key commits once the fault is gone *(US2.4)*.
 - ≥ 100 repeats and ≥ 100 competing moves per strategy, exactly one record each *(SC-003)*.
 
 ## 3. One strategy, one kind of scenario *(US2 · SC-002)*
@@ -93,6 +94,14 @@ cd .. && git diff --stat main -- legacy kiln specs/ROADMAP.md   # empty
 ```
 
 **Expect**: `kiln/`'s suite and checks unchanged (same counts as before the row: 184 + 500), `legacy/` byte-identical, `specs/ROADMAP.md` untouched by this row.
+
+## 7a. No network in any test *(FR-011)*
+
+```bash
+npm test -- tests/no-network.test.ts
+```
+
+**Expect**: the static scan finds no network API in `spikes/r42/src` or `tests`, and `lsof` on the running owner lists no TCP/UDP socket — only the Unix-domain socket.
 
 ## 8. The declared Node floor *(plan risk R-3)*
 

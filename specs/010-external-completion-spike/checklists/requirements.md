@@ -17,7 +17,7 @@
 - [x] Requirements are testable and unambiguous — FR-001…FR-013, each with a pass/fail observation.
 - [x] Success criteria are measurable — SC-002 (100 % of kill points), SC-003 (≥ 100 repeats, ≥ 100 competitors, exactly 1 recorded), SC-007 (within the box), etc.
 - [x] Success criteria are technology-agnostic — *note:* SC-006 and SC-008 name the project's own `kiln check` and documented command because they verify the repository's existing guarantees; no library, database or language appears in a criterion.
-- [x] All acceptance scenarios are defined — five stories, 16 scenarios.
+- [x] All acceptance scenarios are defined — five stories, 17 scenarios.
 - [x] Edge cases are identified — nine, including a kill during the commit, a different-process completer, library timers, and a key reused with a different move.
 - [x] Scope is clearly bounded — Out of scope: the durable core (r13), the record (r15), web surface, delegations, model calls; the spike uses a stand-in gate task.
 - [x] Dependencies and assumptions identified — r12 (done), r13 blocked on this row, the constitution's *Dependencies* section (pinned, recorded, one seam), macOS only.

@@ -125,6 +125,6 @@ for an external completion, keyed). It is **not filed**; filing is a person's de
 
 ## R10 — Time box and its bookkeeping
 
-**Decision.** Two working days of elapsed effort (spec). `spikes/r42/TIMEBOX.md` records the start instant, a checkpoint after each phase of the plan, and the end; at the end instant the work stops and the report lists what is
+**Decision.** Two working days, counted as 16 hours of active session time in a ledger (spec, clarification 2026-10-26). `spikes/r42/TIMEBOX.md` records the start instant, a checkpoint after each phase of the plan, and the end; at the end instant the work stops and the report lists what is
 unproven. The plan sizes the phases to fit (≈ 0.25 d setup, 0.5 d harness and kill infrastructure, 0.75 d strategies and guarantee tests, 0.25 d fallback if needed, 0.25 d report) with the fallback and the proposal as the first things
 to be cut *down* (never the evidence for a guarantee the verdict claims).
