@@ -44,3 +44,19 @@ Taken on branch `011-durable-core-gate-contract` after the specification, plan a
 |---|---|---|
 | `npm test` | exit **0** — `new: 184 tests · legacy: 500 tests (30 skipped)` | **yes** |
 | `npm run check` | exit **0** — three `PASS` (22 · 22 · 168 files) | **yes** |
+
+## Phase 2 checkpoint (T004–T023) — 2026-10-26
+
+The checks learned about the dependency (each widening with planted-violation tests), the seam's skeleton exists, a fresh-reader inspection and an oracle that can fail exist, and a child owner can be killed and restarted.
+
+| Reading | Result |
+|---|---|
+| `npm test` | exit **0** — `new: 324 tests · legacy: 500 tests (30 skipped)` (r12: 184; +140: 68 boundary-dependency, 31 network-local-ipc/externals, 6 hashing, 21 oracle, 7 owner-lock, 7 skeleton) |
+| `npm run check` | three `PASS` (38 · 38 · 168 files); notes: `1 external seam`, `3 dependencies, exact and locked`, `local-IPC allowlist: 2 files` |
+| `git rev-parse HEAD:legacy` | `20a82c7e214be256c804f6e8f1cd4cce9c8e9874` — unchanged |
+
+**Findings recorded as they happened**
+- r12's own `check-boundaries.test.ts` asserted the real tree had "0 external seams"; r13 admits exactly one, so that expectation was updated to "1 external seam" + "3 dependencies, exact and locked" (a deliberate change, not a loosening).
+- A new failure code, `boundary-package-json-invalid`, was added beside the three in the contract (an unreadable `package.json` must fail by name, not silently skip the dependency rules).
+- The oracle test first expected two records on a settled gate to be "I4 only"; the oracle correctly said I2 **and** I4 (a settled gate needs *exactly one* record). The test was corrected, not the oracle.
+- The two channel files exist as empty stubs (T008) so `allowlist-missing-file` has been strict since the first commit.

@@ -11,7 +11,7 @@
     "host": { "imports": ["contracts", "record", "durable", "lane", "workers", "director"] },
     "server": { "imports": ["contracts", "record", "durable", "lane", "workers", "director", "workshop", "host"] },
     "web": { "imports": ["server"] },
-    "cli": { "imports": ["contracts", "record", "server", "checks"] },
+    "cli": { "imports": ["contracts", "record", "server", "checks", "durable"] },
     "editor": { "imports": ["server"] },
     "team": { "imports": ["contracts", "record", "durable"] },
     "explore": { "imports": ["contracts", "record", "durable", "lane", "workers", "knowledge"] },
@@ -19,6 +19,17 @@
     "bench": { "imports": ["contracts", "record", "durable", "workers", "knowledge"] },
     "checks": { "imports": ["contracts", "record"] }
   },
-  "externals": {},
+  "externals": {
+    "pi-durable": {
+      "specifiers": [
+        "@earendil-works/pi-durable",
+        "@earendil-works/pi-durable/storage/sqlite/node",
+        "@earendil-works/pi-durable/package.json",
+        "@earendil-works/chord/context",
+        "@earendil-works/pi-ai/models"
+      ],
+      "onlyIn": ["durable"]
+    }
+  },
   "forbidden": { "legacyRoot": "legacy/" }
 }

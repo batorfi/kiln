@@ -3,7 +3,9 @@
 // with the shared tokenizer, so a specifier inside a string, a comment or a template is never read as an import. Pure: reads files, spawns nothing.
 //   · `#<pkg>/…` and a relative import into another package are the same thing, and must be in the importing package's allowed list (siblings are not);
 //   · `node:` builtins are free except in `contracts`, which does no I/O;
-//   · anything else is a bare specifier — refused, unless an `externals` seam opens it for that package (none in r12: FR-002);
+//   · anything else is a bare specifier — refused, unless an `externals` seam opens it for that package (none in r12: FR-002; one in r13: the durable seam);
+//   · (r13) dependencies: `kiln/package.json` `dependencies` must be EXACT versions, each must be named by an external seam and each seam package must be declared, and
+//     `kiln/package-lock.json` must exist and agree — three codes, `boundary-dependency-unpinned`, `boundary-dependency-undeclared`, `boundary-lock-mismatch`;
 //   · nothing under kiln/ imports from legacy/;
 //   · every directory under packages/ is declared in the rules and every package (and checks/) states a non-empty responsibility in its kiln.json;
 //   · a scan that examined no file fails — never vacuous.
@@ -18,7 +20,7 @@ export interface BoundaryRules {
   schema: 1;
   /** Each package → the packages it may import (earlier in the PRD §8.2 chain). Siblings are not importable. */
   layers: Record<string, { imports: string[]; builtins?: "none" | "any" }>;
-  /** Dependencies that may appear as bare specifiers, per seam. EMPTY in r12. */
+  /** Dependencies that may appear as bare specifiers, per seam. EMPTY in r12; r13 opens the durable seam. */
   externals: Record<string, { specifiers: string[]; onlyIn: string[] }>;
   /** Nothing under kiln/ may import from here (path relative to the repository root). */
   forbidden: { legacyRoot: string };
@@ -32,6 +34,10 @@ export interface BoundaryOptions {
 const defaultKilnDir = fileURLToPath(new URL("..", import.meta.url));
 const posix = (p: string) => p.split(sep).join("/");
 const isRelative = (s: string) => s.startsWith("./") || s.startsWith("../");
+/** The package a bare specifier belongs to: `@scope/name/sub` → `@scope/name`, `name/sub` → `name`. */
+export const packageOf = (spec: string): string => (spec.startsWith("@") ? spec.split("/").slice(0, 2).join("/") : spec.split("/")[0]);
+/** An EXACT version: major.minor.patch with optional pre-release and build — no range, tag, URL or path. */
+const EXACT_VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
 
 /** Problems with the rule file itself: shape, dangling references, and cycles (a dependency direction that loops has no direction). */
 function rulesProblems(r: unknown): string[] {
@@ -106,6 +112,20 @@ export function checkBoundaries(opts: BoundaryOptions = {}): CheckResult {
     if (typeof responsibility !== "string" || responsibility.trim() === "") failures.push({ code: "boundary-responsibility-missing", file: u, detail: `${u}/kiln.json has no non-empty responsibility` });
   }
 
+  // r13: the dependencies the package file declares (absent in a scratch tree that has no package.json: the dependency rules then do not apply, and the notes say so)
+  let deps: Record<string, string> | undefined;
+  const pkgPath = join(kilnDir, "package.json");
+  if (existsSync(pkgPath)) {
+    try {
+      const d = (JSON.parse(readFileSync(pkgPath, "utf8")) as { dependencies?: Record<string, string> }).dependencies ?? {};
+      if (typeof d !== "object" || d === null || Array.isArray(d)) throw new Error("dependencies is not an object");
+      deps = d;
+    } catch (e) {
+      failures.push({ code: "boundary-package-json-invalid", file: "package.json", detail: `cannot read the dependencies of package.json: ${(e as Error).message}` });
+    }
+  }
+  const usedPackages = new Set<string>();
+
   // the imports
   const files = networkScanFiles(kilnDir);
   if (files.length === 0) failures.push({ code: "boundary-zero-files", detail: "the scan examined ZERO files (roots: packages/<name>/, checks/ — recursively, tests excluded) — a vacuous scan proves nothing" });
@@ -135,9 +155,46 @@ export function checkBoundaries(opts: BoundaryOptions = {}): CheckResult {
         if (layers[owner].builtins === "none") at("boundary-contracts-io", `imports ${spec} (${owner} does no I/O: no node: builtin is allowed here)`);
       } else if (!Object.values(externals).some((e) => e.specifiers.includes(spec) && e.onlyIn.includes(owner))) {
         at("boundary-bare-specifier", `imports "${spec}" (no external seam is open for it in ${owner})`);
+      } else {
+        // the seam is open for this package: the package it belongs to must also be a declared dependency
+        const pkg = packageOf(spec);
+        usedPackages.add(pkg);
+        if (deps !== undefined && !Object.hasOwn(deps, pkg)) at("boundary-dependency-undeclared", `imports "${spec}", but ${pkg} is not in package.json dependencies`);
       }
     }
   }
+  // r13: the dependencies themselves
+  const dependencyNotes: string[] = [];
+  if (deps === undefined) {
+    if (!existsSync(pkgPath)) dependencyNotes.push("no package.json: dependency rules not applied");
+  } else {
+    const seamPackages = new Set(Object.values(externals).flatMap((e) => e.specifiers.map(packageOf)));
+    for (const [name, version] of Object.entries(deps)) {
+      if (typeof version !== "string" || !EXACT_VERSION.test(version)) failures.push({ code: "boundary-dependency-unpinned", file: "package.json", detail: `dependency ${name} is "${String(version)}": an exact version (for example 1.4.0) is required — no range, tag, URL or path` });
+      if (!seamPackages.has(name)) failures.push({ code: "boundary-dependency-undeclared", file: "package.json", detail: `dependency ${name} is declared but no external seam in checks/boundaries.json names it` });
+    }
+    for (const pkg of seamPackages) if (!Object.hasOwn(deps, pkg)) failures.push({ code: "boundary-dependency-undeclared", file: "checks/boundaries.json", detail: `an external seam names ${pkg}, which is not in package.json dependencies` });
+    const names = Object.keys(deps);
+    if (names.length > 0) {
+      const lockPath = join(kilnDir, "package-lock.json");
+      if (!existsSync(lockPath)) failures.push({ code: "boundary-lock-mismatch", file: "package-lock.json", detail: "package-lock.json is missing: a dependency without a committed lockfile is not reproducible" });
+      else {
+        try {
+          const lock = JSON.parse(readFileSync(lockPath, "utf8")) as { packages?: Record<string, { version?: string; dependencies?: Record<string, string> }> };
+          const root = lock.packages?.[""]?.dependencies ?? {};
+          for (const name of names) {
+            if (root[name] !== deps[name]) failures.push({ code: "boundary-lock-mismatch", file: "package-lock.json", detail: `the lockfile's root asks for ${name} ${String(root[name])}, package.json for ${deps[name]}` });
+            const installed = lock.packages?.[`node_modules/${name}`]?.version;
+            if (installed !== deps[name]) failures.push({ code: "boundary-lock-mismatch", file: "package-lock.json", detail: `the lockfile resolves ${name} to ${String(installed)}, package.json pins ${deps[name]}` });
+          }
+          for (const name of Object.keys(root)) if (!Object.hasOwn(deps, name)) failures.push({ code: "boundary-lock-mismatch", file: "package-lock.json", detail: `the lockfile's root lists ${name}, which package.json does not declare` });
+        } catch (e) {
+          failures.push({ code: "boundary-lock-mismatch", file: "package-lock.json", detail: `package-lock.json is not readable JSON: ${(e as Error).message}` });
+        }
+      }
+    }
+    dependencyNotes.push(`${names.length} dependenc${names.length === 1 ? "y" : "ies"}, exact and locked`);
+  }
   const nExt = Object.keys(externals).length;
-  return result(files.length, [`${Object.keys(layers).length} layers declared; ${nExt} external seam${nExt === 1 ? "" : "s"}; rules: dependency direction, node: builtins, bare specifiers, legacy imports, responsibilities`]);
+  return result(files.length, [`${Object.keys(layers).length} layers declared; ${nExt} external seam${nExt === 1 ? "" : "s"}; rules: dependency direction, node: builtins, bare specifiers, legacy imports, responsibilities`, ...dependencyNotes]);
 }

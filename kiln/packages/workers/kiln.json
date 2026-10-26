@@ -1,4 +1,4 @@
 {
   "name": "@kiln/workers",
-  "responsibility": "Role conversations on models \u2014 tool sets, replay policy and providers; the only importer of pi-ai \u2014 arrives with r16."
+  "responsibility": "Role conversations on models — tool sets, replay policy and providers; the only importer of pi-ai for model calls (the durable seam imports pi-ai's model registry only to satisfy the library's required option, with no provider) — arrives with r16."
 }

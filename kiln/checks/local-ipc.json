@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "entries": [
+    { "path": "packages/durable/src/channel/server.ts", "reason": "the owner's private local socket (a Unix-domain socket path, never a port)" },
+    { "path": "packages/durable/src/channel/client.ts", "reason": "the client of that socket (connects by path only)" }
+  ]
+}

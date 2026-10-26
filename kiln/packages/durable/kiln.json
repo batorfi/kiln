@@ -1,4 +1,4 @@
 {
   "name": "@kiln/durable",
-  "responsibility": "The one seam over Pi Durable: task types, the gate contract and resume \u2014 arrives with r42 and r13."
+  "responsibility": "The one seam over Pi Durable: the gate contract (open a gate whole; a move and its completion in one commit; keyed, first move wins, never by clock), task kinds and their resume, the command ledger, one owner per store and its private local channel; the only importer of the library (src/library/)."
 }
