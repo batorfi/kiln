@@ -4,6 +4,8 @@
 
 **Created**: 2026-10-25
 
+**Overview**: [overview.md](./overview.md) — a technical reading of this spike for the architect: the reasoning behind the question, the evidence so far, the design of the experiment, and what each verdict means for r13 onwards.
+
 **Status**: **CLARIFIED (2026-10-25, 2026-10-26), PLANNED, TASKED and ANALYSED** — six questions asked and answered, all on the recommended option (see *Clarifications*); ready for `/speckit-implement`. Roadmap row **`r42`** was named the **admitted next row** at the Roadmap gate
 (`human@batorfi`, 2026-10-25T18:37:45Z, entry 3 of `gate0.note` in [specs/ROADMAP.md](../ROADMAP.md)). It stays `queued` — never `active` — until its own first gate opens
 (`chain_unattended=false`). **Nothing here admits a program, advances a gate, decides a gate or edits the roadmap** (constitution VI): the spike's report *states* a verdict;

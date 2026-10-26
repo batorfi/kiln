@@ -170,6 +170,8 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | | [The director and Needs you](./docs/concepts/the-director.md) | deterministic orchestration, the planner, shaping the roadmap together, the one inbox |
 | **Foundations** | [The constitution, explained](./docs/architecture/explainers/kiln-constitution.md) | the twelve principles, the flow's invariants and governance — what each rule means for the code you write |
 | | [KILN on Pi Durable](./docs/concepts/pi-durable.md) | why durable tasks and conversations are the key enabler |
+| | [Pi Durable tasks, explained](./docs/architecture/explainers/pi-durable-tasks.md) | what a task is, its states and commits, ownership, waiting, aborts and restarts — and the one thing a task cannot do from outside (the r42 question) |
+| | [Pi Durable flows, explained](./docs/architecture/explainers/pi-durable-flows.md) | step by step: opening and resuming, one input answered, busy conversations, tools and replay, sleeping, aborting, failures — and how a KILN step and gate ride on them |
 | | [The record](./docs/concepts/the-record.md) | events, the envelope, projections, replay and audit |
 | | [Configuration](./docs/concepts/configuration.md) | hosts, providers, models and roles as files, checked and recorded |
 | | [Health](./docs/concepts/health.md) | the watcher that observes and never acts; broken-guarantee signals |
