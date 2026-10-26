@@ -104,7 +104,8 @@ export async function runEvidence(opts: RunOptions): Promise<RunResult> {
     }
 
     ranTotal += results.filter((r) => r.ran).length;
-    const guarantees = Object.fromEntries(GUARANTEES.map((g: Guarantee) => [g, summarizeGuarantee(results.filter((r) => r.guarantee === g), killRelevant ? { declaredKillPoints: declared.length } : {})])) as StrategyEvidence["guarantees"];
+    for (const r of results) if (r.kind === "second-opener") notes.push(`second-opener: ${r.ran ? r.detail : `not run (${r.detail})`}`); // informational (R-6): never a guarantee input
+    const guarantees = Object.fromEntries(GUARANTEES.map((g: Guarantee) => [g, summarizeGuarantee(results.filter((r) => r.guarantee === g && r.kind !== "second-opener"), killRelevant ? { declaredKillPoints: declared.length } : {})])) as StrategyEvidence["guarantees"];
     strategies[strategy.name] = {
       name: strategy.name,
       native: strategy.native,

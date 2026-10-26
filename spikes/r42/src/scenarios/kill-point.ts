@@ -6,20 +6,26 @@
 import type { Invariant } from "../invariants.ts";
 import { checkInvariants, checkStability } from "../invariants.ts";
 import type { ScenarioResult } from "../evidence-model.ts";
-import { connect } from "../client.ts";
+import { inProcess, type CompleterFactory } from "../completer.ts";
 import { killNow, makeStore, startOwner } from "../harness.ts";
 import type { KillPoint, Strategy } from "../strategy.ts";
 import { GATE, KEY, MOVE, settle, unique } from "./common.ts";
 
-export async function runKillPointScenarios(strategy: Strategy): Promise<ScenarioResult[]> {
+/**
+ * `completer` is who talks to the owner: this process (the default) or, for the different-process variant (FR-004), `node src/client.ts` in a process of its own.
+ * The variant is reported as kind `different-process` (so it is not counted as a kill point exercised twice), with the same oracle and the same two guarantees.
+ */
+export async function runKillPointScenarios(strategy: Strategy, completer: CompleterFactory = inProcess, separate = false): Promise<ScenarioResult[]> {
   const out: ScenarioResult[] = [];
-  for (const kp of strategy.killPoints) out.push(...(await runOne(strategy, kp)));
+  for (const kp of strategy.killPoints) out.push(...(await runOne(strategy, kp, completer, separate)));
   return out;
 }
 
-async function runOne(strategy: Strategy, kp: KillPoint): Promise<ScenarioResult[]> {
+async function runOne(strategy: Strategy, kp: KillPoint, completer: CompleterFactory, separate: boolean): Promise<ScenarioResult[]> {
   const s = makeStore();
-  const base = { kind: "kill-point" as const, strategy: strategy.name, killPoint: kp.name, scenario: `kill-point:${kp.name}` };
+  const base = separate
+    ? { kind: "different-process" as const, strategy: strategy.name, killPoint: kp.name, scenario: `different-process:kill-point:${kp.name}` }
+    : { kind: "kill-point" as const, strategy: strategy.name, killPoint: kp.name, scenario: `kill-point:${kp.name}` };
   const notRun = (detail: string): ScenarioResult[] => (["a", "e"] as const).map((guarantee) => ({ ...base, guarantee, ran: false, passed: false, violated: [], detail }));
   try {
     // 1 — drive the point
@@ -27,7 +33,7 @@ async function runOne(strategy: Strategy, kp: KillPoint): Promise<ScenarioResult
     if (kp.phase === "recovery") {
       // a previous life leaves a store behind; the NEXT start dies during its recovery
       const first = await startOwner({ strategy: strategy.name, store: s });
-      const c = await connect(s.socket);
+      const c = await completer(s.socket);
       await c.open(GATE);
       c.close();
       await killNow(first);
@@ -36,7 +42,7 @@ async function runOne(strategy: Strategy, kp: KillPoint): Promise<ScenarioResult
     } else {
       const owner = await startOwner({ strategy: strategy.name, store: s, killAt: kp.name, expectDeath: true });
       try {
-        const c = await connect(s.socket, { timeoutMs: 3000 });
+        const c = await completer(s.socket);
         await c.open(GATE);
         await c.submit(GATE, KEY, MOVE);
         c.close();
@@ -54,7 +60,7 @@ async function runOne(strategy: Strategy, kp: KillPoint): Promise<ScenarioResult
 
     // 3 — a clean restart, and what the owner itself reports
     const owner2 = await startOwner({ strategy: strategy.name, store: s });
-    const c2 = await connect(s.socket);
+    const c2 = await completer(s.socket);
     const reported = await c2.state(GATE).catch(() => ({ state: "error" as const }));
     c2.close();
     const i2 = await strategy.inspect(s.store, GATE);

@@ -119,7 +119,7 @@ if (isEntryPoint(import.meta.url)) {
   const socketPath = at >= 0 ? argv[at + 1] : undefined;
   const rest = argv.filter((_, i) => i !== at && i !== at + 1);
   const [op, gate, key, kind, decidedBy, briefRef = "brief:cli"] = rest;
-  if (!socketPath || !op || !gate || (op === "submit" && (!key || !kind || !decidedBy))) {
+  if (!socketPath || !op || !gate || (op === "submit" && (key === undefined || kind === undefined || decidedBy === undefined))) {
     console.error("usage: node src/client.ts --socket <path> open|state <gate> | submit <gate> <key> <kind> <decidedBy> [briefRef]");
     process.exit(2);
   }
