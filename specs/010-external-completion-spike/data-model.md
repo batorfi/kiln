@@ -35,13 +35,15 @@ Checked by `src/invariants.ts` on a store reopened read-only by a fresh process;
 
 | # | Invariant | Guarantee |
 |---|---|---|
-| **I1** | `GateState = waiting` ⇔ the gate has **no** `MoveRecord` | a, e |
-| **I2** | `GateState = settled` ⇔ **exactly one** `MoveRecord` exists **and** the gate's decision task is terminal with that move's outcome | a |
-| **I3** | there is never a record with a still-waiting gate, nor a settled gate without a record | a |
+| **I1** | a `waiting` gate has **no** `MoveRecord` (the *waiting* half of "waiting ⇔ no record"; the *settled* half is I2) | a, e |
+| **I2** | a `settled` gate has **exactly one** `MoveRecord` **and** its decision task is terminal with that move's outcome | a |
+| **I3** | the **half-applied move** never exists: a record without a completed decision task, a completed decision task without a record, or a settled gate without a record | a |
 | **I4** | the number of records per gate ≤ 1, whatever the number of submissions or restarts | b, c |
 | **I5** | a settled gate stays settled, with the same record, across any further restarts | e |
 | **I6** | a waiting gate stays waiting across **any number** of restarts without a move — including more than the library's `restartLimit` — and is never `blocked` or `parked` | d, e |
 | **I7** | no timer, sleep or deadline is present on the gate task or the decision task | d |
+
+*Refinement recorded 2026-10-26 (T009/T012):* the oracle works from three facts — **G** (the gate's state as the store derives it), **R** (the number of move records) and **D** (the decision task's status). I1 and I2 are the two halves of "G ⇔ R"; **I3 is the disagreement between R and D** (the move and its completion apart), which is what a kill between two commits produces. I5 and the unblocked half of I6 are properties *across* restarts, so they are checked by comparing two inspections taken with no move submitted between them (`checkStability`), not by a single one.
 
 ## 3. Evidence entities (what the harness produces)
 
