@@ -22,6 +22,7 @@
 ### Session 2026-10-26 *(clarify)*
 
 - Q: Should r13 itself ship the small local channel through which another process hands a move to the owner of the store, or only the in-process contract? → A: **Option A — ship a minimal local-only channel in r13**: the owner serves it on a private local socket (no TCP or UDP port, reachable only by the same user on the same machine), carrying just the port's operations (open a gate, submit a move, read a state) plus a ping and a ready signal; a thin CLI command uses it; the web server of r19/r20 reuses it later. Operator surfaces (listing gates, showing a gate) stay out of r13.
+- Q: If a move names a brief that is not the brief the gate was opened with, should the gate refuse it, or record it as given? → A: **Option A — refuse it as `invalid-move`**: a move whose brief reference differs from the gate's committed brief, or that names none, is refused; nothing is written and the gate stays waiting. No new refusal code is added (the outcome vocabulary stays closed).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -58,7 +59,7 @@ The Operator decides a gate: the move and the gate's completion are one commit �
 2. **Given** a settled gate, **When** the same key arrives with an equal move — before or after any restart — **Then** the outcome is `repeat`, naming the original record, and nothing is written.
 3. **Given** a settled gate, **When** the same key arrives with a *different* move, **Then** it is refused `key-conflict`, naming the original; it is never treated as a repeat.
 4. **Given** a waiting gate and many different moves at once, **When** they race, **Then** exactly one is `committed` and each of the others is refused (`lost-race` or `stale`) naming the winner's key; the store holds one record.
-5. **Given** a move with no decider, a move outside the gate's vocabulary, or a gate that does not exist, **When** it arrives, **Then** it is refused (`invalid-move`, `unknown-gate`) and nothing is written.
+5. **Given** a move with no decider, a move outside the gate's vocabulary, a move that names no brief or a brief other than the gate's committed one, or a gate that does not exist, **When** it arrives, **Then** it is refused (`invalid-move`, `unknown-gate`) and nothing is written.
 6. **Given** the owner is up but not yet ready after a restart, **When** a move arrives, **Then** it is refused `not-ready`, and the same key succeeds a moment later.
 7. **Given** the store fails at the moment of writing, **When** a move arrives, **Then** it is refused `store-error`, the gate is still waiting, nothing is recorded, and the same key commits once the fault is gone.
 8. **Given** the owner is killed at any step between "move received" and "acknowledged", **When** it restarts, **Then** the gate is either waiting with no record, or settled with exactly one record whose completion is stored — never in between — and a caller who does not know the outcome can retry the same key safely.
@@ -175,6 +176,7 @@ A factory has exactly one durable store, and exactly one process owns it at a ti
 - **A very long wait** (months, several upgrades of KILN in between): the gate still waits and still accepts its move; the brief it carries is the one committed at opening.
 - **The store is damaged or full at the moment of a move:** refused `store-error`, gate waiting, nothing recorded; the same key commits after the fault.
 - **A move kind or decider the gate's vocabulary does not allow** (flow data of r12): `invalid-move`, nothing written; a move with no named decider never settles a gate.
+- **A move that names a different brief than the gate's** (for example one decided against a stale view): `invalid-move`, nothing written; the person's decision is never recorded against something they were not shown.
 - **The system clock moves backwards or jumps:** nothing settles, nothing expires; times in the record are facts, never triggers.
 - **Host power loss:** outside the guarantee (abrupt process death is inside it); the core states the boundary, it does not pretend to cover it.
 - **A different version of the library opens the store:** not supported in this row; versions are pinned and an upgrade is a deliberate, recorded change.
@@ -198,7 +200,7 @@ A factory has exactly one durable store, and exactly one process owns it at a ti
 - **FR-012**: A **move** MUST be one atomic commit of: the move record (kind, `decidedBy`, the reference to the brief as seen, its key) **and** the completion of the gate's decision. Either both are stored or nothing is.
 - **FR-013**: Moves MUST be **keyed exactly once**: the same key with an equal move returns the original outcome (`repeat`, naming the original record), at any time, before or after any restart; the same key with a different move is refused (`key-conflict`).
 - **FR-014**: **First move wins.** Among racing moves exactly one is `committed`; every other is refused (`lost-race` or `stale`) and the refusal MUST name the key of the move that settled the gate. A refusal never changes the store.
-- **FR-015**: A move MUST be validated against the gate's move vocabulary (from the flow data of r12) and MUST have a named decider; otherwise it is refused `invalid-move` and nothing is written. A move to a gate that does not exist is refused `unknown-gate`.
+- **FR-015**: A move MUST be validated against the gate's move vocabulary (from the flow data of r12), MUST have a named decider and MUST reference the brief the gate was opened with — a move that names no brief, or another one, is refused; otherwise it is refused `invalid-move` and nothing is written. A move to a gate that does not exist is refused `unknown-gate`.
 - **FR-016**: The outcome vocabulary MUST be that of the post-spike contract — `committed`, `repeat`, and the refusals `lost-race`, `stale`, `key-conflict`, `invalid-move`, `unknown-gate`, `not-ready`, `store-error` — with `committed` meaning **durable** (acknowledged only after the record and the completion are stored). No new refusal code MAY be added without a contract change recorded in this row.
 - **FR-017**: A move MUST be deliverable from a **different process** than the one that owns the store, through the owner, with every guarantee of FR-012 … FR-016 intact.
 - **FR-018**: The state of a gate MUST be read from the store, never from memory: `waiting`, `settled` (with its one record) or `unknown`.
