@@ -21,9 +21,23 @@ What this verdict does **not** claim: it was run on **macOS, Node 25.9.0** only.
 
 ## 2. The five guarantees
 
-Pasted verbatim from `npm run evidence -- --markdown` (run 2026-10-26, 11:3x UTC; `spikes/r42/out/evidence.json`). The two `control` rows are test-only: they exist to prove the harness can say *held* and *not-held*, and are never candidates for the verdict. A guarantee is `held` only if every scenario that targets it ran and passed — for every row, including the scenario that drives it from a separate process.
+Pasted verbatim from `npm run evidence -- --markdown` (run 2026-10-26, 11:33:32Z → 11:36:48Z; `spikes/r42/out/evidence.json`). The two `control` rows are test-only: they exist to prove the harness can say *held* and *not-held*, and are never candidates for the verdict. A guarantee is `held` only if every scenario that targets it ran and passed — for every row, including the scenario that drives it from a separate process.
 
-EVIDENCE_TABLE
+*@earendil-works/pi-durable 1.4.0 · node v25.9.0 · darwin · 2026-10-26T11:33:32.710Z → 2026-10-26T11:36:48.478Z*
+
+| Strategy | a | b | c | d | e | Kill points | Random kills |
+|---|---|---|---|---|---|---|---|
+| control-sqlite (control) | held | held | held | held | held | 6 of 6 | 300 random |
+| broken-two-commit (control) | not-held | held | held | held | held | 7 of 7 | 300 random |
+| native-signal † | held | held | held | held | held | 10 of 10 | 300 random |
+| native-abort † | not-held | held | not-held | not-held | held | 11 of 11 | 300 random |
+
+- † native-signal: guarantee d holds only with settings.restartLimit = Infinity (the library parks a task cut off 5 times in a row) (enforceable by the seam)
+- † native-abort: the gate waits on a clock: the decision task sleeps until the year 9999 (a deadline), so the gate is not clock-free (NOT enforceable structurally)
+- note control-sqlite: second-opener: a second process opened control.sqlite while the owner ran and saw {"opened":true,"read":4,"writeLock":"obtained"}; the gate stayed "waiting" and a move still committed; 1 record(s)
+- note broken-two-commit: second-opener: a second process opened control.sqlite while the owner ran and saw {"opened":true,"read":4,"writeLock":"obtained"}; the gate stayed "waiting" and a move still committed; 1 record(s)
+- note native-signal: second-opener: a second process opened pi.sqlite while the owner ran and saw {"opened":true,"read":26,"writeLock":"obtained"}; the gate stayed "waiting" and a move still committed; 1 record(s)
+- note native-abort: second-opener: a second process opened pi.sqlite while the owner ran and saw {"opened":true,"read":26,"writeLock":"obtained"}; the gate stayed "waiting" and a move still committed; 1 record(s)
 
 Scenarios passed / run behind each cell (the evidence is `out/evidence.json`; the scenario names are in `spikes/r42/src/scenarios/`; each scenario kind has a test in `spikes/r42/tests/`):
 
@@ -114,7 +128,7 @@ Default applied: **nothing becomes product code.** The port is re-created in `ki
 git clone --branch 010-external-completion-spike <repository> kiln-r42 && cd kiln-r42/spikes/r42
 npm ci                      # the one network act; installs the exact, locked tree
 npm run evidence            # about 3.5 minutes; prints the table of §2, writes out/evidence.json
-npm test                    # TEST_COUNT tests
+npm test                    # 87 tests
 npm run report-check        # compares this report with out/evidence.json
 ```
 
