@@ -66,12 +66,25 @@ seq           1        always 1 (at most one record per gate)
 ### 2.4 Outbox entry (`kiln.outbox`, append-only)
 
 ```text
-seq   number   1.. per factory, assigned in the commit
-type  string   "gate.opened" (r13); r15 adds the rest of the catalog
-subject string the gate id
-at    number
-data  JSON     { briefRef, gateKey }
+seq     number   1.. per factory, assigned in the commit
+type    string   gate.opened | move.committed | gate.settled | lane.acquired | lane.released | lane.swapped   (r13); r15 adds the catalog
+subject string   the gate id (or "lane")
+at      number   injected clock — a fact
+actor   string   who did it: the opener, the decider (decidedBy), "factory"
+cause   string   what caused it: the command key, the move key
+data    JSON     gate.opened {briefRef, gateKey} · move.committed {kind, briefRef} · gate.settled {key} · lane.* {holder, resident, hold, swaps}
 ```
+
+**Where each is committed (constitution VII: atomically with the state it records):**
+
+| Entry | In the commit of | Actor · cause |
+|---|---|---|
+| `gate.opened` | the opening (gate document + brief + gate task) | the opener · the command key |
+| `move.committed` | the move (move record + the decision's completion) | `decidedBy` · the move key |
+| `gate.settled` | the gate task's own terminal commit (after it wakes) | `"factory"` · the settling move's key |
+| `lane.acquired` / `lane.released` / `lane.swapped` | the lane's commit | the step's task id · the step's command/task key |
+
+**Recorded deferral:** task and step progress, delegation and cost events are r15/r16's; until then those transitions are in the store but not in the stream (spec Assumptions).
 
 ### 2.5 Gate state (derived from the store, never from memory)
 
@@ -90,12 +103,12 @@ unknown ── open(key, spec) ──▶ waiting ── move committed ──▶
 |---|---|
 | I1 | a waiting gate has no move record |
 | I2 | a settled gate has exactly one move record **and** its decision task terminal with that record's key |
-| I3 | no half-applied state: a record without a completed decision, a completed decision without a record, a settled gate without a record, **a gate document without its brief or its `gate.opened` entry (new in r13)**, a brief or an outbox entry without its gate document |
+| I3 | no half-applied state: a record without a completed decision, a completed decision without a record, a settled gate without a record, **a gate document without its brief or its `gate.opened` entry, a move record without its `move.committed` entry, a terminal gate task without its `gate.settled` entry** (new in r13), a brief or an outbox entry without its subject. *(A move record whose gate task has not yet advanced has no `gate.settled` yet — that is the legitimate convergence window, not a violation.)* |
 | I4 | at most one move record per gate; at most one gate document per gate id |
 | I5 | a settled gate stays settled with the same record across restarts |
 | I6 | a waiting gate stays waiting across any number of restarts and is never parked or blocked |
 | I7 | no timer, sleep or deadline on a gate or its decision |
-| I8 *(new)* | the lane never records two holders; after a restart it records none until a resumed step re-acquires |
+| I8 *(new)* | the lane never records two holders; after a restart it records none until a resumed step re-acquires; every `lane.*` entry has its lane commit |
 | I9 *(new)* | every command key maps to exactly one outcome; the same key never has two different request hashes |
 
 ## 3. The command ledger (`kiln.command`)
@@ -152,8 +165,9 @@ replies      {id, ok, result?|error?}                                           
 
 ```text
 Inspection {
+  tasks:       { id, kind, owner, status }[]                        ← FR-005: the live set and ownership, from the store
   gate:        "absent" | "waiting" | "settled"
-  documents:   { gate: bool, brief: bool, outboxEntry: bool }       ← I3 for opening
+  documents:   { gate: bool, brief: bool, opened: bool, moveCommitted: bool, gateSettled: bool }   ← I3 (entries with actor and cause)
   records:     MoveRecord[]                                         ← I1, I2, I4
   decision:    "absent" | "live" | "terminal"
   decisionMatchesRecord: boolean

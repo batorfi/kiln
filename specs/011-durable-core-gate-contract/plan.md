@@ -44,7 +44,7 @@ The rest of the row is **proof and honesty**: the kill-and-resume proof is re-cr
 | **IV** affinity | n/a | LANE-2 was ported in r12; r13 stores resident/hold/swaps and orders FIFO; ordering by tier is r16 |
 | **V** a missing person never approves | **pass — the core** | waiting is a stored state with no timer; no restart, crash count, clock or absence settles it; `restartLimit = Infinity` where the library opens; ≥ 7 consecutive kills tested; the Roadmap and every gate need a named decider |
 | **VI** Roadmap gate human-only | pass | the roadmap task has no delegation field *by construction*; a test asserts it |
-| **VII** everything recorded, atomically | pass (partly r15) | `gate.opened` is committed **in the same commit** as the gate document and brief (outbox entry); the full event catalog and rebuilds are r15; no migration needed (R3) |
+| **VII** everything recorded, atomically | pass for what r13 changes; **recorded deferral** for the rest | every state change r13 makes to a gate or the lane is an **outbox entry with actor and cause, in the commit of the state it records**: `gate.opened`, `move.committed`, `gate.settled`, `lane.acquired|released|swapped` (spec FR-019, FR-031). The event catalog, the stream and the rebuilds are r15; **task/step progress, delegation and cost events are deferred to r15/r16** — visible in the store, not yet in the stream — and that is a tracked complexity below, not a pass by omission *(analysis finding C1)* |
 | **VIII** local by default | pass | the only IPC is a `0600` Unix socket; **0** network ports (lsof test + lint); the library's provider SDKs sit on disk, unreachable, the network lint still covers every KILN source file |
 | **IX** one committed state; event-driven surfaces | pass | the channel is not a front door and holds no truth; `state` reads the store; **no surface polls** — the CLI makes one request and exits. The one internal wait is the owner's start-up convergence (bounded at 5 s, R13), which is not a surface and settles nothing; the *tests* retry `not-ready` with bounded backoff |
 | **X** knowledge is not authority | n/a | — |
@@ -54,7 +54,7 @@ The rest of the row is **proof and honesty**: the kill-and-resume proof is re-cr
 
 **Gate evaluation:** no violation; four **tracked complexities** (below) are the places where r12's rules are deliberately stretched, each with a test.
 
-**Post-design re-check (after R1–R13, data model and contracts):** unchanged — the design added no principle conflict. Two things were *tightened* by design: the oracle gained I3 (opening) and I8/I9, and the kill switch became an injected hook (no environment variable in product code).
+**Post-design re-check (after R1–R13, data model and contracts, and the 2026-10-26 analysis):** one finding changed the design — VII (events with actor and cause for the move and the settlement, not only the opening); the others were layering (the lane is injected into the unit shell as a port), the safe socket directory, and tasks. No principle is conflicted. Two things were *tightened* by design: the oracle gained I3 (opening) and I8/I9, and the kill switch became an injected hook (no environment variable in product code).
 
 ## Project Structure
 
@@ -67,6 +67,7 @@ specs/011-durable-core-gate-contract/
 ├── checklists/requirements.md
 ├── tasks.md          # /speckit-tasks
 ├── baseline.md       # the before/after readings and the floor matrix (written during implementation)
+├── notes.md          # mutation checks, lock-strategy decision, complexity re-read (written during implementation)
 └── implementation-report.md   # at the end
 ```
 
@@ -88,22 +89,24 @@ kiln/
 │   │   ├── kiln.json            # responsibility updated
 │   │   ├── src/
 │   │   │   ├── library/         # the ONLY importer of the library: open.ts (restartLimit ∞, no-provider models, onReport), tasks.ts, docs.ts, tx.ts
-│   │   │   ├── types.ts hooks.ts factory.ts inspect.ts owner-lock.ts outbox.ts commands.ts
+│   │   │   ├── types.ts (incl. the LaneApi port) hooks.ts factory.ts inspect.ts owner-lock.ts outbox.ts commands.ts
 │   │   │   ├── gate/            # open.ts move.ts state.ts tasks.ts (gate + decision) slots.ts
 │   │   │   ├── tasks/           # roadmap.ts row.ts unit.ts            (shells)
 │   │   │   └── channel/         # protocol.ts server.ts client.ts       (node:net: ONLY here)
 │   │   └── tests/
-│   │       ├── seam.test.ts canary-sqlite.test.ts dependencies-record.test.ts hashing.test.ts ledger.test.ts owner-lock.test.ts
+│   │       ├── seam.test.ts seam-skeleton.test.ts canary-sqlite.test.ts dependencies-record.test.ts hashing.test.ts ledger.test.ts owner-lock.test.ts oracle.test.ts tasks-lifecycle.test.ts kill-points-declared.test.ts
 │   │       └── proof/
 │   │           ├── support/     # owner-main.ts (test-only owner with injected hooks) · oracle.ts (I1–I9) · harness.ts · broken-gate.ts
-│   │           └── kill-points · open · exactly-once · storm · clock · owner · units · commands · scale · negative  (.test.ts)
+│   │           └── kill-points · random-kill · open-outcomes · outcomes · open · exactly-once · different-process · storm · clock · units · commands · scale · negative  (.test.ts)
 │   ├── lane/
 │   │   ├── src/lane-task.ts     # NEW: the lane task on the seam (lease, resident, hold, swaps)
-│   │   └── tests/lane-task.test.ts
+│   │   └── tests/lane-task.test.ts lane-proof.test.ts
 │   ├── cli/
-│   │   ├── src/main.ts          # + `owner` and `gate open|move|state` over the channel client
-│   │   └── tests/channel.test.ts
+│   │   ├── src/main.ts gate-commands.ts   # + `owner` and `gate open|move|state` over the channel client
+│   │   └── tests/channel.test.ts no-network.test.ts
 │   └── workers/kiln.json        # text: "the only importer of pi-ai for model calls"
+├── fixtures/demo-brief.json     # NEW: the brief the quickstart opens a gate with
+├── packages/durable/README.md   # NEW: what the seam is, the contract link, key retention, the power-loss boundary
 └── README.md (repo root)        # floor, install line, node:sqlite warning
 ```
 
@@ -115,10 +118,10 @@ kiln/
 |---|---|---|
 | **P0 Adopt the dependency, and prepare the checks** | `before` readings in `baseline.md`; pins, lock, `engines`, `DEPENDENCIES.md`, the corrected statements; **the checks first** — externals seam, `cli → durable` edge, the three boundary codes, the local-IPC rule, the network exemption — each with a *planted-violation test*; the `node:sqlite` canary | `npm ci`; `npm test` ≥ r12 counts + new; `npm run check` three PASS; no source imports the library yet |
 | **P1 The seam skeleton** | `library/` façade; `openFactory` (lock, restart limit, no-provider models, clock, `reports`, `ready`); hooks and the declared kill-point list; `inspectStore` (fresh reader); seam tests (directory-level import test, public-types scan) | seam tests green; a factory opens, resumes an empty store and closes cleanly; a second `openFactory` is refused |
-| **P2 The gate** | documents, outbox, command ledger; `openGate`, the gate + decision tasks and the owner slot, `submitMove`, `gateState`; readiness convergence; in-process unit tests of every outcome | every outcome of the contract returned correctly in-process; **no kill yet** |
+| **P2 The gate** | documents, outbox (entries with actor and cause), command ledger; `openGate`, the gate + decision tasks and the owner slot, `submitMove`, `gateState`; readiness convergence; in-process unit tests of every outcome | every outcome of the contract returned correctly in-process; **no kill yet** |
 | **P3 The proof harness and the first kills** | `owner-main`, oracle I1–I9, harness; kill-point tests for **open** and **move**; the **broken gate** and the never-vacuous guards; mutation checks (committed first) | every declared point fires and holds; the broken gate is caught at its seam only |
 | **P4 The rest of the gate proof** | random kills (300), restart storm (≥ 7), clock ±10 y and wall time, exactly-once (100 / 100 / 100-after-restart), conflict/stale/invalid/unknown/not-ready/store-error, **scale** (100 gates + 20 units ≤ 2 s) | SC-001 … SC-005 met in-process (separate process arrives in P5) |
-| **P5 Channel, CLI, one owner** | `channel/protocol|server|client`; `kiln owner` and `kiln gate …`; owner-lock stress (20 refusals, 50 concurrent starters, takeover); `lsof` and permission tests; the proof re-run with a **separate-process completer** | SC-003, SC-006, SC-007 met; the quickstart §4 and §6 run by hand |
+| **P5 Channel, CLI, one owner** | `channel/protocol|server|client`; `kiln owner` and `kiln gate …`; owner-lock stress (20 refusals, 50 concurrent starters, takeover); the **safe socket directory** rule; `lsof` and permission tests; the proof re-run with a **separate-process completer** | SC-003, SC-006, SC-007 met; the quickstart §4 and §6 run by hand |
 | **P6 Task shells** | roadmap (no delegation field), row, unit; `task.create` through the ledger; kill-at-every-unit-point | SC-001 for units; "half-done never commits" demonstrated |
 | **P7 The lane** | `packages/lane/src/lane-task.ts`; I8; ×100 race; kill during a lease | SC-008 met |
 | **P8 Close** | the floor matrix (22.19, 23.6, 24.1); README and statements; `baseline.md` *after*; fresh-clone run of the quickstart; the implementation report; the tracked complexities re-read | quickstart §0–§11 behave as stated on a fresh clone; `legacy/` tree id unchanged; `specs/ROADMAP.md` untouched |
@@ -135,7 +138,7 @@ kiln/
 | FR-011, SC-002, 004 | `storm.test.ts`, `clock.test.ts` (0 timers, ≥ 7 kills, ±10 years) |
 | FR-020 … 022 | `units.test.ts`, `commands.test.ts`, `storm.test.ts` (`reports` empty) |
 | FR-030 … 033, SC-008 | `lane-task.test.ts` |
-| FR-040 … 046, SC-005, 007 | `owner.test.ts`, `scale.test.ts`, `channel.test.ts` (`lsof`, permissions, outcome unknown) |
+| FR-040 … 046, SC-005, 007 | `owner-lock.test.ts`, `scale.test.ts`, `channel.test.ts` and `no-network.test.ts` (`lsof`, permissions, safe directory, outcome unknown) |
 | FR-050 … 054, SC-009 | `dependencies-record.test.ts`, `canary-sqlite.test.ts`, check tests, the floor matrix, `baseline.md` |
 | FR-060 … 063 | the proof directory as a whole + `negative.test.ts` (broken gate, vacuous runs, planted violations) |
 
@@ -148,6 +151,7 @@ kiln/
 | The library's behaviour differs on 22.19 vs 25.9 for something r42 did not exercise (task re-run, document families) | low · medium | r42 ran `native-signal` on 22.19; the floor matrix re-runs the whole new suite on 22.19, 23.6, 24.1 |
 | The network lint grows holes when exempting declared externals | low · high | the exemption reads **the same file** the boundary check enforces; every new code has a planted test; r12's "strictly stronger" test stays green |
 | `ready` takes longer than 2 s with 100+ tasks | low · medium | measured at P4; fix is parallel re-registration, not relaxing the criterion (R13) |
+| A pre-created or hostile socket directory in a shared temp location | low · high | the **safe-directory rule** (real directory, current uid, exactly `0700`; refuse otherwise) with a planted-symlink and wrong-mode test and a stat-level wrong-owner unit test (S1) |
 | The unit/row shells grow into the walk (scope creep into r14/r18) | medium · medium | shells are **scripted**; nothing reads flow data except the gate's vocabulary; any new behaviour needs a spec line |
 
 ## Complexity Tracking
@@ -160,3 +164,5 @@ kiln/
 | **The seam imports `@earendil-works/pi-ai/models`** although `workers` is "the only importer of pi-ai" | the library's `Harness.open` *requires* a `models` option and only `createModels()` builds one | injecting it from `workers` makes r13 depend on r16; the statement is narrowed to "for model calls" and a test asserts **no provider** is ever registered |
 | **Network lint: declared externals exempt; a path-only local-socket allowlist for `node:net`** | the library is a bare specifier, and the channel needs a Unix socket; both are denied today by design | a loopback TCP port (a real network surface); a second source of truth for externals (drift) — the exemptions read the boundary rules and the allowlist is path-keyed with self-checks |
 | **`kiln.json`/README/package statements change** ("no dependency, nothing to install") | they become false the moment a dependency is admitted | leaving them is a lie; r12's quickstart is *annotated* rather than rewritten (history stays history) |
+| **Event stream is minimal; task/step/delegation/cost events deferred** (constitution VII, the part r13 does not meet) | the record, the catalog and the rebuilds are r15's row; r13 records the gate and lane lifecycle with actor and cause so r15 adopts them without migration | recording every task transition now would pre-empt r15's catalog and invent a schema that row must then migrate; the deferral is stated in the spec's Assumptions and here |
+| **A `LaneApi` port in `durable`, implemented in `lane`** | the unit shell needs the lane but the layer rule is `lane → durable` | importing lane from durable fails `kiln check boundaries`; moving the unit shell into `lane` splits the five task kinds across two packages |

@@ -16,7 +16,7 @@ gateState(gateId)               → Waiting | Settled(record) | Unknown     // r
 
 ## `openGate`
 
-One atomic commit writes the **gate document**, the **brief as shown** (content + its hash) and the **`gate.opened`** outbox entry; after any crash the gate is **absent or whole** (I3). Then a gate task and its decision task exist and the decision is waiting.
+One atomic commit writes the **gate document**, the **brief as shown** (content + its hash) and the **`gate.opened`** outbox entry (actor: the opener; cause: the command key); after any crash the gate is **absent or whole** (I3). Then a gate task and its decision task exist and the decision is waiting.
 
 | Outcome | When | Store effect |
 |---|---|---|
@@ -32,7 +32,7 @@ One atomic commit writes the **gate document**, the **brief as shown** (content 
 
 | Outcome | When | Store effect |
 |---|---|---|
-| `Committed(record)` | gate waiting; move valid; this submission won | **one commit**: the move record **and** the decision's completion |
+| `Committed(record)` | gate waiting; move valid; this submission won | **one commit**: the move record, the `move.committed` outbox entry (actor `decidedBy`, cause the key) **and** the decision's completion |
 | `Repeat(record)` | same key, **equal** move, any time, any restart | none; original record named |
 | `Refused(lost-race, winner)` | the gate settled between arrival and commit, by another key | none; names the winner's key |
 | `Refused(stale, winner)` | settled when it arrived, by another key | none; names the settling key |
@@ -42,6 +42,8 @@ One atomic commit writes the **gate document**, the **brief as shown** (content 
 | `Refused(not-ready)` | owner up, not yet able to accept (start-up) | none; retry the same key |
 | `Refused(store-error)` | the store failed at the moment of writing | none; gate still waiting; the same key commits once the fault is gone |
 | *client side:* `Refused(store-error, connection-lost \| timeout)` | the owner died or did not answer | **outcome unknown** — retry the same key |
+
+The gate task's later `settle` commit appends `gate.settled` (actor `factory`, cause the settling key) with its own terminal state; it may lag the move by a restart and is never the reason a gate looks settled.
 
 **`Committed` means durable**: it is acknowledged only after the record and the completion are stored.
 

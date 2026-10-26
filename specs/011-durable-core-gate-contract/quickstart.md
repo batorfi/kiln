@@ -74,10 +74,10 @@ npm test -- packages/durable/tests/proof/open.test.ts
 ## 6. One owner per store, through a local channel only *(US7 · SC-007)*
 
 ```bash
-npm test -- packages/durable/tests/proof/owner.test.ts packages/cli/tests/channel.test.ts
+npm test -- packages/durable/tests/owner-lock.test.ts packages/cli/tests/channel.test.ts packages/cli/tests/no-network.test.ts
 ```
 
-**Expect**: a second owner on an owned store is refused **20 times** (message names store, pid, host, socket) with the first unharmed; after SIGKILL of the first, a new process takes over on its first attempt; **50 concurrent starters** on a stale lock produce exactly one owner; `lsof -nP -a -i -p <ownerPid>` lists **no** network socket while serving, after a kill and after a restart; a request whose owner is killed mid-way ends with *outcome unknown* within 5 s; the socket is `0600` in a `0700` directory.
+**Expect**: a second owner on an owned store is refused **20 times** (message names store, pid, host, socket) with the first unharmed; after SIGKILL of the first, a new process takes over on its first attempt; **50 concurrent starters** on a stale lock produce exactly one owner; `lsof -nP -a -i -p <ownerPid>` lists **no** network socket while serving, after a kill and after a restart; a request whose owner is killed mid-way ends with *outcome unknown* within 5 s; the socket is `0600` in a `0700` directory; a pre-created symlink, a wrong-mode directory and (stat-level) a directory owned by someone else are each refused with `ChannelUnsafe`.
 
 ## 7. Steps, commands and the lane *(US5, US6 · SC-008)*
 

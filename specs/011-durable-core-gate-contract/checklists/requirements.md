@@ -14,7 +14,7 @@
 ## Requirement Completeness
 
 - [x] No [NEEDS CLARIFICATION] markers remain — the one that was raised (FR-054, the posture toward Node's experimental built-in SQLite) was answered by the person on 2026-10-26: accept, record and watch it (Option A); the spec was updated and the marker removed.
-- [x] Requirements are testable and unambiguous — FR-001…FR-063, each with a pass/fail observation (a check, a kill point, a count).
+- [x] Requirements are testable and unambiguous — FR-001…FR-063 (38, including the FR-019 added by the analysis), each with a pass/fail observation (a check, a kill point, a count).
 - [x] Success criteria are measurable — SC-001 (every named step + ≥ 300 random kills, 0 half-applied), SC-002 (≥ 7 consecutive kills), SC-003 (100/100/100 counts), SC-005 (2 s), SC-007 (20/20 refusals), SC-009 (≥ 184 + 500 tests).
 - [x] Success criteria are technology-agnostic — *note:* SC-006, SC-009 and SC-010 name the project's own `kiln check`, `npm test` and the library's absence from public types because they verify guarantees of the repository itself; no library API or code structure is used as a measure.
 - [x] All acceptance scenarios are defined — eight stories, 33 scenarios.
@@ -31,6 +31,7 @@
 
 ## Notes
 
+- Cross-artifact analysis 2026-10-26: 1 critical, 2 high, 9 medium, 6 low findings; all but U3 (an optional library-version guard, left to the person) were remediated in spec, plan, research, data model, contracts, quickstart and tasks.
 - Validation run: iteration 2 of 3 — all items pass after the clarification was folded in (FR-054 rewritten, Clarifications and Status updated).
 - Everything else that r42 handed to r13 has a stated default under Assumptions (new Node floor, pinned and locked dependencies, `externals` seam, one owner, lane lease released at restart); `/speckit-clarify` may still revisit them.
 - All items pass: ready for `/speckit-clarify` (optional) or `/speckit-plan`.

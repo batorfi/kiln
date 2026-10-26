@@ -6,7 +6,7 @@ The channel is how **another process** (the CLI today, the web server of r19/r20
 
 ## Transport
 
-- **Unix-domain socket** at `<tmp>/kiln-<uid>/<sha1(realpath(store))[0..8]>.sock`; the directory `0700`, the socket `0600`. The path is recorded in `<store>/owner.lock`. A stale socket file left by a SIGKILL is removed by the next owner under the lock.
+- **Unix-domain socket** at `<tmp>/kiln-<uid>/<sha1(realpath(store))[0..8]>.sock`; the directory `0700`, the socket `0600`. **Safe directory rule:** if the directory already exists it must be a real directory (not a symlink), owned by the current user, mode exactly `0700`; otherwise the owner refuses to serve with `ChannelUnsafe` naming the path and the problem. The same for the socket file. A pre-created path is never trusted. The path is recorded in `<store>/owner.lock`. A stale socket file left by a SIGKILL is removed by the next owner under the lock.
 - **Framing**: one JSON object per line, both ways. A request carries an integer `id`; the reply echoes it. Several requests may be in flight on one connection.
 
 ## Requests and replies
@@ -39,4 +39,4 @@ Output is one JSON line (the result); exit `0` for any answered request (a refus
 
 ## What the proof asserts about it
 
-20 attempts to own an owned store → 20 refusals naming the owner; 50 concurrent starters on a stale lock → exactly one owner; a completer that is a separate process reaches every outcome of the gate contract; `lsof -nP -a -i -p <ownerPid>` lists **no** network socket while serving, after a kill, and after a restart.
+20 attempts to own an owned store → 20 refusals naming the owner; 50 concurrent starters on a stale lock → exactly one owner; a completer that is a separate process reaches every outcome of the gate contract; `lsof -nP -a -i -p <ownerPid>` lists **no** network socket while serving, after a kill, and after a restart. A pre-created symlink, a wrong-mode directory and a directory owned by someone else (unit-tested over a stat result) are each refused with `ChannelUnsafe`.

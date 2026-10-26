@@ -12,6 +12,7 @@ interface FactoryOptions {
   now?: () => number;                // the clock handed to records; never a trigger
   hooks?: Hooks;                     // test-only injection: at(point) and fault(point); a no-op by default
   tasks?: TaskKind[];                // extra task kinds (the lane registers itself here)
+  lane?: LaneApi;                    // the lane port: implemented in packages/lane, injected here (durable cannot import lane)
 }
 function openFactory(opts: FactoryOptions): Promise<Factory>;        // takes the ONE owner lock; refuses an owned store
 
@@ -58,9 +59,23 @@ interface TaskKind<I, C, R> {
 function defineKilnTask<I, C, R>(kind: TaskKind<I, C, R>): TaskKind<I, C, R>;
 ```
 
+`Tx.append(outbox, entry)` takes `{type, subject, actor, cause, data}`; an entry without actor or cause is a programming error that throws.
+
 `Runtime` offers `commit(change)` (one atomic commit that may return the task's own next state: *checkpoint*, *wait on tasks*, or *terminal*), `outcomes(ids)`, `wait(slot)` for an owner-level wait (the lane and the gate use it), and `signal` (aborted when the factory closes). **There is no `sleep`, no timer and no `settleOther`.**
 
 The five kinds: `kiln.roadmap`, `kiln.row`, `kiln.unit`, `kiln.gate` (+ `kiln.decision`) are defined in `packages/durable`; `kiln.lane` is defined in `packages/lane` with `defineKilnTask` (layer rule `lane → durable`).
+
+## The lane port (analysis I1)
+
+```ts
+interface LaneApi {
+  acquire(step: TaskId, opts?: { model?: string; hold?: boolean }): Promise<Lease>;   // waits its turn; commits lease + resident/hold/swaps + lane.* entries
+  release(step: TaskId): Promise<void>;
+  within(tx: Tx): LaneTx;                  // change lane state inside a step's own commit
+}
+```
+
+A `kiln.unit` with `needsLane` calls this port; if `FactoryOptions.lane` is absent, creating such a unit is refused (`BadRequest`, naming the missing port).
 
 ## Hooks (tests only)
 
