@@ -11,7 +11,7 @@
   "author": "Zsolt Bátorfi",
   "type": "module",
   "engines": {
-    "node": "^22.18.0 || >=23.6.0"
+    "node": "^22.19.0 || >=23.6.0"
   },
   "imports": {
     "#contracts/*": "./packages/contracts/src/*",
@@ -33,5 +33,9 @@
     "validate:log": "node packages/record/src/log.ts",
     "validate:roadmap": "node packages/record/src/roadmap.ts"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@earendil-works/chord": "1.4.0",
+    "@earendil-works/pi-ai": "1.4.0",
+    "@earendil-works/pi-durable": "1.4.0"
+  }
 }
