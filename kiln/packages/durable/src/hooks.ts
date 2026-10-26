@@ -16,7 +16,7 @@ export const KILL_POINTS = [
   "move.commit-after-read",
   "move.commit-after-write",
   "move.committed",
-  "move.ack-sent",
+  "move.ack-sent", // the outcome is determined and is being handed back to the caller
   // the gate task following its decision
   "gate.wake",
   "gate.settled",

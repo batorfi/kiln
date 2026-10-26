@@ -1,6 +1,12 @@
 // The factory: one store, one owner, the gate contract and the task kinds on top of the seam (seam-api.md). `openFactory` takes the ONE owner lock, opens the store through the
 // library façade (which guards the version before anything resumes, FR-047), registers every task kind, resumes, and reports ready.
 import { channelSocketPath } from "./channel/path.ts";
+import { makeCommandApi } from "./commands.ts";
+import { openGate } from "./gate/open.ts";
+import { submitMove } from "./gate/move.ts";
+import { gateState } from "./gate/state.ts";
+import { Slots } from "./gate/slots.ts";
+import { gateKinds } from "./gate/tasks.ts";
 import { NO_HOOKS, type Hooks } from "./hooks.ts";
 import { inspectStore } from "./inspect.ts";
 import { openStore } from "./library/open.ts";
@@ -48,7 +54,7 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   const hooks = opts.hooks ?? NO_HOOKS;
   await hooks.at("recover.start"); // the first step of every start: a kill HERE is a kill during recovery
   const lock = await acquireLock(opts.store, channelSocketPath(opts.store));
-  const services: Services = { store: undefined as unknown as Store, hooks, now: opts.now ?? Date.now, lane: opts.lane };
+  const services: Services = { store: undefined as unknown as Store, hooks, now: opts.now ?? Date.now, slots: new Slots(), ready: false, lane: opts.lane };
   let store: Store;
   try {
     store = await openStore({ dir: opts.store, now: services.now, kinds: [...builtinKinds(services), ...(opts.tasks ?? [])], installedLibraryVersion: opts.installedLibraryVersion });
@@ -58,13 +64,15 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   }
   services.store = store;
   store.resume();
+  const readyPromise = converge(services, opts.readyTimeoutMs ?? 5000);
+  readyPromise.catch(() => {}); // a caller that never awaits `ready` must not cause an unhandled rejection
   let closed = false;
   return {
-    ready: Promise.resolve(),
+    ready: readyPromise,
     reports: store.reports,
-    gates: { open: notYet("gates.open"), submit: notYet("gates.submit"), state: notYet("gates.state") } as unknown as GateApi,
+    gates: { open: (key, spec) => openGate(services, key, spec), submit: (gateId, key, move) => submitMove(services, gateId, key, move), state: (gateId) => gateState(services, gateId) } as GateApi,
     tasks: { create: notYet("tasks.create"), list: notYet("tasks.list") } as unknown as TaskApi,
-    commands: { run: notYet("commands.run") } as unknown as CommandApi,
+    commands: makeCommandApi(services),
     serve: notYet("serve") as unknown as () => Promise<Channel>,
     inspect: (gateId?: string) => inspectStore(opts.store, gateId),
     close: async () => {
@@ -80,6 +88,26 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
 }
 
 /** The task kinds the durable core itself provides (filled in as they are built). */
-function builtinKinds(_services: Services): TaskKind<any, any, any>[] {
-  return [];
+function builtinKinds(services: Services): TaskKind<any, any, any>[] {
+  return [...gateKinds(services)];
+}
+
+/**
+ * `ready` (FR-043, research R13): every live decision step has RE-REGISTERED its slot and no gate task is ready or running, so a waiting gate can accept a move. This is the one internal
+ * wait of the core — bounded, not a surface, and it settles nothing. If it does not hold within `timeoutMs` the owner does NOT claim to be ready: `ready` rejects and mutating calls keep
+ * answering `not-ready`.
+ */
+async function converge(s: Services, timeoutMs: number): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+  for (;;) {
+    const decisions = (await s.store.tasks({ kind: "kiln.decision" })).filter((t) => t.status !== "terminal");
+    const allRegistered = decisions.every((t) => s.slots.get((t.input as { gateId: string }).gateId)?.registered);
+    const busy = (await s.store.live()).some((t) => t.state === "ready" || (t.state === "running" && t.kind === "kiln.gate"));
+    if (allRegistered && !busy) {
+      s.ready = true;
+      return;
+    }
+    if (Date.now() > deadline) throw new Error(`the owner is not ready after ${timeoutMs} ms: ${decisions.filter((t) => !s.slots.get((t.input as { gateId: string }).gateId)?.registered).length} decision step(s) have not re-registered`);
+    await new Promise((r) => setTimeout(r, 20));
+  }
 }

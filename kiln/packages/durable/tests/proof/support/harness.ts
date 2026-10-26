@@ -46,6 +46,8 @@ export interface OwnerOptions {
   holdMs?: number;
   clockOffsetMs?: number;
   libraryVersion?: string;
+  /** After the script the child stays alive, to be killed by the harness. */
+  stayAlive?: boolean;
   readyTimeoutMs?: number;
   laneModule?: string;
   env?: Record<string, string>;
@@ -69,13 +71,14 @@ export interface OwnerRun {
 
 export function spawnOwner(ts: TestStore, o: OwnerOptions = {}): OwnerRun {
   const env: Record<string, string> = {};
-  for (const [k, v] of Object.entries(process.env)) if (v !== undefined && !/^(KILL_AT|FAULT_AT|HOLD_AT|HOLD_MS|CLOCK_OFFSET_MS|LIBRARY_VERSION|READY_TIMEOUT_MS|LANE_MODULE|KILL_LOG)$/.test(k)) env[k] = v;
+  for (const [k, v] of Object.entries(process.env)) if (v !== undefined && !/^(KILL_AT|FAULT_AT|HOLD_AT|HOLD_MS|CLOCK_OFFSET_MS|LIBRARY_VERSION|READY_TIMEOUT_MS|LANE_MODULE|KILL_LOG|STAY_ALIVE)$/.test(k)) env[k] = v;
   env.KILL_LOG = ts.killLog;
   if (o.killAt) env.KILL_AT = o.killAt;
   if (o.faultAt) env.FAULT_AT = o.faultAt;
   if (o.holdAt) { env.HOLD_AT = o.holdAt; env.HOLD_MS = String(o.holdMs ?? 0); }
   if (o.clockOffsetMs) env.CLOCK_OFFSET_MS = String(o.clockOffsetMs);
   if (o.libraryVersion) env.LIBRARY_VERSION = o.libraryVersion;
+  if (o.stayAlive) env.STAY_ALIVE = "1";
   if (o.readyTimeoutMs) env.READY_TIMEOUT_MS = String(o.readyTimeoutMs);
   if (o.laneModule) env.LANE_MODULE = o.laneModule;
   Object.assign(env, o.env ?? {});
@@ -137,4 +140,24 @@ export async function startOwner(ts: TestStore, o: OwnerOptions = {}): Promise<O
 export async function killNow(run: OwnerRun): Promise<{ code: number | null; signal: NodeJS.Signals | null }> {
   if (run.proc.exitCode === null && run.proc.signalCode === null) run.proc.kill("SIGKILL");
   return run.exited;
+}
+
+/**
+ * Run a script to its end, then KILL the owner (SIGKILL, no cleanup) — so what a test reads afterwards is the store as a crash leaves it, never the owner's memory.
+ * Resolves with everything the script printed; rejects by name if the script did not finish.
+ */
+export async function runThenKill(ts: TestStore, o: OwnerOptions = {}): Promise<OwnerRun> {
+  const run = spawnOwner(ts, { ...o, stayAlive: true });
+  const timer = setTimeout(() => run.proc.kill("SIGKILL"), o.timeoutMs ?? 60_000);
+  try {
+    const finished = await run.done;
+    if (!finished) {
+      const { code, signal } = await run.exited;
+      throw new OwnerFailed(`the script did not finish (code ${code}, signal ${signal})\n${run.stdout()}${run.stderr()}`);
+    }
+    await killNow(run);
+    return run;
+  } finally {
+    clearTimeout(timer);
+  }
 }

@@ -60,3 +60,20 @@ The checks learned about the dependency (each widening with planted-violation te
 - A new failure code, `boundary-package-json-invalid`, was added beside the three in the contract (an unreadable `package.json` must fail by name, not silently skip the dependency rules).
 - The oracle test first expected two records on a settled gate to be "I4 only"; the oracle correctly said I2 **and** I4 (a settled gate needs *exactly one* record). The test was corrected, not the oracle.
 - The two channel files exist as empty stubs (T008) so `allowlist-missing-file` has been strict since the first commit.
+
+## Phase 3–4 checkpoint (T024–T036): the gate opens whole and settles once — 2026-10-26
+
+| Reading | Result |
+|---|---|
+| `npm test` | exit **0** — `new: 355 tests · legacy: 500 tests (30 skipped)` |
+| `npm run check` | three `PASS` (47 · 47 · 168 files) |
+
+What is proven so far (child owner, SIGKILL, fresh reader):
+- **Opening** killed at `open.begin`, `open.after-write`, `open.committed`: the gate is absent or whole — never partial — and re-opening with the same key yields one gate and one `gate.opened`.
+- **The move**, 100 concurrent identical → **1 committed, 99 repeat, 1 record**; 100 different keys → **1 committed, 99 refused naming the winner**; 100 more after a SIGKILL and restart → **0 committed, 100 repeat**; conflict, stale, invalid (no decider, kind outside the vocabulary, no brief, another brief), unknown gate (no gate created), not-ready during start-up then the same key commits, injected store failure then the same key commits.
+- Events: `gate.opened` (actor opener, cause key), `move.committed` (actor decider, cause key) in the move's commit, `gate.settled` (actor factory) in the gate task's terminal commit.
+
+**Findings recorded as they happened**
+- A library behaviour not in r42's notes: **values assigned into a document draft become part of its overlay and are unusable once the commit settles** ("Cannot use a settled overlay"). Every value that crosses the commit boundary (a stored ledger outcome, an outbox entry, a gate document, a move record) is therefore copied through JSON (`plain()`) on the way in and on the way out. The first run of the ledger repeat path crashed on exactly this.
+- The not-ready test first failed because it had no gate to find after the restart (`unknown-gate` is the correct answer to a gate that does not exist): the test was rewritten to open the gate first, close the factory, then reopen with registration held back.
+- The decision step's `wait.before-register` hook returns a promise so a test can hold registration back deterministically (FR-043); `Hooks.at` is therefore `void | Promise<void>` and the product awaits it.

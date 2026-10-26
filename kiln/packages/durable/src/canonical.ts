@@ -33,6 +33,9 @@ export function canonicalJson(value: unknown): string {
   return walk(value);
 }
 
+/** A deep plain copy through JSON. Values read OUT of a document draft, and values put INTO one, cross the commit boundary as copies: a draft owns what it is given and is unusable once its commit settles. */
+export const plain = <T>(value: T): T => globalThis.JSON.parse(globalThis.JSON.stringify(value)) as T;
+
 export const sha256Hex = (text: string): string => createHash("sha256").update(text, "utf8").digest("hex");
 /** The identity of a brief: the hash of its canonical content. */
 export const briefRef = (content: JSON): string => sha256Hex(canonicalJson(content));

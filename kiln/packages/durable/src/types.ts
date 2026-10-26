@@ -33,6 +33,8 @@ export interface GateDocument {
   briefRef: string;
   openedBy: string;
   openedAt: number;
+  /** The command key that opened it: a second key for the same gate id is a `key-conflict` naming this one. */
+  openKey: Key;
 }
 export interface Move {
   kind: MoveKind;
@@ -54,7 +56,7 @@ export interface MoveRecord {
 export type RefusalReason = "lost-race" | "stale" | "key-conflict" | "invalid-move" | "unknown-gate" | "not-ready" | "store-error";
 export type Refusal = { status: "refused"; reason: RefusalReason; winner?: Key; original?: Key; detail?: string };
 export type Outcome = { status: "committed"; record: MoveRecord } | { status: "repeat"; record: MoveRecord } | Refusal;
-export type OpenOutcome = { status: "opened"; gate: GateDocument } | { status: "repeat"; gate: GateDocument } | Refusal;
+export type OpenOutcome = { status: "opened"; gate: GateDocument; taskId: TaskId } | { status: "repeat"; gate: GateDocument; taskId: TaskId } | Refusal;
 export type GateState = { state: "unknown" } | { state: "waiting" } | { state: "settled"; record: MoveRecord };
 
 export const refused = (reason: RefusalReason, extra: { winner?: Key; original?: Key; detail?: string } = {}): Refusal => ({ status: "refused", reason, ...extra });
