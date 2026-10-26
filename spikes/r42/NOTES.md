@@ -26,3 +26,8 @@ Running notes, in the order things were learned. This is the source of the repor
 8. **The report skeleton fails `report-check` on purpose** (11 failures: ten placeholders and the missing evidence). The failure is the reminder; it stops failing only when T061 writes the report and `npm run evidence` has produced `out/evidence.json`.
 9. **State at the Phase 3 checkpoint:** 55 tests; two control strategies declaring 13 kill points between them (`npm run kill-list`); no scenario yet, so no evidence — the kill-point, no-clock and exactly-once scenarios are Phase 4 and 5.
 
+
+## Phase 4 — the controls on the scenarios (2026-10-26)
+
+1. **A leftover sabotage was found and reverted before the run.** The working tree held an uncommitted edit to `src/scenarios/no-clock.ts` that replaced `checkInvariants(i)` by an empty list in `waitingAndClean` — an assertion switched off (a mutation check that was never undone). `git checkout` restored the committed file; 67 tests green afterwards. Lesson: mutation checks are done on a committed tree and undone before anything else runs.
+2. **T037 gate — the harness is right.** `npm run evidence -- --strategy control-sqlite`: a, d, e `held`; every declared kill point exercised (6 of 6) + 600 random kills. b and c `not-proven` (exactly-once scenarios are Phase 5). `--strategy broken-two-commit`: a `not-held` (8 scenarios ran, 6 passed; violated I1, I3); the failing scenario is `kill-point:between-commits` ("owner died by SIGKILL at between-commits; after the crash: gate waiting, 1 record(s)") — the half-applied move, named I3 (with its I1 shadow: a record beside a waiting gate); d and e `held` (the broken control only breaks atomicity). 7 of 7 points exercised.
