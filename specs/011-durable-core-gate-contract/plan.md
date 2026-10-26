@@ -88,7 +88,7 @@ kiln/
 │   ├── durable/                 # THE SEAM
 │   │   ├── kiln.json            # responsibility updated
 │   │   ├── src/
-│   │   │   ├── library/         # the ONLY importer of the library: open.ts (restartLimit ∞, no-provider models, onReport), tasks.ts, docs.ts, tx.ts
+│   │   │   ├── library/         # the ONLY importer of the library: version.ts (installed version → store guard), open.ts (restartLimit ∞, no-provider models, onReport), tasks.ts, docs.ts, tx.ts
 │   │   │   ├── types.ts (incl. the LaneApi port) hooks.ts factory.ts inspect.ts owner-lock.ts outbox.ts commands.ts
 │   │   │   ├── gate/            # open.ts move.ts state.ts tasks.ts (gate + decision) slots.ts
 │   │   │   ├── tasks/           # roadmap.ts row.ts unit.ts            (shells)
@@ -117,7 +117,7 @@ kiln/
 | Phase | What | Checkpoint (all on the installed Node unless stated) |
 |---|---|---|
 | **P0 Adopt the dependency, and prepare the checks** | `before` readings in `baseline.md`; pins, lock, `engines`, `DEPENDENCIES.md`, the corrected statements; **the checks first** — externals seam, `cli → durable` edge, the three boundary codes, the local-IPC rule, the network exemption — each with a *planted-violation test*; the `node:sqlite` canary | `npm ci`; `npm test` ≥ r12 counts + new; `npm run check` three PASS; no source imports the library yet |
-| **P1 The seam skeleton** | `library/` façade; `openFactory` (lock, restart limit, no-provider models, clock, `reports`, `ready`); hooks and the declared kill-point list; `inspectStore` (fresh reader); seam tests (directory-level import test, public-types scan) | seam tests green; a factory opens, resumes an empty store and closes cleanly; a second `openFactory` is refused |
+| **P1 The seam skeleton** | `library/` façade; `openFactory` (lock, **store-version guard**, restart limit, no-provider models, clock, `reports`, `ready`); hooks and the declared kill-point list; `inspectStore` (fresh reader); seam tests (directory-level import test, public-types scan) | seam tests green; a factory opens, resumes an empty store and closes cleanly; a second `openFactory` is refused |
 | **P2 The gate** | documents, outbox (entries with actor and cause), command ledger; `openGate`, the gate + decision tasks and the owner slot, `submitMove`, `gateState`; readiness convergence; in-process unit tests of every outcome | every outcome of the contract returned correctly in-process; **no kill yet** |
 | **P3 The proof harness and the first kills** | `owner-main`, oracle I1–I9, harness; kill-point tests for **open** and **move**; the **broken gate** and the never-vacuous guards; mutation checks (committed first) | every declared point fires and holds; the broken gate is caught at its seam only |
 | **P4 The rest of the gate proof** | random kills (300), restart storm (≥ 7), clock ±10 y and wall time, exactly-once (100 / 100 / 100-after-restart), conflict/stale/invalid/unknown/not-ready/store-error, **scale** (100 gates + 20 units ≤ 2 s) | SC-001 … SC-005 met in-process (separate process arrives in P5) |

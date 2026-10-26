@@ -12,6 +12,7 @@ interface FactoryOptions {
   now?: () => number;                // the clock handed to records; never a trigger
   hooks?: Hooks;                     // test-only injection: at(point) and fault(point); a no-op by default
   tasks?: TaskKind[];                // extra task kinds (the lane registers itself here)
+  installedLibraryVersion?: string;  // TESTS ONLY: overrides the installed version used by the store-version guard (FR-047); no environment variable exists
   lane?: LaneApi;                    // the lane port: implemented in packages/lane, injected here (durable cannot import lane)
 }
 function openFactory(opts: FactoryOptions): Promise<Factory>;        // takes the ONE owner lock; refuses an owned store
@@ -88,4 +89,4 @@ No environment variable in the product can kill or fault a factory.
 
 ## Errors
 
-`openFactory` on an owned store throws `StoreOwned { store, pid, host, socket }` (its message names all four). A malformed key or id throws `BadRequest`. Nothing else throws across the seam: outcomes are values.
+`openFactory` on a store created under another library version throws `StoreVersionMismatch { store, recorded, installed }` **before any task is resumed** and writes nothing (FR-047). `openFactory` on an owned store throws `StoreOwned { store, pid, host, socket }` (its message names all four). A malformed key or id throws `BadRequest`. Nothing else throws across the seam: outcomes are values.

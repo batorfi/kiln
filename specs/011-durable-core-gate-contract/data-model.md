@@ -17,6 +17,7 @@ Everything below lives in **one store per factory** (one SQLite file) owned by *
 | **Outbox** `kiln.outbox` | one per factory | store | append-only | `gate.opened` now; r15 adopts it |
 | **Command ledger** `kiln.command` | command key | store | written once | first outcome + request hash |
 | **Lane state** `kiln.lane` | one per factory | store | by lane commits | §5 |
+| **Store record** `kiln.store` | one per factory | store (root conversation) | **never** after creation | `{libraryVersion, contract: 1, createdAt}` — written in the commit that creates the store; compared at every open (FR-047) |
 | **Channel** | `<tmp>/kiln-<uid>/<hash>.sock` | filesystem | — | not in the store (R6) |
 
 ### Task kinds (names stored in the task record)
@@ -165,6 +166,7 @@ replies      {id, ok, result?|error?}                                           
 
 ```text
 Inspection {
+  store:       { libraryVersion, contract }                         ← FR-047: what created this store
   tasks:       { id, kind, owner, status }[]                        ← FR-005: the live set and ownership, from the store
   gate:        "absent" | "waiting" | "settled"
   documents:   { gate: bool, brief: bool, opened: bool, moveCommitted: bool, gateSettled: bool }   ← I3 (entries with actor and cause)

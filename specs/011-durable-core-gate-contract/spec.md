@@ -180,7 +180,7 @@ A factory has exactly one durable store, and exactly one process owns it at a ti
 - **The system clock moves backwards or jumps:** nothing settles, nothing expires; times in the record are facts, never triggers.
 - **Host power loss:** outside the guarantee (abrupt process death is inside it); the core states the boundary, it does not pretend to cover it.
 - **The socket directory already exists** (pre-created by another user, a symbolic link, or with the wrong mode): the owner refuses to serve and names the problem; it never serves in, or follows a link into, a directory it did not make safe.
-- **A different version of the library opens the store:** not supported in this row; versions are pinned and an upgrade is a deliberate, recorded change.
+- **A different version of the library opens the store** (an upgrade, a downgrade, a store copied from another build): refused by name — `StoreVersionMismatch`, naming the version that created the store and the one now installed — **before any task is resumed**, and the store is not touched. An upgrade is a deliberate, recorded change (constitution *Dependencies*), never an accident; r13 offers no upgrade path.
 
 ## Requirements *(mandatory)*
 
@@ -229,6 +229,7 @@ A factory has exactly one durable store, and exactly one process owns it at a ti
 - **FR-046**: A thin command-line client MUST wrap the channel for scripted use (the headless walk of r14 drives it); operator surfaces beyond the port's three operations (listing gates, showing a gate's brief) are out of scope.
 - **FR-043**: The owner MUST answer `not-ready` to moves between its start and the moment waiting gates can accept moves again, and MUST report ready only after that. The window MUST be **bounded at 5 seconds** — if waiting gates cannot accept moves by then the owner MUST say so (not report ready) — and **observable** (the channel's ready signal and `not-ready` answers).
 - **FR-044**: The core MUST state its **power-loss boundary** (abrupt process death is covered; loss of host power may lose the newest commit and is not tested) in the seam's documentation.
+- **FR-047**: The store MUST record **the library version that created it** (in a document written in the commit that creates the store), and `openFactory` MUST compare it with the installed version **before resuming any task**; a difference MUST refuse the open with `StoreVersionMismatch` naming both versions, leave the store unchanged, and never be overridden by a setting. A fresh reader (`inspectStore`) MUST report the recorded version.
 
 **Dependency adoption (r42's hand-offs)**
 
@@ -258,6 +259,7 @@ A factory has exactly one durable store, and exactly one process owns it at a ti
 - **Lane**: one per factory; resident model, hold flag, swap count, and at most one lease.
 - **Lease**: the right to run one generation; released if its holder dies with the process.
 - **Seam**: the one KILN module through which the library is reached; the home of the contract's types.
+- **Store record**: the one document written when a store is created — the library version (and the schema number of this contract) that created it; compared at every open (FR-047).
 - **Owner**: the one process that holds the store; completers talk to it.
 - **Channel**: the owner's private local socket and its small request/response vocabulary (the port's three operations, a liveness probe and a ready signal); the only way another process reaches a gate.
 - **Outbox entry**: one append-only record `{seq, type, subject, at, actor, cause, data}` committed with the state it records; the interim event stream of this row (`gate.opened`, `move.committed`, `gate.settled`, `lane.acquired`, `lane.released`, `lane.swapped`) that r15 adopts as the first events of the record.
@@ -276,6 +278,7 @@ A factory has exactly one durable store, and exactly one process owns it at a ti
 - **SC-008**: Two steps asking for the lane at once: **0** instants with two holders across ≥ 100 trials; after a kill during a held lease, the lane reports **0** running generations until the resumed step re-acquires it.
 - **SC-009**: On a fresh clone, the documented install plus `npm test` and `npm run check` pass on the new floor with **at least 184 new + 500 legacy** tests (r12's counts) plus the row's own, and the three checks report `PASS`; `legacy/` tree id is unchanged.
 - **SC-010**: A reader who has never seen the library can write the next row's first task from this row's contract and documentation alone: the seam's public types contain **0** library names.
+- **SC-011**: A store whose recorded library version differs from the installed one is refused in **100 %** of attempts, the message naming both versions, with **0** tasks resumed and the store byte-identical afterwards; a store whose version matches opens as before.
 
 ## Assumptions
 

@@ -27,7 +27,7 @@ npm run check                              # three PASS: network, boundaries, le
 npm test                                   # new + legacy; exit 0
 ```
 
-**Expect**: `PASS network`, `PASS boundaries`, `PASS legacy`; the runner's closing line shows **at least 184 new + 500 legacy** tests plus this row's own; the `node:sqlite` canary test passes. `git rev-parse HEAD:legacy` is still `20a82c7e214be256c804f6e8f1cd4cce9c8e9874`.
+**Expect** *(and the store-version guard, FR-047/SC-011: `npm test -- packages/durable/tests/seam-skeleton.test.ts` shows a store reopened under another library version refused with both versions named, 0 tasks resumed and the file untouched)*: `PASS network`, `PASS boundaries`, `PASS legacy`; the runner's closing line shows **at least 184 new + 500 legacy** tests plus this row's own; the `node:sqlite` canary test passes. `git rev-parse HEAD:legacy` is still `20a82c7e214be256c804f6e8f1cd4cce9c8e9874`.
 
 ## 2. One seam *(US4 · FR-001, FR-002 · SC-006, SC-010)*
 

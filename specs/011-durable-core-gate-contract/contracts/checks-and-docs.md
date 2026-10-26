@@ -11,7 +11,8 @@ Rules file `checks/boundaries.json` changes:
 "externals": {
   "pi-durable": {
     "specifiers": ["@earendil-works/pi-durable", "@earendil-works/pi-durable/storage/sqlite/node",
-                   "@earendil-works/chord/context", "@earendil-works/pi-ai/models"],
+                   "@earendil-works/chord/context", "@earendil-works/pi-ai/models",
+                   "@earendil-works/pi-durable/package.json"],   // the installed-version read of the store guard (FR-047)
     "onlyIn": ["durable"]
   }
 }

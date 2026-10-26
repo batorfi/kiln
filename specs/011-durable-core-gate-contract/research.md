@@ -131,6 +131,16 @@ Every shell has the library-required `abort` handler (commit `aborted`) — defi
 
 **Decision [design + r42].** `ready` = every live decision task has re-registered its slot **and** no gate task is `ready`/`running` (r42's `waitConverged`, generalised to *all* gate decisions); bounded at 5 s then reported not-ready honestly. SC-005 (≤ 2 s for ≥ 100 live tasks) is **measured**, not assumed: the spike measured 178–197 ms for 2 tasks; the plan includes a scale test with 100 gates + 20 units and records the number. If it exceeds 2 s, the fix is re-registering decisions in parallel (they are independent), not relaxing the criterion.
 
+## R14 — Refusing a store from another library version (analysis finding U3, FR-047)
+
+**Decision [design].** The commit that **creates** a store also writes `kiln.store` `{libraryVersion, contract: 1, createdAt}`. `library/version.ts` reads the **installed** version by a JSON import of `@earendil-works/pi-durable/package.json` (`with { type: "json" }`; the specifier is added to the external seam's list — it resolved in r42's smoke check) and `library/open.ts` compares it with the recorded one **right after the storage opens and before `resume()`**, so no task runs under a mismatched library. A difference throws `StoreVersionMismatch { store, recorded, installed }`; nothing is written. `inspectStore` reports the recorded version without comparing (a diagnosing reader must be able to read an old store).
+
+**Testing without a second library version [design].** `FactoryOptions.installedLibraryVersion` overrides the installed version **for tests only** (programmatic, documented as such; there is no environment variable). A test creates a store, closes it, reopens it claiming `9.9.9` and asserts the refusal, the message, **0 resumed tasks** and a byte-identical file; and a pure function `checkStoreVersion(recorded, installed)` is unit-tested.
+
+**What it deliberately does not do.** It does not migrate (the library's own `migrate` hooks exist, but an upgrade is a recorded decision with its own row, constitution *Dependencies*), and it does not guess that a patch version is compatible: any difference refuses. The Complexity Tracking table is unchanged (this narrows behaviour; it widens nothing).
+
+**Alternatives rejected.** Trusting the library to fail on an incompatible store (it may instead *succeed and corrupt*, which is the case worth refusing); recording the version in the lock file (the lock is removed at clean close, the store record travels with the data, constitution XI).
+
 ## Open items carried to the tasks (none blocks planning)
 
 1. The **exact** Unix-socket path scheme must be checked against the macOS length limit with a deep store path (a test creates one at ~200 characters).
