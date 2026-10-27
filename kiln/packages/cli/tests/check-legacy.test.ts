@@ -23,7 +23,7 @@ test("kiln check legacy on a copy with one modified legacy file exits 1 and name
   const tmp = mkdtempSync(join(tmpdir(), "kiln-cli-legacy-"));
   try {
     cpSync(join(kilnDir, "..", "legacy"), join(tmp, "legacy"), { recursive: true });
-    cpSync(kilnDir, join(tmp, "kiln"), { recursive: true });
+    cpSync(kilnDir, join(tmp, "kiln"), { recursive: true, filter: (p) => !p.split(/[\\/]/).includes("node_modules") }); // r13: the install (112 MB) is not part of what these checks scan
     const target = join(tmp, "legacy", "validate", "log.ts");
     writeFileSync(target, readFileSync(target, "utf8") + "\n// tampered\n");
     const r = cli(tmp, "legacy");

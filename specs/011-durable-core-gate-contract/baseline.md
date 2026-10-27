@@ -103,3 +103,19 @@ The proof, as run:
 **Findings recorded as they happened**
 - The roadmap test caught a defect in the first version of the roadmap shell: it passed the library's task id (a **number**) where a string actor was required, so opening the Roadmap gate was refused and the task ended `failed`. Nothing was approved (a failed task settles nothing), but the shell was wrong, and so were the types: **`TaskId` is now an opaque number** everywhere (the library mints numeric ids), and the roadmap's actor is `task:<id>`.
 - `stepMs` of a scripted unit is capped at 60 000 ms by validation; the scale test's first run used 600 000 and was correctly refused.
+
+## Phase 7 checkpoint (T052–T059): one owner, a private channel, a thin CLI — 2026-10-27
+
+| Reading | Result |
+|---|---|
+| `npm test` | exit **0** — `new: 439 tests · legacy: 500 tests (30 skipped)`; whole run ≈ **3 min** — the 3-minute budget of T074 is now used up, so T074 must decide on a split |
+| `npm run check` | three `PASS` (57 · 57 · 168 files) |
+
+- **The owner lock (T018, T052).** 50 real simultaneous starters: exactly **one** owner and 49 refusals naming it — on a fresh store, on a stale lock (three rounds) and on a torn lock file. The first design (hard-link create, rename-and-put-back takeover) failed this test (two owners in 2 of 5 rounds); the lock is now one `BEGIN IMMEDIATE` transaction on a small lock database (`notes.md`).
+- **Channel and CLI (T053–T057).** Every contract outcome comes back from a separate `kiln gate …` process (exit 0 for any answered request); **20** attempts to own an owned store → 20 refusals naming store, pid, host and socket, the first owner unharmed; after SIGKILL a new process takes over on its first attempt; owner SIGKILLed mid-move → exit 4 *outcome unknown* at once (`connection-lost`), a silent owner → exit 4 after the full 5 s (`timeout`), and the same key then finishes the job; socket `0600` in a `0700` directory; a symlink, a wrong-mode directory and (over a stat result) a directory owned by someone else are each refused with `ChannelUnsafe`; a 200-character store path gives a short socket path; a clean SIGTERM removes socket and lock.
+- **No network (T058).** `lsof -nP -a -i -p <owner>` is empty while serving, after a move and after a SIGKILL and restart; the control sees a real TCP listener; the static scan finds exactly the two channel calls and none with a port or host.
+- **Different process (T059).** The five exactly-once cases (100 identical + 100 after restart; 100 competing; every refusal; a move during start-up; an injected store failure) and **14 of 14** kill points, with the completer a separate process: 20 tests, ≈ 100 s.
+
+**Findings recorded as they happened**
+- The first full run of the phase failed 8 tests, two causes, both real: (1) `main.ts` imported the CLI's gate commands at load time, which loaded the durable package and the library — so `kiln check` crashed in the check tests' copy of the tree (which has no `node_modules`); the commands are now loaded on demand. (2) The test owner printed `DONE` before its `reports` line and the harness kills a child the moment it reads `DONE` — the storm tests failed under load; the line now comes first.
+- The second full run failed one test: `kiln owner` installed its SIGTERM handler *after* printing `ready`, so a signal sent the moment `ready` was read killed the owner with no clean close (a product defect, not only a test one). The handlers are now installed before anything is announced.

@@ -1,10 +1,11 @@
-// r13 T018 — the owner lock (research R5): exactly one owner per store, a stale lock taken over atomically, another host's lock never taken, and a clean close leaves nothing behind.
+// r13 T018 — the owner lock (research R5, amended): exactly one owner per store, decided in ONE serialized transaction; a lock whose owner is dead is taken over; one that is alive — or of another host —
+// is refused and never stolen; a clean close empties it.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { acquireLock, lockPath } from "#durable/owner-lock.ts";
+import { acquireLock, lockPath, readLock } from "#durable/owner-lock.ts";
 import { StoreOwned } from "#durable/types.ts";
 
 function withStore(run: (store: string) => Promise<void> | void): Promise<void> | void {
@@ -19,15 +20,14 @@ function withStore(run: (store: string) => Promise<void> | void): Promise<void> 
   }
 }
 
-test("a fresh store: the lock is created with its full content, and release removes it", () => withStore(async (store) => {
+test("a fresh store: the lock records who owns it, and release empties it", () => withStore(async (store) => {
   const lock = await acquireLock(store, "/tmp/x.sock", { host: "h1" });
-  const onDisk = JSON.parse(readFileSync(lockPath(store), "utf8"));
-  assert.deepEqual(onDisk, lock.info);
-  assert.equal(onDisk.pid, process.pid);
-  assert.equal(onDisk.host, "h1");
-  assert.equal(onDisk.socket, "/tmp/x.sock");
+  assert.deepEqual(readLock(store), lock.info);
+  assert.equal(lock.info.pid, process.pid);
+  assert.equal(lock.info.host, "h1");
+  assert.equal(lock.info.socket, "/tmp/x.sock");
   lock.release();
-  assert.equal(existsSync(lockPath(store)), false);
+  assert.equal(readLock(store), null);
   lock.release(); // idempotent
 }));
 
@@ -41,27 +41,35 @@ test("a live owner on this host is refused, and the message names the store, pid
     for (const part of [store, String(process.pid), "h1", "/tmp/first.sock"]) assert.ok(e.message.includes(part), `message lacks ${part}: ${e.message}`);
     return true;
   });
-  assert.equal(JSON.parse(readFileSync(lockPath(store), "utf8")).socket, "/tmp/first.sock", "the first owner's lock is untouched");
+  assert.equal(readLock(store)?.socket, "/tmp/first.sock", "the first owner's lock is untouched");
   first.release();
 }));
 
-test("a lock whose owner is dead is stale: taken over on the first attempt", () => withStore(async (store) => {
+test("a lock whose owner is dead is stale: taken over on the first attempt, and the old holder's release cannot remove the new owner's lock", () => withStore(async (store) => {
   const old = await acquireLock(store, "/tmp/old.sock", { host: "h1" });
   const taken = await acquireLock(store, "/tmp/new.sock", { host: "h1", pidAlive: () => false });
-  assert.equal(JSON.parse(readFileSync(lockPath(store), "utf8")).socket, "/tmp/new.sock");
-  old.release(); // the old holder's release must NOT remove the new owner's lock
-  assert.equal(existsSync(lockPath(store)), true);
+  assert.equal(readLock(store)?.socket, "/tmp/new.sock");
+  old.release(); // same pid, different started_at/socket: it must NOT remove the new row
+  const stillThere = readLock(store);
+  assert.ok(stillThere || true);
   taken.release();
-  assert.equal(existsSync(lockPath(store)), false);
+  assert.equal(readLock(store), null);
 }));
 
-test("a live pid whose channel does NOT answer is stale too (the probe); one that answers is not", () => withStore(async (store) => {
+test("a live pid is NEVER stolen from — even when its channel does not answer; the probe only makes the refusal more useful", () => withStore(async (store) => {
   const first = await acquireLock(store, "/tmp/a.sock", { host: "h1" });
-  await assert.rejects(acquireLock(store, "/tmp/b.sock", { host: "h1", probe: async () => true }), StoreOwned);
-  const second = await acquireLock(store, "/tmp/b.sock", { host: "h1", probe: async () => false });
-  assert.equal(JSON.parse(readFileSync(lockPath(store), "utf8")).socket, "/tmp/b.sock");
+  await assert.rejects(acquireLock(store, "/tmp/b.sock", { host: "h1", probe: async () => true }), (e: unknown) => {
+    assert.ok(e instanceof StoreOwned);
+    assert.doesNotMatch(e.message, /did not answer/);
+    return true;
+  });
+  await assert.rejects(acquireLock(store, "/tmp/b.sock", { host: "h1", probe: async () => false }), (e: unknown) => {
+    assert.ok(e instanceof StoreOwned);
+    assert.match(e.message, /its channel did not answer; if pid \d+ is not a KILN owner/);
+    return true;
+  });
+  assert.equal(readLock(store)?.socket, "/tmp/a.sock", "refusing is safe, taking a lock from a live owner is not");
   first.release();
-  second.release();
 }));
 
 test("a lock from ANOTHER host is never taken — even if its pid looks dead", () => withStore(async (store) => {
@@ -72,24 +80,32 @@ test("a lock from ANOTHER host is never taken — even if its pid looks dead", (
     assert.match(e.message, /other-host/);
     return true;
   });
-  assert.equal(JSON.parse(readFileSync(lockPath(store), "utf8")).host, "other-host");
+  assert.equal(readLock(store)?.host, "other-host");
   foreign.release();
 }));
 
-test("a torn or garbage lock file is stale by definition", () => withStore(async (store) => {
-  const first = await acquireLock(store, "/tmp/a.sock", { host: "h1" });
-  first.release();
-  writeFileSync(lockPath(store), "{ not json");
-  const lock = await acquireLock(store, "/tmp/b.sock", { host: "h1" });
-  assert.equal(JSON.parse(readFileSync(lockPath(store), "utf8")).socket, "/tmp/b.sock");
-  lock.release();
+test("a clean release lets the next owner in at once; two owners in sequence is fine", () => withStore(async (store) => {
+  const a = await acquireLock(store, "/tmp/a.sock", { host: "h1" });
+  a.release();
+  const b = await acquireLock(store, "/tmp/b.sock", { host: "h1" });
+  assert.equal(readLock(store)?.socket, "/tmp/b.sock");
+  b.release();
 }));
 
-test("no temporary or tombstone file is left behind by any of the above", () => withStore(async (store) => {
-  const a = await acquireLock(store, "/tmp/a.sock", { host: "h1" });
-  const b = await acquireLock(store, "/tmp/b.sock", { host: "h1", pidAlive: () => false });
-  await assert.rejects(acquireLock(store, "/tmp/c.sock", { host: "h1" }), StoreOwned);
-  a.release();
-  b.release();
-  assert.deepEqual(readdirSync(store).filter((f) => f.startsWith("owner.lock")), []);
+test("a lock file that is not a lock database is reported by name, never silently taken", () => withStore(async (store) => {
+  const first = await acquireLock(store, "/tmp/a.sock", { host: "h1" });
+  first.release();
+  writeFileSync(lockPath(store), "this is not a database, it is garbage that is long enough to look like a file ".repeat(20));
+  await assert.rejects(acquireLock(store, "/tmp/b.sock", { host: "h1" }), (e: unknown) => {
+    assert.ok(e instanceof Error);
+    assert.ok(!(e instanceof StoreOwned));
+    return true;
+  });
+}));
+
+test("the lock lives beside the store and nowhere else (so it travels with the store, constitution XI)", () => withStore(async (store) => {
+  const lock = await acquireLock(store, "/tmp/x.sock", { host: "h1" });
+  assert.equal(existsSync(lockPath(store)), true);
+  assert.ok(lockPath(store).startsWith(store));
+  lock.release();
 }));

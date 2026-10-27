@@ -1,6 +1,8 @@
 // The factory: one store, one owner, the gate contract and the task kinds on top of the seam (seam-api.md). `openFactory` takes the ONE owner lock, opens the store through the
 // library façade (which guards the version before anything resumes, FR-047), registers every task kind, resumes, and reports ready.
+import { answers } from "./channel/client.ts";
 import { channelSocketPath } from "./channel/path.ts";
+import { startChannel } from "./channel/server.ts";
 import { makeCommandApi } from "./commands.ts";
 import { openGate } from "./gate/open.ts";
 import { submitMove } from "./gate/move.ts";
@@ -47,14 +49,11 @@ export interface Factory {
   close(): Promise<void>;
 }
 
-const notYet = (what: string) => (): never => {
-  throw new Error(`${what} is not implemented yet`);
-};
-
 export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   const hooks = opts.hooks ?? NO_HOOKS;
   await hooks.at("recover.start"); // the first step of every start: a kill HERE is a kill during recovery
-  const lock = await acquireLock(opts.store, channelSocketPath(opts.store));
+  const socketPath = channelSocketPath(opts.store);
+  const lock = await acquireLock(opts.store, socketPath, { probe: (info) => answers(info.socket) });
   const services: Services = { store: undefined as unknown as Store, hooks, now: opts.now ?? Date.now, slots: new Slots(), ready: false, lane: opts.lane };
   let store: Store;
   try {
@@ -68,18 +67,25 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   const readyPromise = converge(services, opts.readyTimeoutMs ?? 5000);
   readyPromise.catch(() => {}); // a caller that never awaits `ready` must not cause an unhandled rejection
   let closed = false;
+  let channel: Channel | undefined;
+  const gates: GateApi = { open: (key, spec) => openGate(services, key, spec), submit: (gateId, key, move) => submitMove(services, gateId, key, move), state: (gateId) => gateState(services, gateId) };
   return {
     ready: readyPromise,
     reports: store.reports,
-    gates: { open: (key, spec) => openGate(services, key, spec), submit: (gateId, key, move) => submitMove(services, gateId, key, move), state: (gateId) => gateState(services, gateId) } as GateApi,
+    gates,
     tasks: makeTaskApi(services),
     commands: makeCommandApi(services),
-    serve: notYet("serve") as unknown as () => Promise<Channel>,
+    serve: async () => {
+      if (channel) return channel;
+      channel = await startChannel(socketPath, { ready: () => services.ready, open: gates.open, submit: gates.submit, state: gates.state });
+      return channel;
+    },
     inspect: (gateId?: string) => inspectStore(opts.store, gateId),
     close: async () => {
       if (closed) return;
       closed = true;
       try {
+        await channel?.close();
         await store.close();
       } finally {
         lock.release();

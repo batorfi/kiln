@@ -16,7 +16,7 @@ function withCopy<T>(plant: Record<string, string>, fn: (kiln: string) => T): T 
   const tmp = mkdtempSync(join(tmpdir(), "kiln-cli-bound-"));
   try {
     const kiln = join(tmp, "kiln");
-    cpSync(kilnDir, kiln, { recursive: true });
+    cpSync(kilnDir, kiln, { recursive: true, filter: (p) => !p.split(/[\\/]/).includes("node_modules") }); // r13: the install (112 MB) is not part of what these checks scan
     for (const [p, text] of Object.entries(plant)) writeFileSync(join(kiln, p), text);
     return fn(kiln);
   } finally {

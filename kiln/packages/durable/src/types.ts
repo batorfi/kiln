@@ -124,8 +124,8 @@ export class StoreOwned extends Error {
   readonly pid: number;
   readonly host: string;
   readonly socket: string;
-  constructor(store: string, pid: number, host: string, socket: string) {
-    super(`the store ${store} is owned by pid ${pid} on ${host} (socket ${socket}); a store has exactly one owner`);
+  constructor(store: string, pid: number, host: string, socket: string, note = "") {
+    super(`the store ${store} is owned by pid ${pid} on ${host} (socket ${socket}); a store has exactly one owner${note ? ` — ${note}` : ""}`);
     this.name = "StoreOwned";
     this.store = store;
     this.pid = pid;
@@ -149,6 +149,15 @@ export class BadRequest extends Error {
   constructor(message: string) {
     super(message);
     this.name = "BadRequest";
+  }
+}
+/** A failure to talk to an owner's channel: nothing listening (`unreachable`), no answer to a read (`outcome-unknown`), or a request the owner could not read (`bad-request`). */
+export class ChannelError extends Error {
+  readonly code: "unreachable" | "outcome-unknown" | "bad-request";
+  constructor(code: ChannelError["code"], message: string) {
+    super(message);
+    this.name = "ChannelError";
+    this.code = code;
   }
 }
 export class ChannelUnsafe extends Error {

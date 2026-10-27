@@ -48,6 +48,8 @@ export interface OwnerOptions {
   libraryVersion?: string;
   /** After the script the child stays alive, to be killed by the harness. */
   stayAlive?: boolean;
+  /** Also serve the private channel (so `kiln gate …` in another process can reach this owner). */
+  serve?: boolean;
   /** Replace the real decision step with the deliberately half-applying control (negative proofs only). */
   brokenGate?: boolean;
   readyTimeoutMs?: number;
@@ -67,13 +69,15 @@ export interface OwnerRun {
   exited: Promise<{ code: number | null; signal: NodeJS.Signals | null }>;
   /** Resolves when the child printed `STARTED` (the factory is open); rejects if it died first. */
   started: Promise<void>;
+  /** Resolves when the child printed `LISTENING` (its channel is up; only with `serve`). */
+  listening: Promise<void>;
   /** Resolves when the child printed `DONE` (its script ran to the end). */
   done: Promise<boolean>;
 }
 
 export function spawnOwner(ts: TestStore, o: OwnerOptions = {}): OwnerRun {
   const env: Record<string, string> = {};
-  for (const [k, v] of Object.entries(process.env)) if (v !== undefined && !/^(KILL_AT|FAULT_AT|HOLD_AT|HOLD_MS|CLOCK_OFFSET_MS|LIBRARY_VERSION|READY_TIMEOUT_MS|LANE_MODULE|KILL_LOG|STAY_ALIVE|BROKEN_GATE)$/.test(k)) env[k] = v;
+  for (const [k, v] of Object.entries(process.env)) if (v !== undefined && !/^(KILL_AT|FAULT_AT|HOLD_AT|HOLD_MS|CLOCK_OFFSET_MS|LIBRARY_VERSION|READY_TIMEOUT_MS|LANE_MODULE|KILL_LOG|STAY_ALIVE|BROKEN_GATE|SERVE)$/.test(k)) env[k] = v;
   env.KILL_LOG = ts.killLog;
   if (o.killAt) env.KILL_AT = o.killAt;
   if (o.faultAt) env.FAULT_AT = o.faultAt;
@@ -82,6 +86,7 @@ export function spawnOwner(ts: TestStore, o: OwnerOptions = {}): OwnerRun {
   if (o.libraryVersion) env.LIBRARY_VERSION = o.libraryVersion;
   if (o.stayAlive) env.STAY_ALIVE = "1";
   if (o.brokenGate) env.BROKEN_GATE = "1";
+  if (o.serve) env.SERVE = "1";
   if (o.readyTimeoutMs) env.READY_TIMEOUT_MS = String(o.readyTimeoutMs);
   if (o.laneModule) env.LANE_MODULE = o.laneModule;
   Object.assign(env, o.env ?? {});
@@ -96,6 +101,10 @@ export function spawnOwner(ts: TestStore, o: OwnerOptions = {}): OwnerRun {
   let failStarted!: (e: Error) => void;
   const started = new Promise<void>((res, rej) => ((markStarted = res), (failStarted = rej)));
   started.catch(() => {});
+  let markListening!: () => void;
+  let failListening!: (e: Error) => void;
+  const listening = new Promise<void>((res, rej) => ((markListening = res), (failListening = rej)));
+  listening.catch(() => {});
   let markDone!: (v: boolean) => void;
   const done = new Promise<boolean>((res) => (markDone = res));
   proc.stdout!.setEncoding("utf8");
@@ -107,6 +116,7 @@ export function spawnOwner(ts: TestStore, o: OwnerOptions = {}): OwnerRun {
       const l = lines[seen];
       if (l.startsWith("R ")) results.push(JSON.parse(l.slice(2)));
       else if (l === "STARTED") markStarted();
+      else if (l === "LISTENING") markListening();
       else if (l === "DONE") markDone(true);
     }
   });
@@ -114,8 +124,9 @@ export function spawnOwner(ts: TestStore, o: OwnerOptions = {}): OwnerRun {
   void exited.then(({ code, signal }) => {
     markDone(false);
     failStarted(new OwnerFailed(`the owner ended (code ${code}, signal ${signal}) before it started\n${out}${err}`));
+    failListening(new OwnerFailed(`the owner ended (code ${code}, signal ${signal}) before it listened\n${out}${err}`));
   });
-  return { proc, pid: proc.pid!, results, stdout: () => out, stderr: () => err, exited, started, done };
+  return { proc, pid: proc.pid!, results, stdout: () => out, stderr: () => err, exited, started, listening, done };
 }
 
 /** Run a script to its end (or to its death) and return everything it printed. */
@@ -135,7 +146,7 @@ export async function runOwner(ts: TestStore, o: OwnerOptions = {}): Promise<Own
 export async function startOwner(ts: TestStore, o: OwnerOptions = {}): Promise<OwnerRun> {
   const run = spawnOwner(ts, { ...o, script: [...(o.script ?? []), { op: "hold" }] });
   const timeout = new Promise<never>((_, rej) => setTimeout(() => rej(new OwnerFailed(`the owner did not start within ${o.timeoutMs ?? 15_000} ms\n${run.stdout()}${run.stderr()}`)), o.timeoutMs ?? 15_000).unref());
-  await Promise.race([run.started, timeout]);
+  await Promise.race([o.serve ? Promise.all([run.started, run.listening]) : run.started, timeout]);
   return run;
 }
 
