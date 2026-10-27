@@ -30,6 +30,7 @@ async function decide(s: Services, gateId: GateId, key: Key, move: Move): Promis
     if (!g.vocabulary.includes(move.kind)) return refused("invalid-move", { detail: `"${move.kind}" is not a move of this gate (allowed: ${g.vocabulary.join(", ")})` });
     if (move.briefRef !== g.briefRef) return refused("invalid-move", { detail: "the move names a different brief than the one this gate was opened with" });
 
+    move = { kind: move.kind, decidedBy: move.decidedBy, briefRef: move.briefRef }; // only the three fields the record holds: an extra field is neither stored nor part of a repeat
     let how: "arrived" | "raced" = "arrived";
     for (let attempt = 0; attempt < 8; attempt++) {
       const rec = (await s.store.snapshot<MoveDocData>("kiln.move", gateId))?.record ?? null;

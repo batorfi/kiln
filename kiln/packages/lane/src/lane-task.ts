@@ -101,7 +101,8 @@ export function createLane(): LaneModule {
   const api: LaneApi = {
     async start() {
       const sv = services();
-      await runCommand(sv, "lane.create", "task.create", { kind: "kiln.lane" }, async (tx) => ({ id: await tx.createTask("kiln.lane", {}, { kind: "factory" }) })); // the ONE lane task, once for the life of the store
+      const made = await runCommand(sv, "lane.create", "task.create", { kind: "kiln.lane" }, async (tx) => ({ id: await tx.createTask("kiln.lane", {}, { kind: "factory" }) })); // the ONE lane task, once for the life of the store
+      if (made.status === "refused") throw new LaneError(`the lane task could not be created: ${made.reason}${made.detail ? ` (${made.detail})` : ""}`);
       await sv.store.commit(async (tx) => {
         const doc = await tx.doc<LaneDoc>("kiln.lane", "main", seed());
         if (!doc.lease) return;

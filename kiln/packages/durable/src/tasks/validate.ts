@@ -9,7 +9,7 @@ export interface UnitSpec {
   /** With `needsLane`: the model the scripted generation needs resident, and whether the lane must hold it afterwards. */
   model?: string;
   hold?: boolean;
-  /** Scripted duration of each step in ms (0–5000): the work a kill can interrupt. */
+  /** Scripted duration of each step in ms (0–60000): the work a kill can interrupt. */
   stepMs?: number;
 }
 export interface RowInput {

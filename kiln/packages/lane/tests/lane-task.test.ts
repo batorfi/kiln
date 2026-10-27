@@ -148,3 +148,24 @@ test("a unit that needs the lane holds it for its generation and releases it; tw
   assert.deepEqual(e.filter((x) => x.type !== "lane.swapped").map((x) => x.type), ["lane.acquired", "lane.released", "lane.acquired", "lane.released", "lane.acquired", "lane.released", "lane.acquired", "lane.released"], "acquire and release alternate: never two at once");
   assert.equal((await lane(factory)).holders, 0);
 }));
+
+test("a unit whose step fails while it holds the lane gives the lane back: the next unit is not left waiting", async () => {
+  let thrown = 0;
+  const hooks: Hooks = { at(p) { if (p === "unit.step-after-work" && thrown++ === 0) throw new Error("injected failure while holding the lane"); }, fault() {} };
+  await withLane(async ({ factory }) => {
+    const mk = (key: string, label: string) => factory.tasks.create(key, "kiln.unit", { label, steps: 1, needsLane: true }, { kind: "factory" });
+    assert.equal((await mk("bad", "first")).status, "created");
+    for (let i = 0; i < 100 && (await lane(factory)).holders === 1; i++) await tick(50);
+    assert.equal((await lane(factory)).holders, 0, "the failed step released the lane");
+    assert.equal((await mk("good", "second")).status, "created");
+    for (let i = 0; i < 100; i++) {
+      const u = (await factory.tasks.list()).filter((x) => x.kind === "kiln.unit");
+      if (u.length === 2 && u.every((x) => x.status === "terminal")) break;
+      await tick(50);
+    }
+    const units = (await factory.tasks.list()).filter((x) => x.kind === "kiln.unit");
+    assert.deepEqual(units.map((u) => u.outcome?.status), ["failed", "completed"], JSON.stringify(units));
+    const e = (await entries(factory)).map((x) => [x.type, x.actor]);
+    assert.deepEqual(e.map((x) => x[0]), ["lane.acquired", "lane.released", "lane.acquired", "lane.released"], "every acquire has its release, the failed one included");
+  }, hooks);
+});

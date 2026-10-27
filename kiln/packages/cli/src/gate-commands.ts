@@ -33,8 +33,9 @@ export async function ownerCommand(args: string[]): Promise<number> {
     return 1;
   }
   // the stop handlers are in place BEFORE anything is announced: whoever reads "ready" may signal at once, and a signal that arrives first would kill the owner without a clean close
+  let stopFailed = false;
   const stopped = new Promise<void>((resolve) => {
-    const stop = (): void => void owner.stop().finally(resolve);
+    const stop = (): void => void owner.stop().catch((e) => { console.error(`stop failed: ${(e as Error).message}`); stopFailed = true; }).finally(resolve);
     process.once("SIGTERM", stop);
     process.once("SIGINT", stop);
   });
@@ -48,7 +49,7 @@ export async function ownerCommand(args: string[]): Promise<number> {
   }
   console.log("ready");
   await stopped;
-  return 0;
+  return stopFailed ? 1 : 0;
 }
 
 export async function gateCommand(sub: string | undefined, args: string[]): Promise<number> {
