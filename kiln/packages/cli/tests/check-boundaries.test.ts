@@ -16,7 +16,7 @@ function withCopy<T>(plant: Record<string, string>, fn: (kiln: string) => T): T 
   const tmp = mkdtempSync(join(tmpdir(), "kiln-cli-bound-"));
   try {
     const kiln = join(tmp, "kiln");
-    cpSync(kilnDir, kiln, { recursive: true });
+    cpSync(kilnDir, kiln, { recursive: true, filter: (p) => !p.split(/[\\/]/).includes("node_modules") }); // r13: the install (112 MB) is not part of what these checks scan
     for (const [p, text] of Object.entries(plant)) writeFileSync(join(kiln, p), text);
     return fn(kiln);
   } finally {
@@ -28,7 +28,9 @@ test("kiln check boundaries on the real tree exits 0 and reports the rules and t
   const r = cli(kilnDir, "boundaries");
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.match(r.stdout, /^PASS boundaries — scanned \d+ files/m);
-  assert.match(r.stdout, /17 layers declared; 0 external seams/);
+  // r12 said "0 external seams" (no dependency); r13 admits exactly one — the durable seam — and says how many dependencies it holds
+  assert.match(r.stdout, /17 layers declared; 1 external seam;/);
+  assert.match(r.stdout, /3 dependencies, exact and locked/);
 });
 
 test("record importing #lane/affinity.ts exits 1, naming the file and boundary-forbidden-import", () => {

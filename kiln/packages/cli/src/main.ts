@@ -1,10 +1,11 @@
 // kiln — the command line. r12: `kiln check [name…] [--json]` (contracts/cli-check.md).
 import { CHECK_NAMES, runChecks } from "#checks/index.ts";
+import { GATE_USAGE } from "./gate-usage.ts";
 import type { CheckName, CheckResult } from "#checks/index.ts";
 import { PASS } from "#record/report.ts";
 import { isEntryPoint } from "#record/entry.ts";
 
-const USAGE = `usage: kiln check [${CHECK_NAMES.join("|")}]… [--json]`;
+const USAGE = `usage: kiln check [${CHECK_NAMES.join("|")}]… [--json]\n${GATE_USAGE}`;
 
 function render(r: CheckResult): string {
   const count = r.scanned === undefined ? "" : ` — scanned ${r.scanned} files`;
@@ -15,8 +16,11 @@ function render(r: CheckResult): string {
   return lines.join("\n");
 }
 
-export function main(argv: readonly string[]): number {
+export function main(argv: readonly string[]): number | Promise<number> {
   const [command, ...rest] = argv;
+  // loaded on demand: `kiln check` must not pull in the durable package (and the library behind it)
+  if (command === "owner") return import("./gate-commands.ts").then((m) => m.ownerCommand(rest));
+  if (command === "gate") return import("./gate-commands.ts").then((m) => m.gateCommand(rest[0], rest.slice(1)));
   if (command !== "check") {
     console.error(command ? `unknown command "${command}"\n${USAGE}` : USAGE);
     return 2;
@@ -40,4 +44,4 @@ export function main(argv: readonly string[]): number {
 }
 
 // The entry guard is shared and symlink-safe (see #record/entry.ts); `import.meta.main` is not available on every supported Node.
-if (isEntryPoint(import.meta.url)) process.exitCode = main(process.argv.slice(2));
+if (isEntryPoint(import.meta.url)) process.exitCode = await main(process.argv.slice(2));

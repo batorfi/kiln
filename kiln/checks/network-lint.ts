@@ -20,8 +20,23 @@ export const SCAN_EXTENSIONS = /\.(?:ts|mts|cts|js|mjs|cjs)$/;
 
 export type NetworkCode =
   | "network-call" | "network-import" | "network-alias" | "network-computed" | "network-external-dependency" | "network-nonloopback-url"
+  | "network-local-ipc-port" | "network-local-ipc-other"
   | "network-zero-files" | "network-allowlist-invalid" | "allowlist-bare-name" | "allowlist-missing-file";
 export interface Offence { code: NetworkCode; detail: string }
+
+// ── r13: what a file may additionally do ────────────────────────────────────────────────────────────────────────────────────────────
+/** A local-IPC call whose first argument is a port, an options object or a string that is not an absolute path (a host). A variable is not judged: this is a lint, like the rest. */
+const LOCAL_IPC_PORT = /\.\s*(?:listen|connect|createConnection)\s*\(\s*(?:\d|\{|["'`](?!\/))/;
+/** The `net` calls a local-IPC file is judged on by LOCAL_IPC_PORT instead of by the general call rule. */
+const NET_LOCAL_CALL = /\bnet\s*\.\s*(?:connect|createConnection)\s*\(/g;
+const NET_ONLY = /^(?:node:)?net$/;
+/** What the boundary rules and the local-IPC allowlist add for ONE file (computed by the check; absent in the first program's scans). */
+export interface FileAllowances {
+  /** Bare specifiers an external seam opens for this file's own package (`checks/boundaries.json → externals`) — the one source of truth. */
+  externalSpecifiers?: ReadonlySet<string>;
+  /** This file is on the local-IPC allowlist: it may import `node:net` and use it on a Unix-domain socket PATH only. */
+  localIpc?: boolean;
+}
 
 // ── the patterns, kept from the first program ──────────────────────────────────────────────────────────────────────────────────────
 const NET_PRIMITIVE = /\b(?:new\s+(?:Server|Socket|WebSocket))\b|\brequire\(\s*["'](?:http|https|net|dns|tls)["']/;
@@ -44,7 +59,7 @@ function defaultKey(fullPath: string): string {
 }
 
 /** Offences for ONE file's text, each with its stable code. Pure — the unit the planted-violation tests drive. */
-export function scanTextDetailed(text: string, path: string, allowlist: readonly string[] = [], relKey?: string): Offence[] {
+export function scanTextDetailed(text: string, path: string, allowlist: readonly string[] = [], relKey?: string, allowances: FileAllowances = {}): Offence[] {
   const out: Offence[] = [];
   const tokens = tokenize(text);
   const { code, blanked } = tokens;
@@ -55,14 +70,19 @@ export function scanTextDetailed(text: string, path: string, allowlist: readonly
   let computed = false;
   for (const { specifier: spec } of moduleLoads(tokens)) {
     if (spec === null) computed = true; // a COMPUTED import()/require(): not one plain string literal, so the module cannot be read from the source
-    else if (NET_MODULE.test(spec)) out.push({ code: "network-import", detail: `imports the network/process module "${spec}"` });
-    else if (!INTERNAL_SPECIFIER.test(spec)) out.push({ code: "network-external-dependency", detail: `external dependency "${spec}"` });
+    else if (NET_MODULE.test(spec)) {
+      if (!allowances.localIpc) out.push({ code: "network-import", detail: `imports the network/process module "${spec}"` });
+      else if (!NET_ONLY.test(spec)) out.push({ code: "network-local-ipc-other", detail: `imports "${spec}" — a local-IPC file may import node:net only` });
+    } else if (!INTERNAL_SPECIFIER.test(spec) && !allowances.externalSpecifiers?.has(spec)) out.push({ code: "network-external-dependency", detail: `external dependency "${spec}"` });
   }
   if (computed) out.push({ code: "network-computed", detail: "a COMPUTED import()/require() — it can load any module, invisibly to every specifier check" });
 
+  if (allowances.localIpc && LOCAL_IPC_PORT.test(code)) out.push({ code: "network-local-ipc-port", detail: "a listen/connect/createConnection on a port, an options object or a host — a local-IPC file may use a Unix-domain socket PATH only" });
+
   if (!allowed) {
     const where = `outside the loopback allowlist [${allowlist.join(", ")}]`;
-    if (NET_CALL.test(blanked)) out.push({ code: "network-call", detail: `a network CALL (fetch/http.request/…) ${where}` });
+    const callText = allowances.localIpc ? blanked.replace(NET_LOCAL_CALL, "(") : blanked; // net.connect/createConnection in a local-IPC file: judged by LOCAL_IPC_PORT above
+    if (NET_CALL.test(callText)) out.push({ code: "network-call", detail: `a network CALL (fetch/http.request/…) ${where}` });
     else if (NET_ALIAS.test(blanked)) out.push({ code: "network-alias", detail: `fetch used as a VALUE or read off the global object (aliasing) ${where}` });
     if (NET_COMPUTED_ACCESS.test(blanked)) out.push({ code: "network-computed", detail: `computed property access on the global object (globalThis[…]) ${where}` });
   } else {
@@ -139,6 +159,10 @@ export interface NetworkOptions {
   /** The kiln/ directory to scan (default: this one). Tests pass a temporary tree. */
   kilnDir?: string;
   allowlist?: NetworkAllowlist;
+  /** r13: the external seams (default: `checks/boundaries.json → externals`, none if that file is absent). */
+  externals?: Record<string, { specifiers: string[]; onlyIn: string[] }>;
+  /** r13: the files allowed `node:net` for a Unix-domain socket (default: `checks/local-ipc.json`, none if absent). */
+  localIpc?: { schema: 1; entries: { path: string; reason?: string }[] };
 }
 
 const defaultKilnDir = fileURLToPath(new URL("..", import.meta.url));
@@ -194,6 +218,48 @@ export function checkNetwork(opts: NetworkOptions = {}): CheckResult {
 
   const files = networkScanFiles(kilnDir);
   const scannedSet = new Set(files);
+
+  // r13: the external seams opened by the boundary rules, and the local-IPC allowlist (both absent in a tree that has neither file)
+  let externals = opts.externals;
+  if (externals === undefined) {
+    const bp = join(kilnDir, "checks", "boundaries.json");
+    if (existsSync(bp)) {
+      try {
+        externals = (JSON.parse(readFileSync(bp, "utf8")) as { externals?: Record<string, { specifiers: string[]; onlyIn: string[] }> }).externals ?? {};
+      } catch {
+        externals = {}; // an unreadable rule file is the boundary check's failure to report; here no seam is open, which only makes this check stricter
+      }
+    } else externals = {};
+  }
+  let localIpc = opts.localIpc;
+  if (localIpc === undefined) {
+    const lp = join(kilnDir, "checks", "local-ipc.json");
+    if (existsSync(lp)) {
+      try {
+        localIpc = JSON.parse(readFileSync(lp, "utf8"));
+      } catch (e) {
+        failures.push({ code: "network-allowlist-invalid", file: "checks/local-ipc.json", detail: `cannot read the local-IPC allowlist: ${(e as Error).message}` });
+        return result();
+      }
+    } else localIpc = { schema: 1, entries: [] };
+  }
+  if (localIpc!.schema !== 1 || !Array.isArray(localIpc!.entries)) {
+    failures.push({ code: "network-allowlist-invalid", file: "checks/local-ipc.json", detail: "the local-IPC allowlist is not schema 1 with an entries list" });
+    return result();
+  }
+  const ipcKeys = new Set<string>();
+  for (const e of localIpc!.entries) {
+    const bad = (code: NetworkCode, detail: string) => failures.push({ code, file: String(e?.path), detail });
+    if (typeof e?.path !== "string" || !e.path.includes("/")) bad("allowlist-bare-name", `local-IPC entry "${String(e?.path)}" is a bare name; entries are paths relative to kiln/`);
+    else if (!existsSync(join(kilnDir, e.path)) || !statSync(join(kilnDir, e.path)).isFile()) bad("allowlist-missing-file", `local-IPC entry "${e.path}" names a file that does not exist`);
+    else if (!scannedSet.has(e.path)) bad("allowlist-missing-file", `local-IPC entry "${e.path}" is not a scanned source file (scan roots: packages/*, checks/ — recursively, tests excluded)`);
+    else ipcKeys.add(e.path);
+  }
+  const externalsFor = (file: string): ReadonlySet<string> => {
+    const pkg = /^packages\/([^/]+)\//.exec(file)?.[1];
+    return new Set(pkg ? Object.values(externals!).filter((x) => x.onlyIn.includes(pkg)).flatMap((x) => x.specifiers) : []);
+  };
+
   const keys: string[] = [];
   for (const e of allowlist.entries) {
     const bad = (code: NetworkCode, detail: string) => failures.push({ code, file: e.path, detail });
@@ -207,8 +273,8 @@ export function checkNetwork(opts: NetworkOptions = {}): CheckResult {
   // the scan — never vacuous
   if (files.length === 0) failures.push({ code: "network-zero-files", detail: "the scan examined ZERO files (roots: packages/*, checks/ — recursively, tests excluded) — a vacuous scan proves nothing (P-VIII)" });
   for (const f of files) {
-    for (const o of scanTextDetailed(readFileSync(join(kilnDir, f), "utf8"), f, keys, f)) failures.push({ code: o.code, file: f, detail: o.detail });
+    for (const o of scanTextDetailed(readFileSync(join(kilnDir, f), "utf8"), f, keys, f, { externalSpecifiers: externalsFor(f), localIpc: ipcKeys.has(f) })) failures.push({ code: o.code, file: f, detail: o.detail });
   }
   const n = allowlist.entries.length;
-  return result(files.length, [`allowlist: ${n} entr${n === 1 ? "y" : "ies"}`]);
+  return result(files.length, [`allowlist: ${n} entr${n === 1 ? "y" : "ies"}`, `local-IPC allowlist: ${ipcKeys.size} file${ipcKeys.size === 1 ? "" : "s"}; ${Object.keys(externals).length} external seam${Object.keys(externals).length === 1 ? "" : "s"} read from the boundary rules`]);
 }
