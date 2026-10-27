@@ -190,3 +190,24 @@ The new suite takes **141.6 – 166.1 s** across the matrix (153.5 s on the inst
 | `git diff --stat main -- legacy specs/ROADMAP.md` | empty | empty | **equal** |
 
 Nothing is "not equal": no finding blocks closing.
+
+## T077 — a fresh clone, quickstart §0–§9 and §11 — 2026-10-27
+
+`git clone --branch 011-durable-core-gate-contract` → `/tmp/kiln-r13-fresh` at `0dd753f`; `cd kiln && npm ci` (the one network act; 91 packages, 112 MB in `node_modules`), then:
+
+| Quickstart | What was run | Result |
+|---|---|---|
+| §0 shape on disk | `package.json` dependencies, engines, lockfile tracked, `node_modules` ignored, old statements, `DEPENDENCIES.md` | three exact pins · `^22.19.0 \|\| >=23.6.0` · lock tracked · ignored · 0 old statements · 3 sections |
+| §1 install and checks | `npm run check`; `npm test` | `PASS network` (58) · `PASS boundaries` (58) · `PASS legacy` (168); `npm test` exit **0** — `new: 472 · legacy: 500 (30 skipped)`; `legacy/` tree id `20a82c7e…` |
+| §2 one seam | `seam.test.ts` | 4 tests, exit 0 |
+| §3 a gate waits | `kill-points.test.ts`, `storm.test.ts` | 17 tests, exit 0 (14 of 14 points; 7-kill storm) |
+| §4 a move settles once | the CLI sequence, by hand; `exactly-once.test.ts` | `kiln owner` printed `listening` / `ready`; `open` → `opened`; `state` → `{"state":"waiting"}`; `move m1` → `committed` (exit 0); `m1` again → `repeat`; `m2 reject` → `refused / stale / winner m1`; SIGTERM → clean stop. Test: 5 tests, exit 0 |
+| §5 a gate opens whole | `open.test.ts` | 4 tests, exit 0 |
+| §6 one owner, local channel | `owner-lock.test.ts`, `channel.test.ts`, `no-network.test.ts` | 24 tests, exit 0 |
+| §7 steps, commands, lane | `units`, `commands`, `lane-task`, `lane-proof` | 27 tests, exit 0 |
+| §8 the proof can fail | `negative.test.ts`, `check-network.test.ts`, `check-boundaries.test.ts` | 15 tests, exit 0 — the broken gate is caught at its seam; vacuous runs fail by name; every planted violation fails by name |
+| §9 scale | `scale.test.ts` | 1 test, exit 0 (ready 40 ms alone) |
+| §10 floor | the matrix above | recorded (Phase 10 checkpoint) |
+| §11 nothing else moved | `git rev-parse HEAD:legacy`; `git diff --stat main -- legacy specs/ROADMAP.md` | unchanged; empty |
+
+One observation from §4: after a clean stop the store directory holds `factory.sqlite` and `owner.lock`. The lock *file* stays; its single row is emptied (the lock is a small database, not a file whose existence means "owned"). The documents that say "the lock is removed" mean the row.

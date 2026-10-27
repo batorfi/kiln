@@ -25,7 +25,7 @@ interface Factory {
   commands: CommandApi;
   serve(): Promise<Channel>;                                         // starts the local channel (R6)
   inspect(): Promise<Inspection>;                                    // read through the owner, for diagnostics
-  close(): Promise<void>;                                            // clean stop: removes lock and socket
+  close(): Promise<void>;                                            // clean stop: empties the lock row and removes the socket
 }
 function inspectStore(store: string): Promise<Inspection>;           // a FRESH reader: no owner, no lock, read-only; for the proof and for r15
 ```

@@ -9,7 +9,7 @@ Everything below lives in **one store per factory** (one SQLite file) owned by *
 | Entity | Identity | Lives in | Mutable? | Notes |
 |---|---|---|---|---|
 | **Factory** | the store directory | filesystem | — | exactly one store, one owner |
-| **Owner lock** | `<store>/owner.lock` | filesystem | created/removed | `{pid, host, startedAt, socket}`; not in the store file |
+| **Owner lock** | `<store>/owner.lock` | a tiny separate SQLite database, one row *(built form; planned as an exclusive-create file — see notes.md)* | row set at start, emptied at clean close | `{pid, host, startedAt, socket}`; not in the store file |
 | **Task** | task id (library-minted, opaque) | store | by commits | kinds below; has an owner (task or factory), input (immutable), checkpoint, outcome |
 | **Gate document** `kiln.gate` | gate id | store (root conversation) | **never** after opening | see §2 |
 | **Brief as shown** `kiln.brief` | gate id | store | **never** | content + its hash |

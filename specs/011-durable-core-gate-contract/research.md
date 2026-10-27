@@ -53,6 +53,8 @@ Commands in r13: `gate.open`, `task.create` (roadmap, row, unit) and `gate.move`
 
 ## R5 — One owner per store (FR-041)
 
+> **Built form (2026-10-27).** The file-and-rename design below failed its own 50-process stress test (two owners), so the lock is a small separate SQLite database with one row, taken in one `BEGIN IMMEDIATE` transaction; a live pid is **never** taken from (the channel probe only enriches the refusal); a clean close *empties the row* (the file stays). Where the text below says "exclusive-create", "rename" or "removes the lock", read that. Reasons and numbers: `notes.md`, "The owner lock — a file became a transaction".
+
 **Facts [r42].** Neither SQLite nor the library stops a second process opening the file and taking the write lock while the owner is idle (observed on both files). So the rule is KILN's.
 
 **Decision [design].** A **lock file** `<store>/owner.lock`, created with exclusive-create (`wx`), containing `{pid, host, startedAt, socket}`. Start-up:
