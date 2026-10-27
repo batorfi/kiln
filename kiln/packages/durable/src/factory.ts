@@ -64,6 +64,13 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   }
   services.store = store;
   store.resume();
+  try {
+    await opts.lane?.start?.(); // the lane task exists and no dead generation still holds the lane — before any step can ask for it
+  } catch (e) {
+    await store.close().catch(() => {});
+    lock.release();
+    throw e;
+  }
   const readyPromise = converge(services, opts.readyTimeoutMs ?? 5000);
   readyPromise.catch(() => {}); // a caller that never awaits `ready` must not cause an unhandled rejection
   let closed = false;

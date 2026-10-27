@@ -26,6 +26,11 @@ export const KILL_POINTS = [
   "unit.step-begin",
   "unit.step-after-work",
   "unit.step-committed",
+  // the lane: before the commit that changes it ends (nothing stored yet) and right after (stored, the generation not yet started / not yet released)
+  "lane.acquire-after-write",
+  "lane.acquire-committed",
+  "lane.release-after-write",
+  "lane.release-committed",
 ] as const;
 /** The points of the gate's own life (the gate proofs drive these); the unit points are driven by the unit proof, the lane points by the lane proof. */
 export const GATE_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => !/^(unit|lane)\./.test(p));

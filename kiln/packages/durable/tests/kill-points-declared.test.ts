@@ -10,7 +10,9 @@ import { moduleLoads, tokenize } from "#checks/lex.ts";
 
 const SRC = fileURLToPath(new URL("../src", import.meta.url));
 const walk = (d: string): string[] => readdirSync(d).flatMap((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : f.endsWith(".ts") ? [join(d, f)] : []));
-const files = walk(SRC);
+// the lane's points are used in the lane package (it implements the port; durable cannot import it), the others here
+const LANE_SRC = fileURLToPath(new URL("../../lane/src", import.meta.url));
+const files = [...walk(SRC), ...walk(LANE_SRC)];
 const strip = (t: string): string => tokenize(t).code; // comments removed, strings kept
 
 test("the set of names passed to hooks.at / hooks.fault in src/ EQUALS the declared lists", () => {

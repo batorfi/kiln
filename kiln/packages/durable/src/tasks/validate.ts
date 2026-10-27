@@ -6,6 +6,9 @@ export interface UnitSpec {
   label: string;
   steps: number;
   needsLane?: boolean;
+  /** With `needsLane`: the model the scripted generation needs resident, and whether the lane must hold it afterwards. */
+  model?: string;
+  hold?: boolean;
   /** Scripted duration of each step in ms (0–5000): the work a kill can interrupt. */
   stepMs?: number;
 }
@@ -25,11 +28,14 @@ const only = (o: Record<string, unknown>, allowed: string[]): string | null => {
 
 export function checkUnit(v: unknown): string | null {
   if (!isObj(v)) return "a unit's input is an object";
-  const extra = only(v, ["label", "steps", "needsLane", "stepMs"]);
+  const extra = only(v, ["label", "steps", "needsLane", "stepMs", "model", "hold"]);
   if (extra) return extra;
   if (typeof v.label !== "string" || v.label.trim() === "") return "a unit needs a label";
   if (!Number.isInteger(v.steps) || (v.steps as number) < 1 || (v.steps as number) > 100) return "steps is an integer from 1 to 100";
   if (v.needsLane !== undefined && typeof v.needsLane !== "boolean") return "needsLane is a boolean";
+  if (v.model !== undefined && (typeof v.model !== "string" || v.model.trim() === "")) return "model is a non-empty string";
+  if (v.hold !== undefined && typeof v.hold !== "boolean") return "hold is a boolean";
+  if ((v.model !== undefined || v.hold !== undefined) && v.needsLane !== true) return "model and hold apply only to a unit with needsLane";
   if (v.stepMs !== undefined && (!Number.isInteger(v.stepMs) || (v.stepMs as number) < 0 || (v.stepMs as number) > 60_000)) return "stepMs is an integer from 0 to 60000";
   return null;
 }

@@ -35,6 +35,12 @@ export function checkInvariants(i: Inspection, ctx: OracleContext = {}): Invaria
   const acq = i.outbox.filter((e) => e.type === "lane.acquired").length;
   const rel = i.outbox.filter((e) => e.type === "lane.released").length;
   const balance = acq - rel;
+  let held = 0; // walking the entries in order: at NO instant do they record two holders (or a release of nothing)
+  for (const e of [...i.outbox].sort((a, b) => a.seq - b.seq)) {
+    if (e.type === "lane.acquired") held += 1;
+    else if (e.type === "lane.released") held -= 1;
+    if (held < 0 || held > 1) v.add("I8");
+  }
   if (i.lane.holders > 1 || balance < 0 || balance > 1 || (acq + rel > 0 && balance !== i.lane.holders)) v.add("I8");
   // I9 — every command key maps to exactly one request hash
   if (Object.values(i.commands).some((h) => new Set(h).size > 1)) v.add("I9");

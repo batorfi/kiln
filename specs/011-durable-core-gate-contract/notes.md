@@ -37,3 +37,15 @@ Seed `20261026`, 300 trials. With delays 0–120 ms after the child printed `STA
 - The `lsof` control works as intended: the probe lists a real TCP listener (`TCP … LISTEN`) and nothing for the owner, which does hold its Unix-domain socket (`lsof -U` shows `.sock`).
 - A silent owner is waited for the full 5 s (4.5–7 s measured window); a dropped connection is noticed at once as `connection-lost`; both are exit 4, outcome unknown.
 - The separate-process variants reproduce the in-process counts exactly (1/99, 1/99, 0/100, 14 of 14 kill points); they take ≈ 100 s because each completer is a whole Node process.
+
+## The lane (T064–T067) — what was built, and two deviations — 2026-10-27
+
+Built as research R9 describes: `packages/lane/src/lane-task.ts` — `createLane()` returns `{ api, kinds }`; the port goes in as `FactoryOptions.lane`, the `kiln.lane` task kind as `FactoryOptions.tasks`. State is the document `kiln.lane/main` `{resident, hold, swaps, lease}`; each acquire/release is one commit with its `lane.*` entries; waiting is in owner memory, FIFO; `start()` releases a dead generation's lease (entry actor `factory`, cause `restart`) and the resumed steps ask again in task-id order.
+
+**Deviation 1 — no `within(tx)`.** The plan had the unit's own commit carry the lane change. A release inside the unit's step commit would have to wake the next waiter *after that commit succeeds*, which a function called inside someone else's transaction cannot know. Since a lease left by a dead generation is released at start, a release in its own commit loses nothing: the worst a kill can do (between the step's commit and the release) leaves a lease the restart clears. `acquire` is still one commit with the resident model, hold flag, swap count and entries. `contracts/seam-api.md` was updated to the built form.
+
+**Deviation 2 — the port gained `start()`**, because "one lane task per factory" and "release at start" need a moment where the factory tells the lane the store is open. The lane task itself (`kiln.lane`) does nothing until r16 gives it a scheduler; it stays alive until the factory closes. Two extra kill points beyond the plan's two (`lane.acquire-committed`, `lane.release-committed`) cover the case that matters most for FR-032: killed *just after* the commit, the lease is held by a generation that no longer exists.
+
+**Observed in the proof** (wreck state at each point, 2nd hit): `acquire-after-write` — 0 holders, resident m1, hold true, swaps 0; `acquire-committed` — **1 holder** (dead generation), resident m2, swaps 1; `release-after-write` — 1 holder (the release did not commit); `release-committed` — 0 holders. In every case the restart reported 0 holders until a resumed step asked again, with resident/hold/swaps unchanged, and both units finished.
+
+**Oracle I8 sharpened.** It now walks the outbox in order and fails if the entries ever record two holders or a release of nothing — not only if the totals balance.

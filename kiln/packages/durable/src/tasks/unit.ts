@@ -15,9 +15,18 @@ export function unitKind(s: Services): TaskKind<UnitSpec, UnitCheckpoint, UnitRe
     initial: () => ({ phase: "work", done: 0, results: [] }),
     phases: {
       work: async (task, run) => {
-        const { label, steps, stepMs } = task.input;
+        const { label, steps, stepMs, needsLane, model, hold } = task.input;
         const i = task.checkpoint.done;
         await s.hooks.at("unit.step-begin");
+        if (needsLane) {
+          // the scripted generation runs only while the unit holds the lane; a lease the previous process left behind was released at start, so a redone step simply asks again
+          try {
+            await s.lane!.acquire(task.id, { model, hold, signal: run.signal, cause: `task:${task.id}/step:${i}` });
+          } catch (e) {
+            if (run.signal.aborted) return; // the factory is closing while this step waited: nothing is committed
+            throw e;
+          }
+        }
         // the scripted work of step i — pure in its inputs, so redoing it after a kill gives the same answer
         if (stepMs) await new Promise<void>((resolve) => {
           const t = setTimeout(resolve, stepMs);
@@ -32,6 +41,7 @@ export function unitKind(s: Services): TaskKind<UnitSpec, UnitCheckpoint, UnitRe
             : { status: "running", checkpoint: { phase: "work", done: i + 1, results } },
         );
         await s.hooks.at("unit.step-committed");
+        if (needsLane) await s.lane!.release(task.id);
       },
     },
     abort: async (_task, run) => {

@@ -131,3 +131,15 @@ The proof, as run:
 - **Commands (T061).** `task.create` ×100 at once → 1 created + 99 repeat; ×100 after a SIGKILL and restart → 100 repeat; one task; one request hash under the key (I9). Same key with another input or another kind → `key-conflict`, nothing written, before and after a restart. `gate.open` and `gate.move` keys obey the same rule.
 - **Documents (T063).** `packages/durable/README.md`: what the seam is, the contract links, the key-retention rule, the power-loss boundary (process death covered; host power loss not).
 - **Harness.** The test owner learned `KILL_NTH` (die at the n-th time a point is reached) and `createMany`; the gate proofs now iterate `GATE_KILL_POINTS` so unit and lane points are driven by their own proofs.
+
+## Phase 9 checkpoint (T064–T067): the lane — 2026-10-27
+
+| Reading | Result |
+|---|---|
+| `npm test` | exit **0** — `new: 466 tests · legacy: 500 tests (30 skipped)` |
+| `npm run check` | three `PASS` (58 · 58 · 168 files) |
+
+- **One holder (T064, T067).** 100 trials of two steps asking at once (200 grants, resident model alternating): the maximum number of generations running at any instant is **1**; 200 `lane.acquired` and 200 `lane.released` entries; every counted swap has its `lane.swapped` entry (I8, now checked as a running balance over the ordered entries).
+- **Under kill.** **4 of 4** lane kill points fire (`lane.acquire-after-write`, `lane.acquire-committed`, `lane.release-after-write`, `lane.release-committed`). Wrecks seen: 0, **1** (a dead generation's lease), 1, 0 holders; after each restart the lane reports **0** holders until a resumed step asks again, resident model, hold flag and swap count unchanged, a `lane.released` entry (actor `factory`, cause `restart`) where a lease was found, and both units finish.
+- **In-process (T064).** FIFO waiting; swaps counted only when a resident model is replaced; an injected failure at the end of an acquire leaves lane state and entries untouched (one commit); a non-holder cannot release; an aborted waiter is skipped; the `kiln.lane` task exists once across starts.
+- Deviations (no `within(tx)`; `start()` added to the port; two extra kill points) are in `notes.md`.

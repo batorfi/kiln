@@ -70,13 +70,13 @@ The five kinds: `kiln.roadmap`, `kiln.row`, `kiln.unit`, `kiln.gate` (+ `kiln.de
 
 ```ts
 interface LaneApi {
-  acquire(step: TaskId, opts?: { model?: string; hold?: boolean }): Promise<Lease>;   // waits its turn; commits lease + resident/hold/swaps + lane.* entries
+  start?(): Promise<void>;     // called once by openFactory: ensures the ONE lane task, releases a lease a dead generation left (FR-032)
+  acquire(step: TaskId, opts?: { model?: string; hold?: boolean; signal?: AbortSignal; cause?: string }): Promise<Lease>;  // waits its turn; ONE commit: lease + resident/hold/swaps + lane.* entries
   release(step: TaskId): Promise<void>;
-  within(tx: Tx): LaneTx;                  // change lane state inside a step's own commit
 }
 ```
 
-A `kiln.unit` with `needsLane` calls this port; if `FactoryOptions.lane` is absent, creating such a unit is refused (`BadRequest`, naming the missing port).
+(Built form, 2026-10-27: `within(tx)` was dropped — see notes.md — and `start` added.) A `kiln.unit` with `needsLane` calls this port; if `FactoryOptions.lane` is absent, creating such a unit is refused (`BadRequest`, naming the missing port).
 
 ## Hooks (tests only)
 

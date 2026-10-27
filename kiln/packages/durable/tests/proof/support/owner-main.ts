@@ -35,18 +35,17 @@ const hooks: Hooks = {
   },
 };
 const offset = Number(env.CLOCK_OFFSET_MS ?? 0);
-const extraKinds: any[] = [];
 let lane: any;
-let extra: any = extraKinds;
-if (env.BROKEN_GATE) {
-  const m = await import("./broken-gate.ts");
-  extra = (s: any) => [m.brokenDecision(s)];
-}
+let laneKinds: ((s: any) => any[]) | undefined;
+let broken: ((s: any) => any) | undefined;
+if (env.BROKEN_GATE) broken = (await import("./broken-gate.ts")).brokenDecision;
 if (env.LANE_MODULE) {
-  const m = await import(env.LANE_MODULE);
-  extraKinds.push(...(m.laneKinds?.() ?? []));
-  lane = m.laneApi;
+  const m = await import(env.LANE_MODULE); // the lane module: `createLane()` returns { api, kinds } — the port goes in as `lane`, its task kind in as an extra kind
+  const made = m.createLane();
+  lane = made.api;
+  laneKinds = made.kinds;
 }
+const extra = (s: any): any[] => [...(broken ? [broken(s)] : []), ...(laneKinds ? laneKinds(s) : [])];
 
 const t0 = performance.now(); // start-up is timed from here: before the factory is opened
 let factory: Factory;

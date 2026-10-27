@@ -95,7 +95,16 @@ export interface Lease {
   since: number;
 }
 export interface LaneApi {
-  acquire(step: TaskId, opts?: { model?: string; hold?: boolean }): Promise<Lease>;
+  /**
+   * Called once by `openFactory` after the store is open: makes sure the factory has its ONE lane task, and releases a lease that a generation which died with the previous process still held
+   * (FR-032). Requests made before it finishes wait for it. Optional so a factory without a lane is the same factory.
+   */
+  start?(): Promise<void>;
+  /**
+   * Take the lane for `step`, waiting its turn (at most one holder). One commit: the lease, the resident model, the hold flag, the swap count and the `lane.*` outbox entries (FR-031). Rejects if
+   * `opts.signal` aborts while waiting. `hold` defaults to false; `model` left out keeps the resident one.
+   */
+  acquire(step: TaskId, opts?: { model?: string; hold?: boolean; signal?: AbortSignal; cause?: string }): Promise<Lease>;
   release(step: TaskId): Promise<void>;
 }
 
