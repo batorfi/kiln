@@ -1,7 +1,9 @@
 // The owner's private local channel — the client side (FR-045, FR-046). It connects by socket PATH only and never opens the store. A request whose connection is lost, or that gets no answer within the
 // timeout (5 s by default), resolves to an explicit OUTCOME UNKNOWN — `refused(store-error)` with `detail: "connection-lost" | "timeout"` — never a hang: the caller retries the same key.
 import net from "node:net";
-import { ChannelError, refused, type GateSpec, type GateState, type Key, type Move, type OpenOutcome, type Outcome } from "../types.ts";
+import { ChannelError, refused, type GateSpec, type GateState, type Key, type Move, type OpenOutcome, type Outcome, type TaskCreateOutcome } from "../types.ts";
+import type { WalkInput } from "../walk/input.ts";
+import type { WalkView } from "../walk/view.ts";
 import { encode, type ChannelReply, type ChannelRequest } from "./protocol.ts";
 
 export const CONNECTION_LOST = "connection-lost";
@@ -13,6 +15,12 @@ export interface ChannelClient {
   submit(gateId: string, key: Key, move: Move): Promise<Outcome>;
   /** A read: it throws `ChannelError` (never answers wrongly) when the owner cannot be heard. */
   state(gateId: string): Promise<GateState>;
+  /** r14: admit a feature (keyed exactly once; an unknown outcome is retried with the same key). */
+  admit(key: Key, feature: string, walk: WalkInput): Promise<TaskCreateOutcome>;
+  /** r14: where a feature is. A read: throws `ChannelError` when the owner cannot be heard. */
+  featureState(feature: string): Promise<WalkView>;
+  /** r14: the open gate once it differs from `after` (or the walk ended). WAITS — with no timeout, on an event the owner raises — and throws `ChannelError("outcome-unknown")` if the owner goes away; the caller asks again. */
+  featureNext(feature: string, after?: string): Promise<WalkView>;
   ping(): Promise<{ pong: true; ready: boolean; pid: number }>;
   ready(): Promise<boolean>;
   close(): void;
@@ -58,12 +66,13 @@ export async function connect(socketPath: string, opts: { timeoutMs?: number } =
   socket.on("close", () => failAll(CONNECTION_LOST));
   socket.on("error", () => failAll(CONNECTION_LOST));
 
-  const request = (body: Omit<ChannelRequest, "id">): Promise<ChannelReply | { lost: string }> =>
+  // `waitMs` 0 = wait for the owner as long as it takes (only `feature next`, which waits on an event); the connection closing still ends it
+  const request = (body: Omit<ChannelRequest, "id">, waitMs = timeoutMs): Promise<ChannelReply | { lost: string }> =>
     new Promise((resolve) => {
       if (closed) return resolve({ lost: CONNECTION_LOST });
       const id = nextId++;
-      const timer = setTimeout(() => { pending.delete(id); resolve({ lost: TIMEOUT }); }, timeoutMs);
-      pending.set(id, (r) => { clearTimeout(timer); resolve(r); });
+      const timer = waitMs > 0 ? setTimeout(() => { pending.delete(id); resolve({ lost: TIMEOUT }); }, waitMs) : undefined;
+      pending.set(id, (r) => { if (timer) clearTimeout(timer); resolve(r); });
       socket.write(encode({ id, ...body }), (err) => {
         if (err) { const d = pending.get(id); pending.delete(id); d?.({ lost: CONNECTION_LOST }); }
       });
@@ -78,6 +87,19 @@ export async function connect(socketPath: string, opts: { timeoutMs?: number } =
       if ("lost" in r) throw new ChannelError("outcome-unknown", `no answer from the owner (${r.lost})`);
       if (!r.ok) throw new ChannelError("bad-request", r.error);
       return r.result as GateState;
+    },
+    admit: async (key, feature, walk) => answered(await request({ op: "feature.admit", key, feature, walk }), (why) => refused("store-error", { detail: why })) as TaskCreateOutcome,
+    featureState: async (feature) => {
+      const r = await request({ op: "feature.state", feature });
+      if ("lost" in r) throw new ChannelError("outcome-unknown", `no answer from the owner (${r.lost})`);
+      if (!r.ok) throw new ChannelError("bad-request", r.error);
+      return r.result as WalkView;
+    },
+    featureNext: async (feature, after) => {
+      const r = await request({ op: "feature.next", feature, ...(after !== undefined ? { after } : {}) }, 0);
+      if ("lost" in r) throw new ChannelError("outcome-unknown", `the owner went away while waiting (${r.lost})`);
+      if (!r.ok) throw new ChannelError(/closing/.test(r.error) ? "outcome-unknown" : "bad-request", r.error);
+      return r.result as WalkView;
     },
     ping: async () => {
       const r = await request({ op: "ping" });

@@ -16,6 +16,8 @@ import { openStore } from "./library/open.ts";
 import { acquireLock } from "./owner-lock.ts";
 import type { Services } from "./services.ts";
 import type { Report, Store, TaskKind } from "./store.ts";
+import { Watch } from "./walk/watch.ts";
+import { makeWalkApi, type WalkApi } from "./walk/api.ts";
 import type { Channel, CommandApi, GateApi, Inspection, LaneApi, TaskApi } from "./types.ts";
 
 export interface FactoryOptions {
@@ -43,6 +45,8 @@ export interface Factory {
   readonly gates: GateApi;
   readonly tasks: TaskApi;
   readonly commands: CommandApi;
+  /** r14: admit a feature, read where it is, wait for its next gate. */
+  readonly walks: WalkApi;
   serve(): Promise<Channel>;
   /** The store as a fresh reader sees it (read through the same file). */
   inspect(gateId?: string): Promise<Inspection>;
@@ -54,7 +58,7 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   await hooks.at("recover.start"); // the first step of every start: a kill HERE is a kill during recovery
   const socketPath = channelSocketPath(opts.store);
   const lock = await acquireLock(opts.store, socketPath, { probe: (info) => answers(info.socket) });
-  const services: Services = { store: undefined as unknown as Store, hooks, now: opts.now ?? Date.now, slots: new Slots(), ready: false, lane: opts.lane };
+  const services: Services = { store: undefined as unknown as Store, hooks, now: opts.now ?? Date.now, slots: new Slots(), ready: false, lane: opts.lane, watch: new Watch() };
   let store: Store;
   try {
     store = await openStore({ dir: opts.store, now: services.now, kinds: [...builtinKinds(services), ...(typeof opts.tasks === "function" ? opts.tasks(services) : (opts.tasks ?? []))], installedLibraryVersion: opts.installedLibraryVersion });
@@ -76,21 +80,25 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   let closed = false;
   let channel: Channel | undefined;
   const gates: GateApi = { open: (key, spec) => openGate(services, key, spec), submit: (gateId, key, move) => submitMove(services, gateId, key, move), state: (gateId) => gateState(services, gateId) };
+  const tasks = makeTaskApi(services);
+  const walks = makeWalkApi(services, tasks);
   return {
     ready: readyPromise,
     reports: store.reports,
     gates,
-    tasks: makeTaskApi(services),
+    tasks,
+    walks,
     commands: makeCommandApi(services),
     serve: async () => {
       if (channel) return channel;
-      channel = await startChannel(socketPath, { ready: () => services.ready, open: gates.open, submit: gates.submit, state: gates.state });
+      channel = await startChannel(socketPath, { ready: () => services.ready, open: gates.open, submit: gates.submit, state: gates.state, walks });
       return channel;
     },
     inspect: (gateId?: string) => inspectStore(opts.store, gateId),
     close: async () => {
       if (closed) return;
       closed = true;
+      services.watch.close(); // a waiting `feature next` is released with an error: the client sees a lost connection and retries
       try {
         await channel?.close();
         await store.close();

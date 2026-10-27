@@ -6,20 +6,7 @@ import { connect } from "#durable/channel/client.ts";
 import { channelSocketPath } from "#durable/channel/path.ts";
 import { startOwner } from "#durable/owner.ts";
 import { GATE_USAGE } from "./gate-usage.ts";
-
-function flags(args: string[]): Record<string, string> | { error: string } {
-  const out: Record<string, string> = {};
-  for (let i = 0; i < args.length; i += 2) {
-    const a = args[i];
-    if (!a.startsWith("--") || args[i + 1] === undefined) return { error: `bad argument "${a}"` };
-    out[a.slice(2)] = args[i + 1];
-  }
-  return out;
-}
-const need = (f: Record<string, string>, names: string[]): string | null => {
-  const missing = names.filter((n) => f[n] === undefined);
-  return missing.length ? `missing ${missing.map((n) => `--${n}`).join(", ")}` : null;
-};
+import { flags, need } from "./cli-flags.ts";
 
 /** `kiln owner --store <dir>`: runs until SIGTERM/SIGINT. Prints `listening`, then `ready`. */
 export async function ownerCommand(args: string[]): Promise<number> {

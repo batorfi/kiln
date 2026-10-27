@@ -96,3 +96,26 @@ test("SC-009: change the DATA and the answers change with no other change (a voc
   moved.gates.find((g) => g.key === "1-concept")!.triage = undefined;
   assert.deepEqual(triageProposal(moved), ["2-architecture"]);
 });
+
+import { unitRoles, upstreamOf } from "#contracts/flow/engine.ts";
+
+test("unitRoles: an author for every gate whose artifact is its own, a judge where the data names one, and NO author for the judged gates that judge the code", () => {
+  assert.deepEqual(unitRoles(v2, "1-concept"), ["author"]);
+  assert.deepEqual(unitRoles(v2, "2-architecture"), ["author", "judge"]);
+  assert.deepEqual(unitRoles(v2, "2a-experience"), ["author", "judge"]);
+  assert.deepEqual(unitRoles(v2, "5-checkpoint"), ["author"], "Implementation builds the code: it is not judged after the restore point");
+  assert.deepEqual(unitRoles(v2, "6-review"), ["judge"]);
+  assert.deepEqual(unitRoles(v2, "6a-ui-review"), ["check", "judge"]);
+  assert.deepEqual(unitRoles(v2, "7-verification"), ["judge"]);
+  assert.deepEqual(unitRoles(v2, "8-docs"), ["author"]);
+  assert.deepEqual(unitRoles(v2, "9-pr"), ["author"]);
+});
+
+test("upstreamOf: the active gates before, and @build (the code) for the gates after the restore point", () => {
+  assert.deepEqual(upstreamOf(v2, "1-concept"), []);
+  assert.deepEqual(upstreamOf(v2, "3-spec"), ["1-concept", "2-architecture", "2a-experience"]);
+  assert.deepEqual(upstreamOf(v2, "3-spec", { notApplicable: ["2a-experience"], skipped: ["1-concept"] }), ["2-architecture"]);
+  assert.deepEqual(upstreamOf(v2, "5-checkpoint").includes("@build"), false);
+  assert.deepEqual(upstreamOf(v2, "6-review").slice(-2), ["5-checkpoint", "@build"]);
+  assert.ok(upstreamOf(v2, "7-verification").includes("@build"));
+});

@@ -151,3 +151,53 @@ test("an unknown field on a move is neither stored nor part of a repeat (a deleg
   assert.equal(ok.status, "committed");
   if (ok.status === "committed") assert.deepEqual(Object.keys(ok.record.move).sort(), ["briefRef", "decidedBy", "kind"]);
 }));
+
+// ── T032: a gate of a WALK is bound to its feature in the opening commit ───────────────────────────────────────────────────────────────────────────────────────────────────
+import { mkdtempSync as mk2, rmSync as rm2 } from "node:fs";
+import { tmpdir as tmp2 } from "node:os";
+import { join as join2 } from "node:path";
+import type { WalkDoc } from "#durable/walk/doc.ts";
+import { WALK_SEED } from "#durable/walk/doc.ts";
+
+test("opening a walk gate records it as the feature's open gate in the SAME commit — an injected failure inside the opening leaves neither", async () => {
+  const dir = mk2(join2(tmp2(), "k14-bind-"));
+  let armed = true;
+  const f = await openFactory({ store: join2(dir, "s"), hooks: { at(p) { if (armed && p === "open.after-write") throw new Error("injected: the opening dies mid-commit"); }, fault() {} } });
+  try {
+    await f.ready;
+    const spec = { gateId: "gate:w:1-concept:1", gateKey: "1-concept" as const, flow: "v2" as const, brief: BRIEF, openedBy: "factory", returnsTo: [] as never[], walk: { feature: "w" } };
+    const first = await f.gates.open("o1", spec);
+    assert.equal(first.status, "refused", "the opening failed");
+    assert.equal((await f.gates.state(spec.gateId)).state, "unknown", "no gate");
+    const after = await f.inspect();
+    assert.equal(after.outbox.some((e) => e.type === "gate.opened"), false);
+    // and no feature binding either: a probe reading the walk document through a command sees no openGateId
+    const probe = await f.commands.run("probe1", "probe", {}, async (tx) => ({ id: (await tx.doc<WalkDoc>("kiln.walk", "w", WALK_SEED("w"))).openGateId ?? null }));
+    assert.deepEqual(probe.status === "applied" ? probe.result : null, { id: null });
+    armed = false;
+    const second = await f.gates.open("o1", spec);
+    assert.equal(second.status, "opened", "the same key opens it once the fault is gone");
+    const p2 = await f.commands.run("probe2", "probe", {}, async (tx) => ({ id: (await tx.doc<WalkDoc>("kiln.walk", "w", WALK_SEED("w"))).openGateId ?? null }));
+    assert.deepEqual(p2.status === "applied" ? p2.result : null, { id: spec.gateId });
+  } finally {
+    await f.close().catch(() => {});
+    rm2(dir, { recursive: true, force: true });
+  }
+});
+
+test("a feature-level move waiting to be consumed refuses the opening of the next walk gate (stale, naming the move's key) and leaves no gate", () => withFactory(async (f) => {
+  const held = await f.commands.run("hold1", "walk.hold", {}, async (tx) => {
+    const w = await tx.doc<WalkDoc>("kiln.walk", "w2", WALK_SEED("w2"));
+    w.pending = { key: "feature-move-1", move: { kind: "reject", decidedBy: "human@test", target: "1-concept", note: "back" }, decidedAt: 1, effect: "recorded" };
+    return { ok: true };
+  });
+  assert.equal(held.status, "applied");
+  const r = await f.gates.open("o1", { gateId: "gate:w2:2-architecture:1", gateKey: "2-architecture", flow: "v2", brief: BRIEF, openedBy: "factory", returnsTo: [], walk: { feature: "w2" } });
+  assert.equal(r.status, "refused");
+  assert.equal((r as Refusal).reason, "stale");
+  assert.equal((r as Refusal).winner, "feature-move-1");
+  assert.match((r as Refusal).detail ?? "", /feature-moved/);
+  assert.equal((await f.gates.state("gate:w2:2-architecture:1")).state, "unknown", "no gate was opened");
+  // a gate opened WITHOUT `walk` is unaffected by the pending move
+  assert.equal((await f.gates.open("o2", { gateId: "gate:other:gate0:1", gateKey: "gate0", flow: "v2", brief: BRIEF, openedBy: "factory" })).status, "opened");
+}));

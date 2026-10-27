@@ -96,3 +96,31 @@ export function cap(flow: FlowDefinition, requested?: number): { ok: true; cap: 
   if (!Number.isInteger(requested) || requested < c.min || requested > c.max) return { ok: false, refusal: `the fix-round cap is an integer from ${c.min} to ${c.max}, not ${String(requested)}` };
   return { ok: true, cap: requested };
 }
+
+/** The scripted units a gate's artifact needs before the gate opens, in order: its author (unless the artifact is the code itself — a judged gate after the restore point), its deterministic check, its judge. */
+export type UnitRole = "author" | "check" | "judge";
+export function unitRoles(flow: FlowDefinition, key: GateKey): UnitRole[] {
+  const g = gateDef(flow, key);
+  const at = flow.gates.findIndex((x) => x.key === key);
+  const ri = restoreIndex(flow);
+  const roles: UnitRole[] = [];
+  // the artifact of a judged gate after the restore point (Code review, UI review, Verification) is the code the workers built: the gate has no author of its own
+  if (!(g.judge !== undefined && ri >= 0 && at > ri)) roles.push("author");
+  if (g.check !== undefined) roles.push("check");
+  if (g.judge !== undefined) roles.push("judge");
+  return roles;
+}
+
+/** The keys whose artifacts a gate judges: every active gate before it, with the pseudo-artifact `@build` (the code) placed after the restore point when the gate comes after it. */
+export function upstreamOf(flow: FlowDefinition, key: GateKey, pins: Pins = NO_PINS): string[] {
+  const here = order(flow).indexOf(key);
+  const ri = restoreIndex(flow);
+  const out = dropped(pins);
+  const keys: string[] = [];
+  flow.gates.forEach((g, i) => {
+    if (i >= here || g.key === "gate0") return;
+    if (!out.has(g.key)) keys.push(g.key);
+    if (i === ri && here > ri) keys.push("@build");
+  });
+  return keys;
+}

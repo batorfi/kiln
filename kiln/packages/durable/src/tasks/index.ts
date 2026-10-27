@@ -21,7 +21,7 @@ export function makeTaskApi(s: Services): TaskApi {
       if (!CREATABLE.includes(kind)) return refused("invalid-move", { detail: `"${String(kind)}" is not a task kind that can be created from outside (${CREATABLE.join(", ")})` });
       const bad = kind === "kiln.roadmap" ? checkRoadmap(input) : kind === "kiln.row" ? checkRow(input) : checkUnit(input);
       if (bad) return refused("invalid-move", { detail: bad });
-      const needsLane = kind === "kiln.unit" ? (input as { needsLane?: boolean }).needsLane : kind === "kiln.row" ? (input as { script: { needsLane?: boolean }[] }).script.some((u) => u.needsLane) : false;
+      const needsLane = kind === "kiln.unit" ? (input as { needsLane?: boolean }).needsLane : kind === "kiln.row" ? ((input as { script?: { needsLane?: boolean }[] }).script ?? []).some((u) => u.needsLane) : false;
       if (needsLane && !s.lane) return refused("invalid-move", { detail: "a unit with needsLane needs the lane port, and none was supplied to this factory" });
       const out = await runCommand<{ id: number }>(s, key, "task.create", { kind, input, owner } as unknown as JSON, async (tx) => ({ id: await tx.createTask(kind, input, owner) }));
       if (out.status === "refused") return out;

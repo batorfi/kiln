@@ -48,3 +48,13 @@ Two things r13's suite forced, both recorded here and in `notes.md`:
 
 1. **Note-required applies only to gates opened to carry the walk's semantics** (`GateSpec.returnsTo` or `GateSpec.walk` present). r13's tests make `reject`/`revise` moves at gate0 with no note; a note rule on every gate would have broken them. A gate opened the r13 way behaves exactly as before (FR-070).
 2. **One r13 test example renamed.** `tests/move-shape.test.ts` used `note` as its example of an *unknown* field that is never stored. `note` now has a meaning (the next step's instruction), so the example field is `comment`. Nothing in that test was loosened.
+
+## Phases 4–5 checkpoint (T025–T046: US1 and US2) — 2026-10-27
+
+`cd kiln && npm test` → exit **0**, `new: 577 tests · legacy: 500 tests (30 skipped)` in **186 s**. `npm run check` → four `PASS` (`network`/`boundaries` 73 files, `legacy` 168, `flow` 1 file / 12 gates).
+
+**T040 — the interface walk through the CLI** (`packages/cli/tests/feature-cli.test.ts`, a real `kiln owner` process and the scripted driver shelling out to `kiln feature next` / `kiln gate move`): 12 gates in the flow's order (`gate0, 1-concept, 2-architecture, 2a-experience, 3-spec, 4-plan, 5-checkpoint, 6-review, 6a-ui-review, 7-verification, 8-docs, 9-pr`), each by one committed move with decider `script:r14`, final state `done`, nothing after Merge; `restart` at the Roadmap gate refused `invalid-move`; two clean stores give identical gate/outcome/outbox lists. In-process the same walk takes ~0.2 s.
+
+**T046 — the plain walk through the CLI:** 10 gates; `gate.not-applicable` for `2a-experience` and `6a-ui-review` (actor `factory`, cause `walk:f-plain:pin`) with reasons such as `does not apply: no path matches [web/**, …]; no label is one of [ui]; the row cites no journey`; a move on `gate:f-plain:2a-experience:1` is `unknown-gate`; `admit.require` gives 11 gates with `why: "required"`.
+
+Not yet done: **T047** (the replay-across-a-kill test) — it needs the child-owner walk harness of US3.

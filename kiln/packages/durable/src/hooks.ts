@@ -26,6 +26,18 @@ export const KILL_POINTS = [
   "unit.step-begin",
   "unit.step-after-work",
   "unit.step-committed",
+  // the walk (r14): each point is declared by the task that first fires it
+  "walk.admit-opened",
+  "walk.admission-read",
+  "walk.pin-begin",
+  "walk.pin-after-write",
+  "walk.pin-committed",
+  "walk.unit-created",
+  "walk.gate-opening",
+  "walk.gate-opened",
+  "walk.settled-read",
+  "walk.consume-after-write",
+  "walk.consume-committed",
   // the lane: before the commit that changes it ends (nothing stored yet) and right after (stored, the generation not yet started / not yet released)
   "lane.acquire-after-write",
   "lane.acquire-committed",

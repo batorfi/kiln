@@ -6,6 +6,7 @@ import { appendOutbox } from "../outbox.ts";
 import type { Services } from "../services.ts";
 import { GATE_ID_PATTERN, refused, type GateDocument, type GateSpec, type JSON, type Key, type OpenOutcome, type TaskId } from "../types.ts";
 import type { BriefDocData, GateDocData } from "./documents.ts";
+import { walkDoc } from "../walk/doc.ts";
 import { noteRequiredOf, vocabularyOf } from "./flow.ts";
 
 export async function openGate(s: Services, key: Key, spec: GateSpec): Promise<OpenOutcome> {
@@ -38,12 +39,20 @@ export async function openGate(s: Services, key: Key, spec: GateSpec): Promise<O
     await appendOutbox(tx, { type: "gate.opened", subject: spec.gateId, at: openedAt, actor: spec.openedBy, cause: key, data: { briefRef: ref, gateKey: spec.gateKey } });
     const taskId = await tx.createTask("kiln.gate", { gateId: spec.gateId }, { kind: "factory" });
     g.gateTask = taskId;
+    if (spec.walk) {
+      // r14: a gate of a WALK is recorded as the feature's open gate in the SAME commit — and the opening is refused while a feature-level move is waiting to be consumed, so there is no window
+      // in which that move sees "no gate open" and a gate then opens (research R6).
+      const wd = await walkDoc(tx, spec.walk.feature);
+      if (wd.pending) throw new Refuse(refused("stale", { winner: wd.pending.key, detail: "feature-moved: a feature-level move is waiting for the walk; the gate is not opened" }));
+      wd.openGateId = spec.gateId;
+    }
     await s.hooks.at("open.after-write"); // the writes are made, the commit has not returned
     return { gate, taskId };
   });
   if (out.status === "refused") return out;
   if (out.status === "applied") await s.hooks.at("open.committed");
   await registered(s, spec.gateId, 3000); // `opened` means the gate can take a move: wait (bounded) for its decision step to register
+  if (spec.walk) s.watch.notify(spec.walk.feature); // a waiting `feature next` re-reads the store
   return { status: out.status === "applied" ? "opened" : "repeat", gate: out.result.gate, taskId: out.result.taskId };
 }
 

@@ -11,3 +11,6 @@ export type {
   GateSpec, GateDocument, Move, MoveRecord, Outcome, OpenOutcome, GateState, Refusal, RefusalReason, Inspection, TaskSummary, TaskKindName, LaneApi, Lease,
   GateApi, CommandApi, TaskApi, Channel, OutboxEntry, StoredOutboxEntry, Key, GateId, TaskId, JSON, CommandOutcome, TaskCreateOutcome,
 } from "./types.ts";
+export type { WalkApi } from "./walk/api.ts";
+export type { WalkView, OpenGateView, HistoryEntry } from "./walk/view.ts";
+export type { WalkInput } from "./walk/input.ts";
