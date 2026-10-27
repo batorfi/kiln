@@ -3,11 +3,47 @@
 // A move is validated against the gate's STORED vocabulary, must name a decider and the brief the gate was opened with (invalid-move otherwise). `committed` is returned only after the
 // commit resolved: it means durable.
 import { KEY_MAX, refused, type GateId, type Key, type Move, type MoveRecord, type Outcome } from "../types.ts";
-import { plain } from "../canonical.ts";
+import { canonicalJson, plain } from "../canonical.ts";
+import { flowOf } from "#contracts/flow/index.ts";
 import type { Services } from "../services.ts";
 import { gateExists, type GateDocData, type MoveDocData } from "./documents.ts";
 
-const sameMove = (a: Move, b: Move): boolean => a.kind === b.kind && a.decidedBy === b.decidedBy && a.briefRef === b.briefRef;
+// Equal means equal in EVERY field the record holds (r14: the note, the target and the admission decisions too) — compared as canonical JSON, so key order never matters.
+const sameMove = (a: Move, b: Move): boolean => canonicalJson(a) === canonicalJson(b);
+
+const FIX_ROUNDS = [0, 1, 2, 3];
+const ADMIT_KEYS = ["require", "overrideTriage", "fixRounds"];
+const isObj = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
+
+/** The r14 fields of a move, judged against the gate's STORED document (never against the walk's memory). Returns the refusal detail, or `null` when they are fine. */
+function judgeExtras(g: GateDocData, move: Move): string | null {
+  if (move.note !== undefined && typeof move.note !== "string") return "the note is a string";
+  if (move.target !== undefined && typeof move.target !== "string") return "the target is a gate key, @build or roadmap";
+  const needsNote = g.noteRequired ?? [];
+  if (needsNote.includes(move.kind) && (typeof move.note !== "string" || move.note.trim() === "")) return `a corrective move needs a note ("${move.kind}" at this gate carries the next step's instruction)`;
+  if (move.target !== undefined) {
+    if (move.kind !== "reject") return "a target belongs to a reject";
+    const allowed = [g.gateKey as string, ...(g.returnsTo ?? [])];
+    if (!allowed.includes(move.target)) return `"${move.target}" is not a place this gate can send work (allowed: ${allowed.join(", ")})`;
+  }
+  if (move.admit !== undefined) {
+    if (g.gateKey !== "gate0" || move.kind !== "approve") return "admit belongs to the Roadmap gate's approve";
+    if (!isObj(move.admit)) return "admit is an object";
+    const extra = Object.keys(move.admit).filter((k) => !ADMIT_KEYS.includes(k));
+    if (extra.length) return `admit has no field ${extra.join(", ")} (allowed: ${ADMIT_KEYS.join(", ")})`;
+    const a = move.admit;
+    if (a.fixRounds !== undefined && !FIX_ROUNDS.includes(a.fixRounds as number)) return "fixRounds must be 0, 1, 2 or 3";
+    if (a.overrideTriage !== undefined && typeof a.overrideTriage !== "boolean") return "overrideTriage is true or false";
+    if (a.require !== undefined) {
+      if (!Array.isArray(a.require) || a.require.some((k) => typeof k !== "string")) return "require is a list of gate keys";
+      const flow = flowOf(g.flow!);
+      const conditional = flow.gates.filter((x) => x.appliesWhen).map((x) => x.key as string);
+      const bad = (a.require as string[]).find((k) => !conditional.includes(k));
+      if (bad !== undefined) return `"${bad}" is not a gate a person can require (only the conditional gates: ${conditional.join(", ")})`;
+    }
+  }
+  return null;
+}
 
 export async function submitMove(s: Services, gateId: GateId, key: Key, move: Move): Promise<Outcome> {
   await s.hooks.at("move.received");
@@ -27,10 +63,14 @@ async function decide(s: Services, gateId: GateId, key: Key, move: Move): Promis
 
     const g = await s.store.snapshot<GateDocData>("kiln.gate", gateId);
     if (!gateExists(g)) return refused("unknown-gate");
+    if ((move.kind as string) === "mitigate") return refused("invalid-move", { detail: `"mitigate" is not a move a person can make (it is the factory's automatic fix round, never a settlement)` });
     if (!g.vocabulary.includes(move.kind)) return refused("invalid-move", { detail: `"${move.kind}" is not a move of this gate (allowed: ${g.vocabulary.join(", ")})` });
     if (move.briefRef !== g.briefRef) return refused("invalid-move", { detail: "the move names a different brief than the one this gate was opened with" });
+    const extras = judgeExtras(g, move);
+    if (extras) return refused("invalid-move", { detail: extras });
 
-    move = { kind: move.kind, decidedBy: move.decidedBy, briefRef: move.briefRef }; // only the three fields the record holds: an extra field is neither stored nor part of a repeat
+    // only the fields the record holds: an unknown field is neither stored nor part of a repeat
+    move = { kind: move.kind, decidedBy: move.decidedBy, briefRef: move.briefRef, ...(move.note !== undefined ? { note: move.note } : {}), ...(move.target !== undefined ? { target: move.target } : {}), ...(move.admit !== undefined ? { admit: plain(move.admit) } : {}) };
     let how: "arrived" | "raced" = "arrived";
     for (let attempt = 0; attempt < 8; attempt++) {
       const rec = (await s.store.snapshot<MoveDocData>("kiln.move", gateId))?.record ?? null;

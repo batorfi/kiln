@@ -1,6 +1,7 @@
 // The contract's types, in KILN's own terms (specs/011-durable-core-gate-contract/contracts/{gate-contract,seam-api}.md, data-model.md §2–§5).
 // NOTHING in this file imports the library or names it: the contract outlives the library's API (CORE-1, SC-010). Types and pure functions only.
 import type { FlowVersion, GateKey, MoveKind } from "#contracts/moves.ts";
+import type { Target } from "#contracts/flow/types.ts";
 
 /** An idempotency key: the identity of ONE submission of a command or a move (≤ 200 chars). */
 export type Key = string;
@@ -23,6 +24,10 @@ export interface GateSpec {
   brief: JSON;
   /** Who opens it: a task id, or "factory". Becomes the actor of `gate.opened`. */
   openedBy: string;
+  /** r14: the places a `reject` made at this gate may name besides its own gate (the engine's `targetsOf`, supplied by the walk). Stored once, like the vocabulary. */
+  returnsTo?: Target[];
+  /** r14: opens the gate AS A GATE OF A WALK — in the same commit the feature's `kiln.walk` document records it as the open gate, and the opening is refused while a feature-level move is pending. */
+  walk?: { feature: string };
 }
 /** The one document written when a gate opens (`kiln.gate`) — never changed afterwards. */
 export interface GateDocument {
@@ -31,11 +36,24 @@ export interface GateDocument {
   flow: FlowVersion;
   /** The move kinds the flow allows at this gate AS OF OPENING. */
   vocabulary: MoveKind[];
+  /** r14: the kinds of that vocabulary that need a note (GATE-5), as of opening. Absent in a gate opened by r13: read as none. */
+  noteRequired: MoveKind[];
+  /** r14: the targets a reject may name (see GateSpec.returnsTo). Absent in a gate opened by r13: read as none. */
+  returnsTo: Target[];
   briefRef: string;
   openedBy: string;
   openedAt: number;
   /** The command key that opened it: a second key for the same gate id is a `key-conflict` naming this one. */
   openKey: Key;
+}
+/** The Roadmap gate's admission decisions (r14, research R5): carried by an `approve` at gate0 and nowhere else. */
+export interface Admit {
+  /** Interface gates the person requires even where their rule is false (EXP-3). */
+  require?: GateKey[];
+  /** True = ignore the triage proposal (Concept and Architecture are crossed). */
+  overrideTriage?: boolean;
+  /** Verification's automatic fix rounds, 0–3 (GATE-6). Absent = the flow's default. */
+  fixRounds?: 0 | 1 | 2 | 3;
 }
 export interface Move {
   kind: MoveKind;
@@ -43,6 +61,12 @@ export interface Move {
   decidedBy: string;
   /** The brief AS SEEN: must equal the gate's `briefRef`. */
   briefRef: string;
+  /** r14: required for the corrective kinds (GATE-5); becomes the next step's instruction. */
+  note?: string;
+  /** r14: a reject's target when it is not the same gate. Must be one the gate was opened to accept. */
+  target?: Target;
+  /** r14: only on `approve` at gate0. */
+  admit?: Admit;
 }
 export interface MoveRecord {
   gateId: GateId;
@@ -58,12 +82,16 @@ export type RefusalReason = "lost-race" | "stale" | "key-conflict" | "invalid-mo
 export type Refusal = { status: "refused"; reason: RefusalReason; winner?: Key; original?: Key; detail?: string };
 export type Outcome = { status: "committed"; record: MoveRecord } | { status: "repeat"; record: MoveRecord } | Refusal;
 export type OpenOutcome = { status: "opened"; gate: GateDocument; taskId: TaskId } | { status: "repeat"; gate: GateDocument; taskId: TaskId } | Refusal;
-export type GateState = { state: "unknown" } | { state: "waiting" } | { state: "settled"; record: MoveRecord };
+export type GateState = { state: "unknown" } | { state: "waiting" } | { state: "settled"; record: MoveRecord } | { state: "withdrawn"; key: Key; by: string };
 
 export const refused = (reason: RefusalReason, extra: { winner?: Key; original?: Key; detail?: string } = {}): Refusal => ({ status: "refused", reason, ...extra });
 
 // ── the outbox: the interim event stream (FR-019; r15 adopts it) ─────────────────────────────────────────────────────────
-export type OutboxType = "gate.opened" | "move.committed" | "gate.settled" | "lane.acquired" | "lane.released" | "lane.swapped";
+export type OutboxType =
+  | "gate.opened" | "move.committed" | "gate.settled" | "lane.acquired" | "lane.released" | "lane.swapped"
+  // r14 (data-model §6): what the walk records, each in the commit of the state it changes
+  | "walk.admitted" | "gate.not-applicable" | "gate.became-applicable" | "gate.skipped" | "gate.withdrawn" | "walk.returned" | "walk.fix-round" | "walk.split"
+  | "walk.left-lane" | "walk.not-admitted" | "walk.completed";
 export interface OutboxEntry {
   type: OutboxType;
   /** The gate id, or "lane". */
@@ -76,6 +104,24 @@ export interface OutboxEntry {
   data: JSON;
 }
 export type StoredOutboxEntry = OutboxEntry & { seq: number };
+
+// ── the feature-level move (r14, research R6) ──────────────────────────────────────────────────────────────────────────────────────────────
+/** A reject made on the FEATURE, not on a gate: at any time, even when no gate is open. It withdraws an open gate (never settling it) or is held pending for the walk. */
+export interface FeatureMove {
+  kind: "reject";
+  decidedBy: string;
+  target: Target;
+  note: string;
+}
+export interface FeatureMoveRecord {
+  key: Key;
+  move: FeatureMove;
+  decidedAt: number;
+  /** `withdrew`: a gate was open and ended in the same commit. `recorded`: no gate was open; the move is held for the walk. */
+  effect: "withdrew" | "recorded";
+  gateId?: GateId;
+}
+export type FeatureOutcome = { status: "committed"; record: FeatureMoveRecord } | { status: "repeat"; record: FeatureMoveRecord } | Refusal;
 
 // ── tasks ───────────────────────────────────────────────────────────────────────────────────────────────────────────────
 export type TaskKindName = "kiln.roadmap" | "kiln.row" | "kiln.unit" | "kiln.gate" | "kiln.decision" | "kiln.lane";

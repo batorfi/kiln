@@ -22,11 +22,11 @@ import { decidePiTier, installedPiVersion, piBinary } from "./pi-tier.ts";
 
 const kilnDir = fileURLToPath(new URL("..", import.meta.url));
 const args = process.argv.slice(2);
-const NEW_FLAGS = new Set(["--new-only", "--legacy-only"]);
+const NEW_FLAGS = new Set(["--new-only", "--legacy-only", "--proof"]);
 const FORWARDED = new Set(["--live", "--cost", "--serial", "--pi"]);
 const badFlag = args.find((a) => a.startsWith("--") && !NEW_FLAGS.has(a) && !FORWARDED.has(a));
 if (badFlag) {
-  console.error(`unknown flag "${badFlag}"\nusage: node tests/run.ts [--new-only | --legacy-only] [--live] [--cost] [--serial] [--pi] [path…]`);
+  console.error(`unknown flag "${badFlag}"\nusage: node tests/run.ts [--new-only | --legacy-only] [--proof] [--live] [--cost] [--serial] [--pi] [path…]`);
   process.exit(2);
 }
 if (args.includes("--new-only") && args.includes("--legacy-only")) {
@@ -35,6 +35,14 @@ if (args.includes("--new-only") && args.includes("--legacy-only")) {
 }
 const newOnly = args.includes("--new-only");
 const legacyOnly = args.includes("--legacy-only");
+// The two tiers (r14, research R16): the DEFAULT tier runs every *.test.ts except the proof files; the PROOF tier (`--proof`, `npm run proof`) runs ONLY the files named *.proof.test.ts —
+// the long kill matrices. A proof file named explicitly on the command line always runs. The runner says which tier ran and how many proof files the default tier left out: never silent.
+const proofTier = args.includes("--proof");
+if (proofTier && legacyOnly) {
+  console.error("--proof and --legacy-only exclude each other");
+  process.exit(2);
+}
+const isProofFile = (f: string): boolean => f.endsWith(".proof.test.ts");
 const forwarded = args.filter((a) => FORWARDED.has(a));
 const paths = args.filter((a) => !a.startsWith("--"));
 
@@ -59,7 +67,7 @@ function discover(): string[] {
     for (const p of paths) {
       const abs = resolve(kilnDir, p);
       if (!existsSync(abs)) continue;
-      if (statSync(abs).isDirectory()) testFilesUnder(abs).forEach((f) => found.add(f));
+      if (statSync(abs).isDirectory()) testFilesUnder(abs).filter((f) => isProofFile(f) === proofTier).forEach((f) => found.add(f));
       else if (abs.endsWith(".test.ts")) found.add(relative(kilnDir, abs));
     }
     return [...found].sort();
@@ -69,7 +77,15 @@ function discover(): string[] {
   if (existsSync(packages)) {
     for (const p of readdirSync(packages, { withFileTypes: true })) if (p.isDirectory()) roots.push(join(packages, p.name, "tests"));
   }
-  return [...new Set(roots.flatMap(testFilesUnder))].sort();
+  return [...new Set(roots.flatMap(testFilesUnder))].filter((f) => isProofFile(f) === proofTier).sort();
+}
+
+/** How many proof files exist (for the default tier's one-line statement). */
+function proofFileCount(): number {
+  const roots = [join(kilnDir, "tests"), join(kilnDir, "checks", "tests")];
+  const packages = join(kilnDir, "packages");
+  if (existsSync(packages)) for (const p of readdirSync(packages, { withFileTypes: true })) if (p.isDirectory()) roots.push(join(packages, p.name, "tests"));
+  return new Set(roots.flatMap(testFilesUnder).filter(isProofFile)).size;
 }
 
 // A runner started from inside a test (the runner's own tests do) inherits NODE_TEST_CONTEXT, which makes a nested `node --test` emit machine
@@ -107,6 +123,7 @@ async function runNew(): Promise<RunResult> {
     console.error(`FAIL — the run executed ZERO tests (paths: ${where}, relative to ${kilnDir}). A run that ran nothing proves nothing.`);
     return { code: 1, ran: 0, skipped: 0 };
   }
+  console.log(proofTier ? `tier: proof (${files.filter(isProofFile).length} proof files)` : `tier: default (${proofFileCount()} proof files not run; npm run proof runs them)`);
   const r = await runChild(["--test", ...files], kilnDir, cleanEnv());
   if (r.code === 0 && r.ran === 0) {
     console.error(`FAIL — the run executed ZERO tests (paths: ${where}, relative to ${kilnDir}). A run that ran nothing proves nothing.`);
@@ -144,10 +161,10 @@ const results: string[] = [];
 let failed = false;
 if (!legacyOnly) {
   const r = await runNew();
-  results.push(tally("new", r));
+  results.push(tally(proofTier ? "proof" : "new", r));
   if (r.code !== 0) failed = true;
 }
-if (!newOnly) {
+if (!newOnly && !proofTier) {
   const r = await runLegacy();
   results.push(tally("legacy", r));
   if (r.code !== 0) failed = true;

@@ -6,7 +6,7 @@ import { appendOutbox } from "../outbox.ts";
 import type { Services } from "../services.ts";
 import { GATE_ID_PATTERN, refused, type GateDocument, type GateSpec, type JSON, type Key, type OpenOutcome, type TaskId } from "../types.ts";
 import type { BriefDocData, GateDocData } from "./documents.ts";
-import { vocabularyOf } from "./flow.ts";
+import { noteRequiredOf, vocabularyOf } from "./flow.ts";
 
 export async function openGate(s: Services, key: Key, spec: GateSpec): Promise<OpenOutcome> {
   await s.hooks.at("open.begin");
@@ -16,6 +16,9 @@ export async function openGate(s: Services, key: Key, spec: GateSpec): Promise<O
   const vocabulary = vocabularyOf(spec.gateKey, spec.flow);
   if (!vocabulary) return refused("invalid-move", { detail: `"${String(spec.gateKey)}" is not a gate of flow ${String(spec.flow)}` });
   if (typeof spec.openedBy !== "string" || spec.openedBy.trim() === "") return refused("invalid-move", { detail: "openedBy names who opens the gate (it becomes the actor of gate.opened)" });
+  if (spec.returnsTo !== undefined && !(Array.isArray(spec.returnsTo) && spec.returnsTo.every((t) => typeof t === "string" && t !== ""))) return refused("invalid-move", { detail: "returnsTo is a list of gate keys, @build or roadmap" });
+  // r14 move semantics (a note on every corrective move) belong to the gates of a WALK — opened with `walk` or `returnsTo`. A gate opened the r13 way keeps r13's behaviour exactly (FR-070).
+  const carriesWalkSemantics = spec.walk !== undefined || spec.returnsTo !== undefined;
   let ref: string;
   try {
     ref = briefRef(spec.brief);
@@ -27,7 +30,7 @@ export async function openGate(s: Services, key: Key, spec: GateSpec): Promise<O
     const g = await tx.doc<GateDocData>("kiln.gate", spec.gateId, {});
     if (g.gateId !== undefined) throw new Refuse(refused("key-conflict", { original: g.openKey })); // this gate id was opened under another key
     const openedAt = s.now();
-    const gate: GateDocument = { gateId: spec.gateId, gateKey: spec.gateKey, flow: spec.flow, vocabulary, briefRef: ref, openedBy: spec.openedBy, openedAt, openKey: key };
+    const gate: GateDocument = { gateId: spec.gateId, gateKey: spec.gateKey, flow: spec.flow, vocabulary, noteRequired: carriesWalkSemantics ? (noteRequiredOf(spec.gateKey, spec.flow) ?? []) : [], returnsTo: [...(spec.returnsTo ?? [])], briefRef: ref, openedBy: spec.openedBy, openedAt, openKey: key };
     Object.assign(g, plain(gate)); // drafts take ownership of what they are given: hand them copies
     const brief = await tx.doc<BriefDocData>("kiln.brief", spec.gateId, {});
     brief.briefRef = ref;

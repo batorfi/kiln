@@ -2,8 +2,8 @@
 // `library/` implements these interfaces; nothing outside it can see how. No import of the library here, no library name (SC-010).
 import type { JSON, OutboxEntry, StoredOutboxEntry, TaskId } from "./types.ts";
 
-export type DocName = "kiln.store" | "kiln.gate" | "kiln.brief" | "kiln.move" | "kiln.command" | "kiln.lane" | "kiln.outbox";
-export const DOC_NAMES: readonly DocName[] = ["kiln.store", "kiln.gate", "kiln.brief", "kiln.move", "kiln.command", "kiln.lane", "kiln.outbox"];
+export type DocName = "kiln.store" | "kiln.gate" | "kiln.brief" | "kiln.move" | "kiln.command" | "kiln.lane" | "kiln.outbox" | "kiln.walk";
+export const DOC_NAMES: readonly DocName[] = ["kiln.store", "kiln.gate", "kiln.brief", "kiln.move", "kiln.command", "kiln.lane", "kiln.outbox", "kiln.walk"];
 
 /** Who owns a task: the factory itself, or another task. */
 export type Owner = { kind: "factory" } | { kind: "task"; taskId: TaskId };

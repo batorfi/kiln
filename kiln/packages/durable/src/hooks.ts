@@ -32,9 +32,11 @@ export const KILL_POINTS = [
   "lane.release-after-write",
   "lane.release-committed",
 ] as const;
-/** The points of the gate's own life (the gate proofs drive these); the unit points are driven by the unit proof, the lane points by the lane proof. */
-export const GATE_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => !/^(unit|lane)\./.test(p));
+/** The points of the gate's own life (the gate proofs drive these); the unit points are driven by the unit proof, the lane points by the lane proof, the walk points by the walk proof (r14). */
+export const GATE_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => !/^(unit|lane|walk)\./.test(p));
 export const UNIT_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => p.startsWith("unit."));
+/** r14: the walk's points. Each is declared in `KILL_POINTS` by the task that first fires it (the declared set must EQUAL the set the source uses), so this list grows with the walk. */
+export const WALK_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => p.startsWith("walk."));
 export type KillPoint = (typeof KILL_POINTS)[number] | (string & {});
 
 export const FAULT_POINTS = ["store-write"] as const;
