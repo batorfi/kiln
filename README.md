@@ -218,9 +218,9 @@ The new KILN is not built yet. You can run and inspect the foundation the restar
 
 **Requirements**
 
-- **Node.js `^22.18.0 || >=23.6.0`** — TypeScript runs directly through Node's type-stripping, with no build step. If you
-  see `ERR_UNKNOWN_FILE_EXTENSION`, your Node is too old. Verified on macOS only.
-- **Git.** No runtime dependencies, nothing to `npm install`.
+- **Node.js `^22.19.0 || >=23.6.0`** — TypeScript runs directly through Node's type-stripping, with no build step. If you
+  see `ERR_UNKNOWN_FILE_EXTENSION`, your Node is too old. On 22.x Node prints `ExperimentalWarning: SQLite is an experimental feature`: the durable core rests on Node's built-in SQLite, which is accepted with that warning (see [`kiln/DEPENDENCIES.md`](./kiln/DEPENDENCIES.md)). Verified on macOS only.
+- **Git.** Three pinned runtime dependencies (the durable runtime and its two companions, recorded in [`kiln/DEPENDENCIES.md`](./kiln/DEPENDENCIES.md)); **one install step**: `cd kiln && npm ci` — the one network act (≈ 112 MB). `legacy/` needs no install.
 - *Optional:* [Ollama](https://ollama.com) with a model for the live tier (tests default to `gemma4:12b`; set
   `KILN_LIVE_MODEL` to use another).
 - *Optional:* [Pi](https://github.com/earendil-works/pi) for the Pi tier — the foundation was measured against Pi `0.85.1`
@@ -231,6 +231,7 @@ The new KILN is not built yet. You can run and inspect the foundation the restar
 ```bash
 git clone https://github.com/batorfi/kiln.git
 cd kiln/kiln                                         # the restart's codebase
+npm ci                                               # the one install step (the network act); then everything below runs offline
 
 npm test                                             # the new suite, then the first program's (legacy) suite; the live-Pi tier skips on an unmeasured Pi, printing why
 npm run check                                        # kiln check: network, boundaries, legacy — each fails by name

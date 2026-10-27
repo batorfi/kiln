@@ -5,7 +5,7 @@
 How to prove r12 works end to end. Every scenario names the spec story it proves and the success criterion it settles. The commands run **after**
 the row is implemented; until then they describe what "done" looks like.
 
-**Prerequisites**: Node `^22.18.0 || >=23.6.0` (no `npm install` needed — nothing to install), git, a clone of the repository. Optional: Ollama and Pi
+**Prerequisites** *(as of r12; see r13 — the floor is now `^22.19.0 || >=23.6.0` and `cd kiln && npm ci` is one install step)*: Node `^22.18.0 || >=23.6.0` (no `npm install` needed — nothing to install), git, a clone of the repository. Optional: Ollama and Pi
 (the live tiers skip, printing why, without them).
 
 All commands run from `kiln/` unless stated.

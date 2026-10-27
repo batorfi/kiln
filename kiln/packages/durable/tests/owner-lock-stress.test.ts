@@ -20,14 +20,19 @@ function deadPid(): number {
 }
 
 async function race(store: string, n = STARTERS): Promise<string[]> {
-  const startAt = Date.now() + 900; // enough for every child to boot and then spin to the same instant
-  const outs = await Promise.all(Array.from({ length: n }, () => new Promise<string>((resolve) => {
-    const p = spawn(process.execPath, [LOCK_MAIN, store, String(startAt), "1200"], { stdio: ["ignore", "pipe", "pipe"] });
+  const startAt = Date.now() + 1500; // enough for every child to boot and then spin to the same instant
+  const children = Array.from({ length: n }, () => {
+    const p = spawn(process.execPath, [LOCK_MAIN, store, String(startAt)], { stdio: ["pipe", "pipe", "pipe"] });
     let out = "";
-    p.stdout.on("data", (d: Buffer) => (out += d));
-    p.on("close", () => resolve(out.trim()));
-  })));
-  return outs;
+    let printed!: () => void;
+    const spoke = new Promise<void>((r) => (printed = r));
+    p.stdout.on("data", (d: Buffer) => { out += d; if (out.includes("\n")) printed(); });
+    const closed = new Promise<string>((resolve) => p.on("close", () => { printed(); resolve(out.trim()); }));
+    return { p, spoke, closed };
+  });
+  await Promise.all(children.map((c) => c.spoke)); // every starter has had its turn: only now may the winner let go
+  for (const c of children) c.p.stdin.end();
+  return Promise.all(children.map((c) => c.closed));
 }
 const setup = (): { dir: string; store: string } => {
   const dir = mkdtempSync(join(tmpdir(), "k13-race-"));

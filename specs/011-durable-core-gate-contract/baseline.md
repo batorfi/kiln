@@ -143,3 +143,50 @@ The proof, as run:
 - **Under kill.** **4 of 4** lane kill points fire (`lane.acquire-after-write`, `lane.acquire-committed`, `lane.release-after-write`, `lane.release-committed`). Wrecks seen: 0, **1** (a dead generation's lease), 1, 0 holders; after each restart the lane reports **0** holders until a resumed step asks again, resident model, hold flag and swap count unchanged, a `lane.released` entry (actor `factory`, cause `restart`) where a lease was found, and both units finish.
 - **In-process (T064).** FIFO waiting; swaps counted only when a resident model is replaced; an injected failure at the end of an acquire leaves lane state and entries untouched (one commit); a non-holder cannot release; an aborted waiter is skipped; the `kiln.lane` task exists once across starts.
 - Deviations (no `within(tx)`; `start()` added to the port; two extra kill points) are in `notes.md`.
+
+## Phase 10 checkpoint (T068–T072): the dependency record and the floor matrix — 2026-10-27
+
+**Record (T068–T071).** `kiln/DEPENDENCIES.md` names each of the three packages with its exact version, the integrity from the lock, licence, reason and seam, plus the `node:sqlite` posture and the upgrade rule; `dependencies-record.test.ts` keeps it equal to `package.json` and the lock (a missing dependency, a different version, a different integrity or an extra entry each fail by name) and asserts the "nothing to install" statements are gone from `package.json` and `README.md`. `canary-sqlite.test.ts` exercises the built-in module on the running Node (open, write, read, a `BEGIN IMMEDIATE` transaction, rollback, close) and asserts the storage is opened in one file. `README.md` and `kiln/package.json` now say: Node `^22.19.0 || >=23.6.0`, three pinned dependencies, one install step (`cd kiln && npm ci`); `specs/009-…/quickstart.md` is annotated "(as of r12; see r13)".
+
+**Floor matrix (T072)** — `tests/run.ts --new-only` and `kiln check` on each Node, on the final tree:
+
+| Node | Exit | New tests | `kiln check` | SQLite warning lines | New-suite wall time |
+|---|---|---|---|---|---|
+| **22.19.0** (the floor) | 0 | 472 | 3 × `PASS` | 21 (the only stderr noise) | 141.6 s |
+| **23.6.0** | 0 | 472 | 3 × `PASS` | 21 | 150.9 s |
+| **24.1.0** | 0 | 472 | 3 × `PASS` | 21 | 166.1 s |
+| **25.9.0** (installed; full `npm test`) | 0 | 472 new · 500 legacy (30 skipped) | 3 × `PASS` | — | 153.5 s new + 33.6 s legacy |
+
+Same pass counts everywhere. **The first pass was not green** — 23.6.0 failed 5 tests and 24.1.0 failed 2 — and the matrix did its job: one product defect (the lock's busy timeout was ignored on 23.6.0), one test-cleanup incompatibility, one test-design flaw (see `notes.md`, "Node-floor matrix findings"). All fixed; the table above is the re-run from scratch.
+
+## T073 — scale, re-measured on the finished tree
+
+100 open gates + 20 live units, SIGKILL, restart; budget 2 000 ms (SC-005). Run alone / inside the full suite (where ~50 other processes compete):
+
+| Node | Ready (alone) | 99 moves committed (alone) | Ready (full suite) | Moves, full suite — from start |
+|---|---|---|---|---|
+| 22.19.0 | 40 ms | 61 ms | 416 ms | 1 280 ms |
+| 23.6.0 | 41 ms | 64 ms | 436 ms | 1 462 ms |
+| 24.1.0 | 37 ms | 60 ms | 390 ms | 1 308 ms |
+| 25.9.0 | 41 ms | 56 ms | 341 ms | 1 484 ms |
+
+No regression since T051 (42 ms); under the full suite's load the run stays under the 2 s budget with ≥ 500 ms of margin. Nothing was relaxed.
+
+## T074 — the suite's time, and the decision
+
+The new suite takes **141.6 – 166.1 s** across the matrix (153.5 s on the installed Node); the whole `npm test` ≈ 3 min with legacy. The row's threshold is "the new suite exceeds 3 minutes" → **not exceeded on any Node, so nothing is split: every proof stays in `npm test`.** The margin on 24.1.0 is 14 s, which is thin; if a later row pushes past 180 s the planned move is a `proof` script for `random-kill`, `storm` and `different-process` with the runner printing which tier ran — never a silent skip.
+
+## T075 — the contract files and the public types
+
+`grep -nE 'pi-durable|@earendil-works|Harness|runtime\.commit|defineTask|sleepUntil|abortTask|waitForTask|Pi Durable'` over `contracts/{gate-contract,seam-api,owner-channel}.md`, `packages/durable/src/index.ts` and `src/types.ts` prints **nothing** (exit 1).
+
+## T076 — "After" readings, exactly as T001
+
+| Reading | Before (T001) | After | Against T001 |
+|---|---|---|---|
+| `cd kiln && npm test` | exit 0 · `new: 184 · legacy: 500 (30 skipped)` | exit 0 · `new: 472 · legacy: 500 (30 skipped)` | **greater** (+288 new; legacy equal) |
+| `npm run check` | three `PASS` (22 · 22 · 168 files) | three `PASS` (58 · 58 · 168 files) | **equal** (three passes; more files scanned) |
+| `git rev-parse HEAD:legacy` | `20a82c7e214be256c804f6e8f1cd4cce9c8e9874` | `20a82c7e214be256c804f6e8f1cd4cce9c8e9874` | **equal** |
+| `git diff --stat main -- legacy specs/ROADMAP.md` | empty | empty | **equal** |
+
+Nothing is "not equal": no finding blocks closing.

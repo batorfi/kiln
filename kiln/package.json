@@ -2,7 +2,7 @@
   "name": "kiln",
   "version": "0.2.0",
   "private": true,
-  "description": "KILN — a local software factory you own: agents work, independent judges check, people decide at every gate. The restart codebase (r12 onward); the first program lives in ../legacy. Zero runtime dependencies, nothing to install.",
+  "description": "KILN — a local software factory you own: agents work, independent judges check, people decide at every gate. The restart codebase (r12 onward); the first program lives in ../legacy. Three pinned dependencies (the durable runtime and its two companions, recorded in DEPENDENCIES.md); one install step: npm ci.",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",

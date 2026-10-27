@@ -2,7 +2,7 @@
 // command line; the owners are real `kiln owner` processes (or the test owner, where an arming hook is needed).
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, symlinkSync, chmodSync, existsSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, symlinkSync, chmodSync, existsSync, unlinkSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { tmpdir, userInfo } from "node:os";
 import { join } from "node:path";
@@ -236,7 +236,7 @@ test("a pre-created symlink where the socket directory goes is refused with Chan
   assert.ok(r.stderr.includes(w.sockDir), "it names the path");
   assert.match(r.stderr, /symbolic link/);
   assert.deepEqual(readdirSync(elsewhere), [], "nothing was created through the link");
-  rmSync(w.sockDir); // the attacker's link is gone: the very next owner starts — the refusal did not leave the store owned
+  unlinkSync(w.sockDir); // the attacker's link is gone (unlink, not rmSync: older Node refuses rmSync on a symlink to a directory): the very next owner starts — the refusal did not leave the store owned
   const ok = w.owner();
   await ok.ready;
 });

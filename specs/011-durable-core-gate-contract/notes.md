@@ -49,3 +49,23 @@ Built as research R9 describes: `packages/lane/src/lane-task.ts` — `createLane
 **Observed in the proof** (wreck state at each point, 2nd hit): `acquire-after-write` — 0 holders, resident m1, hold true, swaps 0; `acquire-committed` — **1 holder** (dead generation), resident m2, swaps 1; `release-after-write` — 1 holder (the release did not commit); `release-committed` — 0 holders. In every case the restart reported 0 holders until a resumed step asked again, with resident/hold/swaps unchanged, and both units finished.
 
 **Oracle I8 sharpened.** It now walks the outbox in order and fails if the entries ever record two holders or a release of nothing — not only if the totals balance.
+
+## Complexity Tracking, re-read against what was built (T078) — 2026-10-27
+
+| Stretch (plan) | As built |
+|---|---|
+| `cli → durable` layer edge | **As planned, widened by two modules.** The edge exists in `boundaries.json`. The plan pinned it to the channel client; the CLI imports three modules — `channel/client.ts`, `channel/path.ts` (pure socket-path arithmetic) and `owner.ts` (the `kiln owner` runner, which *is* the owner process). A completer (`kiln gate …`) uses only the first two and never opens the store. `channel.test.ts` scans `packages/cli/src` for exactly these three and for any mention of the store or the library. `main.ts` loads the gate commands on demand so `kiln check` never loads the durable package. |
+| The seam imports `pi-ai/models` with no provider | **As planned.** `library/open.ts` calls `createModels()` once; a test asserts the object has no provider and no model request path; the `workers` statement says "for model calls". |
+| Network lint: externals exempt; path-only `node:net` allowlist | **As planned.** `checks/local-ipc.json` lists exactly the two channel files; planted violations (`listen(8080)`, a host in `connect`, `node:net` in an unlisted file, `node:http` in a listed one, an undeclared external) each fail by name; `no-network.test.ts` adds an OS-level `lsof` observation with a control. |
+| "No dependency / nothing to install" statements | **As planned.** `package.json` description and the README corrected; `specs/009-…/quickstart.md` annotated, not rewritten; `DEPENDENCIES.md` is the record, kept equal to `package.json` and the lock by a test, which also asserts the old phrases are gone. |
+| Event stream minimal; task/step/delegation/cost events deferred | **As planned, slightly more recorded.** Gate (`gate.opened`, `move.committed`, `gate.settled`) and lane (`lane.acquired`, `lane.released`, `lane.swapped`, plus a restart release with actor `factory`) entries all carry actor and cause in the commit of the state they record. Task/step progress, delegation and cost events remain r15/r16's. |
+| `LaneApi` port in `durable`, implemented in `lane` | **As planned, with the port reshaped.** `within(tx)` dropped and `start()` added (see "The lane" above); durable never imports lane (the boundary check holds). |
+
+**Additions not in the plan's table, for the record:** the owner lock became a single transaction on a small lock database (it failed its own stress test as a file); a live pid is never taken from; two extra lane kill points; the storage is opened in one *file* (two functions: the owner's store and the ownerless reader), not one function; and the Node-floor matrix found three defects (below).
+
+## Node-floor matrix findings (T072) — 2026-10-27
+
+The first matrix pass was green on 22.19.0 and red on 23.6.0 (5 tests) and 24.1.0 (2 tests). All three causes were real and are fixed:
+1. **`DatabaseSync`'s `timeout` option is ignored on 23.6.0**, so the 50 simultaneous starters failed with `database is locked` instead of waiting for each other. The lock now also sets `PRAGMA busy_timeout`, which every supported version honours. *A product defect the floor matrix existed to find.*
+2. **`rmSync` on a symlink to a directory throws `EISDIR` on 23.6.0 and 24.1.0** — a test cleanup; now `unlinkSync`.
+3. **A stress round saw two "owners" on 24.1.0.** Not a lock failure: the winner released after a fixed hold, so a starter that booted late on a loaded machine acquired legitimately. The starters now hold until every starter has had its turn (a barrier on stdin), which makes "exactly one owner" a fair claim however slowly a machine boots 50 processes. Any second owner now would be a true violation.
