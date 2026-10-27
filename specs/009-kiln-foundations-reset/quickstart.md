@@ -123,7 +123,7 @@ npm run kiln -- check boundaries     # FAIL boundary-forbidden-import   (no spac
 rm -rf /tmp/kiln-scratch
 ```
 
-**Expect**: each fails by file and rule. All three checks together: `npm run check` → exit 0 on the real tree.
+**Expect**: each fails by file and rule. All three checks together: `npm run check` → exit 0 on the real tree. *(Four since r14, which added `flow`: `kiln check flow`.)*
 
 ## 6. Nothing was lost *(US1.3 · SC-002 · FR-015)*
 
