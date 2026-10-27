@@ -59,7 +59,7 @@ export async function inspectWith(reader: Reader, gateId?: string): Promise<Insp
   }
   return {
     store: { libraryVersion: rec?.libraryVersion ?? null, contract: rec?.contract ?? null },
-    tasks: tasks.map((t) => ({ id: t.id, kind: t.kind, owner: t.owner ?? "factory", status: t.status })),
+    tasks: tasks.map((t) => ({ id: t.id, kind: t.kind, owner: t.owner ?? ("factory" as const), status: t.status, ...(t.outcome ? { outcome: t.outcome.status === "completed" ? { status: "completed" as const, result: t.outcome.result } : { status: t.outcome.status } } : {}) })),
     gate,
     documents,
     records,

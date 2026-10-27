@@ -7,6 +7,7 @@ import { submitMove } from "./gate/move.ts";
 import { gateState } from "./gate/state.ts";
 import { Slots } from "./gate/slots.ts";
 import { gateKinds } from "./gate/tasks.ts";
+import { makeTaskApi, shellKinds } from "./tasks/index.ts";
 import { NO_HOOKS, type Hooks } from "./hooks.ts";
 import { inspectStore } from "./inspect.ts";
 import { openStore } from "./library/open.ts";
@@ -71,7 +72,7 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
     ready: readyPromise,
     reports: store.reports,
     gates: { open: (key, spec) => openGate(services, key, spec), submit: (gateId, key, move) => submitMove(services, gateId, key, move), state: (gateId) => gateState(services, gateId) } as GateApi,
-    tasks: { create: notYet("tasks.create"), list: notYet("tasks.list") } as unknown as TaskApi,
+    tasks: makeTaskApi(services),
     commands: makeCommandApi(services),
     serve: notYet("serve") as unknown as () => Promise<Channel>,
     inspect: (gateId?: string) => inspectStore(opts.store, gateId),
@@ -89,7 +90,7 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
 
 /** The task kinds the durable core itself provides (filled in as they are built). */
 function builtinKinds(services: Services): TaskKind<any, any, any>[] {
-  return [...gateKinds(services)];
+  return [...gateKinds(services), ...shellKinds(services)];
 }
 
 /**

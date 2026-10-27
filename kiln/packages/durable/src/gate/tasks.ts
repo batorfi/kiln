@@ -9,12 +9,12 @@ import { plain } from "../canonical.ts";
 import { appendOutbox } from "../outbox.ts";
 import type { Services } from "../services.ts";
 import { defineKilnTask, type TaskKind } from "../store.ts";
-import type { JSON } from "../types.ts";
+import type { JSON, TaskId } from "../types.ts";
 import type { MoveDocData } from "./documents.ts";
 import type { Slot, SlotRequest } from "./slots.ts";
 
 type GateInput = { gateId: string };
-type GateCheckpoint = { phase: "open" } | { phase: "settle"; decisionId: string };
+type GateCheckpoint = { phase: "open" } | { phase: "settle"; decisionId: TaskId };
 type DecisionCheckpoint = { phase: "wait" };
 
 export function gateKinds(s: Services): TaskKind<any, any, any>[] {

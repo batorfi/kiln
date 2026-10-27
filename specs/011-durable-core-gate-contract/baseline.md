@@ -92,3 +92,14 @@ The proof, as run:
 - **Clock ±10 years**, 2 s of real time, a headless gate: still waiting, **0 timers**; `decidedAt` is the injected clock (a fact).
 - **Controls:** the deliberately half-applying gate is caught as **I2 + I3** at its seam and clean elsewhere; a vacuous run fails by name (`proof-zero-kill-points`, `proof-no-point-fired`, `proof-point-not-fired`); the declared list equals the points the source uses; no `process.env` under `src/`.
 - **7 mutation checks**, all caught (see `notes.md`).
+
+## Phase 6 checkpoint (T044–T051): one seam, the task kinds, scale — 2026-10-27
+
+- **One door (T044):** across every file of every package — source *and* tests — the library is named only under `packages/durable/src/library/`; the package's exported declarations contain none of its names (SC-010); the models object is built with no argument and nothing in the tree registers a provider or can make a model request; `durable` imports nothing above it.
+- **The task kinds have a life (T045–T050):** unit, row and roadmap are created through the seam (keyed), killed mid-life, restarted, and finish with the outcome they would have had. The roadmap opens gate0, waits through two restarts with no move, and settles **only** through a person's move; a move with no decider is `invalid-move`; any input but `{factory}` — a delegation among them — is refused by name. A fresh reader sees every task's kind, owner and status.
+- **Scale (T051, SC-005):** 100 open gates + 20 live units, SIGKILL, restart → **ready in 42 ms**; 99 further moves committed in 55 ms; none `not-ready`; the 20 units resumed. Budget 2000 ms.
+- **`npm run check`:** three `PASS` (53 · 53 · 168 files).
+
+**Findings recorded as they happened**
+- The roadmap test caught a defect in the first version of the roadmap shell: it passed the library's task id (a **number**) where a string actor was required, so opening the Roadmap gate was refused and the task ended `failed`. Nothing was approved (a failed task settles nothing), but the shell was wrong, and so were the types: **`TaskId` is now an opaque number** everywhere (the library mints numeric ids), and the roadmap's actor is `task:<id>`.
+- `stepMs` of a scripted unit is capped at 60 000 ms by validation; the scale test's first run used 600 000 and was correctly refused.

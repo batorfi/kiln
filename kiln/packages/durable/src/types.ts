@@ -6,7 +6,8 @@ import type { FlowVersion, GateKey, MoveKind } from "#contracts/moves.ts";
 export type Key = string;
 /** A gate id, supplied by the caller and deterministic: `gate:<feature>:<gateKey>:<round>`. */
 export type GateId = string;
-export type TaskId = string;
+/** A task's id: opaque to KILN (today the library mints numbers). Never parsed, never built — only stored and passed back. */
+export type TaskId = number;
 /** JSON only: what documents and checkpoints hold. */
 export type JSON = null | boolean | number | string | JSON[] | { [k: string]: JSON };
 
@@ -81,8 +82,11 @@ export type TaskKindName = "kiln.roadmap" | "kiln.row" | "kiln.unit" | "kiln.gat
 export interface TaskSummary {
   id: TaskId;
   kind: string;
-  owner: string;
+  /** The owning task, or "factory". */
+  owner: TaskId | "factory";
   status: "pending" | "running" | "waiting" | "sleeping" | "completing" | "terminal";
+  /** The outcome of a terminal task, as stored. */
+  outcome?: { status: "completed" | "aborted" | "failed"; result?: JSON };
 }
 
 // ── the lane port (implemented in packages/lane, injected here: durable cannot import lane) ────────────────────────────────

@@ -1,0 +1,38 @@
+// `kiln.unit` — one step of a feature (CORE-2). A SHELL with scripted work (research R8): each invocation does the next scripted step, then commits its checkpoint; the RESULT is committed once, at the
+// end. A kill mid-step re-runs that step from the last checkpoint, and because nothing but the checkpoint and the final result is ever stored, a half-done step never commits its result (CORE-4).
+// The step's duration (`stepMs`) is WORK a kill can interrupt — it is not a durable timer and settles nothing.
+import type { Services } from "../services.ts";
+import { defineKilnTask, type TaskKind } from "../store.ts";
+import type { UnitSpec } from "./validate.ts";
+
+type UnitCheckpoint = { phase: "work"; done: number; results: string[] };
+type UnitResult = { label: string; results: string[] };
+
+export function unitKind(s: Services): TaskKind<UnitSpec, UnitCheckpoint, UnitResult> {
+  return defineKilnTask<UnitSpec, UnitCheckpoint, UnitResult>({
+    name: "kiln.unit",
+    version: 1,
+    initial: () => ({ phase: "work", done: 0, results: [] }),
+    phases: {
+      work: async (task, run) => {
+        const { label, steps, stepMs } = task.input;
+        const i = task.checkpoint.done;
+        // the scripted work of step i — pure in its inputs, so redoing it after a kill gives the same answer
+        if (stepMs) await new Promise<void>((resolve) => {
+          const t = setTimeout(resolve, stepMs);
+          run.signal.addEventListener("abort", () => { clearTimeout(t); resolve(); }, { once: true });
+        });
+        if (run.signal.aborted) return; // the factory is closing: nothing is committed
+        const results = [...task.checkpoint.results, `${label}:${i}`];
+        await run.commit(() =>
+          i + 1 >= steps
+            ? { status: "terminal", outcome: { status: "completed", result: { label, results } } }
+            : { status: "running", checkpoint: { phase: "work", done: i + 1, results } },
+        );
+      },
+    },
+    abort: async (_task, run) => {
+      await run.commit(() => ({ status: "terminal", outcome: { status: "aborted" } }));
+    },
+  });
+}

@@ -2,7 +2,7 @@
 // kill point, which is what a crash looks like to the store (no handler, no flush, no close). It is the ONE place that reads arming from the environment: the product has no kill switch (research R7).
 //   node owner-main.ts --store <dir> --script '<json array of steps>'
 // env: BROKEN_GATE=1 (replace the decision step with the deliberately half-applying one) · STAY_ALIVE=1 (after the script, wait to be killed) · KILL_AT=<point> · KILL_LOG=<file> · FAULT_AT=<point> · HOLD_AT=<point> HOLD_MS=<n> (delay a step) · CLOCK_OFFSET_MS=<n> · LIBRARY_VERSION=<v> · READY_TIMEOUT_MS=<n> · LANE_MODULE=<file>
-// steps: {op:"open",key,spec} {op:"submit",gate,key,move} {op:"submitMany",gate,moves:[{key,move}],concurrency?} {op:"state",gate} {op:"createTask",key,kind,input,owner}
+// steps: {op:"ready"} (waits for ready; reports how long start-up took) {op:"submitAll",moves:[{gate,key,move}],concurrency?} · {op:"open",key,spec} {op:"submit",gate,key,move} {op:"submitMany",gate,moves:[{key,move}],concurrency?} {op:"state",gate} {op:"createTask",key,kind,input,owner}
 //        {op:"inspect",gate?} {op:"tasks"} {op:"early",gate,key,move} (a move BEFORE ready, then the same after) {op:"hold"} (stay alive until killed) {op:"sleep",ms}
 import { appendFileSync } from "node:fs";
 import { openFactory, type Factory } from "#durable/factory.ts";
@@ -46,6 +46,7 @@ if (env.LANE_MODULE) {
   lane = m.laneApi;
 }
 
+const t0 = performance.now(); // start-up is timed from here: before the factory is opened
 let factory: Factory;
 try {
   factory = await openFactory({ store, hooks, now: () => Date.now() + offset, tasks: extra, lane, installedLibraryVersion: env.LIBRARY_VERSION, readyTimeoutMs: env.READY_TIMEOUT_MS ? Number(env.READY_TIMEOUT_MS) : undefined });
@@ -82,7 +83,15 @@ async function step(s: Record<string, any>): Promise<void> {
       await factory.ready;
       return emit({ before, after: await factory.gates.submit(s.gate, s.key, s.move) });
     }
-    case "ready": return emit(await factory.ready.then(() => ({ ready: true }), (e: Error) => ({ ready: false, error: e.message })));
+    case "ready": return emit(await factory.ready.then(() => ({ ready: true, readyMs: Math.round(performance.now() - t0) }), (e: Error) => ({ ready: false, error: e.message, readyMs: Math.round(performance.now() - t0) })));
+    case "submitAll": {
+      const t = performance.now();
+      const moves = s.moves as { gate: string; key: string; move: unknown }[];
+      const results: unknown[] = new Array(moves.length);
+      let next = 0;
+      await Promise.all(Array.from({ length: s.concurrency ?? 20 }, async () => { for (;;) { const i = next++; if (i >= moves.length) return; results[i] = await factory.gates.submit(moves[i].gate, moves[i].key, moves[i].move as never); } }));
+      return emit({ results, ms: Math.round(performance.now() - t), sinceStartMs: Math.round(performance.now() - t0) });
+    }
     case "hold": return void (await new Promise(() => {}));
     default: throw new Error(`unknown step ${String(s.op)}`);
   }
