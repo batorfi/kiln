@@ -7,7 +7,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { briefRef } from "#durable/canonical.ts";
-import { KILL_POINTS } from "#durable/hooks.ts";
+import { GATE_KILL_POINTS } from "#durable/hooks.ts";
 import { inspectStore } from "#durable/inspect.ts";
 import { checkInvariants, checkStability } from "./support/oracle.ts";
 import { assertAllFired } from "./support/guard.ts";
@@ -161,7 +161,7 @@ test("separate process: an injected store failure → store-error, the gate stil
 }));
 
 // ── every declared gate kill point, with the completer in another process ───────────────────────────────────────────────
-const GATE_POINTS = (KILL_POINTS as readonly string[]).filter((p) => !/^(unit|lane)\./.test(p));
+const GATE_POINTS = GATE_KILL_POINTS;
 const fired: string[] = [];
 
 for (const point of GATE_POINTS) {

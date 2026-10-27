@@ -17,18 +17,21 @@ export function unitKind(s: Services): TaskKind<UnitSpec, UnitCheckpoint, UnitRe
       work: async (task, run) => {
         const { label, steps, stepMs } = task.input;
         const i = task.checkpoint.done;
+        await s.hooks.at("unit.step-begin");
         // the scripted work of step i — pure in its inputs, so redoing it after a kill gives the same answer
         if (stepMs) await new Promise<void>((resolve) => {
           const t = setTimeout(resolve, stepMs);
           run.signal.addEventListener("abort", () => { clearTimeout(t); resolve(); }, { once: true });
         });
         if (run.signal.aborted) return; // the factory is closing: nothing is committed
+        await s.hooks.at("unit.step-after-work"); // the work is done and NOT yet recorded: a kill here redoes it
         const results = [...task.checkpoint.results, `${label}:${i}`];
         await run.commit(() =>
           i + 1 >= steps
             ? { status: "terminal", outcome: { status: "completed", result: { label, results } } }
             : { status: "running", checkpoint: { phase: "work", done: i + 1, results } },
         );
+        await s.hooks.at("unit.step-committed");
       },
     },
     abort: async (_task, run) => {

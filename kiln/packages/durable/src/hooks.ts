@@ -22,7 +22,14 @@ export const KILL_POINTS = [
   "gate.settled",
   // recovery
   "recover.start",
+  // a unit's step (the work is redone after a kill, the result is committed once)
+  "unit.step-begin",
+  "unit.step-after-work",
+  "unit.step-committed",
 ] as const;
+/** The points of the gate's own life (the gate proofs drive these); the unit points are driven by the unit proof, the lane points by the lane proof. */
+export const GATE_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => !/^(unit|lane)\./.test(p));
+export const UNIT_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => p.startsWith("unit."));
 export type KillPoint = (typeof KILL_POINTS)[number] | (string & {});
 
 export const FAULT_POINTS = ["store-write"] as const;

@@ -7,7 +7,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { briefRef } from "#durable/canonical.ts";
-import { KILL_POINTS } from "#durable/hooks.ts";
+import { GATE_KILL_POINTS } from "#durable/hooks.ts";
 import { inspectStore } from "#durable/inspect.ts";
 import { checkInvariants, checkStability } from "./support/oracle.ts";
 import { assertAllFired } from "./support/guard.ts";
@@ -20,8 +20,8 @@ const OPEN = { op: "open", key: "o1", spec: { gateId: GATE, gateKey: "gate0", fl
 const MOVE = { op: "submit", gate: GATE, key: "m1", move: { kind: "approve", decidedBy: "person@example", briefRef: REF } };
 const LET_GATE_TASK_RUN = { op: "sleep", ms: 1200 }; // gives the gate task time to wake and settle (so gate.wake / gate.settled can fire)
 
-/** Every declared point the proof drives here. Unit and lane points are proven with their own tasks. */
-const POINTS = KILL_POINTS as readonly string[];
+/** Every declared point of the gate's own life. The unit and lane points are proven by their own proofs (units.test.ts, lane-task.test.ts). */
+const POINTS = GATE_KILL_POINTS;
 const fired: string[] = [];
 
 for (const point of POINTS) {

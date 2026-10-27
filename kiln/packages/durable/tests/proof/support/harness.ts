@@ -41,6 +41,8 @@ export class OwnerFailed extends Error {
 export interface OwnerOptions {
   script?: Record<string, unknown>[];
   killAt?: string;
+  /** Die at the n-th time the armed point is reached (default 1). */
+  killNth?: number;
   faultAt?: string;
   holdAt?: string;
   holdMs?: number;
@@ -77,9 +79,10 @@ export interface OwnerRun {
 
 export function spawnOwner(ts: TestStore, o: OwnerOptions = {}): OwnerRun {
   const env: Record<string, string> = {};
-  for (const [k, v] of Object.entries(process.env)) if (v !== undefined && !/^(KILL_AT|FAULT_AT|HOLD_AT|HOLD_MS|CLOCK_OFFSET_MS|LIBRARY_VERSION|READY_TIMEOUT_MS|LANE_MODULE|KILL_LOG|STAY_ALIVE|BROKEN_GATE|SERVE)$/.test(k)) env[k] = v;
+  for (const [k, v] of Object.entries(process.env)) if (v !== undefined && !/^(KILL_AT|FAULT_AT|HOLD_AT|HOLD_MS|CLOCK_OFFSET_MS|LIBRARY_VERSION|READY_TIMEOUT_MS|LANE_MODULE|KILL_LOG|STAY_ALIVE|BROKEN_GATE|SERVE|KILL_NTH)$/.test(k)) env[k] = v;
   env.KILL_LOG = ts.killLog;
   if (o.killAt) env.KILL_AT = o.killAt;
+  if (o.killNth) env.KILL_NTH = String(o.killNth);
   if (o.faultAt) env.FAULT_AT = o.faultAt;
   if (o.holdAt) { env.HOLD_AT = o.holdAt; env.HOLD_MS = String(o.holdMs ?? 0); }
   if (o.clockOffsetMs) env.CLOCK_OFFSET_MS = String(o.clockOffsetMs);

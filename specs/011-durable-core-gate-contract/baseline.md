@@ -119,3 +119,15 @@ The proof, as run:
 **Findings recorded as they happened**
 - The first full run of the phase failed 8 tests, two causes, both real: (1) `main.ts` imported the CLI's gate commands at load time, which loaded the durable package and the library — so `kiln check` crashed in the check tests' copy of the tree (which has no `node_modules`); the commands are now loaded on demand. (2) The test owner printed `DONE` before its `reports` line and the harness kills a child the moment it reads `DONE` — the storm tests failed under load; the line now comes first.
 - The second full run failed one test: `kiln owner` installed its SIGTERM handler *after* printing `ready`, so a signal sent the moment `ready` was read killed the owner with no clean close (a product defect, not only a test one). The handlers are now installed before anything is announced.
+
+## Phase 8 checkpoint (T060–T063): a unit's step is redone, never half-recorded; every command happens once — 2026-10-27
+
+| Reading | Result |
+|---|---|
+| `npm test` | exit **0** — `new: 453 tests · legacy: 500 tests (30 skipped)` |
+| `npm run check` | three `PASS` (57 · 57 · 168 files) |
+
+- **Units (T060, T062).** Three unit kill points (`unit.step-begin`, `unit.step-after-work`, `unit.step-committed`) × each of 3 steps = **9 of 9** cases fire; at every one the owner dies by SIGKILL at the point, a fresh reader sees one unit with no result (except after the *final* commit, where the result is whole), and a restart finishes with exactly the uninterrupted result (`scan:0, scan:1, scan:2` — each step's output once). The never-vacuous test fails by name if a case did not fire. The static test still holds (declared == used) with the three new names.
+- **Commands (T061).** `task.create` ×100 at once → 1 created + 99 repeat; ×100 after a SIGKILL and restart → 100 repeat; one task; one request hash under the key (I9). Same key with another input or another kind → `key-conflict`, nothing written, before and after a restart. `gate.open` and `gate.move` keys obey the same rule.
+- **Documents (T063).** `packages/durable/README.md`: what the seam is, the contract links, the key-retention rule, the power-loss boundary (process death covered; host power loss not).
+- **Harness.** The test owner learned `KILL_NTH` (die at the n-th time a point is reached) and `createMany`; the gate proofs now iterate `GATE_KILL_POINTS` so unit and lane points are driven by their own proofs.

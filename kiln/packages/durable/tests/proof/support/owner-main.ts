@@ -1,7 +1,7 @@
 // The TEST-ONLY child owner. It opens a factory through the seam, runs a SCRIPT of steps given as JSON on argv, prints one `R <json>` line per step, and — when armed — dies by SIGKILL at a named
 // kill point, which is what a crash looks like to the store (no handler, no flush, no close). It is the ONE place that reads arming from the environment: the product has no kill switch (research R7).
 //   node owner-main.ts --store <dir> --script '<json array of steps>'
-// env: SERVE=1 (also serve the private channel, so a separate process can complete gates through it; prints LISTENING) · BROKEN_GATE=1 (replace the decision step with the deliberately half-applying one) · STAY_ALIVE=1 (after the script, wait to be killed) · KILL_AT=<point> · KILL_LOG=<file> · FAULT_AT=<point> · HOLD_AT=<point> HOLD_MS=<n> (delay a step) · CLOCK_OFFSET_MS=<n> · LIBRARY_VERSION=<v> · READY_TIMEOUT_MS=<n> · LANE_MODULE=<file>
+// env: SERVE=1 (also serve the private channel, so a separate process can complete gates through it; prints LISTENING) · BROKEN_GATE=1 (replace the decision step with the deliberately half-applying one) · STAY_ALIVE=1 (after the script, wait to be killed) · KILL_AT=<point> · KILL_NTH=<n> (die at the n-th time the point is reached; default 1) · KILL_LOG=<file> · FAULT_AT=<point> · HOLD_AT=<point> HOLD_MS=<n> (delay a step) · CLOCK_OFFSET_MS=<n> · LIBRARY_VERSION=<v> · READY_TIMEOUT_MS=<n> · LANE_MODULE=<file>
 // steps: {op:"ready"} (waits for ready; reports how long start-up took) {op:"submitAll",moves:[{gate,key,move}],concurrency?} · {op:"open",key,spec} {op:"submit",gate,key,move} {op:"submitMany",gate,moves:[{key,move}],concurrency?} {op:"state",gate} {op:"createTask",key,kind,input,owner}
 //        {op:"inspect",gate?} {op:"tasks"} {op:"early",gate,key,move} (a move BEFORE ready, then the same after) {op:"hold"} (stay alive until killed) {op:"sleep",ms}
 import { appendFileSync } from "node:fs";
@@ -19,9 +19,11 @@ if (!store) {
 
 const env = process.env;
 const emit = (v: unknown): void => void console.log(`R ${JSON.stringify(v)}`);
+const hits = new Map<string, number>();
 const hooks: Hooks = {
   at(point) {
-    if (env.KILL_AT === point) {
+    hits.set(point, (hits.get(point) ?? 0) + 1);
+    if (env.KILL_AT === point && hits.get(point) === Number(env.KILL_NTH ?? 1)) {
       if (env.KILL_LOG) appendFileSync(env.KILL_LOG, `${point}\n`);
       process.kill(process.pid, "SIGKILL");
       Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10_000); // SIGKILL cannot be caught; make sure nothing after the point runs meanwhile
@@ -68,6 +70,12 @@ async function step(s: Record<string, any>): Promise<void> {
     case "createTask": return emit(await factory.tasks.create(s.key, s.kind, s.input, s.owner));
     case "inspect": return emit(await factory.inspect(s.gate));
     case "tasks": return emit(await factory.tasks.list());
+    case "createMany": { // the same keyed creation, many times at once: {key,kind,input,owner,count,concurrency?}
+      const results: unknown[] = new Array(s.count);
+      let next = 0;
+      await Promise.all(Array.from({ length: s.concurrency ?? s.count }, async () => { for (;;) { const i = next++; if (i >= s.count) return; results[i] = await factory.tasks.create(s.key, s.kind, s.input, s.owner); } }));
+      return emit(results);
+    }
     case "sleep": return void (await new Promise((r) => setTimeout(r, s.ms)));
     case "submitMany": {
       const moves = s.moves as { key: string; move: unknown }[];
