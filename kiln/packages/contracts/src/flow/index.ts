@@ -8,6 +8,7 @@ import { v2 } from "./v2.ts";
 // r14: the pure rules over the data (engine, applicability, the glob dialect).
 export * from "./engine.ts";
 export { applicability, atUiSlot } from "./applies.ts";
+export { validateFlow, BUILTIN_ORDER, CONDITIONAL } from "./validate.ts";
 export { compileGlob, firstMatch, globProblem, matchGlob } from "./glob.ts";
 export type * from "./types.ts";
 
