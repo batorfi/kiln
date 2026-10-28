@@ -7,7 +7,7 @@ import { validate } from "../validate-core.ts";
 export interface EventFault {
   code:
     | "event-shape-invalid" | "event-type-unknown" | "event-version-unknown" | "event-field-forbidden" | "event-data-invalid"
-    | "event-actor-invalid" | "event-cause-missing" | "event-cause-dangling" | "event-subject-invalid" | "event-time-invalid";
+    | "event-actor-invalid" | "event-cause-missing" | "event-cause-dangling" | "event-subject-invalid" | "event-time-invalid" | "event-type-read-only";
   path?: string;
   message: string;
 }

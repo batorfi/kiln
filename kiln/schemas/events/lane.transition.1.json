@@ -1,0 +1,29 @@
+{
+ "$id": "kiln:event:lane.transition/1",
+ "additionalProperties": false,
+ "properties": {
+  "from": {
+   "type": "string"
+  },
+  "kind": {
+   "enum": [
+    "load",
+    "hold",
+    "yield",
+    "swap"
+   ],
+   "type": "string"
+  },
+  "reason": {
+   "type": "string"
+  },
+  "to": {
+   "type": "string"
+  }
+ },
+ "required": [
+  "kind"
+ ],
+ "title": "lane.transition (version 1)",
+ "type": "object"
+}

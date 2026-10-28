@@ -26,6 +26,8 @@ async function withDir<T>(run: (store: string) => Promise<T>): Promise<T> {
   const dir = mkdtempSync(join(tmpdir(), "k15-bb-"));
   try { return await run(join(dir, "s")); } finally { rmSync(dir, { recursive: true, force: true }); }
 }
+/** The status of the test's own consumer — the factory's built-in factory-log consumer is always there too. */
+const first = async (f: Factory) => (await f.backbone.status()).find((x) => x.name !== "factory-log")!;
 const append = (f: Factory, n: number) => f.commands.run(`k-${Math.random()}`, "test", { n } as never, async () => ({ n }));
 
 test("events reach a consumer in order, none skipped, and its cursor follows", () => withDir(async (store) => {
@@ -36,8 +38,8 @@ test("events reach a consumer in order, none skipped, and its cursor follows", (
     for (let i = 0; i < 30; i++) await append(f, i);
     await until(() => rec.seen.length >= 30, "30 events delivered");
     assert.deepEqual(rec.seen, Array.from({ length: rec.seen.length }, (_, i) => i + 1), "in order, no gap, no repeat");
-    await until(async () => (await f.backbone.status())[0].lag === 0, "the cursor to catch up");
-    assert.deepEqual((await f.backbone.status())[0], { name: "rec", seq: rec.seen.length, head: rec.seen.length, lag: 0 });
+    await until(async () => (await first(f)).lag === 0, "the cursor to catch up");
+    assert.deepEqual((await first(f)), { name: "rec", seq: rec.seen.length, head: rec.seen.length, lag: 0 });
   } finally { await f.close(); }
 }));
 
@@ -47,7 +49,7 @@ test("after a restart a consumer receives what is after its cursor — and nothi
   await f1.ready;
   for (let i = 0; i < 10; i++) await append(f1, i);
   await until(() => a.seen.length === 10, "10 delivered");
-  await until(async () => (await f1.backbone.status())[0].lag === 0, "cursor caught up");
+  await until(async () => (await first(f1)).lag === 0, "cursor caught up");
   await f1.close();
   const b = recorder();
   const f2 = await openFactory({ store, consumers: [b] });
@@ -68,7 +70,7 @@ test("a consumer added late starts from the first event and reaches the state of
     await f.ready;
     await f.walks.admit("k1", "w", PLAIN);
     await drive(f, "w");
-    await until(async () => (await f.backbone.status())[0].lag === 0, "the early consumer to finish");
+    await until(async () => (await first(f)).lag === 0, "the early consumer to finish");
     const late = recorder("late");
     f.backbone.register(late);
     await until(() => late.seen.length === early.seen.length, "the late consumer to catch up");
@@ -104,7 +106,7 @@ test("at-least-once: a repeated delivery of every batch changes nothing for an i
   const f2 = await openFactory({ store, consumers: [idem] });
   try {
     await f2.ready;
-    await until(async () => (await f2.backbone.status())[0].lag === 0, "the repeat to complete");
+    await until(async () => (await first(f2)).lag === 0, "the repeat to complete");
     assert.ok(deliveries > d1, "the batch whose cursor never moved was delivered again");
     assert.deepEqual([...set].sort((a, b) => a - b), Array.from({ length: set.size }, (_, i) => i + 1), "the result of the repeat equals the result of one delivery");
   } finally { await f2.close(); }
@@ -152,7 +154,7 @@ test("a cursor AHEAD of the record stops its consumer by name: it never skips fo
   const f1 = await openFactory({ store, consumers: [rec] });
   await f1.ready;
   for (let i = 0; i < 3; i++) await append(f1, i);
-  await until(async () => (await f1.backbone.status())[0].lag === 0, "caught up");
+  await until(async () => (await first(f1)).lag === 0, "caught up");
   await f1.close();
   const { openStore } = await import("#durable/library/open.ts");
   const s = await openStore({ dir: store, kinds: [] });
@@ -161,8 +163,8 @@ test("a cursor AHEAD of the record stops its consumer by name: it never skips fo
   const f2 = await openFactory({ store, consumers: [recorder()] });
   try {
     await f2.ready;
-    await until(async () => !!(await f2.backbone.status())[0].failed, "the failure to be recorded");
-    assert.match((await f2.backbone.status())[0].failed!.error, /^cursor-ahead-of-head:/);
+    await until(async () => !!(await first(f2)).failed, "the failure to be recorded");
+    assert.match((await first(f2)).failed!.error, /^cursor-ahead-of-head:/);
   } finally { await f2.close(); }
 }));
 
@@ -175,8 +177,8 @@ test("a transactional consumer\'s effect and its cursor are one commit; a new ve
   const f1 = await openFactory({ store, consumers: [mk(1)] });
   await f1.ready;
   for (let i = 0; i < 20; i++) await append(f1, i);
-  await until(async () => (await f1.backbone.status())[0].lag === 0, "caught up");
-  const head = (await f1.backbone.status())[0].head;
+  await until(async () => (await first(f1)).lag === 0, "caught up");
+  const head = (await first(f1)).head;
   assert.equal((await f1.inspect().then(() => null), null), null);
   await f1.close();
   const { openReader } = await import("#durable/library/open.ts");
@@ -186,7 +188,7 @@ test("a transactional consumer\'s effect and its cursor are one commit; a new ve
   const f2 = await openFactory({ store, consumers: [mk(2)] });
   try {
     await f2.ready;
-    await until(async () => (await f2.backbone.status())[0].lag === 0, "the new version to rebuild");
+    await until(async () => (await first(f2)).lag === 0, "the new version to rebuild");
     await f2.close();
     const r2 = await openReader(store);
     assert.equal((await r2.snapshot<{ n: number }>("kiln.projection", "count"))!.n, (await f2.backbone.status().catch(() => [{ head }]))[0]?.head ?? head, "rebuilt from the first event, not added to the old total");

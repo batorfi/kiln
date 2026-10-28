@@ -21,6 +21,7 @@ export function main(argv: readonly string[]): number | Promise<number> {
   // loaded on demand: `kiln check` must not pull in the durable package (and the library behind it)
   if (command === "owner") return import("./gate-commands.ts").then((m) => m.ownerCommand(rest));
   if (command === "gate") return import("./gate-commands.ts").then((m) => m.gateCommand(rest[0], rest.slice(1)));
+  if (command === "record") return import("./record-commands.ts").then((m) => m.recordCommand(rest[0], rest.slice(1)));
   if (command === "feature") return import("./feature-commands.ts").then((m) => m.featureCommand(rest[0], rest.slice(1)));
   if (command !== "check") {
     console.error(command ? `unknown command "${command}"\n${USAGE}` : USAGE);

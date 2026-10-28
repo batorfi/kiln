@@ -53,3 +53,69 @@ test("a consumer that acknowledges before its effect is done loses an effect to 
     assert.deepEqual(await catchUpAndJudge(real.ts.store), []);
   } finally { real.cleanup(); }
 });
+
+// ── T048: weakened projections ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { openFactory } from "#durable/factory.ts";
+import { logFile } from "#durable/record/consumers/factory-log.ts";
+import { collect, fromReader, readRun } from "#durable/record/read.ts";
+import { openReader } from "#durable/library/open.ts";
+import { foldRun } from "#record/projections/factory-log.ts";
+import { drive, PLAIN as PLAIN_WALK } from "../walk/support.ts";
+import { checkProjectionInvariants } from "./support/record-oracle.ts";
+
+/** Two finished walks in one store (so "the order of unrelated runs" can matter), the projection caught up and the factory closed. */
+async function twoWalks(): Promise<{ store: string; cleanup: () => void }> {
+  const dir = mkdtempSync(join(tmpdir(), "k15-weakproj-"));
+  const store = join(dir, "s");
+  const f = await openFactory({ store });
+  await f.ready;
+  await f.walks.admit("ka", "a", PLAIN_WALK);
+  await f.walks.admit("kb", "b", PLAIN_WALK);
+  const human = (g: { gateKey: string }) => ({ kind: "approve" as const, decidedBy: "human@r15-script", ...(g.gateKey === "gate0" ? { admit: {} } : {}) });
+  await Promise.all([drive(f, "a", human as never), drive(f, "b", human as never)]);
+  for (let i = 0; i < 300 && !(await f.backbone.status()).every((s) => s.lag === 0); i++) await new Promise((r) => setTimeout(r, 20));
+  await f.close();
+  return { store, cleanup: () => rmSync(dir, { recursive: true, force: true }) };
+}
+async function eventsOf(store: string, run: string) {
+  const r = await openReader(store);
+  try { return await collect(readRun(fromReader(r), run)); } finally { await r.close(); }
+}
+
+test("the real projection of two interleaved walks equals each run's rebuild (E4 clean) — the control for the weakened ones", async () => {
+  const w = await twoWalks();
+  try { assert.deepEqual(await checkProjectionInvariants(w.store), []); } finally { w.cleanup(); }
+});
+
+test("a projection that reads the clock is caught by E4: its file is not what the record rebuilds", async () => {
+  const w = await twoWalks();
+  try {
+    const lines = foldRun(await eventsOf(w.store, "a")).map((l) => ({ ...JSON.parse(l), ts: new Date().toISOString() })); // the weakness: time from the clock, not the event
+    writeFileSync(logFile(w.store, "a"), lines.map((l) => `${JSON.stringify(l)}\n`).join(""));
+    const v = await checkProjectionInvariants(w.store);
+    assert.ok(v.some((x) => x.startsWith("E4") && x.includes("run a")), JSON.stringify(v));
+    assert.ok(!v.some((x) => x.includes("run b")), "and only the run it damaged");
+  } finally { w.cleanup(); }
+});
+
+test("a projection that numbers its lines across runs (its output depends on the order of unrelated runs) is caught by E4", async () => {
+  const w = await twoWalks();
+  try {
+    const a = foldRun(await eventsOf(w.store, "a"));
+    const lines = foldRun(await eventsOf(w.store, "b")).map((l, i) => ({ ...JSON.parse(l), seq: a.length + i })); // the weakness: a shared counter
+    writeFileSync(logFile(w.store, "b"), lines.map((l) => `${JSON.stringify(l)}\n`).join(""));
+    const v = await checkProjectionInvariants(w.store);
+    assert.ok(v.some((x) => x.startsWith("E4") && x.includes("run b")), JSON.stringify(v));
+  } finally { w.cleanup(); }
+});
+
+test("a missing file for a run that has lines is caught too (E4)", async () => {
+  const w = await twoWalks();
+  try {
+    rmSync(logFile(w.store, "a"));
+    assert.ok((await checkProjectionInvariants(w.store)).some((x) => x.includes("(no file)")));
+  } finally { w.cleanup(); }
+});

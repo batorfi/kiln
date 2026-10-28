@@ -19,6 +19,7 @@ import type { Report, Store, TaskKind } from "./store.ts";
 import { Watch } from "./walk/watch.ts";
 import { Backbone } from "./record/backbone.ts";
 import type { Consumer } from "./record/consumer.ts";
+import { factoryLogConsumer } from "./record/consumers/factory-log.ts";
 import { makeWalkApi, type WalkApi } from "./walk/api.ts";
 import type { Channel, CommandApi, GateApi, Inspection, LaneApi, TaskApi } from "./types.ts";
 
@@ -86,6 +87,8 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   const readyPromise = converge(services, opts.readyTimeoutMs ?? 5000);
   readyPromise.catch(() => {}); // a caller that never awaits `ready` must not cause an unhandled rejection
   services.whenReady = readyPromise;
+  // the factory-log is a projection of the record (EVT-5): always followed, beside whatever else a caller registers
+  backbone.register(factoryLogConsumer(services, opts.store));
   for (const c of typeof opts.consumers === "function" ? opts.consumers(services) : (opts.consumers ?? [])) backbone.register(c);
   void readyPromise.then(() => backbone.start(), () => {}); // consumers follow the record once the factory has converged
   let closed = false;

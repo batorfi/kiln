@@ -5,9 +5,11 @@
 //   E7  state ⇔ event: each gate document, move record, terminal unit, lane change, ledger entry and walk outcome has exactly its one event, and no such event lacks its state
 // (E4 projections, E5 cursors and E6 archives are added by their stories.) A violation is a string `E<n>: …` naming the thing; an empty list is clean.
 import { validateEvent } from "#record/events/validate.ts";
+import { fileOf, foldRun } from "#record/projections/factory-log.ts";
+import { logFile } from "#durable/record/consumers/factory-log.ts";
 import { openReader } from "#durable/library/open.ts";
 import { CHUNK, type EventChunk, type RecordHead } from "#durable/record/append.ts";
-import { collect, fromReader, headOf, readRecord } from "#durable/record/read.ts";
+import { collect, fromReader, headOf, readRecord, readRun } from "#durable/record/read.ts";
 import type { Event } from "#contracts/events/types.ts";
 import type { GateDocData, MoveDocData } from "#durable/gate/documents.ts";
 import type { WalkDoc } from "#durable/walk/doc.ts";
@@ -134,6 +136,30 @@ export async function checkConsumerInvariants(store: string, deliveryLog?: strin
       const got = new Set((existsSync(deliveryLog) ? readFileSync(deliveryLog, "utf8") : "").split("\n").filter(Boolean).map(Number));
       const missing = Array.from({ length: dl }, (_, i) => i + 1).filter((n) => !got.has(n));
       if (missing.length) v.push(`E5: consumer deliver-log has a cursor at ${dl} but never delivered ${missing.length} of those events (first: ${missing[0]})`);
+    }
+  } finally {
+    await r.close();
+  }
+  return v;
+}
+
+/**
+ * E4 (research R14): for every run in the record, the factory-log file on disk equals the reducer over the run\'s events from the first — byte for byte; a run whose events produce no line has no file.
+ * Judge it AFTER the consumers have caught up (a lagging file is not a wrong one); `catchUpAndJudge` does that.
+ */
+export async function checkProjectionInvariants(store: string): Promise<string[]> {
+  const { existsSync, readFileSync } = await import("node:fs");
+  const v: string[] = [];
+  const r = await openReader(store);
+  try {
+    const src = fromReader(r);
+    const runs = new Set<string>();
+    for (const e of await collect(readRecord(src))) if (e.correlation?.startsWith("run:")) runs.add(e.correlation.slice(4));
+    for (const run of runs) {
+      const want = fileOf(foldRun(await collect(readRun(src, run))));
+      const path = logFile(store, run);
+      const got = existsSync(path) ? readFileSync(path, "utf8") : "";
+      if (want !== got) v.push(`E4: the factory-log of run ${run} is ${got.length} bytes on disk and ${want.length} bytes when rebuilt from the record${got === "" ? " (no file)" : ""}`);
     }
   } finally {
     await r.close();

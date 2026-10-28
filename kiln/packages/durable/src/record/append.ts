@@ -49,6 +49,7 @@ export async function appendEvent(tx: Tx, draft: EventDraft): Promise<Event> {
   }
   const seq = head.next;
   const entry = catalog.get(draft.type);
+  if (entry?.legacy) throw new EventRejected(draft.type, [{ code: "event-type-read-only", path: "type", message: `${draft.type} represents the first program's streams: it can be read and replayed, never committed` }]);
   if (!Number.isFinite(draft.at) || draft.at < 0 || draft.at > 0xffffffffffff) throw new EventRejected(draft.type, [{ code: "event-time-invalid", path: "time", message: `${draft.at} is not a millisecond instant` }]);
   const causation = typeof draft.cause === "string" && draft.cause.startsWith("evt:") ? draft.cause : `cmd:${draft.cause}`;
   const event: Event = {

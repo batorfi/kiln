@@ -64,3 +64,13 @@ After T038–T042 (the `Backbone`, cursors, `Consumer`, four backbone kill point
 | `npm test` | exit 0 · `new: 759 tests · legacy: 500 tests (30 skipped)` · **111 s** |
 | `npm run proof` | exit 0 · **104 tests**, 104 pass · 263 s (95 + 9 of `backbone-kill.proof.test.ts`) |
 | `npm run check` | five `PASS`: network 104 files · boundaries 104 · legacy 168 · flow 1 · record 96 |
+
+## 7. US3 checkpoint (T049) — the factory-log is a projection, rebuilt byte-identically
+
+After T044–T048 (the catalog's read-only legacy types, the pure reducer and mapping table, the legacy converter, the live `factory-log` consumer, `kiln record show|status|verify|rebuild-log`, E4, the factory-log kill proof, the weakened projections):
+
+| Reading | Value |
+|---|---|
+| `npm test` | exit 0 · `new: 781 tests · legacy: 500 tests (30 skipped)` · **129 s** (machine busy: load averages 10 / 13 / 15 during the run; 109–111 s on a quiet one) |
+| `npm run proof` | exit 0 · **120 tests**, 120 pass · **525 s** under load (15-minute average 15.6). A first run under heavier load took 1125 s and failed four tests with "the owner did not start within 15000 ms"; the same four passed on the rerun and no code changed in between. The quiet-machine figure is re-taken at T070. |
+| `npm run check` | five `PASS`: network 110 files · boundaries 110 · legacy 168 · flow 1 · record 102 |

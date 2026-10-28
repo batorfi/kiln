@@ -71,10 +71,11 @@ export function checkStream(events: readonly Event[], opts: StreamOptions = {}):
         if (gate && !(gate.moves as readonly string[]).includes(d.kind)) add("stream-move-not-in-vocabulary", `move.committed #${e.seq}: "${d.kind}" is not a move of ${key} in flow ${flow} (allowed: ${gate.moves.join(", ")})`, e.seq);
       }
     }
-    if (e.type === "gate.settled" && typeof d.move === "string" && APPROVING.has(d.move)) {
-      const human = HUMAN.test(String(d.decidedBy));
-      const delegated = armedFor.has(e.subject) || armedFor.has(gateKeyOf(e.subject) ?? "\0");
-      if (!human && !delegated) add("stream-silent-approval", `gate.settled #${e.seq} (${d.move}) is decided by "${d.decidedBy}": not a human@… and no delegation.armed names the gate`, e.seq);
+    if ((e.type === "gate.settled" || e.type === "gate.completed") && typeof d.move === "string" && APPROVING.has(d.move)) {
+      const human = HUMAN.test(String(d.decidedBy ?? ""));
+      // a settlement under a delegation: the first program\'s completion carries its pre-delegation; a delegation armed for the gate also counts
+      const delegated = d.preDelegation !== undefined || armedFor.has(e.subject) || armedFor.has(gateKeyOf(e.subject) ?? "\0") || armedFor.has(String(d.gate));
+      if (!human && !delegated) add("stream-silent-approval", `${e.type} #${e.seq} (${d.move}) is decided by "${d.decidedBy ?? "no one"}": not a human@… and no delegation names the gate`, e.seq);
     }
   });
   return { examined: events.length, faults };

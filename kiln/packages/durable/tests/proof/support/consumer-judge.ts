@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { openFactory } from "#durable/factory.ts";
 import { fromReader, headOf } from "#durable/record/read.ts";
 import { openReader } from "#durable/library/open.ts";
-import { checkConsumerInvariants } from "./record-oracle.ts";
+import { checkConsumerInvariants, checkProjectionInvariants } from "./record-oracle.ts";
 import { deliveryLog, testConsumers } from "./test-consumers.ts";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -18,7 +18,7 @@ export async function catchUpAndJudge(store: string, broken = false): Promise<st
   } finally {
     await f.close();
   }
-  const v = await checkConsumerInvariants(store, deliveryLog(store));
+  const v = [...(await checkConsumerInvariants(store, deliveryLog(store))), ...(await checkProjectionInvariants(store))];
   const r = await openReader(store);
   const head = (await headOf(fromReader(r))).next - 1;
   const applied = (await r.snapshot<{ applied?: number[] }>("kiln.projection", "count"))?.applied ?? [];

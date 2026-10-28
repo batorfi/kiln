@@ -26,10 +26,16 @@ export interface CatalogEntry {
   privacy: "public" | "internal" | "sensitive";
   /** True when some code in `kiln/packages` commits it. S (schema only) and L (legacy stream) types are false. */
   emitted: boolean;
+  /** True for a type that exists to REPRESENT the first program's streams (research R9): it can be read, replayed and projected, but `appendEvent` refuses to commit it — so a gate completion with no decider can be shown, never made. */
+  legacy?: true;
   /** Upcasters from a numbered version (≥ 1) to the next. Version 0 → 1 is in upcast.ts. */
   upcast?: Record<number, (e: import("../types.ts").Event, ctx: import("../types.ts").Ctx) => import("../types.ts").Event>;
 }
 export const entry = (type: string, schema: JsonSchema, emitted = true, privacy: CatalogEntry["privacy"] = "internal"): CatalogEntry => ({ type, current: 1, versions: { 1: schema }, privacy, emitted });
+/** A type that represents the first program's streams: read-only (see `CatalogEntry.legacy`). */
+export const legacyEntry = (type: string, schema: JsonSchema): CatalogEntry => ({ ...entry(type, schema, false), legacy: true });
+/** A gate as the first program wrote it: "gate0", a number 1…9, "2a"/"6a", or a key such as "3-spec" or a numeral string. Kept as written so a replay reproduces the bytes. */
+export const legacyGate: JsonSchema = { oneOf: [{ type: "string" }, { type: "integer" }] };
 
 /** The structured reason an interface gate does / does not apply (contracts/src/flow/applies.ts) — facts only; the sentence is re-rendered by whoever wants it. */
 export const reasonSchema: JsonSchema = obj({

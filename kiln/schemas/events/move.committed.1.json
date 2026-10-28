@@ -9,7 +9,25 @@
    "minLength": 1,
    "type": "string"
   },
+  "gate": {
+   "oneOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "integer"
+    }
+   ]
+  },
   "kind": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "noteDigest": {
+   "pattern": "^[0-9a-f]{64}$",
+   "type": "string"
+  },
+  "noteRef": {
    "minLength": 1,
    "type": "string"
   },

@@ -1,0 +1,80 @@
+{
+ "$id": "kiln:event:gate.completed/1",
+ "additionalProperties": false,
+ "properties": {
+  "cost": {
+   "additionalProperties": false,
+   "properties": {
+    "switches": {
+     "type": "integer"
+    },
+    "wallClock": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "switches",
+    "wallClock"
+   ],
+   "type": "object"
+  },
+  "decidedBy": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "flow": {
+   "enum": [
+    "v1",
+    "v2"
+   ],
+   "type": "string"
+  },
+  "gate": {
+   "oneOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "integer"
+    }
+   ]
+  },
+  "move": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "preDelegation": {
+   "additionalProperties": false,
+   "properties": {
+    "at": {
+     "minLength": 1,
+     "type": "string"
+    },
+    "by": {
+     "minLength": 1,
+     "type": "string"
+    },
+    "of": {
+     "minLength": 1,
+     "type": "string"
+    },
+    "reviewer": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "of",
+    "by",
+    "at"
+   ],
+   "type": "object"
+  }
+ },
+ "required": [
+  "gate",
+  "move",
+  "cost"
+ ],
+ "title": "gate.completed (version 1)",
+ "type": "object"
+}
