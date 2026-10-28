@@ -15,7 +15,7 @@ const usage = (why: string): number => {
 export async function featureCommand(sub: string | undefined, args: string[]): Promise<number> {
   const f = flags(args);
   if ("error" in f) return usage(f.error);
-  const wants = sub === "admit" ? ["store", "key", "feature", "walk"] : sub === "next" ? ["store", "feature"] : sub === "state" ? ["store", "feature"] : null;
+  const wants = sub === "admit" ? ["store", "key", "feature", "walk"] : sub === "next" ? ["store", "feature"] : sub === "state" ? ["store", "feature"] : sub === "move" ? ["store", "feature", "key", "by", "target", "note"] : null;
   if (!wants) return usage(`unknown feature command "${String(sub)}"`);
   const bad = need(f, wants);
   if (bad) return usage(bad);
@@ -31,7 +31,11 @@ export async function featureCommand(sub: string | undefined, args: string[]): P
     return 3;
   }
   try {
-    const result = sub === "admit" ? await client.admit(f.key, f.feature, walk as never) : sub === "next" ? await client.featureNext(f.feature, f.after) : await client.featureState(f.feature);
+    const result =
+      sub === "admit" ? await client.admit(f.key, f.feature, walk as never)
+      : sub === "next" ? await client.featureNext(f.feature, f.after)
+      : sub === "move" ? await client.featureMove(f.feature, f.key, { kind: "reject", decidedBy: f.by, target: f.target as never, note: f.note })
+      : await client.featureState(f.feature);
     console.log(JSON.stringify(result));
     const unknown = (result as { status?: string; reason?: string; detail?: string })?.reason === "store-error" && ["connection-lost", "timeout"].includes((result as { detail?: string }).detail ?? "");
     return unknown ? 4 : 0;

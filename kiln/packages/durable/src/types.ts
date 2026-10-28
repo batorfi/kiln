@@ -158,8 +158,10 @@ export interface LaneApi {
 export interface Inspection {
   store: { libraryVersion: string | null; contract: number | null };
   tasks: TaskSummary[];
-  gate: "absent" | "waiting" | "settled";
-  documents: { gate: boolean; brief: boolean; opened: boolean; moveCommitted: boolean; gateSettled: boolean };
+  gate: "absent" | "waiting" | "settled" | "withdrawn";
+  documents: { gate: boolean; brief: boolean; opened: boolean; moveCommitted: boolean; gateSettled: boolean; /** r14: a `gate.withdrawn` entry exists for it. */ gateWithdrawn?: boolean };
+  /** r14: set when a feature-level move ended the gate without settling it. */
+  withdrawal?: { key: string; by: string } | null;
   records: MoveRecord[];
   decision: "absent" | "live" | "terminal";
   /** The gate TASK (a projection that converges after the decision). */

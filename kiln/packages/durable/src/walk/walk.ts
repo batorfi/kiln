@@ -15,9 +15,9 @@ import type { Services } from "../services.ts";
 import type { NextState, RunningTask, Runtime } from "../store.ts";
 import type { Admit, JSON, TaskId } from "../types.ts";
 import { admissionBrief, gateBrief } from "./brief.ts";
-import { walkDoc } from "./doc.ts";
+import { walkDoc, type WalkDoc } from "./doc.ts";
 import type { WalkInput } from "./input.ts";
-import { approve, pinsOf, queueFor, startState, withRev, type PinnedState, type WalkState } from "./state.ts";
+import { applyFeatureReject, applyMove, pinsOf, queueFor, startState, withRev, type Applied, type PinnedState, type WalkState } from "./state.ts";
 
 export type WalkCheckpoint =
   | { phase: "admit"; round: number; instruction?: string }
@@ -42,7 +42,8 @@ export async function admit(s: Services, task: Task<Extract<WalkCheckpoint, { ph
   const { round, instruction } = task.checkpoint;
   const gateId = `gate:${feature}:gate0:${round}`;
   const brief = admissionBrief(FLOW(), feature, round, walk.facts, walk.triage, instruction);
-  const opened = await openGate(s, `walk:${feature}:open:gate0:${round}`, { gateId, gateKey: "gate0", flow: "v2", brief, openedBy: `task:${task.id}`, returnsTo: [], walk: { feature } });
+  await s.whenReady; // resumed during start-up: the gate API answers not-ready until the owner has converged
+  const opened = await openGate(s, `walk:${feature}:open:gate0:${round}`, { gateId, gateKey: "gate0", flow: "v2", brief, openedBy: `task:${task.id}`, returnsTo: [], walk: { feature } }, { awaitRegistered: false });
   if (opened.status === "refused") throw new Error(`the admission gate could not be opened: ${opened.reason} ${opened.detail ?? ""}`);
   await s.hooks.at("walk.admit-opened");
   await run.commit(() => ({ status: "waiting", checkpoint: { phase: "admission", round, gateId }, on: [opened.taskId] }));
@@ -117,6 +118,28 @@ function nextAfterGate0(flow: FlowDefinition, pinned: PinnedState): GateKey {
   return first.key;
 }
 
+// ── a feature-level move waiting for the walk (recorded while no gate was open, or left by a withdrawn gate): applied BEFORE anything else, and the step that was running is ignored ──────────────
+/** If a feature-level move is pending, applies it in ONE commit (clearing it) and returns true; the caller then ends its phase. */
+async function consumePending(s: Services, feature: string, w: WalkState, run: Run<any>): Promise<boolean> {
+  const peek = await s.store.snapshot<WalkDoc>("kiln.walk", feature);
+  if (!peek?.pending) return false;
+  const flow = FLOW();
+  await run.commit(async (tx) => {
+    const wd = await walkDoc(tx, feature);
+    const f = wd.pending;
+    if (!f) throw new Error("the pending feature-level move vanished: only the row consumes it");
+    const out = applyFeatureReject(flow, w, { key: f.key, decidedBy: f.move.decidedBy, target: f.move.target, note: f.move.note, gateId: f.gateId });
+    wd.pending = null;
+    wd.openGateId = null;
+    for (const e of out.outbox) await appendOutbox(tx, { type: e.type, subject: feature, at: s.now(), actor: e.actor, cause: e.cause, data: e.data as unknown as JSON });
+    await s.hooks.at("walk.consume-after-write");
+    return { status: "running", checkpoint: { phase: "work", w: out.w, todo: out.todo } };
+  });
+  await s.hooks.at("walk.consume-committed");
+  s.watch.notify(feature);
+  return true;
+}
+
 // ── work: the scripted units of the cursor gate's next round, one at a time ──────────────────────────────────────────────────────────────────
 export async function work(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "work" }>>, run: Run<any>): Promise<void> {
   const { w, todo, unitId } = task.checkpoint;
@@ -128,6 +151,8 @@ export async function work(s: Services, task: Task<Extract<WalkCheckpoint, { pha
     }
   }
   const flow = FLOW();
+  // a feature-level move wins over whatever step this was: the finished step's result is ignored (spec FR-023) and the walk goes back
+  if (await consumePending(s, task.input.feature, w, run)) return;
   if (todo.length === 0) {
     await run.commit(() => ({ status: "running", checkpoint: { phase: "open", w } }));
     return;
@@ -153,39 +178,56 @@ export async function open(s: Services, task: Task<Extract<WalkCheckpoint, { pha
   const w = { ...withRev(flow, base, gate, round, (walk.script?.sameContent ?? []).includes(gate)), rounds: { ...base.rounds, [gate]: round } };
   const gateId = `gate:${feature}:${gate}:${round}`;
   await s.hooks.at("walk.gate-opening");
+  await s.whenReady;
   const opened = await openGate(s, `walk:${feature}:open:${gate}:${round}`, {
     gateId, gateKey: gate, flow: "v2", brief: gateBrief(flow, feature, w, gate, round), openedBy: `task:${task.id}`, returnsTo: targetsOf(flow, gate, pinsOf(w.pinned)), walk: { feature },
-  });
-  if (opened.status === "refused") throw new Error(`gate ${gateId} could not be opened: ${opened.reason} ${opened.detail ?? ""}`);
+  }, { awaitRegistered: false });
+  if (opened.status === "refused") {
+    // a feature-level move was recorded between the last look and this opening: the opening is refused (no gate), and the walk applies the move instead
+    if (opened.reason === "stale" && /feature-moved/.test(opened.detail ?? "") && (await consumePending(s, feature, base, run))) return;
+    throw new Error(`gate ${gateId} could not be opened: ${opened.reason} ${opened.detail ?? ""}`);
+  }
   await s.hooks.at("walk.gate-opened");
   await run.commit(() => ({ status: "waiting", checkpoint: { phase: "decide", w: { ...w, prelude: [] }, gateId }, on: [opened.taskId] }));
 }
 
-// ── decide (woken: the gate's task ended): read the STORED record, apply the consequence ─────────────────────────────────────────────────────
+// ── decide (woken: the gate's task ended): the STORED record says how — a person's move, or a feature-level withdrawal ─────────────────────────────────────────────────────────────────────────────
 export async function decide(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "decide" }>>, run: Run<any>): Promise<void> {
   const { feature, walk } = task.input;
   const { w, gateId } = task.checkpoint;
   const flow = FLOW();
-  const rec = (await s.store.snapshot<MoveDocData>("kiln.move", gateId))?.record;
+  const doc = await s.store.snapshot<MoveDocData>("kiln.move", gateId);
+  const rec = doc?.record ?? null;
   await s.hooks.at("walk.settled-read");
-  if (!rec) throw new Error(`the gate ${gateId} ended without a move: nothing settles a gate but a person's committed move`);
+  if (!rec && !doc?.withdrawn) throw new Error(`the gate ${gateId} ended without a move: nothing settles a gate but a person's committed move`);
   const gate = w.cursor;
   const round = w.rounds[gate]!;
-  if (rec.move.kind !== "approve") throw new Error(`the move "${rec.move.kind}" at ${gate} is not carried out yet`);
-  const adv = approve(flow, w, gate, round, walk.built);
   await run.commit(async (tx) => {
     const wd = await walkDoc(tx, feature);
     wd.openGateId = null;
-    if (adv.became) await appendOutbox(tx, { type: "gate.became-applicable", subject: feature, at: s.now(), actor: factoryActor, cause: `walk:${feature}:ui-slot`, data: { gate: adv.next!, reason: adv.became.reason as unknown as JSON } });
-    if (adv.next === null) {
-      wd.status = "done";
-      const approved = Object.keys(adv.w.approved);
-      await appendOutbox(tx, { type: "walk.completed", subject: feature, at: s.now(), actor: rec.move.decidedBy, cause: rec.key, data: { approved } });
+    let out: Applied | null = null;
+    if (rec) {
+      // what the stored move means for the walk — a pure function of (flow data, state, the record): a restarted row recomputes exactly what a killed one was about to do
+      out = applyMove(flow, w, { gate, round, gateId, kind: rec.move.kind, note: rec.move.note, target: rec.move.target, decidedBy: rec.move.decidedBy, key: rec.key }, walk.built, feature);
+    }
+    const f = wd.pending;
+    if (f) {
+      // a feature-level move that arrived while this gate's own move was being committed (or that withdrew the gate): applied AFTER the gate's own outcome — unless the walk has just ended
+      wd.pending = null;
+      if (!out || !out.end) {
+        const next = applyFeatureReject(flow, out ? out.w : w, { key: f.key, decidedBy: f.move.decidedBy, target: f.move.target, note: f.move.note, gateId: f.gateId });
+        out = out ? { w: next.w, todo: next.todo, outbox: [...out.outbox, ...next.outbox] } : next;
+      }
+    }
+    if (!out) throw new Error(`the gate ${gateId} was withdrawn but no feature-level move is waiting for the walk`);
+    for (const e of out.outbox) await appendOutbox(tx, { type: e.type, subject: feature, at: s.now(), actor: e.actor, cause: e.cause, data: e.data as unknown as JSON });
+    if (out.end) {
+      wd.status = out.end.status;
       await s.hooks.at("walk.consume-after-write");
-      return done({ outcome: "merged", approved });
+      return done({ outcome: out.end.outcome, approved: Object.keys(out.w.approved) });
     }
     await s.hooks.at("walk.consume-after-write");
-    return { status: "running", checkpoint: { phase: "work", w: adv.w, todo: queueFor(flow, adv.w) } };
+    return { status: "running", checkpoint: { phase: "work", w: out.w, todo: out.todo } };
   });
   await s.hooks.at("walk.consume-committed");
   s.watch.notify(feature);

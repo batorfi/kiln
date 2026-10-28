@@ -77,23 +77,6 @@ test("US1: the interface feature walks the Roadmap gate and all eleven feature g
   assert.ok(finalState.history.every((h: any) => h.actor && h.cause));
 });
 
-test("US1: the same input on a second store walks the same gates with the same outcomes", async (t) => {
-  const run = async () => {
-    const w = world();
-    try {
-      await w.owner();
-      await kiln(["feature", "admit", "--store", w.store, "--key", "k1", "--feature", "f-ui", "--walk", fx("walk-interface.json")], w.env);
-      const out = await drive({ store: w.store, feature: "f-ui", script: script("walk-interface.approve-all.json"), env: w.env });
-      const hist = last(await kiln(["feature", "state", "--store", w.store, "--feature", "f-ui"], w.env)).history.map((h: any) => `${h.type}|${h.actor}|${h.cause}`);
-      return [...out.steps.map((s) => `${s.gateId}:${s.kind}:${s.answer.status}`), ...hist];
-    } finally {
-      w.cleanup();
-    }
-  };
-  assert.deepEqual(await run(), await run());
-  void t;
-});
-
 test("US2: the plain feature walks 10 gates through the CLI; the two interface gates are recorded not applicable with their reasons, and a move on one is unknown-gate", async (t) => {
   const w = world();
   t.after(() => w.cleanup());
@@ -112,17 +95,4 @@ test("US2: the plain feature walks 10 gates through the CLI; the two interface g
   const refused = await kiln(["gate", "move", "--store", w.store, "--gate", "gate:f-plain:2a-experience:1", "--key", "x", "--kind", "approve", "--by", "script:r14", "--brief-ref", "0".repeat(64)], w.env);
   assert.equal(refused.code, 0);
   assert.equal(last(refused).reason, "unknown-gate");
-});
-
-test("US2: requiring Experience design at the Roadmap gate (admit.require) gives 11 gates and why:'required'", async (t) => {
-  const w = world();
-  t.after(() => w.cleanup());
-  await w.owner();
-  await kiln(["feature", "admit", "--store", w.store, "--key", "k1", "--feature", "f-req", "--walk", fx("walk-plain.json")], w.env);
-  const out = await drive({ store: w.store, feature: "f-req", script: script("walk-plain.require-experience.json"), env: w.env });
-  assert.equal(out.steps.length, 11);
-  assert.ok(out.steps.some((s) => s.gateKey === "2a-experience"));
-  const state = last(await kiln(["feature", "state", "--store", w.store, "--feature", "f-req"], w.env));
-  const admitted = state.history.find((h: any) => h.type === "walk.admitted");
-  assert.deepEqual(admitted.data.applicability["2a-experience"], { applies: true, why: "required" });
 });

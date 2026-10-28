@@ -52,3 +52,22 @@ export async function judge(run: WalkRun, walk: WalkInput, base: Baseline | unde
   assert.equal(i.timers.length, 0, "no timer on any gate");
   if (base) assert.deepEqual(walkOutcomes(i, FEATURE), base.outcomes, "walk equality: the killed-and-resumed walk equals the uninterrupted one");
 }
+
+/** Kill the owner at the `nth` time `point` is reached, restart it, finish the walk — and judge it. A kill that never fires FAILS BY NAME (a proof that killed nothing proves nothing). */
+export async function killRun(name: string, walk: WalkInput, point: string, nth: number, choose: Chooser = approveAll): Promise<void> {
+  const base = await baseline(name, walk, choose);
+  const run = await runWalk({ feature: FEATURE, walk, choose, killAt: point, killNth: nth });
+  try {
+    assert.ok(run.fired.includes(point), `proof-point-not-fired: ${point} (hit ${nth}) never fired in the ${name} walk — it was reached ${base.hits.get(point) ?? 0} time(s)`);
+    assert.equal(run.deaths, 1, `${point} #${nth}: exactly one owner died`);
+    await judge(run, walk, base);
+  } catch (e) {
+    (e as Error).message = `[${name} walk, killed at ${point} hit ${nth}] ${(e as Error).message}`;
+    throw e;
+  } finally {
+    run.cleanup();
+  }
+}
+
+/** A walk with a re-crossing: Work plan is rejected back to Specification, so Specification, Work plan and everything after them are crossed again (FR-051: a re-crossing is killed too). */
+export const RECROSS: Chooser = (g, n) => (g.gateKey === "4-plan" && g.round === 1 ? { kind: "reject", note: "wrong order: back to the spec", target: "3-spec" } : approveAll(g, n));

@@ -41,7 +41,8 @@ export async function readWalk(s: Services, feature: string): Promise<WalkView> 
     const b = await s.store.snapshot<BriefDocData>("kiln.brief", wd.openGateId);
     const settled = (await s.store.snapshot<MoveDocData>("kiln.move", wd.openGateId))?.record;
     // a gate whose move is already committed is no longer "open": the row has not yet consumed it (a short window), and the person has nothing to decide there
-    if (g?.gateId !== undefined && !settled) {
+    // …and a gate whose decision step has not (re-)registered cannot take a move yet (r13: `not-ready`): it is shown once it can — `registerSlot` tells the watcher when that happens
+    if (g?.gateId !== undefined && !settled && s.slots.get(wd.openGateId)?.registered) {
       openGate = {
         gateId: g.gateId, gateKey: g.gateKey as string, round: Number(g.gateId.split(":").pop()), briefRef: g.briefRef!, vocabulary: [...(g.vocabulary ?? [])] as MoveKind[],
         returnsTo: [...(g.returnsTo ?? [])], noteRequired: [...(g.noteRequired ?? [])] as MoveKind[], brief: (b?.content ?? null) as JSON,

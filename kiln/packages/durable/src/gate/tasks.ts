@@ -11,6 +11,7 @@ import type { Services } from "../services.ts";
 import { defineKilnTask, type TaskKind } from "../store.ts";
 import type { JSON, TaskId } from "../types.ts";
 import type { MoveDocData } from "./documents.ts";
+import { walkDoc } from "../walk/doc.ts";
 import type { Slot, SlotRequest } from "./slots.ts";
 
 type GateInput = { gateId: string };
@@ -36,6 +37,8 @@ export function gateKinds(s: Services): TaskKind<any, any, any>[] {
               run.signal.addEventListener("abort", () => resolve(undefined), { once: true });
               slot.deliver = resolve;
               slot.registered = true;
+              const feature = /^gate:([^:]+):/.exec(gateId)?.[1];
+              if (feature) s.watch.notify(feature); // a walk's `feature next` shows the gate only once it can take a move (walk/view.ts)
             });
             await s.hooks.at("wait.registered");
             const request = await waiting;
@@ -43,13 +46,33 @@ export function gateKinds(s: Services): TaskKind<any, any, any>[] {
             if (!request) return; // the factory is closing: nothing is committed
             try {
               let lost = false;
+              const withdrawing = request.kind === "withdraw";
               await run.commit(async (tx) => {
                 await s.hooks.at("move.commit-begin");
                 const md = await tx.doc<MoveDocData>("kiln.move", gateId, { record: null });
                 await s.hooks.at("move.commit-after-read");
-                if (md.record !== null) {
-                  lost = true; // a record exists already: write nothing, change nothing
+                if (md.record !== null || md.withdrawn) {
+                  lost = true; // a record (or a withdrawal) exists already: write nothing, change nothing
                   return undefined;
+                }
+                if (request.kind === "withdraw") {
+                  // r14: a FEATURE-LEVEL move ends this gate WITHOUT settling it — ONE commit: the withdrawal, the feature's record of the move, the entries, and the decision's own end (never a move record)
+                  const feature = /^gate:([^:]+):/.exec(gateId)![1];
+                  const wd = await walkDoc(tx, feature);
+                  if (wd.pending) {
+                    lost = true; // another feature-level move is already waiting: first wins
+                    return undefined;
+                  }
+                  const at = s.now();
+                  const rec = plain({ key: request.key, move: { ...request.move }, decidedAt: at, effect: "withdrew" as const, gateId });
+                  md.withdrawn = plain({ key: request.key, by: request.move.decidedBy, at, target: request.move.target, note: request.move.note });
+                  wd.moves = { ...(wd.moves ?? {}), [request.key]: rec };
+                  wd.pending = rec;
+                  wd.openGateId = null;
+                  await appendOutbox(tx, { type: "gate.withdrawn", subject: gateId, at, actor: request.move.decidedBy, cause: request.key, data: { target: request.move.target, note: request.move.note } });
+                  await appendOutbox(tx, { type: "move.committed", subject: gateId, at, actor: request.move.decidedBy, cause: request.key, data: { kind: "reject", scope: "feature", target: request.move.target } });
+                  await s.hooks.at("walk.withdraw-after-write");
+                  return { status: "terminal", outcome: { status: "completed", result: { key: request.key, withdrawn: true } } };
                 }
                 s.hooks.fault("store-write");
                 const decidedAt = s.now();
@@ -58,7 +81,8 @@ export function gateKinds(s: Services): TaskKind<any, any, any>[] {
                 await s.hooks.at("move.commit-after-write"); // mid-commit: written in the callback, not yet stored
                 return { status: "terminal", outcome: { status: "completed", result: { key: request.key } } };
               });
-              await s.hooks.at("move.committed");
+              if (withdrawing && !lost) await s.hooks.at("walk.withdraw-committed");
+              else await s.hooks.at("move.committed");
               request.done(lost ? "lost" : "committed");
               if (!lost) return;
             } catch (e) {
@@ -91,6 +115,11 @@ export function gateKinds(s: Services): TaskKind<any, any, any>[] {
         await s.hooks.at("gate.wake"); // the decision is terminal; this gate has not yet advanced
         const [outcome] = await run.outcomes([task.checkpoint.decisionId]);
         const key = outcome?.status === "completed" ? String((outcome.result as { key?: string } | null)?.key ?? "") : "";
+        if (outcome?.status === "completed" && (outcome.result as { withdrawn?: boolean } | null)?.withdrawn) {
+          // r14: a withdrawn gate was never settled: it appends no `gate.settled` (the decision step already recorded `gate.withdrawn`)
+          await run.commit(() => ({ status: "terminal", outcome: { status: "completed", result: { key, withdrawn: true } } }));
+          return;
+        }
         await run.commit(async (tx) => {
           const at = s.now();
           await appendOutbox(tx, { type: "gate.settled", subject: task.input.gateId, at, actor: "factory", cause: key || "(no key)", data: { key } });

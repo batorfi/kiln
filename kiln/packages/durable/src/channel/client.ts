@@ -1,7 +1,7 @@
 // The owner's private local channel — the client side (FR-045, FR-046). It connects by socket PATH only and never opens the store. A request whose connection is lost, or that gets no answer within the
 // timeout (5 s by default), resolves to an explicit OUTCOME UNKNOWN — `refused(store-error)` with `detail: "connection-lost" | "timeout"` — never a hang: the caller retries the same key.
 import net from "node:net";
-import { ChannelError, refused, type GateSpec, type GateState, type Key, type Move, type OpenOutcome, type Outcome, type TaskCreateOutcome } from "../types.ts";
+import { ChannelError, refused, type FeatureMove, type FeatureOutcome, type GateSpec, type GateState, type Key, type Move, type OpenOutcome, type Outcome, type TaskCreateOutcome } from "../types.ts";
 import type { WalkInput } from "../walk/input.ts";
 import type { WalkView } from "../walk/view.ts";
 import { encode, type ChannelReply, type ChannelRequest } from "./protocol.ts";
@@ -21,6 +21,8 @@ export interface ChannelClient {
   featureState(feature: string): Promise<WalkView>;
   /** r14: the open gate once it differs from `after` (or the walk ended). WAITS — with no timeout, on an event the owner raises — and throws `ChannelError("outcome-unknown")` if the owner goes away; the caller asks again. */
   featureNext(feature: string, after?: string): Promise<WalkView>;
+  /** r14: a reject made on the feature at any time. An unknown outcome (connection lost) is `refused(store-error)`: retry the SAME key. */
+  featureMove(feature: string, key: Key, move: FeatureMove): Promise<FeatureOutcome>;
   ping(): Promise<{ pong: true; ready: boolean; pid: number }>;
   ready(): Promise<boolean>;
   close(): void;
@@ -89,6 +91,7 @@ export async function connect(socketPath: string, opts: { timeoutMs?: number } =
       return r.result as GateState;
     },
     admit: async (key, feature, walk) => answered(await request({ op: "feature.admit", key, feature, walk }), (why) => refused("store-error", { detail: why })) as TaskCreateOutcome,
+    featureMove: async (feature, key, move) => answered(await request({ op: "feature.move", feature, key, move }), (why) => refused("store-error", { detail: why })) as FeatureOutcome,
     featureState: async (feature) => {
       const r = await request({ op: "feature.state", feature });
       if ("lost" in r) throw new ChannelError("outcome-unknown", `no answer from the owner (${r.lost})`);

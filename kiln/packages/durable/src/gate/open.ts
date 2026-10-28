@@ -9,7 +9,12 @@ import type { BriefDocData, GateDocData } from "./documents.ts";
 import { walkDoc } from "../walk/doc.ts";
 import { noteRequiredOf, vocabularyOf } from "./flow.ts";
 
-export async function openGate(s: Services, key: Key, spec: GateSpec): Promise<OpenOutcome> {
+/**
+ * `opts.awaitRegistered` (default true, r13's behaviour): wait, bounded, until the gate's decision step has registered so that `opened` means "can take a move". A TASK STEP that opens a gate (the walk's row) passes
+ * false: while the step runs, the library cannot schedule the gate's own tasks, so the wait could only time out (3 s per gate, measured). The walk shows a gate to a person only once it has registered
+ * (`readWalk`), and a move that still arrives early is `not-ready` — transient, retry the same key.
+ */
+export async function openGate(s: Services, key: Key, spec: GateSpec, opts: { awaitRegistered?: boolean } = {}): Promise<OpenOutcome> {
   await s.hooks.at("open.begin");
   if (!s.ready) return refused("not-ready", { detail: "the owner has not finished starting; retry the same key" });
   if (!validKey(key)) return refused("invalid-move", { detail: "the key is a non-empty string of at most 200 characters" });
@@ -51,7 +56,7 @@ export async function openGate(s: Services, key: Key, spec: GateSpec): Promise<O
   });
   if (out.status === "refused") return out;
   if (out.status === "applied") await s.hooks.at("open.committed");
-  await registered(s, spec.gateId, 3000); // `opened` means the gate can take a move: wait (bounded) for its decision step to register
+  if (opts.awaitRegistered !== false) await registered(s, spec.gateId, 3000); // `opened` means the gate can take a move: wait (bounded) for its decision step to register
   if (spec.walk) s.watch.notify(spec.walk.feature); // a waiting `feature next` re-reads the store
   return { status: out.status === "applied" ? "opened" : "repeat", gate: out.result.gate, taskId: out.result.taskId };
 }

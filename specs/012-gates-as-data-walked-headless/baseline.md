@@ -58,3 +58,34 @@ Two things r13's suite forced, both recorded here and in `notes.md`:
 **T046 — the plain walk through the CLI:** 10 gates; `gate.not-applicable` for `2a-experience` and `6a-ui-review` (actor `factory`, cause `walk:f-plain:pin`) with reasons such as `does not apply: no path matches [web/**, …]; no label is one of [ui]; the row cites no journey`; a move on `gate:f-plain:2a-experience:1` is `unknown-gate`; `admit.require` gives 11 gates with `why: "required"`.
 
 Not yet done: **T047** (the replay-across-a-kill test) — it needs the child-owner walk harness of US3.
+
+## US3 — kill and resume (T047–T057) — 2026-10-27
+
+**The proof tier** (`cd kiln && npm run proof` → `tier: proof (4 proof files)`): **39 tests, exit 0, 187 s**, on Node 25.9.0, macOS.
+
+| File | What it does | Result |
+|---|---|---|
+| `walk-kill-points.proof.test.ts` | the owner SIGKILLed at each of the 11 declared walk points (first hit) on the interface walk, restarted, finished; every declared point must have been reached | 12/12 |
+| `walk-every-gate.proof.test.ts` | `walk.settled-read` and `walk.gate-opening`, once per gate, on both walks (11 + 9 gates) | 4/4 tests, 40 kills |
+| `walk-kill-matrix.proof.test.ts` | every point × every time it is reached (measured from a hit log of the uninterrupted walk) × both walks | 22/22 tests |
+| `walk-random-kill.proof.test.ts` | **300 random kills, seed 20261027**: random walk, point and hit. Hits by point: settled-read 30, pin-after-write 29, pin-begin 37, admission-read 31, gate-opening 22, gate-opened 33, consume-after-write 21, admit-opened 18, consume-committed 25, unit-created 30, pin-committed 24 | 1/1 (186 s) |
+
+After EVERY kill the judge asserts, from a fresh reader with no owner: the walk ended `done` with no gate open; no move was refused; walk invariants W1–W4 clean; per-gate invariants I1–I9 clean and exactly one move record on every gate; no task left waiting or parked; no timer; and **walk equality** — the outbox (type, subject, actor, cause, canonical data; no clock) equals the uninterrupted walk's, entry for entry.
+
+**Default tier additions:** `walk-smoke` (4 kills: `pin-after-write`, `gate-opening` ×6, `settled-read` ×6, `consume-after-write` ×6), `walk-replay` (2 kills around the pin commit: the two not-applicable entries exist once each with the uninterrupted walk's reason bytes), `walk-storm` (**7 consecutive kills** with no move: the same gate open and waiting after each, nothing terminal, invariants clean; then the move commits and the walk goes on), `walk-clock` (±10 years: a waiting gate has no timer and `gate.opened` carries the injected clock; a whole walk under a skewed clock equals the real-clock walk), `walk-negative` (the **weakened walk** — a row that treats the absence of a move as an approval — is rejected by `W1`; the real walk passes the same judge; a kill that never fires fails `proof-point-not-fired`).
+
+A run of the uninterrupted interface walk reaches `walk.gate-opening` / `settled-read` / `consume-*` 11 times and `walk.unit-created` 14 times; the plain walk 9 and 11.
+
+## T058 — the tier split, verified — 2026-10-27
+
+Before the CLI-walk tests were split: `npm run test:new` took **172 s** (594 tests) — 8 s of margin against r13's 180 s threshold, under the 15 s the plan asks for. The two slowest command-line walks (the second-store determinism run, 33 s of CPU under contention, and the `admit.require` variant) plus the new all-kinds-of-moves walk and the `feature move` walk went to `packages/cli/tests/feature-cli.proof.test.ts` (proof tier); the default tier keeps one interface walk and one plain walk through the CLI, and the in-process equivalents of everything moved.
+
+After US5: `cd kiln && npm test` → exit **0**, `new: 630 tests · legacy: 500 tests (30 skipped)`, **185 s** for the whole of `npm test` (the pre-row reading was 182 s for 474 + 500 tests). `tier: default (6 proof files not run; npm run proof runs them)`. `npm run check` four `PASS` (`network`/`boundaries` 74 files).
+
+## US5 — where moves lead (T059–T071) — 2026-10-27
+
+* `consequence()` — the-flow.md §7 as an executable table: the rows of §7 are *read as text* and each row is checked against the engine; every (gate, kind) the data offers has a consequence; a pair it does not offer throws by name. `featureReject()` / `earlierThan()` for the feature-level move.
+* `moves.test.ts` (13 in-process walks): revise needs a note and opens round 2 with the note as the next brief's instruction; a reject with no target is a fresh author at the same gate; a reject to an earlier gate re-crosses every active gate after it (Experience design and UI review skipped when not applicable), each brief saying what changed since its last approval — or "unchanged" when `sameContent` made the fresh author yield identical content; reject → the roadmap at Concept ends the walk and anywhere else is refused; Verification's reject with no target reworks the code and re-crosses Code review; restart at Code review rebuilds, restart at UI review re-crosses Code review too; revise at Code review sends the workers; split+revise records the remainder as a proposal and re-crosses the work plan; the admission crossing's four outcomes (FR-027).
+* The feature-level move (`feature-move.test.ts`, 7): with a gate open it WITHDRAWS it (no move record; `gate.withdrawn` + `move.committed` in the same commit; a person's move afterwards is `stale` naming the feature move); with none open it is recorded and the walk applies it at its next wake; keyed exactly once; first move wins; refusals by name; **60 races** of a person's move against a feature-level move — exactly one ending each time, the loser told who won, I1–I10 clean.
+* Withdrawal under kill (`walk-withdraw.test.ts`): killed at `walk.withdraw-received`, `-after-write` and `-committed` — the gate is either waiting with nothing recorded or withdrawn once; the SAME key then gives the one outcome; the walk goes back and finishes; I10 clean.
+* A re-crossing is killed too: `walk-recross.proof.test.ts` — the re-crossing walk killed at every walk point × every hit; four of those kills run in the default tier (`walk-smoke`).

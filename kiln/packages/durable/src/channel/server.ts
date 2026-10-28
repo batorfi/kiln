@@ -45,6 +45,7 @@ export async function startChannel(socketPath: string, handlers: ChannelHandlers
           case "feature.admit": return send({ id: req.id, ok: true, result: await handlers.walks.admit(req.key, req.feature, req.walk) });
           case "feature.state": return send({ id: req.id, ok: true, result: await handlers.walks.state(req.feature) });
           // waits on an in-process event (never a timer, never a poll) and answers from the store; an owner that closes releases it with an error
+          case "feature.move": return send({ id: req.id, ok: true, result: await handlers.walks.move(req.feature, req.key, req.move) });
           case "feature.next": return send({ id: req.id, ok: true, result: await handlers.walks.next(req.feature, req.after) });
         }
       } catch (e) {

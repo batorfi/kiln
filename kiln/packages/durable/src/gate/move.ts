@@ -2,7 +2,7 @@
 //   same key + equal move → repeat · same key + other move → key-conflict · another key → stale (the record existed when we arrived) or lost-race (it appeared while we waited for the slot).
 // A move is validated against the gate's STORED vocabulary, must name a decider and the brief the gate was opened with (invalid-move otherwise). `committed` is returned only after the
 // commit resolved: it means durable.
-import { KEY_MAX, refused, type GateId, type Key, type Move, type MoveRecord, type Outcome } from "../types.ts";
+import { KEY_MAX, refused, type FeatureMove, type GateId, type Key, type Move, type MoveRecord, type Outcome } from "../types.ts";
 import { canonicalJson, plain } from "../canonical.ts";
 import { flowOf } from "#contracts/flow/index.ts";
 import type { Services } from "../services.ts";
@@ -63,6 +63,9 @@ async function decide(s: Services, gateId: GateId, key: Key, move: Move): Promis
 
     const g = await s.store.snapshot<GateDocData>("kiln.gate", gateId);
     if (!gateExists(g)) return refused("unknown-gate");
+    // r14: a gate a feature-level move withdrew is not settled and takes no move: the move that ended it is the winner
+    const ended = await s.store.snapshot<MoveDocData>("kiln.move", gateId);
+    if (!ended?.record && ended?.withdrawn) return refused("stale", { winner: ended.withdrawn.key, detail: "the gate was withdrawn by a feature-level move" });
     if ((move.kind as string) === "mitigate") return refused("invalid-move", { detail: `"mitigate" is not a move a person can make (it is the factory's automatic fix round, never a settlement)` });
     if (!g.vocabulary.includes(move.kind)) return refused("invalid-move", { detail: `"${move.kind}" is not a move of this gate (allowed: ${g.vocabulary.join(", ")})` });
     if (move.briefRef !== g.briefRef) return refused("invalid-move", { detail: "the move names a different brief than the one this gate was opened with" });
@@ -73,8 +76,10 @@ async function decide(s: Services, gateId: GateId, key: Key, move: Move): Promis
     move = { kind: move.kind, decidedBy: move.decidedBy, briefRef: move.briefRef, ...(move.note !== undefined ? { note: move.note } : {}), ...(move.target !== undefined ? { target: move.target } : {}), ...(move.admit !== undefined ? { admit: plain(move.admit) } : {}) };
     let how: "arrived" | "raced" = "arrived";
     for (let attempt = 0; attempt < 8; attempt++) {
-      const rec = (await s.store.snapshot<MoveDocData>("kiln.move", gateId))?.record ?? null;
+      const doc = await s.store.snapshot<MoveDocData>("kiln.move", gateId);
+      const rec = doc?.record ?? null;
       if (rec) return judge(plain(rec), key, move, how);
+      if (doc?.withdrawn) return refused("stale", { winner: doc.withdrawn.key, detail: "the gate was withdrawn by a feature-level move" });
       const slot = s.slots.get(gateId);
       if (!slot || !slot.registered) {
         if (slot?.taken && slot.inflight) {
@@ -110,4 +115,40 @@ async function decide(s: Services, gateId: GateId, key: Key, move: Move): Promis
 function judge(rec: MoveRecord, key: Key, move: Move, how: "arrived" | "raced"): Outcome {
   if (rec.key !== key) return refused(how === "arrived" ? "stale" : "lost-race", { winner: rec.key });
   return sameMove(rec.move, move) ? { status: "repeat", record: rec } : refused("key-conflict", { original: key });
+}
+
+// ── r14: delivering a FEATURE-LEVEL move to the gate that is open ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+export type WithdrawResult = "committed" | "gate-ended" | "not-ready" | { error: string };
+
+/**
+ * Hands a withdrawal to the open gate's decision step through the SAME single-shot slot a person's move uses, so first-move-wins and exactly-once are the one proved mechanism. The decision step's
+ * single commit writes the withdrawal (never a move record). `gate-ended`: the gate already has a move or a withdrawal — judge against the store again.
+ */
+export async function deliverWithdraw(s: Services, gateId: GateId, key: Key, move: FeatureMove): Promise<WithdrawResult> {
+  await s.hooks.at("walk.withdraw-received");
+  for (let attempt = 0; attempt < 8; attempt++) {
+    const doc = await s.store.snapshot<MoveDocData>("kiln.move", gateId);
+    if (doc?.record || doc?.withdrawn) return "gate-ended";
+    const slot = s.slots.get(gateId);
+    if (!slot || !slot.registered) {
+      if (slot?.taken && slot.inflight) {
+        await slot.inflight;
+        continue;
+      }
+      return "not-ready";
+    }
+    if (slot.taken) {
+      await slot.inflight;
+      continue;
+    }
+    slot.taken = true;
+    let finish!: () => void;
+    slot.inflight = new Promise<void>((r) => (finish = r));
+    const result = await new Promise<"committed" | "lost" | { error: string }>((resolve) => slot.deliver?.({ kind: "withdraw", key, move, done: resolve }));
+    finish();
+    if (typeof result === "object") return { error: result.error };
+    if (result === "committed") return "committed";
+    // "lost": a move or another withdrawal got there first — judge against the store
+  }
+  return { error: "gave up after repeated races" };
 }

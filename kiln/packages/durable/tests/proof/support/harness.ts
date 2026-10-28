@@ -54,6 +54,8 @@ export interface OwnerOptions {
   serve?: boolean;
   /** Replace the real decision step with the deliberately half-applying control (negative proofs only). */
   brokenGate?: boolean;
+  /** r14: replace `kiln.row` with the deliberately weakened walk (negative proofs only). */
+  brokenWalk?: boolean;
   readyTimeoutMs?: number;
   laneModule?: string;
   env?: Record<string, string>;
@@ -79,7 +81,7 @@ export interface OwnerRun {
 
 export function spawnOwner(ts: TestStore, o: OwnerOptions = {}): OwnerRun {
   const env: Record<string, string> = {};
-  for (const [k, v] of Object.entries(process.env)) if (v !== undefined && !/^(KILL_AT|FAULT_AT|HOLD_AT|HOLD_MS|CLOCK_OFFSET_MS|LIBRARY_VERSION|READY_TIMEOUT_MS|LANE_MODULE|KILL_LOG|STAY_ALIVE|BROKEN_GATE|SERVE|KILL_NTH)$/.test(k)) env[k] = v;
+  for (const [k, v] of Object.entries(process.env)) if (v !== undefined && !/^(KILL_AT|FAULT_AT|HOLD_AT|HOLD_MS|CLOCK_OFFSET_MS|LIBRARY_VERSION|READY_TIMEOUT_MS|LANE_MODULE|KILL_LOG|STAY_ALIVE|BROKEN_GATE|BROKEN_WALK|HIT_LOG|SERVE|KILL_NTH)$/.test(k)) env[k] = v;
   env.KILL_LOG = ts.killLog;
   if (o.killAt) env.KILL_AT = o.killAt;
   if (o.killNth) env.KILL_NTH = String(o.killNth);
@@ -89,6 +91,7 @@ export function spawnOwner(ts: TestStore, o: OwnerOptions = {}): OwnerRun {
   if (o.libraryVersion) env.LIBRARY_VERSION = o.libraryVersion;
   if (o.stayAlive) env.STAY_ALIVE = "1";
   if (o.brokenGate) env.BROKEN_GATE = "1";
+  if (o.brokenWalk) env.BROKEN_WALK = "1";
   if (o.serve) env.SERVE = "1";
   if (o.readyTimeoutMs) env.READY_TIMEOUT_MS = String(o.readyTimeoutMs);
   if (o.laneModule) env.LANE_MODULE = o.laneModule;

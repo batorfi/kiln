@@ -2,7 +2,7 @@
 // Re-created from r42's oracle (not imported) and extended for r13: opening is atomic (I3), events are committed with their state (I3), the lane (I8), the command ledger (I9).
 import type { Inspection } from "#durable/types.ts";
 
-export type Invariant = "I1" | "I2" | "I3" | "I4" | "I5" | "I6" | "I7" | "I8" | "I9";
+export type Invariant = "I1" | "I2" | "I3" | "I4" | "I5" | "I6" | "I7" | "I8" | "I9" | "I10";
 
 export interface OracleContext {
   /** A task the library reported parked or faulted (the owner's `reports` was not empty). */
@@ -19,10 +19,17 @@ export function checkInvariants(i: Inspection, ctx: OracleContext = {}): Invaria
   // I2 — settled ⇔ exactly one record AND the decision task terminal with that record's key
   if (i.gate === "settled" && !(r === 1 && i.decision === "terminal" && i.decisionMatchesRecord)) v.add("I2");
   // I3 — no half-applied state: a move without its completion (or the reverse); an opening without its brief or its `gate.opened`; an event without its state (or the reverse)
-  if ((r > 0 && i.decision !== "terminal") || (r === 0 && i.decision === "terminal") || (i.gate === "settled" && r === 0)) v.add("I3");
+  const withdrawn = i.gate === "withdrawn";
+  if ((r > 0 && i.decision !== "terminal") || (r === 0 && i.decision === "terminal" && !withdrawn) || (i.gate === "settled" && r === 0)) v.add("I3");
   if ((d.gate && (!d.brief || !d.opened)) || ((d.brief || d.opened) && !d.gate)) v.add("I3");
-  if ((r > 0 && !d.moveCommitted) || (d.moveCommitted && r === 0)) v.add("I3");
-  if ((i.gateTask === "terminal" && !d.gateSettled) || (d.gateSettled && i.gateTask !== "terminal")) v.add("I3");
+  if ((r > 0 && !d.moveCommitted) || (d.moveCommitted && r === 0 && !withdrawn)) v.add("I3");
+  if ((i.gateTask === "terminal" && !d.gateSettled && !withdrawn) || (d.gateSettled && i.gateTask !== "terminal")) v.add("I3");
+  // I10 (r14) — a WITHDRAWN gate: a withdrawal on its document ⇔ the gate is withdrawn; it has NO move record, its decision is terminal with that withdrawal's key, `gate.withdrawn` and the feature move's
+  // `move.committed` are in the record, and it was never `gate.settled`. A gate is never both settled and withdrawn.
+  const wd = i.withdrawal ?? null;
+  if ((wd !== null) !== withdrawn) v.add("I10");
+  if (withdrawn && !(r === 0 && i.decision === "terminal" && i.decisionMatchesRecord && d.gateWithdrawn === true && d.moveCommitted && !d.gateSettled)) v.add("I10");
+  if (!withdrawn && d.gateWithdrawn === true) v.add("I10");
   // every entry names an actor and a cause (constitution VII)
   if (i.outbox.some((e) => !e.actor || !e.cause)) v.add("I3");
   // I4 — at most one record per gate

@@ -7,6 +7,7 @@ import { ChannelError } from "#durable/types.ts";
 import { connect, type ChannelClient } from "#durable/channel/client.ts";
 import { channelSocketPath } from "#durable/channel/path.ts";
 import { inspectStore } from "#durable/inspect.ts";
+import { openReader } from "#durable/library/open.ts";
 import type { Inspection, Move } from "#durable/types.ts";
 import type { WalkInput } from "#durable/walk/input.ts";
 import type { OpenGateView, WalkView } from "#durable/walk/view.ts";
@@ -30,6 +31,8 @@ export interface WalkRunOptions {
   /** Stop the drive after this many moves (the store is judged mid-walk). */
   stopAfter?: number;
   maxMs?: number;
+  /** Keep the owner alive this long before judging (a real wait at a waiting gate: nothing may settle it). */
+  holdMs?: number;
   /** Count how many times each kill point is reached (a HIT_LOG written by the test-only owner), so a matrix knows how far to go. */
   countHits?: boolean;
 }
@@ -51,6 +54,15 @@ const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms
 
 export async function runWalk(o: WalkRunOptions): Promise<WalkRun> {
   const ts = makeStore();
+  try {
+    return await runWalkOn(ts, o);
+  } catch (e) {
+    ts.cleanup(); // a failing walk must never leak an owner process (r42's first lesson)
+    throw e;
+  }
+}
+
+async function runWalkOn(ts: TestStore, o: WalkRunOptions): Promise<WalkRun> {
   const sock = channelSocketPath(ts.store);
   const deadline = Date.now() + (o.maxMs ?? 120_000);
   const choose = o.choose ?? approveAll;
@@ -89,11 +101,23 @@ export async function runWalk(o: WalkRunOptions): Promise<WalkRun> {
       let c: ChannelClient | undefined;
       try {
         c = await connect(sock, { timeoutMs: 4000 });
-        const out = await fn(c);
+        // an overall deadline for EVERY call (a `featureNext` waits on an event with no timeout of its own): a hang becomes a failure that says where the store stood
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        const out = await Promise.race([
+          fn(c),
+          new Promise<never>((_, rej) => { timer = setTimeout(() => rej(new Error("walk-deadline")), Math.max(1000, deadline - Date.now())); }),
+        ]).finally(() => clearTimeout(timer));
         const r = out as { status?: string; reason?: string; detail?: string };
         const lost = r?.status === "refused" && (r.reason === "not-ready" || (r.reason === "store-error" && ["connection-lost", "timeout"].includes(r.detail ?? "")));
         if (!lost) return out;
       } catch (e) {
+        if ((e as Error).message === "walk-deadline") {
+          const i = await inspectStore(ts.store);
+          const reader = await openReader(ts.store);
+          const failures = (await reader.tasks()).filter((t) => t.outcome && t.outcome.status === "failed").map((t) => `${t.id}:${t.kind}: ${(t.outcome as { message?: string }).message}`);
+          await reader.close();
+          throw new Error(`the walk of ${o.feature} did not finish within ${o.maxMs ?? 120_000} ms; tasks: ${i.tasks.map((t) => `${t.id}:${t.kind}:${t.status}${t.outcome ? ":" + JSON.stringify(t.outcome).slice(0, 220) : ""}`).join(" ")}; entries: ${i.outbox.map((x) => x.type).join(",")}; failures: ${failures.join(" | ")}`);
+        }
         if (!(e instanceof ChannelError)) throw e;
       } finally {
         c?.close();
@@ -121,6 +145,7 @@ export async function runWalk(o: WalkRunOptions): Promise<WalkRun> {
   }
   // give the row a moment to consume the last move and write its end (an event, not a poll, would be better — but the owner is judged from the STORE, so ask the store what it has)
   await call((c) => c.featureState(o.feature));
+  if (o.holdMs) await sleep(o.holdMs);
   await killNow(owner); // judged as a crash leaves it
   const inspection = await inspectStore(ts.store);
   const hits = new Map<string, number>();

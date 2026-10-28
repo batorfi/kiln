@@ -1,7 +1,7 @@
 // The TEST-ONLY child owner. It opens a factory through the seam, runs a SCRIPT of steps given as JSON on argv, prints one `R <json>` line per step, and — when armed — dies by SIGKILL at a named
 // kill point, which is what a crash looks like to the store (no handler, no flush, no close). It is the ONE place that reads arming from the environment: the product has no kill switch (research R7).
 //   node owner-main.ts --store <dir> --script '<json array of steps>'
-// env: SERVE=1 (also serve the private channel, so a separate process can complete gates through it; prints LISTENING) · BROKEN_GATE=1 (replace the decision step with the deliberately half-applying one) · STAY_ALIVE=1 (after the script, wait to be killed) · KILL_AT=<point> · KILL_NTH=<n> (die at the n-th time the point is reached; default 1) · KILL_LOG=<file> · FAULT_AT=<point> · HOLD_AT=<point> HOLD_MS=<n> (delay a step) · CLOCK_OFFSET_MS=<n> · LIBRARY_VERSION=<v> · READY_TIMEOUT_MS=<n> · LANE_MODULE=<file>
+// env (r14: HIT_LOG=<file> appends every kill point reached, so a matrix knows how far to go · BROKEN_WALK=1 replaces `kiln.row` with the deliberately weakened walk): SERVE=1 (also serve the private channel, so a separate process can complete gates through it; prints LISTENING) · BROKEN_GATE=1 (replace the decision step with the deliberately half-applying one) · STAY_ALIVE=1 (after the script, wait to be killed) · KILL_AT=<point> · KILL_NTH=<n> (die at the n-th time the point is reached; default 1) · KILL_LOG=<file> · FAULT_AT=<point> · HOLD_AT=<point> HOLD_MS=<n> (delay a step) · CLOCK_OFFSET_MS=<n> · LIBRARY_VERSION=<v> · READY_TIMEOUT_MS=<n> · LANE_MODULE=<file>
 // steps: {op:"ready"} (waits for ready; reports how long start-up took) {op:"submitAll",moves:[{gate,key,move}],concurrency?} · {op:"open",key,spec} {op:"submit",gate,key,move} {op:"submitMany",gate,moves:[{key,move}],concurrency?} {op:"state",gate} {op:"createTask",key,kind,input,owner}
 //        {op:"inspect",gate?} {op:"tasks"} {op:"early",gate,key,move} (a move BEFORE ready, then the same after) {op:"hold"} (stay alive until killed) {op:"sleep",ms}
 import { appendFileSync } from "node:fs";
@@ -23,6 +23,7 @@ const hits = new Map<string, number>();
 const hooks: Hooks = {
   at(point) {
     hits.set(point, (hits.get(point) ?? 0) + 1);
+    if (env.HIT_LOG) appendFileSync(env.HIT_LOG, `${point}\n`);
     if (env.KILL_AT === point && hits.get(point) === Number(env.KILL_NTH ?? 1)) {
       if (env.KILL_LOG) appendFileSync(env.KILL_LOG, `${point}\n`);
       process.kill(process.pid, "SIGKILL");
@@ -39,13 +40,15 @@ let lane: any;
 let laneKinds: ((s: any) => any[]) | undefined;
 let broken: ((s: any) => any) | undefined;
 if (env.BROKEN_GATE) broken = (await import("./broken-gate.ts")).brokenDecision;
+let brokenWalk: ((s: any) => any) | undefined;
+if (env.BROKEN_WALK) brokenWalk = (await import("./broken-walk.ts")).brokenRow;
 if (env.LANE_MODULE) {
   const m = await import(env.LANE_MODULE); // the lane module: `createLane()` returns { api, kinds } — the port goes in as `lane`, its task kind in as an extra kind
   const made = m.createLane();
   lane = made.api;
   laneKinds = made.kinds;
 }
-const extra = (s: any): any[] => [...(broken ? [broken(s)] : []), ...(laneKinds ? laneKinds(s) : [])];
+const extra = (s: any): any[] => [...(broken ? [broken(s)] : []), ...(brokenWalk ? [brokenWalk(s)] : []), ...(laneKinds ? laneKinds(s) : [])];
 
 const t0 = performance.now(); // start-up is timed from here: before the factory is opened
 let factory: Factory;

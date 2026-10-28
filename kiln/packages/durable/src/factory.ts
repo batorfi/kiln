@@ -77,6 +77,7 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   }
   const readyPromise = converge(services, opts.readyTimeoutMs ?? 5000);
   readyPromise.catch(() => {}); // a caller that never awaits `ready` must not cause an unhandled rejection
+  services.whenReady = readyPromise;
   let closed = false;
   let channel: Channel | undefined;
   const gates: GateApi = { open: (key, spec) => openGate(services, key, spec), submit: (gateId, key, move) => submitMove(services, gateId, key, move), state: (gateId) => gateState(services, gateId) };

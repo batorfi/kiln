@@ -51,3 +51,31 @@ export async function drive(f: Factory, feature: string, choose: Chooser = appro
 }
 
 export const rowOf = async (f: Factory) => (await f.tasks.list()).find((t) => t.kind === "kiln.row");
+
+// ── moving a walk to a chosen place and making a chosen move there (US5) ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+import type { GateKey } from "#contracts/moves.ts";
+export const mkMove = (g: OpenGateView, m: Partial<Move>): Move => ({ kind: "approve", decidedBy: DECIDER, briefRef: g.briefRef, ...m }) as Move;
+
+/** Approves the walk\'s open gates until `key`/`round` is the open one, and returns that view. `then` lets a test choose differently on the way (default: approve). */
+export async function walkTo(f: Factory, feature: string, key: GateKey, round = 1): Promise<WalkView> {
+  let after: string | undefined;
+  for (let n = 0; n < 80; n++) {
+    const v = await f.walks.next(feature, after);
+    const g = v.openGate;
+    if (!g) throw new Error(`the walk of ${feature} ended before ${key}#${round}`);
+    if (g.gateKey === key && g.round === round) return v;
+    const r = await f.gates.submit(g.gateId, `m:${g.gateId}`, mkMove(g, g.gateKey === "gate0" ? { admit: {} } : {}));
+    if (r.status !== "committed" && r.status !== "repeat") throw new Error(`could not approve ${g.gateId}: ${JSON.stringify(r)}`);
+    after = g.gateId;
+  }
+  throw new Error(`${key}#${round} was not reached`);
+}
+/** Makes `m` at the open gate and returns the outcome plus the NEXT view (waiting for the walk to move on). */
+export async function moveHere(f: Factory, feature: string, v: WalkView, m: Partial<Move>, key = "mv"): Promise<{ outcome: Outcome; next: WalkView }> {
+  const g = v.openGate!;
+  const outcome = await f.gates.submit(g.gateId, `${key}:${g.gateId}`, mkMove(g, m));
+  const next = outcome.status === "committed" || outcome.status === "repeat" ? await f.walks.next(feature, g.gateId) : v;
+  return { outcome, next };
+}
+/** The gates a walk opened, as `key#round`, in order. */
+export const openedOrder = (v: WalkView): string[] => v.history.filter((h) => h.type === "gate.opened").map((h) => h.subject.split(":").slice(2).join("#"));

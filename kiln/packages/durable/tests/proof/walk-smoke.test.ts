@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { runWalk } from "./support/walk-harness.ts";
-import { baseline, FEATURE, INTERFACE, judge } from "./support/walk-judge.ts";
+import { baseline, FEATURE, INTERFACE, judge, killRun, PLAIN, RECROSS } from "./support/walk-judge.ts";
 
 const SMOKE: [string, number][] = [
   ["walk.pin-after-write", 1],
@@ -35,3 +35,10 @@ test("the baseline itself: 12 gates, every declared walk point reached at least 
   assert.equal(base.hits.get("walk.gate-opening"), 11, "one opening per feature gate");
   assert.equal(base.hits.get("walk.settled-read"), 11);
 });
+
+// a RE-CROSSING is killed too (spec FR-051): Work plan is rejected back to Specification; the owner dies in the consequence of that reject and at the openings and reads around it
+for (const [point, nth] of [["walk.consume-after-write", 4], ["walk.settled-read", 4], ["walk.gate-opening", 5], ["walk.consume-committed", 4]] as const) {
+  test(`re-crossing walk killed at ${point} (hit ${nth}): the walk equals the uninterrupted re-crossing walk, and no re-crossed gate is carried forward as approved`, { timeout: 120_000 }, async () => {
+    await killRun("plain-recross", PLAIN, point, nth, RECROSS);
+  });
+}

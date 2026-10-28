@@ -5,4 +5,5 @@ export const GATE_USAGE = `usage: kiln owner --store <dir>
        kiln gate state --store <dir> --gate <id>
        kiln feature admit --store <dir> --key <k> --feature <f> --walk <file.json>
        kiln feature next  --store <dir> --feature <f> [--after <gateId>]     (waits for an event; one JSON line)
-       kiln feature state --store <dir> --feature <f>`;
+       kiln feature state --store <dir> --feature <f>
+       kiln feature move  --store <dir> --feature <f> --key <k> --by <decider> --target <gate|@build> --note <text>   (always a reject)`;

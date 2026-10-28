@@ -8,12 +8,12 @@ import * as walk from "#durable/walk/walk.ts";
 
 export function brokenRow(s: Services): TaskKind<any, any, any> {
   const real = rowKind(s);
-  // a store that invents an approval where none exists
-  const inventing: Services = { ...s, store: Object.create(s.store, { snapshot: { value: async (name: string, key: string) => {
-    const real = await s.store.snapshot(name as never, key);
-    if (name === "kiln.move" && !(real as { record?: unknown } | undefined)?.record) return { record: { gateId: key, key: "(restart)", move: { kind: "approve", decidedBy: "restart", briefRef: "" }, decidedAt: 0, seq: 1 } };
-    return real;
-  } } }) };
+  // a store that invents an approval where none exists (built at CALL time: `s.store` does not exist yet while the kinds are being defined)
+  const inventing = (): Services => ({ ...s, store: Object.create(s.store, { snapshot: { value: async (name: string, key: string) => {
+    const found = await s.store.snapshot(name as never, key);
+    if (name === "kiln.move" && !(found as { record?: unknown } | undefined)?.record) return { record: { gateId: key, key: "(restart)", move: { kind: "approve", decidedBy: "restart", briefRef: "" }, decidedAt: 0, seq: 1 } };
+    return found;
+  } } }) });
   return {
     ...real,
     phases: {
@@ -23,7 +23,7 @@ export function brokenRow(s: Services): TaskKind<any, any, any> {
         const next = await change(tx);
         return next && next.status === "waiting" ? { status: "running", checkpoint: next.checkpoint } : next;
       }) }),
-      decide: (task: any, run: any) => walk.decide(inventing, task, run),
+      decide: (task: any, run: any) => walk.decide(inventing(), task, run),
     },
   } as TaskKind<any, any, any>;
 }

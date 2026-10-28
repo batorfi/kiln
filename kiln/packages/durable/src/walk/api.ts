@@ -1,6 +1,7 @@
 // The walks API of an open factory (walk-contract §7): admit a feature, read where it is, wait for the next gate. `move` (the feature-level reject) joins it in r14's US5.
 import type { Services } from "../services.ts";
-import type { TaskApi, TaskCreateOutcome, Key } from "../types.ts";
+import type { FeatureMove, FeatureOutcome, TaskApi, TaskCreateOutcome, Key } from "../types.ts";
+import { submitFeatureMove } from "./moves.ts";
 import type { WalkInput } from "./input.ts";
 import { nextWalk, readWalk, type WalkView } from "./view.ts";
 
@@ -11,6 +12,8 @@ export interface WalkApi {
   state(feature: string): Promise<WalkView>;
   /** Waits (on an event, never by polling) until the open gate differs from `after`, or the walk has ended; then returns the state. */
   next(feature: string, after?: string): Promise<WalkView>;
+  /** A reject made on the FEATURE at any time (r14, walk-contract §6): it withdraws the open gate without settling it, or is held for the walk when no gate is open. */
+  move(feature: string, key: Key, move: FeatureMove): Promise<FeatureOutcome>;
 }
 
 export function makeWalkApi(s: Services, tasks: TaskApi): WalkApi {
@@ -18,5 +21,6 @@ export function makeWalkApi(s: Services, tasks: TaskApi): WalkApi {
     admit: (key, feature, walk) => tasks.create(key, "kiln.row", { feature, walk } as never, { kind: "factory" }),
     state: (feature) => readWalk(s, feature),
     next: (feature, after) => nextWalk(s, feature, after),
+    move: (feature, key, move) => submitFeatureMove(s, feature, key, move),
   };
 }
