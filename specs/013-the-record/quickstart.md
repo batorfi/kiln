@@ -8,7 +8,7 @@ Prerequisites: `cd kiln && npm ci` (Node `^22.19.0 || >=23.6.0`); `npm test` and
 export S=$(mktemp -d)/store
 node packages/cli/src/main.ts owner --store $S &                     # prints: listening … ready
 node packages/cli/src/main.ts feature admit --store $S --key a1 --feature demo --walk fixtures/walk-plain.json
-node tests/walk/drive.ts --store $S --feature demo --by human@r15-script    # approves every gate through the CLI
+node tests/walk/drive.ts --store $S --feature demo --script fixtures/walk-plain.approve-all.json --by human@r15-script    # approves every gate through the CLI
 node packages/cli/src/main.ts record verify --store $S                # PASS record — examined: <N> events, <R> runs
 node packages/cli/src/main.ts record show --store $S --run demo | head -5          # envelopes: id, seq, type, schema, time, subject, actor, …
 node packages/cli/src/main.ts record rebuild-log --store $S --run demo --out /tmp/rebuilt.jsonl

@@ -79,7 +79,7 @@ The first program's factory-log (JSONL in the existing schema, checked by the ex
 
 ### User Story 4 - The old committed walks replay as event streams, byte-identical (Priority: P1)
 
-The first program's committed walks — the closed rows **r1–r3, r7 and r8** — become event streams in the new record's format. Replaying each through the factory-log projection reproduces the original file exactly; replaying each through the validators gives the verdict it always gave, including the one stream that is *meant* to fail.
+The first program's committed walks — the closed rows **r1–r3, r7 and r8**, each one that has a real original (see Clarifications) — become event streams in the new record's format. Replaying each through the factory-log projection reproduces the original file exactly; replaying each through the validators gives the verdict it always gave, including the one stream that is *meant* to fail.
 
 **Why this priority**: it is the proof of the whole design on real data nobody wrote for it, and it is the committed fixture the schema-evolution rule (User Story 5) is tested against. It is also what keeps the first program's history verifiable.
 
@@ -180,7 +180,7 @@ When a feature's walk ends, the factory itself archives it: its bulky working st
 - **FR-011**: The catalog MUST also contain the **experience** events: a gate recorded as **not applicable** with its reason; the experience charter **approved** and **amended**; the design system **approved** and **amended**. Their schemas MUST be present and tested; the behaviour that emits the charter and design-system events belongs to later rows.
 - **FR-012**: The catalog MAY also contain types for groups whose behaviour belongs to later rows (delegation, tool approval, model, egress, wiki, host) only where a row names them; a type with no schema MUST NOT be committable.
 - **FR-013**: An event MUST be **validated against its type's schema at commit time**. An invalid event — unknown type, unknown version, missing or mistyped field, no actor, no cause, a forbidden content or endpoint field — MUST fail its commit, by name, leaving the state unchanged.
-- **FR-014**: The existing rules the first program enforced after the fact MUST become rules of committing where they are about a single event or a gate's state: a gate cannot settle without a decider; a move MUST be in its gate's move vocabulary for the flow the feature was admitted with.
+- **FR-014**: The existing rules the first program enforced after the fact MUST become rules of committing where they are about a single event or a gate's state: a gate cannot settle without a decider (refused at commit). A move outside its gate's move vocabulary for the flow the feature was admitted with is refused when it is submitted (as r13 already does) and is also flagged by the stream rules of FR-043 if it ever appears in a record.
 - **FR-015**: Adding an event type MUST be a catalog change that a test covers; changing a payload's meaning MUST be a new schema version; removing a type MUST fail the catalog check until the removal is declared.
 
 **Schema evolution (EVT-3a)**
@@ -207,7 +207,7 @@ When a feature's walk ends, the factory itself archives it: its bulky working st
 
 **The old walks as event streams (EVT-3a proof)**
 
-- **FR-050**: The first program's committed walks — closed rows **r1, r2, r3, r7 and r8** — MUST each be available as a committed **event stream** in the record's format, with a note saying how it was derived from the original and which original it is compared with. A walk whose original cannot be obtained by running the frozen first-program walkers unchanged (or, for r7, from the committed file) MUST NOT be reconstructed by hand: the row MUST name it and say why, and the check MUST report the count of streams replayed against the five the row names.
+- **FR-050**: The first program's committed walks — closed rows **r1, r2, r3, r7 and r8** — MUST each be available as a committed **event stream** where it has an original, in the record's format, with a note saying how it was derived from the original and which original it is compared with. A walk whose original cannot be obtained by running the frozen first-program walkers unchanged (or, for r7, from the committed file) MUST NOT be reconstructed by hand: the row MUST name it and say why, and the check MUST report the count of streams replayed against the five the row names.
 - **FR-051**: Replaying each stream through the factory-log projection MUST reproduce the original file **byte for byte**, and replaying it through the validators MUST give the verdict the first program gave — including the stream the first program kept *because it fails*.
 - **FR-052**: Replay MUST be the test that proves every upcaster (FR-022). A catalog change that alters any replay result MUST fail.
 
@@ -234,6 +234,7 @@ When a feature's walk ends, the factory itself archives it: its bulky working st
 - **Backbone / Consumer / Cursor**: delivery of committed events to registered readers; each reader's durable position.
 - **Projection**: anything rebuilt from the record; here the **factory-log**, in the first program's schema, one file per feature run.
 - **Event stream (committed walk)**: an old walk converted to events, kept as a fixture; the test data of replay.
+- **Run**: the events of one feature, joined by their correlation `run:<feature>`; the factory-log is one file per run. The `walk.*` event types are the concept's row events (`row.*`) under the names r14 gave them.
 - **Feature archive**: the checksummed export of a finished feature's working state, with the keys that go with it.
 - **Measurement**: a reported figure with its method (record size, rebuild time, overhead).
 
@@ -241,13 +242,13 @@ When a feature's walk ends, the factory itself archives it: its bulky working st
 
 ### Measurable Outcomes
 
-- **SC-001**: After a scripted interface walk (twelve gates) and a scripted plain walk, read by a fresh reader, **100 %** of state changes have exactly one event, sequence numbers are gap-free, and **0** events lack an actor or a cause; the same holds after the owner is killed at every named step of the walk (r14's kill points).
+- **SC-001**: After a scripted interface walk (twelve gates) and a scripted plain walk, read by a fresh reader, **100 %** of state changes have exactly one event — counted as: each gate document, each move record, each terminal unit, each lane lease change, each ledger entry and each walk outcome has its event, and no event has no such state — sequence numbers are gap-free, and **0** events lack an actor or a cause; the same holds after the owner is killed at every named step of the walk (r14's kill points).
 - **SC-002**: The catalog lists a versioned schema for **every** event type the factory produces (counted against the types the source can commit), including the not-applicable, charter and design-system events; **100 %** of a negative suite of invalid events (at least one per rule in FR-013) is refused by name with the state unchanged; a catalog or check that examines nothing fails.
-- **SC-003**: The factory-log rebuilt from the record is **byte-identical** to the live file, for **each** feature run, for **both** scripted walks and after a kill at **every** named point of delivery and cursor advance; the existing validators pass on it.
+- **SC-003**: The factory-log rebuilt from the record is **byte-identical** to the live file, for **each** feature run, for **both** scripted walks and after a kill at **every** named point of delivery and cursor advance; the existing validators pass on it. The proof walks decide as `human@…` (the validators' format for a person); a walk decided by a scripted `script:…` id is correctly refused by them as not human.
 - **SC-004**: **Every** old walk that has an original (at least r7's two) replays to its original bytes, and the stream kept because it must fail still fails, naming the same rule; the run states how many of the five named walks it replayed and, for each one it did not, why not.
 - **SC-005**: Stores written by r13 and r14 open with the new owner, every stored entry reads as a current-version event, and **0** bytes of the stored entries change.
 - **SC-006**: A breaking version added to a test catalog with its upcaster leaves **every** committed replay byte-identical; an upcaster that is lossy or impure is caught by the check.
-- **SC-007**: A consumer that stalls forever does not change the outcome or add more than a measurement-noise difference to the scripted walk, which still completes in **under 3 s** in-process (r14's budget); a killed consumer resumes from its cursor and ends equal to an uninterrupted one.
+- **SC-007**: A consumer that stalls forever does not change the outcome of the scripted walk, which still completes in **under 3 s** in-process (r14's budget); a killed consumer resumes from its cursor and ends equal to an uninterrupted one.
 - **SC-008**: A feature whose walk ends is archived by the factory with no command, verifies by checksum, and its documents are compacted to tombstones only after verification, exactly once even when the owner is killed at every step of archiving; the record and the factory-log rebuild are **unchanged** by it; the feature's move keys are inside the archive.
 - **SC-009**: The size of the record per event and per walk, the rebuild time for a generated record of a year's size, and the walk overhead are reported with their method in the row's baseline.
 - **SC-010**: Everything r13 and r14 proved still passes (default tier, proof tier), `legacy/` and `specs/ROADMAP.md` are unchanged by the build, and `kiln check` passes with the record's check added and never vacuous.

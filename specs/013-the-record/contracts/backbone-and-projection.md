@@ -14,6 +14,7 @@ interface Backbone {
 
 - Delivery order is sequence order; a batch is at most 256 events of one consumer; **no** commit awaits `notify`.
 - **Transactional** consumer: `apply(tx, batch)` and the cursor advance are one commit → effect exactly once. **Effect** consumer: `deliver(batch)` then a cursor commit → at least once, idempotent by contract; the proof repeats each delivery.
+- A consumer whose cursor is ahead of `head` stops and is reported `cursor-ahead-of-head` (it never skips forward).
 - A consumer that throws stops at the failing event; `failed` is recorded in its cursor; the factory and the other consumers go on; `retry` or a restart tries again.
 - No timer, no poll: the loop awaits the in-memory signal; on start it reads its cursor and catches up.
 - Kill points: `backbone.batch-read`, `backbone.apply-after-write`, `backbone.committed`, `backbone.delivered`.
@@ -44,6 +45,7 @@ Run on the **events** of a run (before projecting) and, through the first progra
 | delegation distinct from a person's move | `delegation.armed` is its own event | R4 |
 | no content or remote key | the forbidden set | R5 |
 | every move in its gate's vocabulary for the pinned flow | `move.committed.kind` ∈ vocabulary(gate, flow) | G3 |
+| causation chain unbroken | every `evt:<n>` points to an earlier event; the chain reaches a `cmd:` root (`causation-chain-broken`) | — |
 | never vacuous | an empty stream, or a check that examined no events, fails and says how many it examined | R6 |
 
 ## 5. Record tools (offline, a fresh reader — they never open the store as an owner)
@@ -51,7 +53,7 @@ Run on the **events** of a run (before projecting) and, through the first progra
 ```
 kiln record show     --store <dir> [--run <feature>] [--from n] [--to n]     one JSON event per line
 kiln record status   --store <dir>                                           head, chunks, per-consumer {seq, lag, failed}
-kiln record verify   --store <dir> [--run <feature>]                         E1–E5 on the stored record; prints PASS/FAIL with counts examined
+kiln record verify   --store <dir> [--run <feature>]                         E1–E5, E7 on the stored record; prints PASS/FAIL with counts examined and the `seq` reached
 kiln record rebuild-log --store <dir> --run <feature> [--out <file>]         the reducer over the run; prints bytes or writes the file
 ```
 

@@ -28,6 +28,7 @@ Each member builds a mutated copy (JSON clone) of the catalog or a stream and mu
 | `catalog-unknown-emitted` | source commits a type the catalog lacks |
 | `catalog-dead-type` | a type marked emitted that no file commits |
 | `stream-gap` | sequence 1,2,4 |
+| `causation-chain-broken` | an `evt:<n>` pointing at no earlier event |
 | `stream-time-backwards` | an event earlier than its predecessor |
 | `stream-silent-approval` | `gate.settled` with a non-human decider and no delegation |
 | `stream-delegation-merged` | a delegation folded into a person's move |

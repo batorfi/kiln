@@ -55,6 +55,7 @@ interface Event<D = unknown> {
 | | `lane.released` | E | `holder`, `reason?` | internal |
 | | `lane.held` | L | `holder`, `reason?` | internal |
 | | `lane.cost-recorded` | L | `switches`, `wallClock` | internal |
+| roadmap | `roadmap.amended`, `roadmap-gate.decided` | S | `rowsDigest`, `decision` (`approve`\|`revise`\|`reject`\|`edit-rows`\|`add-row`\|`drop-row`), `by` | internal |
 | delegation | `delegation.armed` | L, S | `of`, `by`, `at`, `reviewer?` | internal |
 | command | `command.accepted` | E | `kind`, `requestHash` | internal |
 | | `command.refused` | S | `kind`, `reason` | internal |
@@ -74,7 +75,7 @@ Types for groups of later rows (tool approval, model, egress, wiki, host, bench,
 | `kiln.event` | chunk number `n` | `{events: Event[]}` — events `256n+1…256n+256`, complete envelopes | `appendEvent`, same commit as the state |
 | `kiln.record` | `head` | `{next, legacyThrough, chunk}` — `next` the next sequence number; `legacyThrough` the last sequence number held in `kiln.outbox/main` | `appendEvent` |
 | `kiln.record` | `run:<feature>` | `{seqs: number[]}` — the run's events | `appendEvent` when `correlation` is set |
-| `kiln.cursor` | consumer name | `{seq, version, failed?: {seq, error}}` | the backbone |
+| `kiln.cursor` | consumer name | `{seq, version, failed?: {seq, error}}` (`error` may be `cursor-ahead-of-head`) | the backbone |
 | `kiln.projection` | `log:<feature>` | `{state, lines: string[], seq}` — the reducer state and the lines so far | consumer `factory-log` |
 | `kiln.archive` | `<feature>` | `{archive, sha256, bytes, at, keys: Record<Key, string>}` — the marker FR-062 asks for | the archive task's commit |
 
@@ -107,6 +108,7 @@ Per-type mapping table: `contracts/event-catalog.md` §4.
 ## 5. Consumer and cursor (R8)
 
 ```ts
+interface Ctx { digest(text: string): string; siblings(seq: number, key: string): Event[] }   // for upcasters (research R7)
 interface Consumer {
   name: string; version: number; from?: number;       // default 1
   mode: "transactional" | "effect";
@@ -160,4 +162,5 @@ kiln/fixtures/walks/<name>.meta.json      { row, walker, options, originalSha256
 | **E4** | for every run, the reducer over its events from 1 equals the live `lines` and the live file |
 | **E5** | every cursor ≤ head; a transactional consumer's documents equal a fresh fold to its cursor |
 | **E6** | archive: file present ⇔ verifies against `feature.archived.sha256`; `feature.archived` appears once per feature; tombstones present ⇔ the event is |
+| **E7** | state ⇔ event: each gate document, move record, terminal unit, lane change, ledger entry and walk outcome has exactly its one event, and no such event lacks its state |
 | W1–W4, I1–I10 | r13/r14's, unchanged |

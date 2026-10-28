@@ -26,6 +26,7 @@ appendEvent(tx: Tx, draft: {
 | `event-field-forbidden` | a key in `data` is in the forbidden set (data-model §1) |
 | `event-actor-invalid` | no actor, or it does not match the grammar |
 | `event-cause-missing` | no causation |
+| `event-cause-dangling` | an `evt:<n>` causation where `n` is not an earlier sequence number |
 | `event-subject-invalid` | an empty subject, or a gate subject that is not a gate id |
 | `event-time-invalid` | not an ISO instant |
 
@@ -37,7 +38,7 @@ appendEvent(tx: Tx, draft: {
 ```ts
 interface CatalogEntry { type: string; current: number; versions: { [n: number]: JsonSchema }; privacy: Privacy; emitted: boolean;
                          upcast?: { [fromVersion: number]: (e: Event, ctx: Ctx) => Event } }
-interface Ctx { digest(text: string): string }
+interface Ctx { digest(text: string): string; siblings(seq: number, key: string): Event[] }
 catalog: ReadonlyMap<string, CatalogEntry>;
 ```
 
@@ -73,7 +74,7 @@ readRun(src, feature: string): AsyncIterable<Event>
 | `walk.move-ignored` (r14-review) | `{target, noteRef, noteDigest, why}` | `note`, `because` text |
 | any other | `record.unknown/1 {originalType, digest}` | the entry's data |
 
-**Note on `gate.settled`.** A version 0 settled entry holds only the move key. The current schema also wants `move` and `decidedBy` (FR-014). The upcaster takes them from the entry's own **sibling** `move.committed` entry (same subject, same cause key, earlier sequence) — the reader has the whole stream, so the upcaster is given `ctx.siblings`; it is still a pure function of its inputs. If the sibling is absent (a truncated stream) the read fails `event-sibling-missing`, naming the entry.
+**Note on `gate.settled`.** A version 0 settled entry holds only the move key. The current schema also wants `move` and `decidedBy` (FR-014). The upcaster takes them from the entry's own **sibling** `move.committed` entry (same subject, same cause key, earlier sequence) — `readRecord` supplies `ctx.siblings` from a bounded window of the preceding entries, so the upcaster is still a pure function of its inputs. If the sibling is absent (a truncated stream) the read fails `event-sibling-missing`, naming the entry.
 
 ## 5. Test obligations
 

@@ -15,7 +15,7 @@ r13 left an interim outbox, r14 filled it with what a walk does, and both said "
 3. **The backbone and the factory-log** — consumers with durable cursors (transactional: effect and cursor in one commit; effect: at least once, idempotent), in-process, no timer; the **factory-log** as a pure reducer from events to the first program's lines, one file per feature run, rebuilt byte-identically.
 4. **Replay, archive, measurement** — the first program's walks captured once outside `legacy/` and replayed byte-identically (any that cannot be captured is reported, never faked); a feature archive created automatically when a walk ends, verified before any tombstone is written; the record's size and rebuild time measured and reported.
 
-The rest of the row is **proof**: `kiln check record` (never vacuous, with a 17-member negative suite), a negative suite for the commit, the r13/r14 kill harness extended with nine new named points and a stream/projection/archive oracle (E1–E6), and four deliberately weakened implementations each shown to be caught. Nothing of r16–r21 is pulled in: no workers, no model events, no live push, no delegation behaviour, no time travel.
+The rest of the row is **proof**: `kiln check record` (never vacuous, with an 18-member negative suite), a negative suite for the commit, the r13/r14 kill harness extended with nine new named points and a stream/projection/archive oracle (E1–E6), and four deliberately weakened implementations each shown to be caught. Nothing of r16–r21 is pulled in: no workers, no model events, no live push, no delegation behaviour, no time travel.
 
 ## Technical Context
 
@@ -124,16 +124,19 @@ kiln/
 │   │   ├── outbox.ts                                   # becomes a thin read-only shim over read.ts (compat view)
 │   │   ├── store.ts types.ts hooks.ts factory.ts       # + DocNames · OutboxType→catalog · KILL_POINTS · wiring: backbone start/stop
 │   │   ├── commands.ts                                 # + command.accepted
+│   │   ├── library/tasks.ts open.ts                    # the seam wakes the backbone: wrapTx marks an append; runtime and root commits call onAppended after they resolve
 │   │   ├── gate/ tasks/ walk/                          # call appendEvent; refs instead of notes; units emit unit.*; the row's terminal commit creates the archive task
 │   │   ├── inspect.ts walk/view.ts                     # read through readRecord (compat view)
 │   │   └── channel/                                    # unchanged
 │   ├── lane/src/lane-task.ts                           # appendEvent + correlation of the holder's run
 │   └── cli/src/record-commands.ts                      # kiln record show|status|verify|rebuild-log|archive-show
 ├── checks/record.ts index.ts tests/record-negative.ts record-check.test.ts     # the fifth check
-├── fixtures/walks/                                     # the captured streams (R10) and an r14-shaped store fixture
+├── fixtures/walks/                                     # the captured streams (R10)
+├── fixtures/stores/                                    # r14-shaped stores made with r14's code (T005): r14-interface-done, r14-plain-waiting
 ├── schemas/events/*.json                               # generated from the catalog, kept equal by the check
 └── tests/
-    ├── measure/record.ts                               # R15
+    ├── measure/record.ts outbox-baseline.ts            # R15; the single-document "before"
+    ├── tools/make-r14-store.ts gen-event-schemas.ts    # fixture and schema generators
     ├── walk/drive.ts                                   # unchanged: `--by` already sets the decider
     └── proof/ …                                        # (the durable proof support, extended)
 packages/durable/tests/record/   append-negative · catalog · upcast · store-compat · read · backbone · factory-log · archive · measure-smoke  (.test.ts)
