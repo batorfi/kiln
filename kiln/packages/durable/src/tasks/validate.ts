@@ -38,6 +38,7 @@ export function checkUnit(v: unknown): string | null {
   if (v.stepMs !== undefined && (!Number.isInteger(v.stepMs) || (v.stepMs as number) < 0 || (v.stepMs as number) > 60_000)) return "stepMs is an integer from 0 to 60000";
   return null;
 }
+const RESERVED_FEATURES: readonly string[] = ["lane"];
 export function checkRow(v: unknown): string | null {
   if (!isObj(v)) return "a row's input is an object";
   const extra = only(v, ["feature", "script", "walk"]);
@@ -46,6 +47,7 @@ export function checkRow(v: unknown): string | null {
   if (v.script !== undefined && v.walk !== undefined) return "a row has a script OR a walk, not both";
   if (v.walk !== undefined) {
     if (!FEATURE_PATTERN.test(v.feature)) return `a walk's feature name goes into gate ids: it matches ${FEATURE_PATTERN} (lower-case letters, digits, . _ -)`;
+    if (RESERVED_FEATURES.includes(v.feature)) return `"${v.feature}" is reserved: the owner's own entries are recorded under it`;
     return checkWalk(v.walk);
   }
   if (!Array.isArray(v.script) || v.script.length > 50) return "script is a list of at most 50 unit specs (or give a walk)";

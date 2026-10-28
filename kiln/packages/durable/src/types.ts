@@ -91,7 +91,7 @@ export type OutboxType =
   | "gate.opened" | "move.committed" | "gate.settled" | "lane.acquired" | "lane.released" | "lane.swapped"
   // r14 (data-model §6): what the walk records, each in the commit of the state it changes
   | "walk.admitted" | "gate.not-applicable" | "gate.became-applicable" | "gate.skipped" | "gate.withdrawn" | "walk.returned" | "walk.fix-round" | "walk.split"
-  | "walk.left-lane" | "walk.not-admitted" | "walk.completed";
+  | "walk.left-lane" | "walk.not-admitted" | "walk.completed" | "walk.move-ignored";
 export interface OutboxEntry {
   type: OutboxType;
   /** The gate id, or "lane". */

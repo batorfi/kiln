@@ -59,8 +59,7 @@ export function vectorOf(flow: FlowDefinition, w: WalkState, gate: GateKey): Rec
   return v;
 }
 
-export function startState(flow: FlowDefinition, pinned: PinnedState, first: GateKey): WalkState {
-  void flow;
+export function startState(_flow: FlowDefinition, pinned: PinnedState, first: GateKey): WalkState {
   return { pinned, cursor: first, rounds: {}, approved: {}, revs: { "@build": "build#0" }, recross: null, fix: { used: 0, ix: 0, verdicts: [], personRejected: false }, prelude: [] };
 }
 

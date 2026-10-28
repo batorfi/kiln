@@ -5,7 +5,7 @@
 // The owner advances it: after a gate's task ends, the row wakes, reads the STORED move record (never memory), applies the consequence the flow data gives, and opens the next gate under a
 // deterministic key — so a kill between the move and the next opening is repaired by the same key coming back as a `repeat`. THE ROW NEVER WRITES A MOVE RECORD and has no path that completes a
 // gate: `decide` ends only because the gate task ended. The people's moves are r13's gate contract, unchanged.
-import { applicability, cap as capOf, flowOf, gateDef, targetsOf, triage as triageOf, triageProposal } from "#contracts/flow/index.ts";
+import { applicability, cap as capOf, flowOf, targetsOf, triage as triageOf, triageProposal } from "#contracts/flow/index.ts";
 import type { Applicability, FlowDefinition } from "#contracts/flow/types.ts";
 import type { GateKey } from "#contracts/moves.ts";
 import { openGate } from "../gate/open.ts";
@@ -31,14 +31,14 @@ export interface WalkResult {
   outcome: "merged" | "not-admitted" | "left-lane";
   approved: string[];
 }
-type Run<C extends { phase: string }> = Runtime<any, WalkResult>;
+type Run = Runtime<any, WalkResult>;
 type Task<C extends WalkCheckpoint> = RunningTask<{ feature: string; walk: WalkInput }, C>;
 const FLOW = (): FlowDefinition => flowOf("v2");
 const done = (r: WalkResult): NextState<any, WalkResult> => ({ status: "terminal", outcome: { status: "completed", result: r } });
 const factoryActor = "factory";
 
 // ── admit ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-export async function admit(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "admit" }>>, run: Run<any>): Promise<void> {
+export async function admit(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "admit" }>>, run: Run): Promise<void> {
   const { feature, walk } = task.input;
   const { round, instruction } = task.checkpoint;
   const gateId = `gate:${feature}:gate0:${round}`;
@@ -51,7 +51,7 @@ export async function admit(s: Services, task: Task<Extract<WalkCheckpoint, { ph
 }
 
 // ── admission (woken: the admission gate's task ended) ──────────────────────────────────────────────────────────────────────────────────────
-export async function admission(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "admission" }>>, run: Run<any>): Promise<void> {
+export async function admission(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "admission" }>>, run: Run): Promise<void> {
   const { feature } = task.input;
   const { gateId, round } = task.checkpoint;
   await s.hooks.at("walk.admission-read");
@@ -74,7 +74,7 @@ export async function admission(s: Services, task: Task<Extract<WalkCheckpoint, 
 }
 
 // ── pin: evaluate, ONCE, what the admission decided — and record every outcome in the commit that changes the state ────────────────────────
-export async function pin(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "pin" }>>, run: Run<any>): Promise<void> {
+export async function pin(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "pin" }>>, run: Run): Promise<void> {
   const { feature, walk } = task.input;
   const { admission: adm } = task.checkpoint;
   await s.hooks.at("walk.pin-begin");
@@ -89,7 +89,7 @@ export async function pin(s: Services, task: Task<Extract<WalkCheckpoint, { phas
   const skipped: Partial<Record<GateKey, string>> = {};
   for (const k of skip) skipped[k] = walk.triage!.reasoning;
   const c = capOf(flow, adm.admit.fixRounds);
-  const pinned: PinnedState = { applicability: applic, skipped, required, cap: c.ok ? c.cap : 2, overrideTriage: adm.admit.overrideTriage === true };
+  const pinned: PinnedState = { applicability: applic, skipped, required, cap: capChecked(c), overrideTriage: adm.admit.overrideTriage === true };
   const first = nextAfterGate0(flow, pinned);
   const w = { ...startState(flow, pinned, first), fix: { used: 0, ix: 0, verdicts: [] as ("pass" | "fail")[], personRejected: false } };
 
@@ -111,6 +111,11 @@ export async function pin(s: Services, task: Task<Extract<WalkCheckpoint, { phas
   await s.hooks.at("walk.pin-committed");
   s.watch.notify(feature);
 }
+/** The cap the admission carried was judged (0–3) when the move was made; a refusal here means the stored move and the flow disagree, which is a fault, not a default to fall back on. */
+function capChecked(c: ReturnType<typeof capOf>): number {
+  if (!c.ok) throw new Error(`the admission's fix-round cap is not valid for this flow: ${c.refusal}`);
+  return c.cap;
+}
 function nextAfterGate0(flow: FlowDefinition, pinned: PinnedState): GateKey {
   const p = pinsOf(pinned);
   const dropped = new Set<GateKey>([...p.notApplicable, ...p.skipped]);
@@ -121,7 +126,7 @@ function nextAfterGate0(flow: FlowDefinition, pinned: PinnedState): GateKey {
 
 // ── a feature-level move waiting for the walk (recorded while no gate was open, or left by a withdrawn gate): applied BEFORE anything else, and the step that was running is ignored ──────────────
 /** If a feature-level move is pending, applies it in ONE commit (clearing it) and returns true; the caller then ends its phase. */
-async function consumePending(s: Services, feature: string, w: WalkState, run: Run<any>): Promise<boolean> {
+async function consumePending(s: Services, feature: string, w: WalkState, run: Run): Promise<boolean> {
   const peek = await s.store.snapshot<WalkDoc>("kiln.walk", feature);
   if (!peek?.pending) return false;
   const flow = FLOW();
@@ -142,7 +147,7 @@ async function consumePending(s: Services, feature: string, w: WalkState, run: R
 }
 
 // ── work: the scripted units of the cursor gate's next round, one at a time ──────────────────────────────────────────────────────────────────
-export async function work(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "work" }>>, run: Run<any>): Promise<void> {
+export async function work(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "work" }>>, run: Run): Promise<void> {
   const { w, todo, unitId } = task.checkpoint;
   if (unitId !== undefined) {
     const [o] = await run.outcomes([unitId]);
@@ -163,7 +168,6 @@ export async function work(s: Services, task: Task<Extract<WalkCheckpoint, { pha
   const [role, ...rest] = todo;
   const round = (w.rounds[w.cursor] ?? 0) + 1;
   const stepMs = task.input.walk.script?.stepMs;
-  void flow;
   await run.commit(async (tx) => {
     const id = await tx.createTask("kiln.unit", { label: `${role}:${w.cursor}:${round}`, steps: 1, ...(stepMs ? { stepMs } : {}) } as unknown as JSON, { kind: "task", taskId: task.id });
     return { status: "waiting", checkpoint: { phase: "work", w, todo: rest, unitId: id }, on: [id] };
@@ -177,7 +181,7 @@ export async function work(s: Services, task: Task<Extract<WalkCheckpoint, { pha
  * worker fixes, the same verifier checks again. Each round is ONE entry (`mitigate`, by the factory) in the same commit as the checkpoint that starts it, keyed by its own number: a kill neither loses nor
  * repeats a round. When the verdict is `pass` or the rounds are used up, the gate opens for a person with the cap, the rounds used and the verdicts in its brief.
  */
-export async function verify(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "verify" }>>, run: Run<any>): Promise<void> {
+export async function verify(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "verify" }>>, run: Run): Promise<void> {
   const { feature, walk } = task.input;
   const { w } = task.checkpoint;
   if (await consumePending(s, feature, w, run)) return;
@@ -198,7 +202,7 @@ export async function verify(s: Services, task: Task<Extract<WalkCheckpoint, { p
 }
 
 // ── open: the cursor gate's next round, bound to the feature, under a deterministic key ──────────────────────────────────────────────────────
-export async function open(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "open" }>>, run: Run<any>): Promise<void> {
+export async function open(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "open" }>>, run: Run): Promise<void> {
   const { feature, walk } = task.input;
   const flow = FLOW();
   const base = task.checkpoint.w;
@@ -221,7 +225,7 @@ export async function open(s: Services, task: Task<Extract<WalkCheckpoint, { pha
 }
 
 // ── decide (woken: the gate's task ended): the STORED record says how — a person's move, or a feature-level withdrawal ─────────────────────────────────────────────────────────────────────────────
-export async function decide(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "decide" }>>, run: Run<any>): Promise<void> {
+export async function decide(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "decide" }>>, run: Run): Promise<void> {
   const { feature, walk } = task.input;
   const { w, gateId } = task.checkpoint;
   const flow = FLOW();
@@ -246,6 +250,9 @@ export async function decide(s: Services, task: Task<Extract<WalkCheckpoint, { p
       if (!out || !out.end) {
         const next = applyFeatureReject(flow, out ? out.w : w, { key: f.key, decidedBy: f.move.decidedBy, target: f.move.target, note: f.move.note, gateId: f.gateId });
         out = out ? { w: next.w, todo: next.todo, outbox: [...out.outbox, ...next.outbox] } : next;
+      } else {
+        // the person's own move ended the walk, so there is nothing to send back: the feature-level move was accepted but cannot act. Say so in the same commit, never silently.
+        await appendOutbox(tx, { type: "walk.move-ignored", subject: feature, at: s.now(), actor: f.move.decidedBy, cause: f.key, data: { target: f.move.target, note: f.move.note, because: `the walk ended (${out.end.outcome}) by the move that settled ${gateId}` } });
       }
     }
     if (!out) throw new Error(`the gate ${gateId} was withdrawn but no feature-level move is waiting for the walk`);
@@ -260,5 +267,4 @@ export async function decide(s: Services, task: Task<Extract<WalkCheckpoint, { p
   });
   await s.hooks.at("walk.consume-committed");
   s.watch.notify(feature);
-  void gateDef;
 }

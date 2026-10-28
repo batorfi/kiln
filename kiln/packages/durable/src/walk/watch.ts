@@ -13,7 +13,13 @@ export class Watch {
     const set = this.waiters.get(feature) ?? new Set();
     set.add(entry);
     this.waiters.set(feature, set);
-    return { promise, disarm: () => void set.delete(entry) };
+    return {
+      promise,
+      disarm: () => {
+        set.delete(entry);
+        if (set.size === 0 && this.waiters.get(feature) === set) this.waiters.delete(feature); // an abandoned feature leaves no empty set behind
+      },
+    };
   }
   notify(feature: string): void {
     const set = this.waiters.get(feature);

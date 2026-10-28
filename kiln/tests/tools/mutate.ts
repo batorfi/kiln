@@ -17,10 +17,28 @@ if (!spec) {
 interface Mutation { id: string; why: string; file: string; find: string; replace: string; tests: string[]; expect?: string }
 const mutations: Mutation[] = JSON.parse(readFileSync(resolve(spec), "utf8"));
 const dirty = (file: string): boolean => spawnSync("git", ["diff", "--quiet", "--", join(kilnDir, file)], { cwd: kilnDir }).status !== 0;
+// `git diff` reports an UNTRACKED file as clean and `git checkout` cannot restore it, so a sabotage there would stay: only a file git tracks may be mutated.
+const tracked = (file: string): boolean => spawnSync("git", ["ls-files", "--error-unmatch", "--", join(kilnDir, file)], { cwd: kilnDir, stdio: "ignore" }).status === 0;
+// The file being sabotaged right now, so an interrupt (Ctrl-C, SIGTERM) restores it instead of leaving the defect behind.
+let mutating: string | null = null;
+const restore = (): void => {
+  if (mutating) execFileSync("git", ["checkout", "--", mutating], { cwd: kilnDir });
+  mutating = null;
+};
+for (const sig of ["SIGINT", "SIGTERM"] as const) {
+  process.on(sig, () => {
+    restore();
+    process.exit(130);
+  });
+}
 
 let bad = 0;
 for (const m of mutations) {
   const path = join(kilnDir, m.file);
+  if (!tracked(m.file)) {
+    console.error(`REFUSED ${m.id}: ${m.file} is not tracked by git, so a sabotage could not be undone`);
+    process.exit(2);
+  }
   if (dirty(m.file)) {
     console.error(`REFUSED ${m.id}: ${m.file} has uncommitted changes — mutate only a committed, clean tree`);
     process.exit(2);
@@ -32,6 +50,7 @@ for (const m of mutations) {
   }
   let outcome = "";
   try {
+    mutating = path;
     writeFileSync(path, original.replace(m.find, m.replace));
     const r = spawnSync(process.execPath, ["--test", ...m.tests], { cwd: kilnDir, encoding: "utf8", env: { ...process.env, NODE_TEST_CONTEXT: undefined }, timeout: 300_000 });
     const out = r.stdout + r.stderr;
@@ -40,7 +59,7 @@ for (const m of mutations) {
     outcome = caught ? `CAUGHT   ${m.id} — ${failing.slice(0, 3).join(" | ") || "the run failed"}` : `NOT CAUGHT ${m.id}: exit ${r.status}${m.expect ? `, expected /${m.expect}/` : ""}`;
     if (!caught) bad++;
   } finally {
-    execFileSync("git", ["checkout", "--", path], { cwd: kilnDir });
+    restore();
   }
   const clean = !dirty(m.file);
   console.log(`${outcome}\n         (${m.why}) tree clean after: ${clean}`);

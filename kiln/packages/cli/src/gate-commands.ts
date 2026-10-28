@@ -46,7 +46,7 @@ export async function gateCommand(sub: string | undefined, args: string[]): Prom
   if (!wants) return usage(`unknown gate command "${String(sub)}"`);
   const bad = need(f, wants);
   if (bad) return usage(bad);
-  // a malformed --admit file is a usage error: it is found BEFORE any connection, so nothing is sent
+  // a malformed --admit file is a usage error: it is found BEFORE any connection, so nothing is sent (a malformed --brief is found once connected; either way nothing reaches the owner)
   let admit: unknown;
   if (sub === "move" && f.admit !== undefined) {
     try { admit = JSON.parse(readFileSync(f.admit, "utf8")); } catch (e) { return usage(`--admit: ${(e as Error).message}`); }

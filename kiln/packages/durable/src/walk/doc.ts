@@ -7,6 +7,8 @@ export type WalkStatus = "admitting" | "active" | "left-lane" | "not-admitted" |
 export interface WalkDoc {
   feature?: string;
   status?: WalkStatus;
+  /** The command key that admitted the feature (set in the commit that creates its row): a second admission under another key is refused. */
+  admittedBy?: Key;
   /** Set in the SAME commit that opens a walk gate; cleared when the gate ends. */
   openGateId?: GateId | null;
   /** Every feature-level move ever made, by key: exactly once. */

@@ -59,15 +59,37 @@ export async function readWalk(s: Services, feature: string): Promise<WalkView> 
 /** True when `v` is something the caller waiting `after` a gate should be told: a different open gate, or the end of the walk. */
 export const changed = (v: WalkView, after: string | undefined): boolean => (v.openGate ? v.openGate.gateId !== after : (ENDED as readonly string[]).includes(v.status));
 
-/** `feature next`: re-reads the store until something changed. The waiter is armed BEFORE each read (no change is lost) and holds no timer (constitution IX). */
-export async function nextWalk(s: Services, feature: string, after?: string): Promise<WalkView> {
+/**
+ * `feature next`: re-reads the store until something changed. The waiter is armed BEFORE each read (no change is lost) and holds no timer (constitution IX). `signal` ends the wait when the caller
+ * went away (its connection closed): the waiter is released at once and the call rejects, so an abandoned `next` never lingers re-reading the store at every change.
+ */
+export async function nextWalk(s: Services, feature: string, after?: string, signal?: AbortSignal): Promise<WalkView> {
   for (;;) {
+    if (signal?.aborted) throw new Error("the caller went away");
     const armed = s.watch.arm(feature);
-    const v = await readWalk(s, feature);
+    let v: WalkView;
+    try {
+      v = await readWalk(s, feature);
+    } catch (e) {
+      armed.disarm();
+      throw e;
+    }
     if (changed(v, after)) {
       armed.disarm();
       return v;
     }
-    await armed.promise;
+    let onAbort: (() => void) | undefined;
+    try {
+      await Promise.race([
+        armed.promise,
+        new Promise<never>((_, reject) => {
+          onAbort = () => reject(new Error("the caller went away"));
+          signal?.addEventListener("abort", onAbort, { once: true });
+        }),
+      ]);
+    } finally {
+      armed.disarm();
+      if (onAbort) signal?.removeEventListener("abort", onAbort);
+    }
   }
 }
