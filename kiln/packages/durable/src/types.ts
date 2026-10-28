@@ -87,11 +87,8 @@ export type GateState = { state: "unknown" } | { state: "waiting" } | { state: "
 export const refused = (reason: RefusalReason, extra: { winner?: Key; original?: Key; detail?: string } = {}): Refusal => ({ status: "refused", reason, ...extra });
 
 // ── the outbox: the interim event stream (FR-019; r15 adopts it) ─────────────────────────────────────────────────────────
-export type OutboxType =
-  | "gate.opened" | "move.committed" | "gate.settled" | "lane.acquired" | "lane.released" | "lane.swapped"
-  // r14 (data-model §6): what the walk records, each in the commit of the state it changes
-  | "walk.admitted" | "gate.not-applicable" | "gate.became-applicable" | "gate.skipped" | "gate.withdrawn" | "walk.returned" | "walk.fix-round" | "walk.split"
-  | "walk.left-lane" | "walk.not-admitted" | "walk.completed" | "walk.move-ignored";
+/** A catalog type name (contracts/src/events/catalog). r15 froze the interim list: the record's types are the catalog's, and a type outside it cannot be committed. */
+export type OutboxType = string;
 export interface OutboxEntry {
   type: OutboxType;
   /** The gate id, or "lane". */

@@ -7,7 +7,8 @@ import { earlierThan, flowOf } from "#contracts/flow/index.ts";
 import { canonicalJson, plain } from "../canonical.ts";
 import type { MoveDocData } from "../gate/documents.ts";
 import { deliverWithdraw } from "../gate/move.ts";
-import { appendOutbox } from "../outbox.ts";
+import { isActor } from "#contracts/events/grammar.ts";
+import { appendEvent } from "../record/append.ts";
 import type { Services } from "../services.ts";
 import { KEY_MAX, refused, type FeatureMove, type FeatureMoveRecord, type FeatureOutcome, type Key } from "../types.ts";
 import { ENDED, walkDoc, walkExists, type WalkDoc } from "./doc.ts";
@@ -28,6 +29,7 @@ export async function submitFeatureMove(s: Services, feature: string, key: Key, 
   try {
     if (typeof key !== "string" || key.trim() === "" || key.length > KEY_MAX) return refused("invalid-move", { detail: "the key is a non-empty string of at most 200 characters" });
     if (typeof move !== "object" || move === null) return refused("invalid-move", { detail: "the move is not an object" });
+    if (typeof move.decidedBy === "string" && move.decidedBy.trim() !== "" && !isActor(move.decidedBy)) return refused("invalid-move", { detail: `decidedBy "${move.decidedBy}" is not an actor id (<name>@<token>, e.g. human@batorfi, or script:<name>)` });
     if (move.kind !== "reject") return refused("invalid-move", { detail: `"${String(move.kind)}" is not a feature-level move: only a reject can be made on a feature` });
     if (typeof move.decidedBy !== "string" || move.decidedBy.trim() === "") return refused("invalid-move", { detail: "decidedBy is empty: a move with no decider is refused" });
     if (typeof move.note !== "string" || move.note.trim() === "") return refused("invalid-move", { detail: "a reject needs a note: it becomes the next step's instruction" });
@@ -79,7 +81,7 @@ export async function submitFeatureMove(s: Services, feature: string, key: Key, 
         const rec = plain({ key, move: { ...move }, decidedAt, effect: "recorded" as const, ...(w.openGateId ? { gateId: w.openGateId } : {}) });
         w.moves = { ...(w.moves ?? {}), [key]: rec };
         w.pending = rec;
-        await appendOutbox(tx, { type: "move.committed", subject: feature, at: decidedAt, actor: move.decidedBy, cause: key, data: { kind: "reject", scope: "feature", target: move.target } });
+        await appendEvent(tx, { type: "move.committed", subject: feature, at: decidedAt, actor: move.decidedBy, cause: key, data: { kind: "reject", scope: "feature", target: move.target, decidedBy: move.decidedBy } });
         await s.hooks.at("walk.withdraw-after-write");
         return { record: rec };
       });

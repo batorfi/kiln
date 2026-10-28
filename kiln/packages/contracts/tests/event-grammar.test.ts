@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import { correlationOf, findForbiddenKey, isActor, isCausation, parseRef, refString } from "#contracts/events/grammar.ts";
 
 test("every actor form is accepted and near-misses are refused", () => {
-  for (const a of ["human@batorfi", "human@r15-script", "director", "system", "factory", "task:12", "role:judge@gemma4:12b", "delegation:d-1", "script:r14"]) assert.ok(isActor(a), a);
-  for (const a of ["", "human", "human@", "Human@x", "task:", "task:x", "role:judge", "delegation:", "script:", "robot", "human@a b"]) assert.ok(!isActor(a), JSON.stringify(a));
+  for (const a of ["human@batorfi", "human@r15-script", "person@example", "p@test", "director", "system", "factory", "task:12", "role:judge@gemma4:12b", "delegation:d-1", "script:r14"]) assert.ok(isActor(a), a);
+  for (const a of ["", "human", "human@", "@x", "p", "someone-else", "task:", "task:x", "role:judge", "delegation:", "script:", "robot", "human@a b"]) assert.ok(!isActor(a), JSON.stringify(a));
   assert.ok(!isActor(undefined) && !isActor(7));
 });
 test("causation is a command key or an earlier event", () => {

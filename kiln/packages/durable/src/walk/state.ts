@@ -3,6 +3,7 @@
 import { atUiSlot, consequence, featureReject, order, unitRoles, upstreamOf, type Pins } from "#contracts/flow/index.ts";
 import type { Applicability, BuiltFacts, FlowDefinition, Target } from "#contracts/flow/types.ts";
 import type { GateKey, MoveKind } from "#contracts/moves.ts";
+import type { RefLocator } from "#contracts/events/grammar.ts";
 import { canonicalJson, sha256Hex } from "../canonical.ts";
 
 /** What admission decided, once, for the life of the feature (spec FR-011, FR-016, FR-032). */
@@ -125,8 +126,15 @@ export interface OutboxIntent {
   type: "walk.returned" | "walk.split" | "walk.left-lane" | "walk.completed" | "gate.became-applicable";
   actor: string;
   cause: string;
+  /** Facts only. A person's text is NOT here: it is named in `refs`, and the committing code turns each into `<prefix>Ref` + `<prefix>Digest` (Clarification Q1). */
   data: Record<string, unknown>;
+  refs?: { prefix: string; locator: RefLocator; text: string }[];
 }
+/** A reason without its rendered sentence: the structured facts only (the sentence is re-rendered by whoever wants it). */
+const factsOf = (reason: Applicability["reason"]): Record<string, unknown> => {
+  const { text: _text, ...rest } = (reason ?? {}) as unknown as Record<string, unknown>;
+  return rest;
+};
 export interface Applied {
   w: WalkState;
   /** The units to run before the next gate opens (empty when the walk ends). */
@@ -141,7 +149,7 @@ export function applyMove(flow: FlowDefinition, w: WalkState, m: MoveFact, built
   if (m.kind === "approve") {
     const adv = approve(flow, w, m.gate, m.round, built);
     const outbox: OutboxIntent[] = [];
-    if (adv.became) outbox.push({ type: "gate.became-applicable", actor: "factory", cause: `walk:${feature}:ui-slot`, data: { gate: adv.next, reason: adv.became.reason } });
+    if (adv.became) outbox.push({ type: "gate.became-applicable", actor: "factory", cause: `walk:${feature}:ui-slot`, data: { gate: adv.next, reason: factsOf(adv.became.reason) } });
     if (adv.next === null) {
       outbox.push({ type: "walk.completed", actor: m.decidedBy, cause: m.key, data: { approved: Object.keys(adv.w.approved) } });
       return { w: adv.w, todo: [], outbox, end: { status: "done", outcome: "merged" } };
@@ -155,7 +163,7 @@ export function applyMove(flow: FlowDefinition, w: WalkState, m: MoveFact, built
   const base: WalkState = { ...w, instruction: { from: m.gateId, note }, prelude: [], fix: personRejected ? { ...w.fix, personRejected: true } : w.fix };
 
   if (c.leaves) {
-    return { w: base, todo: [], outbox: [{ type: "walk.left-lane", actor: m.decidedBy, cause: m.key, data: { from: m.gate, round: m.round, note } }], end: { status: "left-lane", outcome: "left-lane" } };
+    return { w: base, todo: [], outbox: [{ type: "walk.left-lane", actor: m.decidedBy, cause: m.key, data: { from: m.gate, round: m.round }, refs: [{ prefix: "note", locator: { kind: "move", gateId: m.gateId }, text: note }] }], end: { status: "left-lane", outcome: "left-lane" } };
   }
   const label = (m.target ?? flow.gates.find((g) => g.key === m.gate)?.rules?.[m.kind]?.targets?.default ?? "same-gate") as string;
   const outbox: OutboxIntent[] = [];
@@ -166,21 +174,23 @@ export function applyMove(flow: FlowDefinition, w: WalkState, m: MoveFact, built
     if (!first) throw new Error(`${m.gate}: nothing is judged after the build, so there is nothing to return to`);
     const rev = artifactRev("@build", `${c.work}#${(w.rounds[m.gate] ?? 0) + 1}`, { prev: w.revs["@build"] ?? "" }, note);
     w2 = { ...base, cursor: first, recross: { target: "@build", gates: c.recross }, prelude: [c.work], revs: { ...w.revs, "@build": rev } };
-    outbox.push({ type: "walk.returned", actor: m.decidedBy, cause: m.key, data: { from: m.gate, round: m.round, kind: m.kind, target: "@build", work: c.work, recross: c.recross, note } });
+    outbox.push({ type: "walk.returned", actor: m.decidedBy, cause: m.key, data: { from: m.gate, round: m.round, kind: m.kind, target: "@build", work: c.work, recross: c.recross }, refs: [{ prefix: "note", locator: { kind: "move", gateId: m.gateId }, text: note }] });
   } else if (c.goto === m.gate) {
     // a fresh author (or the workers) at the same gate: nothing is re-crossed
     w2 = { ...base, cursor: m.gate, prelude: c.work === "workers" ? ["workers"] : [] };
   } else {
     const to = c.goto as GateKey;
     w2 = { ...base, cursor: to, recross: { target: to, gates: c.recross } };
-    outbox.push({ type: "walk.returned", actor: m.decidedBy, cause: m.key, data: { from: m.gate, round: m.round, kind: m.kind, target: label, recross: c.recross, note } });
-    if (c.records === "split") outbox.push({ type: "walk.split", actor: m.decidedBy, cause: m.key, data: { from: m.gate, remainder: note } });
+    outbox.push({ type: "walk.returned", actor: m.decidedBy, cause: m.key, data: { from: m.gate, round: m.round, kind: m.kind, target: label, recross: c.recross }, refs: [{ prefix: "note", locator: { kind: "move", gateId: m.gateId }, text: note }] });
+    if (c.records === "split") outbox.push({ type: "walk.split", actor: m.decidedBy, cause: m.key, data: { from: m.gate }, refs: [{ prefix: "remainder", locator: { kind: "move", gateId: m.gateId }, text: note }] });
   }
   return { w: w2, todo: queueFor(flow, w2), outbox };
 }
 
 // ── applying a FEATURE-LEVEL reject (a person sent the feature back at any time) ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 export interface FeatureRejectFact {
+  /** The feature: names where the move's note is kept (`walk:<feature>/moves/<key>#note`). */
+  feature: string;
   key: string;
   decidedBy: string;
   target: Target;
@@ -193,7 +203,7 @@ export function applyFeatureReject(flow: FlowDefinition, w: WalkState, f: Featur
   const c = featureReject(flow, f.target, pins);
   const personRejected = flow.gates.find((g) => g.key === w.cursor)?.mitigationCap !== undefined;
   const base: WalkState = { ...w, instruction: { from: f.gateId ?? `feature-move:${f.key}`, note: f.note }, prelude: [], fix: personRejected ? { ...w.fix, personRejected: true } : w.fix };
-  const outbox: OutboxIntent[] = [{ type: "walk.returned", actor: f.decidedBy, cause: f.key, data: { from: w.cursor, kind: "reject", scope: "feature", target: f.target, recross: c.recross, note: f.note } }];
+  const outbox: OutboxIntent[] = [{ type: "walk.returned", actor: f.decidedBy, cause: f.key, data: { from: w.cursor, kind: "reject", scope: "feature", target: f.target, recross: c.recross }, refs: [{ prefix: "note", locator: { kind: "feature-move", feature: f.feature, key: f.key }, text: f.note }] }];
   let w2: WalkState;
   if (c.goto === "@build") {
     const first = c.recross[0];

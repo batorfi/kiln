@@ -75,7 +75,7 @@ test("key-conflict: the same key with a DIFFERENT move is never a repeat, names 
   await f.gates.submit(GATE, "m1", move());
   await until(async () => (await f.inspect(GATE)).gateTask === "terminal");
   assert.deepEqual(await unchanged(f, () => f.gates.submit(GATE, "m1", move({ kind: "reject" }))), { status: "refused", reason: "key-conflict", original: "m1" });
-  assert.deepEqual(await unchanged(f, () => f.gates.submit(GATE, "m1", move({ decidedBy: "someone-else" }))), { status: "refused", reason: "key-conflict", original: "m1" });
+  assert.deepEqual(await unchanged(f, () => f.gates.submit(GATE, "m1", move({ decidedBy: "someone@else" }))), { status: "refused", reason: "key-conflict", original: "m1" });
 }));
 
 test("stale: a move to a gate already settled by ANOTHER key is refused, names the key that settled it, and writes nothing", () => withGate(async (f) => {
@@ -86,7 +86,7 @@ test("stale: a move to a gate already settled by ANOTHER key is refused, names t
 
 test("lost-race / stale: 25 different keys at once — exactly one committed, every other refused naming the winner", () => withGate(async (f) => {
   const kinds = ["approve", "revise", "reject"] as const;
-  const rs = await Promise.all(Array.from({ length: 25 }, (_, n) => f.gates.submit(GATE, `race-${n}`, move({ kind: kinds[n % 3], decidedBy: `person-${n}` }))));
+  const rs = await Promise.all(Array.from({ length: 25 }, (_, n) => f.gates.submit(GATE, `race-${n}`, move({ kind: kinds[n % 3], decidedBy: `person-${n}@example` }))));
   const won = rs.filter((r) => r.status === "committed");
   assert.equal(won.length, 1);
   const winner = (won[0] as { record: { key: string } }).record.key;

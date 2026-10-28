@@ -42,9 +42,9 @@ test("event-cause-missing and event-cause-dangling", () => {
   assert.deepEqual(codes(eventOf("walk.completed", { approved: [] }, { causation: "evt:5" })), ["event-cause-dangling"]);
   assert.deepEqual(codes(eventOf("walk.completed", { approved: [] }, { causation: "evt:99" })), ["event-cause-dangling"]);
 });
-test("event-subject-invalid: empty, or a gate subject that is not a gate id", () => {
+test("event-subject-invalid: empty, or outside the gate-id pattern", () => {
   assert.deepEqual(codes(eventOf("walk.completed", { approved: [] }, { subject: "" })), ["event-subject-invalid"]);
-  assert.deepEqual(codes(eventOf("walk.completed", { approved: [] }, { subject: "gate:f" })), ["event-subject-invalid"]);
+  assert.deepEqual(codes(eventOf("walk.completed", { approved: [] }, { subject: "Not A Subject" })), ["event-subject-invalid"]);
   assert.deepEqual(codes(eventOf("walk.completed", { approved: [] }, { subject: "lane" })), []);
 });
 test("event-time-invalid", () => {

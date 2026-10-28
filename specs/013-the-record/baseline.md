@@ -23,3 +23,15 @@ Readings, before and after. Node v25.9.0, npm 11.14.1, macOS (Darwin 25.6.0). Ne
 | 5 001 | 0.888 ms | 1.294 ms | 5.2 MB |
 
 Growth is linear in the length of the record (this is what the chunked layout of research R2 removes). Same machine and Node as above.
+
+## 3. Foundation checkpoint (T020) — the record exists and r13/r14 run on it
+
+After T006–T019 (event type and id, grammar, catalog for the 21 types r13/r14 emit, `validateEvent`, `appendEvent` with chunked storage, `readRecord`/`readRun`, the version 0 upcasters, the twelve call sites switched, `inspect` and the walk view reading the record):
+
+| Reading | Value |
+|---|---|
+| `npm test` | exit 0 · `new: 689 tests · legacy: 500 tests (30 skipped)` (648 before + 41 new) |
+| `npm run proof` | exit 0 · 92 tests, 92 pass · 265 s |
+| `npm run check` | exit 0 · four `PASS` (network 89 files · boundaries 89 · legacy 168 · flow 1) |
+
+The only existing assertions that changed are listed in `notes.md` §3.

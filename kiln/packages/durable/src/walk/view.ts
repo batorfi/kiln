@@ -1,8 +1,9 @@
 // What a person (or the CLI) sees of a walk: read from the STORE, never from memory (constitution IX). `feature state` returns it; `feature next --after` returns it once something changed.
 import type { Services } from "../services.ts";
 import type { GateDocData, BriefDocData, MoveDocData } from "../gate/documents.ts";
-import type { JSON, MoveKind, StoredOutboxEntry } from "../types.ts";
+import type { JSON, MoveKind } from "../types.ts";
 import { ENDED, walkExists, type WalkDoc, type WalkStatus } from "./doc.ts";
+import { collect, fromReader, interimView, readRun } from "../record/read.ts";
 
 export interface OpenGateView {
   gateId: string;
@@ -30,7 +31,6 @@ export interface WalkView {
   history: HistoryEntry[];
 }
 
-interface OutboxDoc { entries: StoredOutboxEntry[] }
 
 export async function readWalk(s: Services, feature: string): Promise<WalkView> {
   const wd = await s.store.snapshot<WalkDoc>("kiln.walk", feature);
@@ -49,10 +49,8 @@ export async function readWalk(s: Services, feature: string): Promise<WalkView> 
       };
     }
   }
-  const entries = (await s.store.snapshot<OutboxDoc>("kiln.outbox", "main"))?.entries ?? [];
-  const history = entries
-    .filter((e) => e.subject === feature || e.subject.startsWith(`gate:${feature}:`))
-    .map((e) => ({ type: e.type, at: e.at, actor: e.actor, cause: e.cause, subject: e.subject, data: e.data }));
+  // the run's events through its index (r15), flattened to the shape the walk's views always had
+  const history = (await collect(readRun(fromReader(s.store), feature))).map(interimView).map((e) => ({ type: e.type, at: e.at, actor: e.actor, cause: e.cause, subject: e.subject, data: e.data as JSON }));
   return { feature, status, openGate, history };
 }
 

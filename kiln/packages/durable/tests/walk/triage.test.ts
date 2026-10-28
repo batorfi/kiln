@@ -1,6 +1,7 @@
 // r14 T073 (US6): triage may skip Concept and Architecture ONLY, with its reasoning recorded and shown in every later brief; "skipped" is a different outcome from "not applicable"; triage can never make an
 // applicable interface gate not applicable; a person can override the skip at the Roadmap gate; a flow may forbid it.
 import { test } from "node:test";
+import { createHash } from "node:crypto";
 import assert from "node:assert/strict";
 import { flowOf } from "#contracts/flow/index.ts";
 import { checkWalkInvariants } from "../proof/support/walk-oracle.ts";
@@ -15,7 +16,7 @@ test("a small plain feature skips Concept and Architecture: 7 feature gates, the
   assert.deepEqual(d.steps.map((s) => s.gateKey), ["gate0", "3-spec", "4-plan", "5-checkpoint", "6-review", "7-verification", "8-docs", "9-pr"]);
   const skipped = await entries(f, "gate.skipped");
   assert.deepEqual(skipped.map((e) => (e.data as any).gate), ["1-concept", "2-architecture"]);
-  assert.ok(skipped.every((e) => e.actor === "factory" && (e.data as any).reasoning === SMALL.reasoning && e.cause === "walk:f:pin"));
+  assert.ok(skipped.every((e) => e.actor === "factory" && (e.data as any).reasoningDigest === createHash("sha256").update(SMALL.reasoning).digest("hex") && (e.data as any).reasoningRef === "row:f#triage.reasoning" && !("reasoning" in (e.data as object)) && e.cause === "walk:f:pin"));
   assert.deepEqual((await entries(f, "gate.not-applicable")).map((e) => (e.data as any).gate).sort(), ["2a-experience", "6a-ui-review"], "only the interface gates are 'not applicable' — skipped is another outcome");
   assert.deepEqual(checkWalkInvariants(await f.inspect(), { feature: "f", facts: PLAIN.facts }), []);
 }));

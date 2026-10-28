@@ -65,7 +65,7 @@ export async function gateCommand(sub: string | undefined, args: string[]): Prom
       try { brief = JSON.parse(readFileSync(f.brief, "utf8")); } catch (e) { return usage(`--brief: ${(e as Error).message}`); }
       // r14: `--returns-to a,b` opens the gate with the walk's move semantics (a note on every corrective move; the listed places a reject may name). Without it the gate is r13's.
       const returnsTo = f["returns-to"] === undefined ? undefined : f["returns-to"].split(",").filter((x) => x !== "");
-      result = await client.open(f.key, { gateId: f.gate, gateKey: f["gate-key"] as never, flow: f.flow as never, brief: brief as never, openedBy: f.by ?? "cli", ...(returnsTo ? { returnsTo: returnsTo as never } : {}) });
+      result = await client.open(f.key, { gateId: f.gate, gateKey: f["gate-key"] as never, flow: f.flow as never, brief: brief as never, openedBy: f.by ?? "system", ...(returnsTo ? { returnsTo: returnsTo as never } : {}) });
     } else if (sub === "move") {
       // r14: the optional fields of a move. The owner judges them (by name); the command line only carries them (`admit` was read above, before connecting).
       result = await client.submit(f.gate, f.key, {

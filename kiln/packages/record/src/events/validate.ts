@@ -13,7 +13,7 @@ export interface EventFault {
 }
 
 const ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/;
-const GATE_SUBJECT = /^gate:[^:]+:[^:]+:[0-9]+$/;
+const SUBJECT = /^[a-z0-9][a-z0-9:._-]{0,159}$/; // a gate id, a feature name, "lane" or "factory" (the gate id pattern of r13)
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
 
 export function validateEvent(e: unknown): EventFault[] {
@@ -44,8 +44,8 @@ export function validateEvent(e: unknown): EventFault[] {
   else if ((e.causation as string).startsWith("evt:") && Number((e.causation as string).slice(4)) >= (e.seq as number)) {
     faults.push({ code: "event-cause-dangling", path: "causation", message: `${e.causation} does not name an earlier event (this one is ${e.seq})` });
   }
-  if ((e.subject as string).trim() === "" || ((e.subject as string).startsWith("gate:") && !GATE_SUBJECT.test(e.subject as string))) {
-    faults.push({ code: "event-subject-invalid", path: "subject", message: `"${e.subject}" is not a subject (a feature, "lane", "factory" or a gate id gate:<feature>:<key>:<round>)` });
+  if (!SUBJECT.test(e.subject as string)) {
+    faults.push({ code: "event-subject-invalid", path: "subject", message: `"${e.subject}" is not a subject (a gate id, a feature name, "lane" or "factory")` });
   }
   if (!ISO.test(e.time as string) || Number.isNaN(Date.parse(e.time as string))) faults.push({ code: "event-time-invalid", path: "time", message: `"${e.time}" is not an ISO-8601 UTC instant` });
   return faults;

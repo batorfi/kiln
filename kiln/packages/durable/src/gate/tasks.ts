@@ -6,7 +6,8 @@
 // Nothing here sleeps, so there is no timer on a gate or its decision (d, I7). A failed commit is answered `store-error` and the step re-arms its slot — a step never returns without
 // durable progress, or the library would fault it.
 import { plain } from "../canonical.ts";
-import { appendOutbox } from "../outbox.ts";
+import { appendEvent } from "../record/append.ts";
+import { pairOf } from "../record/refs.ts";
 import type { Services } from "../services.ts";
 import { defineKilnTask, type TaskKind } from "../store.ts";
 import type { JSON, TaskId } from "../types.ts";
@@ -69,15 +70,15 @@ export function gateKinds(s: Services): TaskKind<any, any, any>[] {
                   wd.moves = { ...(wd.moves ?? {}), [request.key]: rec };
                   wd.pending = rec;
                   wd.openGateId = null;
-                  await appendOutbox(tx, { type: "gate.withdrawn", subject: gateId, at, actor: request.move.decidedBy, cause: request.key, data: { target: request.move.target, note: request.move.note } });
-                  await appendOutbox(tx, { type: "move.committed", subject: gateId, at, actor: request.move.decidedBy, cause: request.key, data: { kind: "reject", scope: "feature", target: request.move.target } });
+                  await appendEvent(tx, { type: "gate.withdrawn", subject: gateId, at, actor: request.move.decidedBy, cause: request.key, data: { target: request.move.target, ...pairOf("note", { kind: "feature-move", feature, key: request.key }, request.move.note) } });
+                  await appendEvent(tx, { type: "move.committed", subject: gateId, at, actor: request.move.decidedBy, cause: request.key, data: { kind: "reject", scope: "feature", target: request.move.target, decidedBy: request.move.decidedBy } });
                   await s.hooks.at("walk.withdraw-after-write");
                   return { status: "terminal", outcome: { status: "completed", result: { key: request.key, withdrawn: true } } };
                 }
                 s.hooks.fault("store-write");
                 const decidedAt = s.now();
                 md.record = plain({ gateId, key: request.key, move: { ...request.move }, decidedAt, seq: 1 as const });
-                await appendOutbox(tx, { type: "move.committed", subject: gateId, at: decidedAt, actor: request.move.decidedBy, cause: request.key, data: { kind: request.move.kind, briefRef: request.move.briefRef } });
+                await appendEvent(tx, { type: "move.committed", subject: gateId, at: decidedAt, actor: request.move.decidedBy, cause: request.key, data: { kind: request.move.kind, briefRef: request.move.briefRef, decidedBy: request.move.decidedBy } });
                 await s.hooks.at("move.commit-after-write"); // mid-commit: written in the callback, not yet stored
                 return { status: "terminal", outcome: { status: "completed", result: { key: request.key } } };
               });
@@ -122,7 +123,10 @@ export function gateKinds(s: Services): TaskKind<any, any, any>[] {
         }
         await run.commit(async (tx) => {
           const at = s.now();
-          await appendOutbox(tx, { type: "gate.settled", subject: task.input.gateId, at, actor: "factory", cause: key || "(no key)", data: { key } });
+          // FR-014: a gate does not settle without a decider. The settlement names the move and the person from the STORED record; with no record there is nothing to settle.
+          const stored = (await tx.doc<MoveDocData>("kiln.move", task.input.gateId, { record: null })).record;
+          if (!stored) throw new Error(`gate ${task.input.gateId} would settle with no committed move: nothing settles a gate but a person's move`);
+          await appendEvent(tx, { type: "gate.settled", subject: task.input.gateId, at, actor: "factory", cause: key || "(no key)", data: { key, move: stored.move.kind, decidedBy: stored.move.decidedBy } });
           return { status: "terminal", outcome: { status: "completed", result: { key } } };
         });
         await s.hooks.at("gate.settled");

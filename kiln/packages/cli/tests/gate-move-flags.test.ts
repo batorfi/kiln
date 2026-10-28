@@ -16,7 +16,7 @@ const REF = briefRef(JSON.parse(readFileSync(BRIEF_FILE, "utf8")));
 test("usage errors are exit 2 and send nothing: a flag with no value, and a malformed --admit file", async () => {
   const dir = mkdtempSync(join(tmpdir(), "k14-flags-"));
   try {
-    const base = ["gate", "move", "--store", join(dir, "s"), "--gate", "g", "--key", "k", "--kind", "approve", "--by", "h", "--brief-ref", "x"];
+    const base = ["gate", "move", "--store", join(dir, "s"), "--gate", "g", "--key", "k", "--kind", "approve", "--by", "h@test", "--brief-ref", "x"];
     const noValue = await kiln([...base, "--note"], { TMPDIR: dir });
     assert.equal(noValue.code, 2, noValue.stderr);
     assert.match(noValue.stderr, /bad argument "--note"/);

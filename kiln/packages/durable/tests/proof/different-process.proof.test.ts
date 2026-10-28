@@ -82,7 +82,7 @@ test(`separate process: ${RACERS} different keys at once → 1 committed, ${RACE
   const o = await serve(ts);
   await open(ts);
   const kinds = ["approve", "revise", "reject"];
-  const rs = await pool(RACERS, CONCURRENCY, (n) => move(ts, `race-${n}`, kinds[n % 3], `person-${n}`));
+  const rs = await pool(RACERS, CONCURRENCY, (n) => move(ts, `race-${n}`, kinds[n % 3], `person-${n}@example`));
   assert.ok(rs.every((r) => r.code === 0), rs.find((r) => r.code !== 0)?.stderr);
   const t = tally(rs.map(json));
   assert.deepEqual([t.committed.length, t.repeat.length, t.refused.length], [1, 0, RACERS - 1]);

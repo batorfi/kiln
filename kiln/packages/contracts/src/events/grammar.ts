@@ -1,5 +1,6 @@
 // Grammar of an event's identifying fields and the keys an event may never carry (FR-004, FR-006; data-model §1). Pure.
-export const ACTOR_PATTERN = /^(human@[A-Za-z0-9._-]+|director|system|factory|task:[0-9]+|role:[a-z-]+@\S+|delegation:\S+|script:[A-Za-z0-9._-]+)$/;
+// A person is `<token>@<token>` (`human@batorfi`, `person@example`): r13 accepted any non-blank decider, and identity (who a token is) is a later row's. The log validator's own `^human@` stays the test of a HUMAN.
+export const ACTOR_PATTERN = /^([A-Za-z0-9._-]+@[A-Za-z0-9._-]+|director|system|factory|task:[0-9]+|role:[a-z-]+@\S+|delegation:\S+|script:[A-Za-z0-9._-]+)$/;
 export const isActor = (s: unknown): s is string => typeof s === "string" && ACTOR_PATTERN.test(s);
 
 export const CAUSATION_PATTERN = /^(cmd:.+|evt:[1-9][0-9]*)$/;

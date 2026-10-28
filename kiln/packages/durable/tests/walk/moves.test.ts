@@ -1,6 +1,7 @@
 // r14 T060 (US5): where moves lead — the walk carries out the consequence the flow data gives. Revise, reject (same gate, an earlier gate, the roadmap), restart, split+revise, the admission crossing's outcomes;
 // a note on every corrective move that becomes the next step's instruction; every gate after a reject's target RE-CROSSED, its brief saying what changed — and a gate recorded not applicable is never re-crossed.
 import { test } from "node:test";
+import { createHash } from "node:crypto";
 import assert from "node:assert/strict";
 import { checkInvariants } from "./../proof/support/oracle.ts";
 import { checkWalkInvariants, walkGateIds } from "./../proof/support/walk-oracle.ts";
@@ -153,7 +154,8 @@ test("split+revise at Implementation → a split is recorded with the remainder 
   const { next } = await moveHere(f, "f", impl, { kind: "split+revise", note: "the export part becomes its own feature" });
   assert.deepEqual([next.openGate!.gateKey, next.openGate!.round], ["4-plan", 2]);
   const split = next.history.find((h) => h.type === "walk.split")!;
-  assert.deepEqual((split.data as any).remainder, "the export part becomes its own feature");
+  assert.deepEqual([(split.data as any).remainderRef, (split.data as any).remainderDigest], ["move:gate:f:5-checkpoint:1#note", createHash("sha256").update("the export part becomes its own feature").digest("hex")], "the remainder is a reference and a digest, not text");
+  assert.ok(!("remainder" in (split.data as object)));
   assert.equal(split.actor, "script:r14");
   assert.ok(!next.history.some((h) => h.type === "walk.admitted" && h.subject !== "f"), "nothing was admitted: only the Roadmap gate admits");
   const noReject = await f.gates.submit((await moveHere(f, "f", next, {}, "a1")).next.openGate!.gateId, "x", mkMove(impl.openGate!, { kind: "reject", note: "n" }));
