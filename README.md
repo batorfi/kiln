@@ -235,8 +235,16 @@ npm ci                                               # the one install step (the
 
 npm test                                             # the new suite, then the first program's (legacy) suite; the live-Pi tier skips on an unmeasured Pi, printing why
 npm run check                                        # kiln check: network, boundaries, legacy, flow — each fails by name
+npm run proof                                        # the proof tier (r14): every walk kill point × every hit × both walks, a re-crossing walk, a fix-round walk and 300 random kills (~3 min); the runner prints which tier ran
+npm run kiln -- check flow                           # the standard flow's data, validated all-or-nothing (r14); its negative suite refuses every invalid flow
 npm run validate:roadmap -- ../specs/ROADMAP.md      # the project's own roadmap, judged by its own validator
 npm run validate:log -- fixtures/r7-live-inference.jsonl   # the log of a real nine-gate run (add --flow v2 to judge it under the twelve-gate flow)
+
+# walk a feature through the twelve-gate flow from the command line (r14) — the owner opens each next gate; you only decide:
+S=$(mktemp -d)/s
+npm run kiln -- owner --store $S &                   # prints: listening, then ready
+npm run kiln -- feature admit --store $S --key k1 --feature f1 --walk fixtures/walk-interface.json
+node tests/walk/drive.ts --store $S --feature f1 --script fixtures/walk-interface.approve-all.json   # the scripted stand-in decides every gate through `kiln feature next` and `kiln gate move`
 
 cd ../legacy                                         # the first program, frozen
 npm run runtime-ready                                # readiness probes — each fails by name when something is missing

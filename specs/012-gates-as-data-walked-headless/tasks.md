@@ -239,7 +239,7 @@ description: "Task list for gates as data, walked headless (row r14)"
 
 - [X] T079 [P] [US8] Extend `C/tests/flow-vs-constitution.test.ts` and `C/tests/gate-rail.test.ts` first: per gate compare name · question · vocabulary · judge · `appliesWhen` · cap · note rules · targets · triage · delegable with the contract's table; parse the move-consequence table of the contract against `the-flow.md` §7; assert the sentences `declared as data only`, `belongs to r14`, `r14/r15` are **absent**; a divergence names the gate and the field. They fail until T080.
 - [X] T080 [US8] Rewrite `C/gate-rail.md` for constitution 2.1.0 as the executing contract: the twelve gates with the full rule columns; the closed move kinds and where each leads (the §1.1 table); re-crossing; `applies_when` evaluation, pinning, the UI slot and the *not applicable* outcome; triage bounds; the cap; the arming rule as data (r21 acts on it); the headless contract; what changed from v1 and from r12's text. Keep v1 pointing at `legacy/contracts/gate-rail.md`. Run the drift tests until green.
-- [ ] T081 [US8] Mutation check in `S/notes.md`: change one vocabulary in `v2.ts` only, then in `gate-rail.md` only — each fails the drift test naming gate and field; revert, tree clean.
+- [X] T081 [US8] Mutation check in `S/notes.md`: change one vocabulary in `v2.ts` only, then in `gate-rail.md` only — each fails the drift test naming gate and field; revert, tree clean.
 
 **Checkpoint**: US8 passes. Commit.
 
@@ -249,12 +249,12 @@ description: "Task list for gates as data, walked headless (row r14)"
 
 **Purpose**: the floor matrix, the full proof, the statements, a fresh-clone run, and the report. Nothing here changes behaviour.
 
-- [ ] T082 [P] Run the whole new suite on **Node 22.19.0, 23.6.0, 24.1.0 and the installed Node** (as r13's matrix; the Node versions are managed the way r13's `baseline.md` records); fix what a floor reveals (never skip a case); append the table to `S/baseline.md`.
-- [ ] T083 Run `npm run proof` (the proof tier) on the installed Node and on 22.19.0; record the tier line, the point × gate counts, the random-kill seed(s) and the time in `S/baseline.md`.
-- [ ] T084 [P] Update statements: `README.md` and `kiln/README.md` (four checks; the walk; `kiln feature …`; the two tiers and `npm run proof`), `D/README.md` (the walk beside the gate, the withdrawn end, key retention for feature-move keys), and a "four since r14" annotation on `kiln/packages/*/kiln.json` where a responsibility text changed.
-- [ ] T085 Re-run **all** mutation checks of `S/notes.md` (T023, T072, T081 and the weakened-walk control of T057) on a committed tree; each is caught by name; the tree is clean after each revert.
+- [X] T082 [P] Run the whole new suite on **Node 22.19.0, 23.6.0, 24.1.0 and the installed Node** (as r13's matrix; the Node versions are managed the way r13's `baseline.md` records); fix what a floor reveals (never skip a case); append the table to `S/baseline.md`.
+- [X] T083 Run `npm run proof` (the proof tier) on the installed Node and on 22.19.0; record the tier line, the point × gate counts, the random-kill seed(s) and the time in `S/baseline.md`.
+- [X] T084 [P] Update statements: `README.md` and `kiln/README.md` (four checks; the walk; `kiln feature …`; the two tiers and `npm run proof`), `D/README.md` (the walk beside the gate, the withdrawn end, key retention for feature-move keys), and a "four since r14" annotation on `kiln/packages/*/kiln.json` where a responsibility text changed.
+- [X] T085 Re-run **all** mutation checks of `S/notes.md` (T023, T072, T081 and the weakened-walk control of T057) on a committed tree; each is caught by name; the tree is clean after each revert.
 - [ ] T086 Fresh-clone run of `quickstart.md` §0–§8 in a scratch directory (`git clone`, `npm ci`, each command as written); fix the quickstart where it differs from reality and record the outcome in `S/baseline.md`.
-- [ ] T087 Write the **"after"** readings in `S/baseline.md`: `npm test` (exit 0, new-suite count ≥ 474 + r14's, legacy 500/30 skipped), `npm run check` (**four** `PASS`), `git rev-parse HEAD:legacy` equal to T001, `git diff --stat main -- specs/ROADMAP.md legacy` empty, the default-tier time against 180 s.
+- [X] T087 Write the **"after"** readings in `S/baseline.md`: `npm test` (exit 0, new-suite count ≥ 474 + r14's, legacy 500/30 skipped), `npm run check` (**four** `PASS`), `git rev-parse HEAD:legacy` equal to T001, `git diff --stat main -- specs/ROADMAP.md legacy` empty, the default-tier time against 180 s.
 - [ ] T088 Write `S/implementation-report.md`: what was built per story, measured results against SC-001 … SC-012, the deviations (FR-025, FR-070, anything found on the way, with `S/notes.md` references), the honest limits (macOS only; scripted steps and decider; briefs not assembled; arming not implemented; event stream minimal), and the open items for r15/r16/r18/r20/r21 — including what r13 carried forward and r14 did **not** decide (a person vs a program as decider; a reused pid).
 - [ ] T089 Final gate for review: `cd kiln && npm test && npm run check` green on the branch head; `specs/ROADMAP.md` **untouched** (closing r14 is the human's Roadmap-gate move); every task above checked.
 

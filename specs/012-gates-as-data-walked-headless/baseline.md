@@ -89,3 +89,28 @@ After US5: `cd kiln && npm test` → exit **0**, `new: 630 tests · legacy: 500 
 * The feature-level move (`feature-move.test.ts`, 7): with a gate open it WITHDRAWS it (no move record; `gate.withdrawn` + `move.committed` in the same commit; a person's move afterwards is `stale` naming the feature move); with none open it is recorded and the walk applies it at its next wake; keyed exactly once; first move wins; refusals by name; **60 races** of a person's move against a feature-level move — exactly one ending each time, the loser told who won, I1–I10 clean.
 * Withdrawal under kill (`walk-withdraw.test.ts`): killed at `walk.withdraw-received`, `-after-write` and `-committed` — the gate is either waiting with nothing recorded or withdrawn once; the SAME key then gives the one outcome; the walk goes back and finishes; I10 clean.
 * A re-crossing is killed too: `walk-recross.proof.test.ts` — the re-crossing walk killed at every walk point × every hit; four of those kills run in the default tier (`walk-smoke`).
+
+## Floor matrix (T082) and the proof tier (T083) — 2026-10-28
+
+`npm run test:new` and `npm run check` on each Node, on the final tree (default tier; the three r13 kill suites that were renamed `*.proof.test.ts` — see `notes.md` — run in the proof tier):
+
+| Node | `test:new` exit | New tests | `kiln check` | Wall time |
+|---|---|---|---|---|
+| **22.19.0** (the floor) | 0 | 643 | 4 × `PASS` | **75 s** |
+| **23.6.0** | 0 | 643 | 4 × `PASS` | **78 s** |
+| **24.1.0** | 0 | 643 | 4 × `PASS` | **78 s** |
+| **25.9.0** (installed; full `npm test`) | 0 | 643 new · 500 legacy (30 skipped) | 4 × `PASS` | **111 s** for both suites |
+
+The first pass of the matrix was not clean, twice, and the matrix did its job: (1) my matrix script's `PATH` lacked `/usr/sbin`, so two `lsof`-based network tests could not run — the script, not the product; (2) before r13's three heaviest kill suites moved to the proof tier, the default tier took **201 s on 22.19.0** (666 tests), over the 180 s threshold. After the move it is 75–78 s on every Node.
+
+**Proof tier** (`npm run proof`, `tier: proof (10 proof files)`): **92 tests, exit 0** — on **22.19.0 in 267 s** and on **25.9.0 in 276 s**. It is r14's seven proof files (kill points, every gate, the whole matrix, 300 random kills with seed 20261027, the re-crossing walk, the fix-round walk, the slow command-line walks) plus r13's three moved suites (the separate-process proof, 300 random gate kills, the 7-kill storm).
+
+## "After" (T087) — 2026-10-28
+
+| Reading | Command | Result |
+|---|---|---|
+| New + legacy suites | `cd kiln && npm test` | exit **0** — `new: 643 tests · legacy: 500 tests (30 skipped)`, 111 s (before the row: `474 · 500 (30)`, 182 s) |
+| Proof tier | `npm run proof` | exit **0** — 92 tests, 276 s |
+| Checks | `npm run check` | exit **0** — `PASS network` / `boundaries` (74 files) · `legacy` (168) · `flow` (1 file, **12 gates examined**) |
+| `legacy/` tree id | `git rev-parse HEAD:legacy` | `20a82c7e214be256c804f6e8f1cd4cce9c8e9874` — **equal to the "before"** |
+| Guarded paths | `git diff --stat main -- specs/ROADMAP.md legacy` | **empty** |
