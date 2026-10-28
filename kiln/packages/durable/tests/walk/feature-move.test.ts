@@ -47,10 +47,12 @@ test("no gate is open (a step is running): the move is RECORDED, the walk applie
   const at = await walkTo(f, "f", "2-architecture");
   const g = at.openGate!;
   await f.gates.submit(g.gateId, "ap", mkMove(g, {}));
-  // 3-spec\'s author is working (300 ms): no gate is open now
+  // 3-spec\'s author is working (300 ms): the row has consumed the approval and parked on that step, so NO gate is open and none is waiting to be consumed
+  await new Promise((r) => setTimeout(r, 120));
   const r = await f.walks.move("f", "fm1", fm("1-concept", "back to the concept"));
   assert.equal(r.status, "committed");
   assert.equal((r as any).record.effect, "recorded");
+  assert.equal((r as any).record.gateId, undefined, "no gate was open or settled-unconsumed: the move names none");
   const v = await f.walks.next("f", g.gateId);
   assert.deepEqual([v.openGate!.gateKey, v.openGate!.round], ["1-concept", 2], "the walk returned to the concept; Specification\'s author was never judged at a gate");
   assert.ok(!openedOrder(v).includes("3-spec#1"));
@@ -76,6 +78,7 @@ test("first move wins: a second feature-level move while one waits for the walk 
   await f.walks.admit("k1", "f", { ...PLAIN, script: { stepMs: 400 } });
   const at = await walkTo(f, "f", "2-architecture");
   await f.gates.submit(at.openGate!.gateId, "ap", mkMove(at.openGate!, {}));
+  await new Promise((r) => setTimeout(r, 120));
   const a = await f.walks.move("f", "fm1", fm("1-concept"));
   assert.equal(a.status, "committed");
   const b = await f.walks.move("f", "fm2", fm("1-concept", "again"));
