@@ -30,10 +30,10 @@ test("kiln check flow on the real tree exits 0, says PASS, and says how many gat
   assert.match(r.stdout, /^note: 12 gates examined$/m);
 });
 
-test("kiln check (all of them) prints FOUR PASS lines, flow among them", () => {
+test("kiln check (all of them) prints FIVE PASS lines, flow and record among them", () => {
   const r = cli(kilnDir);
   assert.equal(r.status, 0, r.stdout + r.stderr);
-  assert.deepEqual([...r.stdout.matchAll(/^PASS (\w+)/gm)].map((m) => m[1]), ["network", "boundaries", "legacy", "flow"]);
+  assert.deepEqual([...r.stdout.matchAll(/^PASS (\w+)/gm)].map((m) => m[1]), ["network", "boundaries", "legacy", "flow", "record"]);
 });
 
 test("a tree whose v2 data loses the Merge gate exits 1 and names flow-anchor-last and flow-builtin-missing", () => {

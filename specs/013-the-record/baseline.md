@@ -35,3 +35,11 @@ After T006–T019 (event type and id, grammar, catalog for the 21 types r13/r14 
 | `npm run check` | exit 0 · four `PASS` (network 89 files · boundaries 89 · legacy 168 · flow 1) |
 
 The only existing assertions that changed are listed in `notes.md` §3.
+
+## 4. US2 checkpoint (T027) — the catalog is complete and an invalid event cannot commit
+
+| Reading | Value |
+|---|---|
+| `npm test` | exit 0 · `new: 719 tests · legacy: 500 tests (30 skipped)` (689 + 30 new) · **345 s** — not comparable with the 108 s of §1: the machine was under other load during this run (load average 7.9 / 9.3 five and fifteen minutes before; no kiln process left over). Re-timed at T070 on a quiet machine. |
+| `npm run check` | five `PASS`: network 98 files · boundaries 98 · legacy 168 · flow 1 · **record 90 files** (41 types, 18 committed types) |
+| catalog | 41 types in 13 groups; `schemas/events/` holds 41 generated files; `emitted` is true only for types some code commits (unit, command and feature.archived flip when T028/T029/T060 add their emitters) |

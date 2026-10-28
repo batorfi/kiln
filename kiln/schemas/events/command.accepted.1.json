@@ -1,0 +1,20 @@
+{
+ "$id": "kiln:event:command.accepted/1",
+ "additionalProperties": false,
+ "properties": {
+  "kind": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "requestHash": {
+   "minLength": 1,
+   "type": "string"
+  }
+ },
+ "required": [
+  "kind",
+  "requestHash"
+ ],
+ "title": "command.accepted (version 1)",
+ "type": "object"
+}

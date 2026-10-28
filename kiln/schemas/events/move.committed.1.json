@@ -1,0 +1,32 @@
+{
+ "$id": "kiln:event:move.committed/1",
+ "additionalProperties": false,
+ "properties": {
+  "briefRef": {
+   "type": "string"
+  },
+  "decidedBy": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "kind": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "scope": {
+   "enum": [
+    "feature"
+   ],
+   "type": "string"
+  },
+  "target": {
+   "type": "string"
+  }
+ },
+ "required": [
+  "kind",
+  "decidedBy"
+ ],
+ "title": "move.committed (version 1)",
+ "type": "object"
+}

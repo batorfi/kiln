@@ -1,0 +1,29 @@
+{
+ "$id": "kiln:event:lane.acquired/1",
+ "additionalProperties": false,
+ "properties": {
+  "hold": {
+   "type": "boolean"
+  },
+  "holder": {
+   "type": "integer"
+  },
+  "model": {
+   "oneOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  }
+ },
+ "required": [
+  "holder",
+  "model",
+  "hold"
+ ],
+ "title": "lane.acquired (version 1)",
+ "type": "object"
+}

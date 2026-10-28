@@ -1,0 +1,36 @@
+{
+ "$id": "kiln:event:lane.swapped/1",
+ "additionalProperties": false,
+ "properties": {
+  "from": {
+   "oneOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  },
+  "swaps": {
+   "type": "integer"
+  },
+  "to": {
+   "oneOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ]
+  }
+ },
+ "required": [
+  "from",
+  "to",
+  "swaps"
+ ],
+ "title": "lane.swapped (version 1)",
+ "type": "object"
+}

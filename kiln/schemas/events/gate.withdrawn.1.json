@@ -1,0 +1,25 @@
+{
+ "$id": "kiln:event:gate.withdrawn/1",
+ "additionalProperties": false,
+ "properties": {
+  "noteDigest": {
+   "pattern": "^[0-9a-f]{64}$",
+   "type": "string"
+  },
+  "noteRef": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "target": {
+   "minLength": 1,
+   "type": "string"
+  }
+ },
+ "required": [
+  "target",
+  "noteRef",
+  "noteDigest"
+ ],
+ "title": "gate.withdrawn (version 1)",
+ "type": "object"
+}

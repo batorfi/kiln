@@ -1,0 +1,28 @@
+{
+ "$id": "kiln:event:delegation.armed/1",
+ "additionalProperties": false,
+ "properties": {
+  "at": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "by": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "of": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "reviewer": {
+   "type": "string"
+  }
+ },
+ "required": [
+  "of",
+  "by",
+  "at"
+ ],
+ "title": "delegation.armed (version 1)",
+ "type": "object"
+}

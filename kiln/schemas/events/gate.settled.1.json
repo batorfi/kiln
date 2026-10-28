@@ -1,0 +1,40 @@
+{
+ "$id": "kiln:event:gate.settled/1",
+ "additionalProperties": false,
+ "properties": {
+  "cost": {
+   "additionalProperties": false,
+   "properties": {
+    "switches": {
+     "type": "integer"
+    },
+    "wallClock": {
+     "type": "string"
+    }
+   },
+   "required": [
+    "switches",
+    "wallClock"
+   ],
+   "type": "object"
+  },
+  "decidedBy": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "key": {
+   "type": "string"
+  },
+  "move": {
+   "minLength": 1,
+   "type": "string"
+  }
+ },
+ "required": [
+  "key",
+  "move",
+  "decidedBy"
+ ],
+ "title": "gate.settled (version 1)",
+ "type": "object"
+}

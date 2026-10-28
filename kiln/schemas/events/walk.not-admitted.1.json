@@ -1,0 +1,29 @@
+{
+ "$id": "kiln:event:walk.not-admitted/1",
+ "additionalProperties": false,
+ "properties": {
+  "gate": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "noteDigest": {
+   "pattern": "^[0-9a-f]{64}$",
+   "type": "string"
+  },
+  "noteRef": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "round": {
+   "type": "integer"
+  }
+ },
+ "required": [
+  "gate",
+  "round",
+  "noteRef",
+  "noteDigest"
+ ],
+ "title": "walk.not-admitted (version 1)",
+ "type": "object"
+}

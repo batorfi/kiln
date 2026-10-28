@@ -1,0 +1,18 @@
+{
+ "$id": "kiln:event:store.migrated/1",
+ "additionalProperties": false,
+ "properties": {
+  "from": {
+   "type": "integer"
+  },
+  "to": {
+   "type": "integer"
+  }
+ },
+ "required": [
+  "from",
+  "to"
+ ],
+ "title": "store.migrated (version 1)",
+ "type": "object"
+}

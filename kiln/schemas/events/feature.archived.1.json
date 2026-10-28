@@ -1,0 +1,49 @@
+{
+ "$id": "kiln:event:feature.archived/1",
+ "additionalProperties": false,
+ "properties": {
+  "archive": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "bytes": {
+   "type": "integer"
+  },
+  "counts": {
+   "additionalProperties": false,
+   "properties": {
+    "docs": {
+     "type": "integer"
+    },
+    "events": {
+     "type": "integer"
+    },
+    "tasks": {
+     "type": "integer"
+    },
+    "texts": {
+     "type": "integer"
+    }
+   },
+   "required": [
+    "docs",
+    "tasks",
+    "events",
+    "texts"
+   ],
+   "type": "object"
+  },
+  "sha256": {
+   "pattern": "^[0-9a-f]{64}$",
+   "type": "string"
+  }
+ },
+ "required": [
+  "archive",
+  "sha256",
+  "bytes",
+  "counts"
+ ],
+ "title": "feature.archived (version 1)",
+ "type": "object"
+}

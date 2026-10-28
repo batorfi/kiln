@@ -38,6 +38,6 @@ test("no schema declares a forbidden key", () => {
     }
   }
 });
-test("type names are lower-case words joined by '.' and '-'", () => {
-  for (const type of catalog.keys()) assert.match(type, /^[a-z]+(\.[a-z]+(-[a-z]+)*)$/, type);
+test("type names are lower-case words: <group>.<verb>, hyphens inside a word group", () => {
+  for (const type of catalog.keys()) assert.match(type, /^[a-z]+(-[a-z]+)*\.[a-z]+(-[a-z]+)*$/, type);
 });

@@ -1,0 +1,31 @@
+{
+ "$id": "kiln:event:roadmap-gate.decided/1",
+ "additionalProperties": false,
+ "properties": {
+  "by": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "decision": {
+   "enum": [
+    "approve",
+    "revise",
+    "reject",
+    "edit-rows",
+    "add-row",
+    "drop-row"
+   ],
+   "type": "string"
+  },
+  "rowsDigest": {
+   "pattern": "^[0-9a-f]{64}$",
+   "type": "string"
+  }
+ },
+ "required": [
+  "decision",
+  "by"
+ ],
+ "title": "roadmap-gate.decided (version 1)",
+ "type": "object"
+}

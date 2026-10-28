@@ -1,0 +1,17 @@
+{
+ "$id": "kiln:event:lane.held/1",
+ "additionalProperties": false,
+ "properties": {
+  "holder": {
+   "type": "integer"
+  },
+  "reason": {
+   "type": "string"
+  }
+ },
+ "required": [
+  "holder"
+ ],
+ "title": "lane.held (version 1)",
+ "type": "object"
+}
