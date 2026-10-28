@@ -74,3 +74,15 @@ After T044–T048 (the catalog's read-only legacy types, the pure reducer and ma
 | `npm test` | exit 0 · `new: 781 tests · legacy: 500 tests (30 skipped)` · **129 s** (machine busy: load averages 10 / 13 / 15 during the run; 109–111 s on a quiet one) |
 | `npm run proof` | exit 0 · **120 tests**, 120 pass · **525 s** under load (15-minute average 15.6). A first run under heavier load took 1125 s and failed four tests with "the owner did not start within 15000 ms"; the same four passed on the rerun and no code changed in between. The quiet-machine figure is re-taken at T070. |
 | `npm run check` | five `PASS`: network 110 files · boundaries 110 · legacy 168 · flow 1 · record 102 |
+
+## 8. US4 checkpoint (T054) — the old walks replay as event streams, byte-identical
+
+After T050–T053 (converter, capture command and fixtures, replay module, `kiln check record` part 2 with its walk members):
+
+| Reading | Value |
+|---|---|
+| `npm test` | exit 0 · `new: 787 tests · legacy: 500 tests (30 skipped)` · 131 s (load averages 7 / 10 / 13) |
+| `npm run check` | five `PASS`; record: `walks: 3 of 5 named rows replayed (r2, r3, r7), 5 streams, 73 events; missing: r1 (scaffold), r8 (Pi extension)` |
+| the capture | `node spikes/015-capture-walks/capture.ts` twice → identical bytes; `legacy/` unchanged |
+
+**What the Roadmap gate is asked to accept (Clarification Q3):** the row's text names r1–r3, r7 and r8. Three of those five rows have a real original and replay byte-for-byte with their verdicts (r2 the lane runtime's stub walk, r3 the overlay's program walk and its deliberately broken twin, r7 the committed live-inference pair); **r1 and r8 have no original stream** — r1's contract tests hold single per-line records for a schema test, and the Pi extension (r8) states in `legacy/pi/outcome.ts` that it does not touch the factory-log — and are reported by name with those reasons, not reconstructed.

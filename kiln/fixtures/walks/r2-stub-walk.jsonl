@@ -1,0 +1,11 @@
+{"recordType":"transition","ts":"2026-09-13T00:01:00.000Z","seq":0,"transition":{"kind":"load","from":"cold","to":"stub"}}
+{"recordType":"transition","ts":"2026-09-13T00:02:00.000Z","seq":1,"transition":{"kind":"hold","to":"stub"}}
+{"recordType":"transition","ts":"2026-09-13T00:03:00.000Z","seq":2,"transition":{"kind":"yield","to":"concept","reason":"run concept-writer on stub"}}
+{"recordType":"transition","ts":"2026-09-13T00:04:00.000Z","seq":3,"transition":{"kind":"yield","to":"spec","reason":"run worker on stub (affinity, no swap)"}}
+{"recordType":"transition","ts":"2026-09-13T00:05:00.000Z","seq":4,"transition":{"kind":"swap","from":"stub","to":"stub","reason":"tier strongest → standard"}}
+{"recordType":"cost","ts":"2026-09-13T00:06:00.000Z","seq":5,"cost":{"switches":1,"wallClock":"00:00"}}
+{"recordType":"human-decision","ts":"2026-09-13T00:07:00.000Z","seq":6,"human-decision":{"gate":"3-spec","decidedBy":"human@batorfi","move":"approve"}}
+{"recordType":"gate-completion","ts":"2026-09-13T00:08:00.000Z","seq":7,"gate-completion":{"gate":3,"move":"approve","cost":{"switches":1,"wallClock":"00:00"},"decidedBy":"human@batorfi"}}
+{"recordType":"pre-delegation","ts":"2026-09-13T00:10:00.000Z","seq":8,"pre-delegation":{"of":"4","by":"spec #42 approved T1","at":"2026-09-13T00:09:00.000Z","reviewer":"code-reviewer","note":"no objections"}}
+{"recordType":"gate-completion","ts":"2026-09-13T00:11:00.000Z","seq":9,"gate-completion":{"gate":4,"move":"approve","cost":{"switches":1,"wallClock":"00:00"},"preDelegation":{"of":"4","by":"spec #42 approved T1","at":"2026-09-13T00:09:00.000Z","reviewer":"code-reviewer","note":"no objections"}}}
+{"recordType":"wait","ts":"2026-09-13T00:13:00.000Z","seq":10,"wait":{"gate":"6","token":"g6","deadline":"2026-09-13T00:12:00.000Z"}}

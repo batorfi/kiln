@@ -6,6 +6,7 @@ import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { catalog as shipped, schemaFiles, type CatalogEntry } from "#contracts/events/catalog/index.ts";
 import { FORBIDDEN_KEYS } from "#contracts/events/grammar.ts";
+import { loadWalks, replayAll, NAMED_ROWS, type WalkSet } from "#record/replay.ts";
 import type { CheckResult } from "./index.ts";
 
 export interface SourceFile {
@@ -19,6 +20,8 @@ export interface RecordCheckOptions {
   sources?: SourceFile[];
   /** The committed `schemas/events/*.json` by file name (default: read from disk); `null` skips the comparison. */
   files?: Record<string, string> | null;
+  /** The committed walks to replay (default: `kiln/fixtures/walks`); `null` skips the replay. */
+  walks?: WalkSet | null;
 }
 
 const KILN_DIR = fileURLToPath(new URL("..", import.meta.url));
@@ -65,10 +68,14 @@ function objectSchemas(s: Record<string, unknown>, path: string, out: { path: st
   return out;
 }
 
+const WALKS_DIR = join(KILN_DIR, "fixtures", "walks");
+const streamCode = (c: string): string => (c.startsWith("stream-") || c === "causation-chain-broken" || c === "record-vacuous" ? c : `stream-${c}`);
+
 export function checkRecord(opts: RecordCheckOptions = {}): CheckResult {
   const catalog = opts.catalog ?? shipped;
   const sources = opts.sources ?? shippedSources();
   const files = opts.files === undefined ? shippedFiles() : opts.files;
+  const walks = opts.walks === undefined ? loadWalks(WALKS_DIR) : opts.walks;
   const failures: CheckResult["failures"] = [];
   const fail = (code: string, detail: string, file?: string): void => void failures.push({ code, detail, ...(file ? { file } : {}) });
 
@@ -99,11 +106,26 @@ export function checkRecord(opts: RecordCheckOptions = {}): CheckResult {
     }
   }
 
+  // ── part 2: the first program's committed walks, replayed ──
+  const notes = [`examined: ${catalog.size} types, ${sources.length} source files, ${committed.size} committed types`];
+  if (walks !== null) {
+    const summary = replayAll(walks);
+    if (walks.streams.length === 0) fail("record-vacuous", "there are no committed walks to replay: a replay of no walks proves nothing");
+    for (const r of summary.results) {
+      for (const p of r.problems) fail(p.code, `${r.name}: ${p.detail}`);
+      for (const f of r.streamFaults) fail(streamCode(f.code), `${r.name}: ${f.detail}`);
+    }
+    for (const row of summary.unexplained) fail("walk-missing-unexplained", `the row text names ${row}, but no stream of it is committed and MISSING.json gives no reason`);
+    const missing = Object.entries(summary.missingRows).map(([r, why]) => `${r} (${why.split(":")[0]})`);
+    const events = summary.results.reduce((n, r) => n + r.events, 0);
+    notes.push(`walks: ${summary.replayedRows.length} of ${NAMED_ROWS.length} named rows replayed (${summary.replayedRows.join(", ") || "none"}), ${summary.results.length} streams, ${events} events${missing.length ? `; missing: ${missing.join(", ")}` : ""}`);
+  }
+
   return {
     name: "record",
     ok: failures.length === 0,
     failures,
     scanned: sources.length,
-    notes: [`examined: ${catalog.size} types, ${sources.length} source files, ${committed.size} committed types`],
+    notes,
   };
 }

@@ -1,0 +1,13 @@
+{
+  "name": "r7-live-inference",
+  "row": "r7",
+  "walker": "legacy/fixtures/r7-live-inference.jsonl (committed; captured from a real local model by the first program)",
+  "options": {},
+  "originalSha256": "83ee1714fdee56aa01524c283261e5d8d5123f82458b85a7b43386acba54ca43",
+  "eventsSha256": "174ef29bbbe9fa6205922826d53ff9368e1b9fcd6098bd3cca250598d19f1972",
+  "records": 25,
+  "derivedBy": "spikes/015-capture-walks/capture.ts (record/src/legacy-convert.ts)",
+  "capturedOn": "2026-10-28",
+  "expect": "valid",
+  "note": "the committed live-inference walk (specs/006-kiln-live-inference)"
+}

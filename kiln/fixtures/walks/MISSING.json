@@ -1,0 +1,4 @@
+{
+  "r1": "scaffold: legacy/tests/contract/log.test.ts holds single per-line records for the schema test, not a whole stream; the scaffold row wrote no walk",
+  "r8": "Pi extension: legacy/pi/outcome.ts states the extension does not touch the factory-log; no stream of its own was found"
+}

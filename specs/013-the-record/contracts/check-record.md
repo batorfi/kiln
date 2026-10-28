@@ -13,6 +13,8 @@ The fifth check (`network`, `boundaries`, `legacy`, `flow`, **`record`**). It im
 
 `PASS record — examined: <T> types, <S> source files, <W> of 5 named walks (<M> missing: <names, why>), <E> events`. **Fails** when: any of T, S, E is 0; W = 0; a committed walk's replay differs by one byte; or a walk the row names is neither replayed nor listed as missing with a reason (FR-050).
 
+*(The move-vocabulary stream rule is tested in `record/tests/streams.test.ts`; the first program's committed streams carry no gate subjects, so the check has no member for it.)*
+
 ## 3. The negative suite (`checks/tests/record-negative.ts`)
 
 Each member builds a mutated copy (JSON clone) of the catalog or a stream and must produce its **own** code and no unlisted one; a permissive check stub must fail the suite.
@@ -33,7 +35,6 @@ Each member builds a mutated copy (JSON clone) of the catalog or a stream and mu
 | `stream-silent-approval` | `gate.settled` with a non-human decider and no delegation |
 | `stream-delegation-merged` | a delegation folded into a person's move |
 | `stream-content-key` | a `note` in an event's data |
-| `stream-move-not-in-vocabulary` | a move kind the gate's flow does not offer |
 | `replay-differs` | a converted stream altered by one byte |
 | `replay-verdict-differs` | the broken walk converted so that it passes |
 | `walk-missing-unexplained` | a named walk neither replayed nor listed |

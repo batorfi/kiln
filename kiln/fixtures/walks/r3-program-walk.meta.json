@@ -1,0 +1,13 @@
+{
+  "name": "r3-program-walk",
+  "row": "r3",
+  "walker": "legacy/src/walk.ts buildProgramWalk()",
+  "options": {},
+  "originalSha256": "d03b8ccede5ee373d1b8b06db808841f0127e45af9fbf707db67c472b98f7000",
+  "eventsSha256": "bb2f564afa723f3407624bfee5b7b0ab1789413bce2daa0adaf0eecb5f29e307",
+  "records": 6,
+  "derivedBy": "spikes/015-capture-walks/capture.ts (record/src/legacy-convert.ts)",
+  "capturedOn": "2026-10-28",
+  "expect": "valid",
+  "note": "a closed-row program walk of the roadmap overlay (specs/003-kiln-roadmap-overlay): a row closed at Gate 9, the admission at gate0, gate0 re-entered"
+}
