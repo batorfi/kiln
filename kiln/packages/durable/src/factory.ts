@@ -61,7 +61,7 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   const services: Services = { store: undefined as unknown as Store, hooks, now: opts.now ?? Date.now, slots: new Slots(), ready: false, lane: opts.lane, watch: new Watch() };
   let store: Store;
   try {
-    store = await openStore({ dir: opts.store, now: services.now, kinds: [...builtinKinds(services), ...(typeof opts.tasks === "function" ? opts.tasks(services) : (opts.tasks ?? []))], installedLibraryVersion: opts.installedLibraryVersion });
+    store = await openStore({ dir: opts.store, now: services.now, kinds: [...builtinKinds(services), ...(typeof opts.tasks === "function" ? opts.tasks(services) : (opts.tasks ?? []))], installedLibraryVersion: opts.installedLibraryVersion, hooks });
   } catch (e) {
     lock.release();
     throw e;

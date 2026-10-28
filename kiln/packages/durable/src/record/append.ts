@@ -61,6 +61,7 @@ export async function appendEvent(tx: Tx, draft: EventDraft): Promise<Event> {
   const chunk = await tx.doc<EventChunk>("kiln.event", String(Math.floor((seq - 1) / CHUNK)), { events: [] });
   chunk.events.push(plain(event));
   head.next = seq + 1;
+  if (tx.hooks) await tx.hooks.at("record.append-after-write"); // mid-commit: the chunk is written in the callback, nothing is stored yet
   if (event.correlation) {
     const run = await tx.doc<RunIndex>("kiln.record", event.correlation, { seqs: [] });
     run.seqs.push(seq);

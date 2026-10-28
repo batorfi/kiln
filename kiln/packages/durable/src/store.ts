@@ -40,6 +40,8 @@ export interface Tx {
   doc<T extends object>(name: DocName, key: string, seed: T): Promise<T>;
   createTask(kind: string, input: JSON, owner: Owner): Promise<TaskId>;
   task(id: TaskId): Promise<TaskLite | undefined>;
+  /** The factory's kill/fault hooks, so code running INSIDE a commit (the record's append) can name a mid-commit point. Absent when the store was opened with none. */
+  hooks?: { at(point: string): void | Promise<void> };
 }
 
 // ── task kinds ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -99,5 +101,9 @@ export interface OpenStoreOptions {
   kinds: TaskKind<never, never, never>[] | TaskKind<any, any, any>[];
   /** TESTS ONLY: the installed library version the store guard compares with (FR-047). Default: the installed package's own version. */
   installedLibraryVersion?: string;
+  /** Passed to every transaction as `tx.hooks` (r15: the record's mid-commit kill point). */
+  hooks?: { at(point: string): void | Promise<void> };
+  /** Called AFTER a commit that appended an event has resolved (never for one that rolled back or threw): the backbone's wake-up (research R8). Task steps commit through the runtime, so the seam does it. */
+  onAppended?: () => void;
 }
 export type { OutboxEntry, StoredOutboxEntry };

@@ -41,6 +41,11 @@ test("the source scan finds the types a file commits, and only in files that com
   assert.deepEqual(committedTypes('const i: OutboxIntent = { type: "walk.returned", actor: "x" };'), ["walk.returned"]);
 });
 
+test("a helper that takes the type as a parameter declares what it may be given, in a union named …EventType", () => {
+  assert.deepEqual(committedTypes('export type UnitEventType = "unit.queued" | "unit.settled";\nawait appendEvent(tx, { type, subject: "x" });'), ["unit.queued", "unit.settled"]);
+  assert.deepEqual(committedTypes('export type Mode = "a.b" | "c.d";\nawait appendEvent(tx, {});'), [], "a union not named …EventType is not an event type list");
+});
+
 test("a name outside the type grammar is not mistaken for an event type", () => {
   assert.deepEqual(committedTypes('appendEvent(tx, { type: "NotAType" }); appendEvent(tx, { type: "a" })'), []);
 });

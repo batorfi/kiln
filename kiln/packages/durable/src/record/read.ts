@@ -94,6 +94,6 @@ export async function collect(it: AsyncIterable<Event>): Promise<Event[]> {
 }
 
 /** The shape r13/r14 tests and views read (`Inspection.outbox`, `WalkView.history`): the event, flattened. */
-export interface InterimView { type: string; subject: string; at: number; actor: string; cause: string; data: unknown; seq: number }
-export const interimView = (e: Event): InterimView => ({ type: e.type, subject: e.subject, at: Date.parse(e.time), actor: e.actor, cause: e.causation.replace(/^cmd:/, ""), data: e.data, seq: e.seq });
+export interface InterimView { type: string; subject: string; at: number; actor: string; cause: string; data: unknown; seq: number; correlation: string | null }
+export const interimView = (e: Event): InterimView => ({ type: e.type, subject: e.subject, at: Date.parse(e.time), actor: e.actor, cause: e.causation.replace(/^cmd:/, ""), data: e.data, seq: e.seq, correlation: e.correlation });
 

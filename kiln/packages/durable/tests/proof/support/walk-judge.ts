@@ -6,6 +6,7 @@ import type { WalkInput } from "#durable/walk/input.ts";
 import { checkInvariants } from "./oracle.ts";
 import { approveAll, runWalk, type Chooser, type WalkRun } from "./walk-harness.ts";
 import { checkWalkInvariants, walkGateIds, walkOutcomes } from "./walk-oracle.ts";
+import { checkRecordInvariants } from "./record-oracle.ts";
 
 export const INTERFACE: WalkInput = { flow: "v2", facts: { paths: ["web/app.tsx"], labels: ["ui"], journeys: ["J1.3"] }, built: { ui_files_changed: true } };
 export const PLAIN: WalkInput = { flow: "v2", facts: { paths: ["src/lib/a.ts"], labels: [], journeys: [] } };
@@ -42,6 +43,7 @@ export async function judge(run: WalkRun, walk: WalkInput, base: Baseline | unde
   assert.equal(run.view.openGate, null);
   assert.ok(run.steps.every((s) => s.status === "committed" || s.status === "repeat"), `no move was refused: ${JSON.stringify(run.steps.filter((s) => s.status !== "committed" && s.status !== "repeat"))}`);
   assert.deepEqual(checkWalkInvariants(i, { feature: FEATURE, facts: walk.facts, cap: opts.cap }), [], "walk invariants W1–W4");
+  assert.deepEqual(await checkRecordInvariants(run.ts.store), [], "record invariants E1–E3, E7");
   for (const g of walkGateIds(i, FEATURE)) {
     const gi = await inspectStore(run.ts.store, g);
     assert.deepEqual(checkInvariants(gi), [], `gate invariants I1–I9 at ${g}`);

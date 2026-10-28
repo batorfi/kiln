@@ -2,6 +2,6 @@
 import { entry, nonEmpty, obj, str, type CatalogEntry } from "./builder.ts";
 
 export const commandEntries: CatalogEntry[] = [
-  entry("command.accepted", obj({ kind: nonEmpty, requestHash: nonEmpty }), false), // flips to true with T029
+  entry("command.accepted", obj({ kind: nonEmpty, requestHash: nonEmpty })),
   entry("command.refused", obj({ kind: nonEmpty, reason: str }), false),
 ];

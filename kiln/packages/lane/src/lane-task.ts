@@ -10,6 +10,7 @@
 // Priority, affinity ordering and real model residency are LANE-2 (the pure logic is in affinity.ts) and r16; here every generation is scripted.
 import { runCommand } from "#durable/commands.ts";
 import { appendEvent } from "#durable/record/append.ts";
+import { correlationOfTask } from "#durable/record/runs.ts";
 import type { Services } from "#durable/services.ts";
 import { defineKilnTask, type TaskKind } from "#durable/store.ts";
 import type { LaneApi, Lease, TaskId } from "#durable/types.ts";
@@ -60,6 +61,7 @@ export function createLane(): LaneModule {
     const sv = services();
     const at = sv.now();
     await sv.store.commit(async (tx) => {
+      const correlation = await correlationOfTask(tx, w.step); // the run the holder belongs to, read first (the library reads no task after a write)
       const doc = await tx.doc<LaneDoc>("kiln.lane", "main", seed());
       if (doc.lease) throw new LaneError(`the lane is held by task ${doc.lease.holder} in the store while the owner believed it free`);
       const from = doc.resident;
@@ -70,8 +72,8 @@ export function createLane(): LaneModule {
       doc.lease = { holder: w.step, since: at };
       const actor = `task:${w.step}`;
       const cause = w.opts.cause ?? actor;
-      await appendEvent(tx, { type: "lane.acquired", subject: "lane", at, actor, cause, data: { holder: w.step, model: doc.resident, hold: doc.hold } });
-      if (swapped) await appendEvent(tx, { type: "lane.swapped", subject: "lane", at, actor, cause, data: { from, to: doc.resident, swaps: doc.swaps } });
+      await appendEvent(tx, { type: "lane.acquired", subject: "lane", at, actor, cause, correlation, data: { holder: w.step, model: doc.resident, hold: doc.hold } });
+      if (swapped) await appendEvent(tx, { type: "lane.swapped", subject: "lane", at, actor, cause, correlation, data: { from, to: doc.resident, swaps: doc.swaps } });
       await sv.hooks.at("lane.acquire-after-write");
     });
     await sv.hooks.at("lane.acquire-committed");
@@ -107,8 +109,9 @@ export function createLane(): LaneModule {
         const doc = await tx.doc<LaneDoc>("kiln.lane", "main", seed());
         if (!doc.lease) return;
         const lost = doc.lease.holder;
+        const correlation = await correlationOfTask(tx, lost);
         doc.lease = null; // the generation died with the process: nothing is running, so nothing may be recorded as running
-        await appendEvent(tx, { type: "lane.released", subject: "lane", at: sv.now(), actor: "factory", cause: "restart", data: { holder: lost, reason: "owner-restart" } });
+        await appendEvent(tx, { type: "lane.released", subject: "lane", at: sv.now(), actor: "factory", cause: "restart", correlation, data: { holder: lost, reason: "owner-restart" } });
       });
       started = true;
       queue.push(...early.splice(0).sort((a, b) => a.step - b.step)); // the resumed steps ask again: deterministic, by task id
@@ -133,10 +136,11 @@ export function createLane(): LaneModule {
       const sv = services();
       const at = sv.now();
       await sv.store.commit(async (tx) => {
+        const correlation = await correlationOfTask(tx, step);
         const doc = await tx.doc<LaneDoc>("kiln.lane", "main", seed());
         if (!doc.lease || doc.lease.holder !== step) throw new LaneError(`task ${step} does not hold the lane${doc.lease ? ` (task ${doc.lease.holder} does)` : ""}`);
         doc.lease = null;
-        await appendEvent(tx, { type: "lane.released", subject: "lane", at, actor: `task:${step}`, cause: `task:${step}`, data: { holder: step } });
+        await appendEvent(tx, { type: "lane.released", subject: "lane", at, actor: `task:${step}`, cause: `task:${step}`, correlation, data: { holder: step } });
         await sv.hooks.at("lane.release-after-write");
       });
       await sv.hooks.at("lane.release-committed");

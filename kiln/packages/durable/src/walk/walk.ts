@@ -11,6 +11,7 @@ import type { GateKey } from "#contracts/moves.ts";
 import { openGate } from "../gate/open.ts";
 import type { MoveDocData } from "../gate/documents.ts";
 import { appendEvent } from "../record/append.ts";
+import { appendUnitEvent } from "../record/unit-events.ts";
 import { pairOf } from "../record/refs.ts";
 import type { Services } from "../services.ts";
 import type { NextState, RunningTask, Runtime } from "../store.ts";
@@ -177,7 +178,9 @@ export async function work(s: Services, task: Task<Extract<WalkCheckpoint, { pha
   const round = (w.rounds[w.cursor] ?? 0) + 1;
   const stepMs = task.input.walk.script?.stepMs;
   await run.commit(async (tx) => {
-    const id = await tx.createTask("kiln.unit", { label: `${role}:${w.cursor}:${round}`, steps: 1, ...(stepMs ? { stepMs } : {}) } as unknown as JSON, { kind: "task", taskId: task.id });
+    const label = `${role}:${w.cursor}:${round}`;
+    const id = await tx.createTask("kiln.unit", { label, steps: 1, ...(stepMs ? { stepMs } : {}) } as unknown as JSON, { kind: "task", taskId: task.id });
+    await appendUnitEvent(tx, s, "unit.queued", { unit: id, label, owner: task.id, actor: `task:${task.id}`, cause: `task:${task.id}`, correlation: `run:${task.input.feature}` });
     return { status: "waiting", checkpoint: { phase: "work", w, todo: rest, unitId: id }, on: [id] };
   });
   await s.hooks.at("walk.unit-created");

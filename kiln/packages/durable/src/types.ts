@@ -99,6 +99,8 @@ export interface OutboxEntry {
   /** What caused it (a command key, a move key). MUST be non-empty. */
   cause: string;
   data: JSON;
+  /** r15: "run:<feature>" for an event belonging to a feature run, else null (absent in the r13/r14 shape). */
+  correlation?: string | null;
 }
 export type StoredOutboxEntry = OutboxEntry & { seq: number };
 

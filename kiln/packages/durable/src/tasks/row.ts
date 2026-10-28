@@ -5,6 +5,7 @@
 import type { Services } from "../services.ts";
 import { defineKilnTask, type TaskKind } from "../store.ts";
 import type { JSON, TaskId } from "../types.ts";
+import { appendUnitEvent } from "../record/unit-events.ts";
 import * as walk from "../walk/walk.ts";
 import type { RowInput } from "./validate.ts";
 
@@ -31,6 +32,7 @@ export function rowKind(s: Services): TaskKind<RowInput, RowCheckpoint, RowResul
         }
         await run.commit(async (tx) => {
           const id = await tx.createTask("kiln.unit", script[index] as unknown as JSON, { kind: "task", taskId: task.id });
+          await appendUnitEvent(tx, s, "unit.queued", { unit: id, label: script[index].label, owner: task.id, actor: `task:${task.id}`, cause: `task:${task.id}`, correlation: `run:${task.input.feature}` });
           return { status: "waiting", checkpoint: { phase: "collect", index, unitIds: [...unitIds, id] }, on: [id] };
         });
       },

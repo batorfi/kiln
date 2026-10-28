@@ -2,4 +2,4 @@
 import { entry, int, nonEmpty, obj, str, type CatalogEntry } from "./builder.ts";
 
 const unit = obj({ unit: int, label: str, owner: nonEmpty });
-export const unitEntries: CatalogEntry[] = ["unit.queued", "unit.started", "unit.settled", "unit.failed", "unit.aborted"].map((t) => entry(t, unit, false)); // `emitted` flips to true when T028 adds the emitters
+export const unitEntries: CatalogEntry[] = ["unit.queued", "unit.started", "unit.settled", "unit.failed", "unit.aborted"].map((t) => entry(t, unit, t !== "unit.failed")); // unit.failed is catalogued, not emitted: the library writes a failed unit's end, outside any commit of ours

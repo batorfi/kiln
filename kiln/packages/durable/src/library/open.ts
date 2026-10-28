@@ -26,7 +26,8 @@ export async function openStore(opts: OpenStoreOptions): Promise<Store> {
   const storage = await openNodeSqliteStorage(join(opts.dir, STORE_FILE));
   const reports: Report[] = [];
   const byName = new Map<string, any>();
-  for (const kind of opts.kinds as any[]) byName.set(kind.name, toLibraryTask(kind, byName));
+  const seam = { hooks: opts.hooks, onAppended: opts.onAppended };
+  for (const kind of opts.kinds as any[]) byName.set(kind.name, toLibraryTask(kind, byName, seam));
   const registry = createRegistry();
   registry.install(defineExtension({ name: "kiln", tasks: [...byName.values()] }));
 
@@ -60,7 +61,17 @@ export async function openStore(opts: OpenStoreOptions): Promise<Store> {
   const reader = readersOver(storage, (name, key) => harness.snapshot(DOC_TOKENS[name], ROOT_CONVERSATION_ID, key, ctx));
   return {
     reports,
-    commit: <T>(change: (tx: Tx) => Promise<T> | T): Promise<T> => root.commit((libTx: any) => change(wrapTx(libTx, byName)), ctx),
+    commit: async <T>(change: (tx: Tx) => Promise<T> | T): Promise<T> => {
+      let appended = false;
+      const out = await root.commit(async (libTx: any) => {
+        const tx = wrapTx(libTx, byName, seam);
+        const r = await change(tx);
+        appended = tx.appended();
+        return r;
+      }, ctx);
+      if (appended) seam.onAppended?.();
+      return out;
+    },
     snapshot: reader.snapshot,
     docs: reader.docs,
     tasks: reader.tasks,

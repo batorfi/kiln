@@ -56,7 +56,7 @@ export async function openGate(s: Services, key: Key, spec: GateSpec, opts: { aw
     }
     await s.hooks.at("open.after-write"); // the writes are made, the commit has not returned
     return { gate, taskId };
-  });
+  }, spec.openedBy);
   if (out.status === "refused") return out;
   if (out.status === "applied") await s.hooks.at("open.committed");
   if (opts.awaitRegistered !== false) await registered(s, spec.gateId, 3000); // `opened` means the gate can take a move: wait (bounded) for its decision step to register

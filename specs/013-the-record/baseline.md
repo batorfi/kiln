@@ -43,3 +43,14 @@ The only existing assertions that changed are listed in `notes.md` §3.
 | `npm test` | exit 0 · `new: 719 tests · legacy: 500 tests (30 skipped)` (689 + 30 new) · **345 s** — not comparable with the 108 s of §1: the machine was under other load during this run (load average 7.9 / 9.3 five and fifteen minutes before; no kiln process left over). Re-timed at T070 on a quiet machine. |
 | `npm run check` | five `PASS`: network 98 files · boundaries 98 · legacy 168 · flow 1 · **record 90 files** (41 types, 18 committed types) |
 | catalog | 41 types in 13 groups; `schemas/events/` holds 41 generated files; `emitted` is true only for types some code commits (unit, command and feature.archived flip when T028/T029/T060 add their emitters) |
+
+## 5. US1 checkpoint (T037) — every state change is in the record, in one gap-free order
+
+After T028–T036 (unit events, `command.accepted`, lane correlation, the stream rules, the record oracle E1–E3 + E7 wired into the walk judge, the `record.append-after-write` kill point, concurrency, smoke and weakened-writer tests):
+
+| Reading | Value |
+|---|---|
+| `npm test` | exit 0 · `new: 748 tests · legacy: 500 tests (30 skipped)` · **110 s** (a quiet machine; §4's 345 s was load, not code) |
+| `npm run proof` | exit 0 · **95 tests**, 95 pass · 288 s (92 + the 3 of `record-kill-points.proof.test.ts`) |
+| `npm run check` | five `PASS`: network 101 files · boundaries 101 · legacy 168 · flow 1 · record 93 |
+| the oracle | `judge()` of every walk proof now also runs E1, E2, E3 and E7 on the final store; every r14 kill proof (the whole matrix) passes with them |

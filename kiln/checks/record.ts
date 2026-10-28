@@ -45,10 +45,15 @@ function shippedFiles(): Record<string, string> {
   return existsSync(dir) ? Object.fromEntries(readdirSync(dir).filter((f) => f.endsWith(".json")).map((f) => [f, readFileSync(join(dir, f), "utf8")])) : {};
 }
 
-/** Event types a file commits: every `type: "<group>.<verb>"` in a file that calls `appendEvent(` or builds an `OutboxIntent`. */
+/**
+ * Event types a file commits: every `type: "<group>.<verb>"` in a file that calls `appendEvent(` or builds an `OutboxIntent`, and every literal of a union named `…EventType`
+ * (`type UnitEventType = "unit.queued" | …`) in such a file — a helper that takes the type as a parameter declares what it may be given.
+ */
 export function committedTypes(text: string): string[] {
   if (!/appendEvent\(|OutboxIntent/.test(text)) return [];
-  return [...text.matchAll(new RegExp(String.raw`\btype: "(${TYPE})"`, "g"))].map((m) => m[1]);
+  const direct = [...text.matchAll(new RegExp(String.raw`\btype: "(${TYPE})"`, "g"))].map((m) => m[1]);
+  const unions = [...text.matchAll(/\btype\s+\w*EventType\s*=\s*((?:\s*\|?\s*"[^"]+")+)/g)].flatMap((m) => [...m[1].matchAll(new RegExp(String.raw`"(${TYPE})"`, "g"))].map((x) => x[1]));
+  return [...direct, ...unions];
 }
 
 function objectSchemas(s: Record<string, unknown>, path: string, out: { path: string; s: Record<string, unknown> }[] = []): { path: string; s: Record<string, unknown> }[] {

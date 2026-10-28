@@ -169,3 +169,21 @@ test("a unit whose step fails while it holds the lane gives the lane back: the n
     assert.deepEqual(e.map((x) => x[0]), ["lane.acquired", "lane.released", "lane.acquired", "lane.released"], "every acquire has its release, the failed one included");
   }, hooks);
 });
+
+test("r15: a lane event carries the run of the unit that holds it — a row's unit gives run:<feature>, a bare unit gives none", () => withLane(async ({ factory }) => {
+  assert.equal((await factory.tasks.create("r1", "kiln.row", { feature: "scripted", script: [{ label: "a", steps: 1, needsLane: true }] } as never, { kind: "factory" })).status, "created");
+  assert.equal((await factory.tasks.create("u1", "kiln.unit", { label: "bare", steps: 1, needsLane: true }, { kind: "factory" })).status, "created");
+  for (let i = 0; i < 200; i++) {
+    const done = (await factory.tasks.list()).filter((x) => x.kind === "kiln.unit" && x.status === "terminal").length;
+    if (done === 2 && (await lane(factory)).holders === 0) break;
+    await tick(25);
+  }
+  const events = (await factory.inspect()).outbox.filter((e) => e.type.startsWith("lane."));
+  const holder = (e: { data: unknown }) => (e.data as { holder: number }).holder;
+  const holders = [...new Set(events.map(holder))];
+  assert.equal(holders.length, 2, "two units took the lane");
+  const byRun = new Map(holders.map((h) => [h, [...new Set(events.filter((e) => holder(e) === h).map((e) => e.correlation))]]));
+  const runs = [...byRun.values()].map((v) => v.map(String).join("|")).sort();
+  assert.deepEqual(runs, ["null", "run:scripted"].sort(), "one holder belonged to the row's run, the other to none");
+  assert.ok(events.every((e) => e.subject === "lane"));
+}));
