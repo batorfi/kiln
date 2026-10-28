@@ -48,12 +48,14 @@ if (env.LANE_MODULE) {
   lane = made.api;
   laneKinds = made.kinds;
 }
+let consumers: any[] | undefined;
+if (env.TEST_CONSUMERS) consumers = (await import("./test-consumers.ts")).testConsumers(store, !!env.BROKEN_CONSUMER); // r15: a transactional and an effect consumer, for the backbone proofs
 const extra = (s: any): any[] => [...(broken ? [broken(s)] : []), ...(brokenWalk ? [brokenWalk(s)] : []), ...(laneKinds ? laneKinds(s) : [])];
 
 const t0 = performance.now(); // start-up is timed from here: before the factory is opened
 let factory: Factory;
 try {
-  factory = await openFactory({ store, hooks, now: () => Date.now() + offset, tasks: extra, lane, installedLibraryVersion: env.LIBRARY_VERSION, readyTimeoutMs: env.READY_TIMEOUT_MS ? Number(env.READY_TIMEOUT_MS) : undefined });
+  factory = await openFactory({ store, hooks, consumers, now: () => Date.now() + offset, tasks: extra, lane, installedLibraryVersion: env.LIBRARY_VERSION, readyTimeoutMs: env.READY_TIMEOUT_MS ? Number(env.READY_TIMEOUT_MS) : undefined });
 } catch (e) {
   console.log(`ERR ${(e as Error).name} ${(e as Error).message}`);
   process.exit(1);

@@ -19,11 +19,12 @@ export interface Baseline {
 }
 const cache = new Map<string, Promise<Baseline>>();
 /** The uninterrupted walk of this input (run once per test file and cached): the thing every killed walk must equal. */
-export function baseline(name: string, walk: WalkInput, choose: Chooser = approveAll): Promise<Baseline> {
+/** `owner` configures the child owner the baseline runs on (r15: consumers following the walk allocate task ids too, so the baseline must run with the same ones). */
+export function baseline(name: string, walk: WalkInput, choose: Chooser = approveAll, owner?: Parameters<typeof runWalk>[0]["owner"]): Promise<Baseline> {
   let p = cache.get(name);
   if (!p) {
     p = (async () => {
-      const run = await runWalk({ feature: FEATURE, walk, choose, countHits: true });
+      const run = await runWalk({ feature: FEATURE, walk, choose, countHits: true, ...(owner ? { owner } : {}) });
       try {
         assert.equal(run.deaths, 0);
         await judge(run, walk, undefined);

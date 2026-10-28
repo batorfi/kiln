@@ -110,3 +110,33 @@ export async function checkRecordInvariants(store: string): Promise<string[]> {
   }
   return v;
 }
+
+/**
+ * E5 (research R14): every cursor is at or before the head; a TRANSACTIONAL consumer\'s documents equal a fresh fold to its cursor (the test consumer `count` holds exactly 1…cursor, each once);
+ * an EFFECT consumer has delivered everything up to its cursor at least once (the test consumer `deliver-log`: the log contains every seq 1…cursor).
+ */
+export async function checkConsumerInvariants(store: string, deliveryLog?: string): Promise<string[]> {
+  const v: string[] = [];
+  const r = await openReader(store);
+  try {
+    const head = (await headOf(fromReader(r))).next - 1;
+    const cursors = await r.docs<{ seq?: number }>("kiln.cursor");
+    for (const c of cursors) if ((c.value.seq ?? 0) > head) v.push(`E5: cursor ${c.key} is at ${c.value.seq}, ahead of the head ${head}`);
+    const count = cursors.find((c) => c.key === "count")?.value.seq;
+    if (count !== undefined) {
+      const applied = (await r.snapshot<{ applied?: number[] }>("kiln.projection", "count"))?.applied ?? [];
+      const want = Array.from({ length: count }, (_, i) => i + 1);
+      if (JSON.stringify(applied) !== JSON.stringify(want)) v.push(`E5: consumer count has applied ${applied.length} events but its cursor is ${count} (applied once each, in order, would be 1…${count})`);
+    }
+    const dl = cursors.find((c) => c.key === "deliver-log")?.value.seq;
+    if (dl !== undefined && deliveryLog) {
+      const { existsSync, readFileSync } = await import("node:fs");
+      const got = new Set((existsSync(deliveryLog) ? readFileSync(deliveryLog, "utf8") : "").split("\n").filter(Boolean).map(Number));
+      const missing = Array.from({ length: dl }, (_, i) => i + 1).filter((n) => !got.has(n));
+      if (missing.length) v.push(`E5: consumer deliver-log has a cursor at ${dl} but never delivered ${missing.length} of those events (first: ${missing[0]})`);
+    }
+  } finally {
+    await r.close();
+  }
+  return v;
+}

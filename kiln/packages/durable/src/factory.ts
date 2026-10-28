@@ -17,6 +17,8 @@ import { acquireLock } from "./owner-lock.ts";
 import type { Services } from "./services.ts";
 import type { Report, Store, TaskKind } from "./store.ts";
 import { Watch } from "./walk/watch.ts";
+import { Backbone } from "./record/backbone.ts";
+import type { Consumer } from "./record/consumer.ts";
 import { makeWalkApi, type WalkApi } from "./walk/api.ts";
 import type { Channel, CommandApi, GateApi, Inspection, LaneApi, TaskApi } from "./types.ts";
 
@@ -35,6 +37,8 @@ export interface FactoryOptions {
   readyTimeoutMs?: number;
   /** TESTS ONLY: overrides the installed library version used by the store-version guard (FR-047). There is no environment variable. */
   installedLibraryVersion?: string;
+  /** r15: consumers of the record, registered before the backbone starts (or built from the services). Tests register their own; the factory-log projection joins in US3. */
+  consumers?: Consumer[] | ((s: Services) => Consumer[]);
 }
 
 export interface Factory {
@@ -47,6 +51,8 @@ export interface Factory {
   readonly commands: CommandApi;
   /** r14: admit a feature, read where it is, wait for its next gate. */
   readonly walks: WalkApi;
+  /** r15: delivers committed events to consumers with durable cursors. */
+  readonly backbone: Backbone;
   serve(): Promise<Channel>;
   /** The store as a fresh reader sees it (read through the same file). */
   inspect(gateId?: string): Promise<Inspection>;
@@ -59,9 +65,11 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   const socketPath = channelSocketPath(opts.store);
   const lock = await acquireLock(opts.store, socketPath, { probe: (info) => answers(info.socket) });
   const services: Services = { store: undefined as unknown as Store, hooks, now: opts.now ?? Date.now, slots: new Slots(), ready: false, lane: opts.lane, watch: new Watch() };
+  const backbone = new Backbone(services);
+  services.backbone = backbone;
   let store: Store;
   try {
-    store = await openStore({ dir: opts.store, now: services.now, kinds: [...builtinKinds(services), ...(typeof opts.tasks === "function" ? opts.tasks(services) : (opts.tasks ?? []))], installedLibraryVersion: opts.installedLibraryVersion, hooks });
+    store = await openStore({ dir: opts.store, now: services.now, kinds: [...builtinKinds(services), ...(typeof opts.tasks === "function" ? opts.tasks(services) : (opts.tasks ?? []))], installedLibraryVersion: opts.installedLibraryVersion, hooks, onAppended: () => backbone.notify() });
   } catch (e) {
     lock.release();
     throw e;
@@ -78,6 +86,8 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   const readyPromise = converge(services, opts.readyTimeoutMs ?? 5000);
   readyPromise.catch(() => {}); // a caller that never awaits `ready` must not cause an unhandled rejection
   services.whenReady = readyPromise;
+  for (const c of typeof opts.consumers === "function" ? opts.consumers(services) : (opts.consumers ?? [])) backbone.register(c);
+  void readyPromise.then(() => backbone.start(), () => {}); // consumers follow the record once the factory has converged
   let closed = false;
   let channel: Channel | undefined;
   const gates: GateApi = { open: (key, spec) => openGate(services, key, spec), submit: (gateId, key, move) => submitMove(services, gateId, key, move), state: (gateId) => gateState(services, gateId) };
@@ -85,6 +95,7 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   const walks = makeWalkApi(services, tasks);
   return {
     ready: readyPromise,
+    backbone,
     reports: store.reports,
     gates,
     tasks,
@@ -99,6 +110,7 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
     close: async () => {
       if (closed) return;
       closed = true;
+      await backbone.stop(); // consumers stop first; one stuck in its own code is not waited for
       services.watch.close(); // a waiting `feature next` is released with an error: the client sees a lost connection and retries
       try {
         await channel?.close();

@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { FAULT_POINTS, GATE_KILL_POINTS, KILL_POINTS, RECORD_KILL_POINTS, UNIT_KILL_POINTS, WALK_KILL_POINTS } from "#durable/hooks.ts";
+import { BACKBONE_KILL_POINTS, FAULT_POINTS, GATE_KILL_POINTS, KILL_POINTS, RECORD_KILL_POINTS, UNIT_KILL_POINTS, WALK_KILL_POINTS } from "#durable/hooks.ts";
 import { moduleLoads, tokenize } from "#checks/lex.ts";
 
 const SRC = fileURLToPath(new URL("../src", import.meta.url));
@@ -42,10 +42,11 @@ test("the declared lists have no duplicates", () => {
   void moduleLoads; // (imported for the lexer's side: keeps this file's dependency on the shared tokenizer explicit)
 });
 
-test("r14: the walk's points are their own list — not the gate's, not the unit's — and every declared point belongs to exactly one of the five families (gate, unit, walk, lane, record)", () => {
+test("r14: the walk's points are their own list — not the gate's, not the unit's — and every declared point belongs to exactly one of the six families (gate, unit, walk, lane, record, backbone)", () => {
   assert.ok(WALK_KILL_POINTS.every((p) => p.startsWith("walk.")));
   assert.ok(GATE_KILL_POINTS.every((p) => !p.startsWith("walk.")), "the gate proofs must not be asked to drive a walk point");
   const lane = KILL_POINTS.filter((p) => p.startsWith("lane."));
+  assert.equal(BACKBONE_KILL_POINTS.length, 4);
   assert.ok(RECORD_KILL_POINTS.length >= 1 && RECORD_KILL_POINTS.every((p) => p.startsWith("record.")));
-  assert.deepEqual([...GATE_KILL_POINTS, ...UNIT_KILL_POINTS, ...WALK_KILL_POINTS, ...lane, ...RECORD_KILL_POINTS].sort(), [...KILL_POINTS].sort());
+  assert.deepEqual([...GATE_KILL_POINTS, ...UNIT_KILL_POINTS, ...WALK_KILL_POINTS, ...lane, ...RECORD_KILL_POINTS, ...BACKBONE_KILL_POINTS].sort(), [...KILL_POINTS].sort());
 });

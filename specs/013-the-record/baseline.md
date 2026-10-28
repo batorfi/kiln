@@ -54,3 +54,13 @@ After T028–T036 (unit events, `command.accepted`, lane correlation, the stream
 | `npm run proof` | exit 0 · **95 tests**, 95 pass · 288 s (92 + the 3 of `record-kill-points.proof.test.ts`) |
 | `npm run check` | five `PASS`: network 101 files · boundaries 101 · legacy 168 · flow 1 · record 93 |
 | the oracle | `judge()` of every walk proof now also runs E1, E2, E3 and E7 on the final store; every r14 kill proof (the whole matrix) passes with them |
+
+## 6. US6 checkpoint (T043) — consumers follow the record with durable cursors
+
+After T038–T042 (the `Backbone`, cursors, `Consumer`, four backbone kill points, test consumers, E5, the backbone kill proof, the weakened consumer):
+
+| Reading | Value |
+|---|---|
+| `npm test` | exit 0 · `new: 759 tests · legacy: 500 tests (30 skipped)` · **111 s** |
+| `npm run proof` | exit 0 · **104 tests**, 104 pass · 263 s (95 + 9 of `backbone-kill.proof.test.ts`) |
+| `npm run check` | five `PASS`: network 104 files · boundaries 104 · legacy 168 · flow 1 · record 96 |
