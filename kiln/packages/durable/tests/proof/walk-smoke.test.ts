@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { runWalk } from "./support/walk-harness.ts";
-import { baseline, FEATURE, INTERFACE, judge, killRun, PLAIN, RECROSS } from "./support/walk-judge.ts";
+import { baseline, FEATURE, FIXING, INTERFACE, judge, killRun, PLAIN, RECROSS } from "./support/walk-judge.ts";
 
 const SMOKE: [string, number][] = [
   ["walk.pin-after-write", 1],
@@ -40,5 +40,12 @@ test("the baseline itself: 12 gates, every declared walk point reached at least 
 for (const [point, nth] of [["walk.consume-after-write", 4], ["walk.settled-read", 4], ["walk.gate-opening", 5], ["walk.consume-committed", 4]] as const) {
   test(`re-crossing walk killed at ${point} (hit ${nth}): the walk equals the uninterrupted re-crossing walk, and no re-crossed gate is carried forward as approved`, { timeout: 120_000 }, async () => {
     await killRun("plain-recross", PLAIN, point, nth, RECROSS);
+  });
+}
+
+// the factory's automatic fix rounds are killed too: before a round is recorded and right after (a round is neither lost nor counted twice)
+for (const [point, nth] of [["walk.fix-round-begin", 1], ["walk.fix-round-committed", 2]] as const) {
+  test(`fix-round walk killed at ${point} (hit ${nth}): the rounds are recorded once each and the walk equals the uninterrupted one`, { timeout: 120_000 }, async () => {
+    await killRun("plain-fixing", FIXING, point, nth);
   });
 }

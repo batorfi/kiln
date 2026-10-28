@@ -1,0 +1,5 @@
+{
+  "flow": "v2",
+  "facts": { "paths": ["src/lib/a.ts"], "labels": [], "journeys": [] },
+  "triage": { "skip": true, "reasoning": "a one-line change in one module" }
+}

@@ -1,0 +1,6 @@
+{
+  "flow": "v2",
+  "facts": { "paths": ["web/app.tsx"], "labels": ["ui"], "journeys": ["J1.3"] },
+  "built": { "ui_files_changed": true },
+  "triage": { "skip": true, "reasoning": "a copy change on one screen" }
+}

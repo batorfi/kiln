@@ -101,3 +101,19 @@ test("US5b: `kiln feature move` sends a feature back at any time — the open ga
   const gs = last(await kiln(["gate", "state", "--store", w.store, "--gate", out.last.openGate.gateId], w.env));
   assert.equal(gs.state, "withdrawn");
 });
+
+test("US6: triage through the command line — a small plain feature walks 7 feature gates, a small interface feature 9; Concept and Architecture are SKIPPED with the reasoning", async (t) => {
+  const w = world();
+  t.after(() => w.cleanup());
+  await w.owner();
+  for (const [name, file, want] of [["f-sp", "walk-small-plain.json", 7], ["f-si", "walk-small-interface.json", 9]] as const) {
+    await kiln(["feature", "admit", "--store", w.store, "--key", `k-${name}`, "--feature", name, "--walk", fx(file)], w.env);
+    const out = await drive({ store: w.store, feature: name, script: script("walk-plain.approve-all.json"), env: w.env });
+    assert.equal(out.steps.filter((s) => s.gateKey !== "gate0").length, want, name);
+    assert.ok(!out.steps.some((s) => s.gateKey === "1-concept" || s.gateKey === "2-architecture"));
+    const state = last(await kiln(["feature", "state", "--store", w.store, "--feature", name], w.env));
+    const skipped = state.history.filter((h: any) => h.type === "gate.skipped");
+    assert.deepEqual(skipped.map((h: any) => h.data.gate), ["1-concept", "2-architecture"]);
+    assert.ok(skipped.every((h: any) => /^a (one-line|copy) change/.test(h.data.reasoning)));
+  }
+});

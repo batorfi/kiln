@@ -71,3 +71,6 @@ export async function killRun(name: string, walk: WalkInput, point: string, nth:
 
 /** A walk with a re-crossing: Work plan is rejected back to Specification, so Specification, Work plan and everything after them are crossed again (FR-051: a re-crossing is killed too). */
 export const RECROSS: Chooser = (g, n) => (g.gateKey === "4-plan" && g.round === 1 ? { kind: "reject", note: "wrong order: back to the spec", target: "3-spec" } : approveAll(g, n));
+
+/** A walk whose verifier fails twice before it passes: Verification runs its two automatic fix rounds (the default cap) before the gate opens for a person. */
+export const FIXING: WalkInput = { ...PLAIN, verifier: ["fail", "fail", "pass"] };

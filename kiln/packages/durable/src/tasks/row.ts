@@ -47,6 +47,7 @@ export function rowKind(s: Services): TaskKind<RowInput, RowCheckpoint, RowResul
       admission: (task, run) => walk.admission(s, task as never, run),
       pin: (task, run) => walk.pin(s, task as never, run),
       work: (task, run) => walk.work(s, task as never, run),
+      verify: (task, run) => walk.verify(s, task as never, run),
       open: (task, run) => walk.open(s, task as never, run),
       decide: (task, run) => walk.decide(s, task as never, run),
     },

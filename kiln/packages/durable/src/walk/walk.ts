@@ -24,6 +24,7 @@ export type WalkCheckpoint =
   | { phase: "admission"; round: number; gateId: string }
   | { phase: "pin"; admission: { gateId: string; key: string; decidedBy: string; admit: Admit } }
   | { phase: "work"; w: WalkState; todo: string[]; unitId?: TaskId }
+  | { phase: "verify"; w: WalkState }
   | { phase: "open"; w: WalkState }
   | { phase: "decide"; w: WalkState; gateId: string };
 export interface WalkResult {
@@ -154,7 +155,9 @@ export async function work(s: Services, task: Task<Extract<WalkCheckpoint, { pha
   // a feature-level move wins over whatever step this was: the finished step's result is ignored (spec FR-023) and the walk goes back
   if (await consumePending(s, task.input.feature, w, run)) return;
   if (todo.length === 0) {
-    await run.commit(() => ({ status: "running", checkpoint: { phase: "open", w } }));
+    // Verification runs its bounded automatic fix rounds before the gate opens for a person
+    const next = flow.gates.find((g) => g.key === w.cursor)?.mitigationCap ? "verify" : "open";
+    await run.commit(() => ({ status: "running", checkpoint: { phase: next, w } }));
     return;
   }
   const [role, ...rest] = todo;
@@ -166,6 +169,32 @@ export async function work(s: Services, task: Task<Extract<WalkCheckpoint, { pha
     return { status: "waiting", checkpoint: { phase: "work", w, todo: rest, unitId: id }, on: [id] };
   });
   await s.hooks.at("walk.unit-created");
+}
+
+// ── verify: Verification's automatic fix rounds (GATE-6, spec FR-032) — bounded by the pinned cap, never a person's move, never a settlement ──────────────────────────────────────────────────────
+/**
+ * The scripted verifier gives its next verdict. While it is `fail` and fewer than `cap` rounds have run — and no person has rejected yet (no more automatic rounds after that) — the factory runs a round: a
+ * worker fixes, the same verifier checks again. Each round is ONE entry (`mitigate`, by the factory) in the same commit as the checkpoint that starts it, keyed by its own number: a kill neither loses nor
+ * repeats a round. When the verdict is `pass` or the rounds are used up, the gate opens for a person with the cap, the rounds used and the verdicts in its brief.
+ */
+export async function verify(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "verify" }>>, run: Run<any>): Promise<void> {
+  const { feature, walk } = task.input;
+  const { w } = task.checkpoint;
+  if (await consumePending(s, feature, w, run)) return;
+  const verdict = (walk.verifier ?? [])[w.fix.ix] ?? "pass";
+  const fix = { ...w.fix, ix: w.fix.ix + 1, verdicts: [...w.fix.verdicts, verdict] };
+  if (verdict === "fail" && !w.fix.personRejected && w.fix.used < w.pinned.cap) {
+    const n = w.fix.used + 1;
+    const pass = (w.rounds[w.cursor] ?? 0) + 1;
+    await s.hooks.at("walk.fix-round-begin");
+    await run.commit(async (tx) => {
+      await appendOutbox(tx, { type: "walk.fix-round", subject: feature, at: s.now(), actor: factoryActor, cause: `walk:${feature}:fix:${pass}:${n}`, data: { kind: "mitigate", n, cap: w.pinned.cap, verdict, pass } });
+      return { status: "running", checkpoint: { phase: "work", w: { ...w, fix: { ...fix, used: n } }, todo: ["workers", "judge"] } };
+    });
+    await s.hooks.at("walk.fix-round-committed");
+    return;
+  }
+  await run.commit(() => ({ status: "running", checkpoint: { phase: "open", w: { ...w, fix } } }));
 }
 
 // ── open: the cursor gate's next round, bound to the feature, under a deterministic key ──────────────────────────────────────────────────────

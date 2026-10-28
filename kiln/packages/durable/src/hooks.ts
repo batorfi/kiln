@@ -41,6 +41,8 @@ export const KILL_POINTS = [
   "walk.withdraw-received",
   "walk.withdraw-after-write",
   "walk.withdraw-committed",
+  "walk.fix-round-begin",
+  "walk.fix-round-committed",
   // the lane: before the commit that changes it ends (nothing stored yet) and right after (stored, the generation not yet started / not yet released)
   "lane.acquire-after-write",
   "lane.acquire-committed",
