@@ -1,7 +1,7 @@
 // Version 0 → 1 (research R7, contracts/event-catalog.md §4). A stored entry with no `schema` is what r13/r14 wrote; it is presented as a current-version event WITHOUT being rewritten.
 // Pure for a fixed `ctx`: the same entry gives the same event. Inline content (a note, a reasoning) is never presented — the event carries a reference and a digest instead (Clarification Q1),
 // and a rendered sentence is dropped. Everything here uses only the entry, its siblings and an injected digest function.
-import { catalog } from "./catalog/index.ts";
+import { catalog as shipped, type CatalogEntry } from "./catalog/index.ts";
 import { correlationOf, refString } from "./grammar.ts";
 import { uuid7 } from "./id.ts";
 import type { Ctx, Entry0, Event } from "./types.ts";
@@ -83,7 +83,7 @@ function dataOf(e: Entry0, ctx: Ctx): { type: string; data: unknown } {
 }
 
 /** A version 0 entry as a current-version event. */
-export function upcastEntry(e: Entry0, ctx: Ctx): Event {
+export function upcastEntry(e: Entry0, ctx: Ctx, catalog: ReadonlyMap<string, CatalogEntry> = shipped): Event {
   const { type, data } = dataOf(e, ctx);
   const c = catalog.get(type);
   if (!c) throw new EventVersionUnknown(type, `${type}/?`);
@@ -94,7 +94,8 @@ export function upcastEntry(e: Entry0, ctx: Ctx): Event {
 }
 
 /** A stored event of this schema is read as-is when its version is the catalog's current one; a newer one is refused by name. Older versions of a type go through that type's upcasters. */
-export function upcastStored(stored: Event, ctx: Ctx): Event {
+/** `catalog` is the shipped one unless a test hands in another (a breaking version with its upcaster). */
+export function upcastStored(stored: Event, ctx: Ctx, catalog: ReadonlyMap<string, CatalogEntry> = shipped): Event {
   const [type, v] = stored.schema.split("/");
   const c = catalog.get(type);
   const version = Number(v);

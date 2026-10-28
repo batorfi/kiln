@@ -6,7 +6,10 @@ import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { catalog as shipped, schemaFiles, type CatalogEntry } from "#contracts/events/catalog/index.ts";
 import { FORBIDDEN_KEYS } from "#contracts/events/grammar.ts";
+import { createHash } from "node:crypto";
 import { loadWalks, replayAll, NAMED_ROWS, type WalkSet } from "#record/replay.ts";
+import { stable, upcastEntry } from "#contracts/events/upcast.ts";
+import type { Ctx, Entry0, Event } from "#contracts/events/types.ts";
 import type { CheckResult } from "./index.ts";
 
 export interface SourceFile {
@@ -22,6 +25,8 @@ export interface RecordCheckOptions {
   files?: Record<string, string> | null;
   /** The committed walks to replay (default: `kiln/fixtures/walks`); `null` skips the replay. */
   walks?: WalkSet | null;
+  /** Real events to prove upcasters on (default: those r14's own code wrote, as current-version events). */
+  samples?: Event[];
 }
 
 const KILN_DIR = fileURLToPath(new URL("..", import.meta.url));
@@ -69,6 +74,20 @@ function objectSchemas(s: Record<string, unknown>, path: string, out: { path: st
 }
 
 const WALKS_DIR = join(KILN_DIR, "fixtures", "walks");
+const digest = (s: string): string => createHash("sha256").update(s, "utf8").digest("hex");
+/** The events r14's own code wrote (fixtures/stores/r14-outbox-samples.json), presented at the shipped catalog's version — real events to prove an upcaster on. */
+export function shippedSamples(): Event[] {
+  const file = join(KILN_DIR, "fixtures", "stores", "r14-outbox-samples.json");
+  if (!existsSync(file)) return [];
+  const out: Event[] = [];
+  for (const stream of Object.values(JSON.parse(readFileSync(file, "utf8")) as Record<string, Entry0[]>)) {
+    const events: Event[] = [];
+    const ctx: Ctx = { digest, siblings: (seq, key) => events.filter((e) => e.seq < seq && e.causation === `cmd:${key}`) };
+    for (const e of stream) events.push(upcastEntry(e, ctx));
+    out.push(...events);
+  }
+  return out;
+}
 const streamCode = (c: string): string => (c.startsWith("stream-") || c === "causation-chain-broken" || c === "record-vacuous" ? c : `stream-${c}`);
 
 export function checkRecord(opts: RecordCheckOptions = {}): CheckResult {
@@ -90,6 +109,25 @@ export function checkRecord(opts: RecordCheckOptions = {}): CheckResult {
         if (path.endsWith(".applicability") && typeof s.additionalProperties === "object") continue; // a map keyed by gate: its values are the closed objects, checked as `.*`
         if (s.additionalProperties !== false) fail("catalog-schema-open", `${path}: an object schema must be closed (additionalProperties: false) so a content field cannot slip in`);
         for (const k of Object.keys((s.properties as object) ?? {})) if (FORBIDDEN_KEYS.includes(k)) fail("catalog-forbidden-key", `${path} declares the forbidden key "${k}": facts and references only`);
+      }
+    }
+  }
+
+  // ── upcasters: each must be PURE and LOSSLESS over real events — proved with the inverse the entry ships ──
+  const samples = opts.samples ?? shippedSamples();
+  const ctx: Ctx = { digest, siblings: () => [] };
+  for (const [type, e] of catalog) {
+    for (let v = 1; v < e.current; v++) {
+      const up = e.upcast?.[v];
+      if (!up) continue; // (reported above: catalog-upcaster-missing)
+      const down = e.downcast?.[v];
+      const mine = samples.filter((s) => s.type === type && s.schema === `${type}/${v}`);
+      if (mine.length === 0) { fail("catalog-upcaster-unproven", `${type}: no real event of version ${v} to prove its upcaster on`); continue; }
+      if (!down) { fail("catalog-upcaster-lossy", `${type}: the upcaster from version ${v} ships no inverse, so it cannot be shown lossless`); continue; }
+      for (const s of mine) {
+        const a = up(s, ctx);
+        if (stable(a) !== stable(up(s, ctx))) { fail("catalog-upcaster-impure", `${type}: the upcaster from version ${v} gives different output for the same event (${s.type} #${s.seq})`); break; }
+        if (stable(down(a, ctx)) !== stable(s)) { fail("catalog-upcaster-lossy", `${type}: downcast(upcast(e)) is not e for ${s.type} #${s.seq}: the upcaster from version ${v} loses information`); break; }
       }
     }
   }

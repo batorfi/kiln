@@ -30,6 +30,8 @@ export interface CatalogEntry {
   legacy?: true;
   /** Upcasters from a numbered version (≥ 1) to the next. Version 0 → 1 is in upcast.ts. */
   upcast?: Record<number, (e: import("../types.ts").Event, ctx: import("../types.ts").Ctx) => import("../types.ts").Event>;
+  /** The inverse of each upcaster, keyed by the version it undoes (`downcast[2]` turns a version 2 event back into version 1). Shipped so `kiln check record` can PROVE an upcaster lossless over real events. */
+  downcast?: Record<number, (e: import("../types.ts").Event, ctx: import("../types.ts").Ctx) => import("../types.ts").Event>;
 }
 export const entry = (type: string, schema: JsonSchema, emitted = true, privacy: CatalogEntry["privacy"] = "internal"): CatalogEntry => ({ type, current: 1, versions: { 1: schema }, privacy, emitted });
 /** A type that represents the first program's streams: read-only (see `CatalogEntry.legacy`). */

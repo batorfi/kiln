@@ -86,3 +86,13 @@ After T050–T053 (converter, capture command and fixtures, replay module, `kiln
 | the capture | `node spikes/015-capture-walks/capture.ts` twice → identical bytes; `legacy/` unchanged |
 
 **What the Roadmap gate is asked to accept (Clarification Q3):** the row's text names r1–r3, r7 and r8. Three of those five rows have a real original and replay byte-for-byte with their verdicts (r2 the lane runtime's stub walk, r3 the overlay's program walk and its deliberately broken twin, r7 the committed live-inference pair); **r1 and r8 have no original stream** — r1's contract tests hold single per-line records for a schema test, and the Pi extension (r8) states in `legacy/pi/outcome.ts` that it does not touch the factory-log — and are reported by name with those reasons, not reconstructed.
+
+## 9. US5 checkpoint (T058) — events keep their meaning as their shape changes
+
+After T055–T057 (the r14 stores opened by the new owner, a breaking version with its upcaster in a test catalog, the check's proof that an upcaster is pure and lossless over real events, the refusals on the read path):
+
+| Reading | Value |
+|---|---|
+| `npm test` | exit 0 · `new: 797 tests · legacy: 500 tests (30 skipped)` · 133 s (load averages 6 / 8 / 11) |
+| `npm run check` | five `PASS` (record 103 files; walks: 3 of 5 named rows replayed) |
+| SC-005 | both r14-written stores open with the new owner; `kiln.outbox/main` is **byte-identical** after the owner opened, followed and closed it, and after the waiting walk was driven to Merge on top of it |

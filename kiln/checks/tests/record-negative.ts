@@ -64,14 +64,23 @@ function walkMembers(): Member[] {
   ];
 }
 
+/** A catalog where gate.opened has a version 2 whose upcaster/downcast pair is built by `mk` (to be lossy or impure). */
+const withV2 = (o: RecordCheckOptions, mk: (e: CatalogEntry) => Pick<CatalogEntry, "upcast" | "downcast">): RecordCheckOptions =>
+  withType(o, "gate.opened", (e) => { e.current = 2; e.versions[2] = e.versions[1]; Object.assign(e, mk(e)); });
+const exactInverse = { up: (x: Event): Event => ({ ...x, schema: "gate.opened/2" }), down: (x: Event): Event => ({ ...x, schema: "gate.opened/1" }) };
+
 export const NEGATIVE: Member[] = [
+  { code: "catalog-upcaster-lossy", rule: "an upcaster that drops an admitted field", break: (o) => withV2(o, () => ({ upcast: { 1: (x) => { const { briefRef: _b, ...rest } = x.data as Record<string, unknown>; return { ...x, schema: "gate.opened/2", data: rest }; } }, downcast: { 1: exactInverse.down } })) },
+  { code: "catalog-upcaster-lossy", rule: "an upcaster that ships no inverse", break: (o) => withV2(o, () => ({ upcast: { 1: exactInverse.up } })) },
+  { code: "catalog-upcaster-impure", rule: "an upcaster that reads the clock", break: (o) => withV2(o, () => ({ upcast: { 1: (x) => ({ ...x, schema: "gate.opened/2", data: { ...(x.data as object), at: Math.random() } }) }, downcast: { 1: exactInverse.down } })) },
+  { code: "catalog-upcaster-unproven", rule: "an upcaster with no real event to prove it on", break: (o) => ({ ...withV2(o, () => ({ upcast: { 1: exactInverse.up }, downcast: { 1: exactInverse.down } })), samples: [] }) },
   { code: "record-vacuous", rule: "an empty catalog", break: (o) => ({ ...o, catalog: new Map(), sources: [{ file: "x.ts", text: "// commits nothing" }], files: null }) },
   { code: "record-vacuous", rule: "no source files to scan", break: (o) => { for (const e of (o.catalog as Catalog).values()) e.emitted = false; return { ...o, sources: [], files: null }; } },
   { code: "catalog-schema-open", rule: "a schema that allows additional properties", break: (o) => withType(o, "walk.completed", (e) => { (e.versions[1] as any).additionalProperties = true; }) },
   { code: "catalog-forbidden-key", rule: "a schema that declares a `note` field", break: (o) => withType(o, "walk.completed", (e) => { (e.versions[1] as any).properties.note = { type: "string" }; }) },
   { code: "catalog-forbidden-key", rule: "a schema that declares a `url` field", break: (o) => withType(o, "gate.opened", (e) => { (e.versions[1] as any).properties.url = { type: "string" }; }) },
   { code: "catalog-upcaster-missing", rule: "a version 2 with no upcaster from version 1", break: (o) => withType(o, "walk.completed", (e) => { e.current = 2; e.versions[2] = e.versions[1]; }) },
-  { code: "catalog-schema-missing", rule: "a current version with no schema", break: (o) => withType(o, "walk.completed", (e) => { e.current = 3; e.upcast = { 1: (x) => x, 2: (x) => x }; }) },
+  { code: "catalog-schema-missing", codes: ["catalog-schema-missing", "catalog-upcaster-lossy", "catalog-upcaster-unproven"], rule: "a current version with no schema", break: (o) => withType(o, "walk.completed", (e) => { e.current = 3; e.upcast = { 1: (x) => x, 2: (x) => x }; }) },
   {
     code: "catalog-unknown-emitted",
     rule: "source commits a type the catalog does not have",
