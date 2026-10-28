@@ -1,14 +1,13 @@
 // The owner-level wait slots (research R2). A gate's decision step registers a single-shot slot here and awaits it; a move wakes it. This is MEMORY by design — the library offers no
 // durable "wait for an outside event" — and everything that matters is judged against the STORED record, never this map. After a restart the step re-runs from its top and registers again;
 // until it has, a move is answered `not-ready` (FR-043).
-import type { Key, Move } from "../types.ts";
+import type { FeatureMove, Key, Move } from "../types.ts";
 
 export type SlotResult = "committed" | "lost" | { error: string };
-export interface SlotRequest {
-  key: Key;
-  move: Move;
-  done(result: SlotResult): void;
-}
+/** What wakes a decision step: a person's move on the gate — or (r14) a feature-level move that WITHDRAWS the gate without settling it. */
+export type SlotRequest =
+  | { kind?: "move"; key: Key; move: Move; done(result: SlotResult): void }
+  | { kind: "withdraw"; key: Key; move: FeatureMove; done(result: SlotResult): void };
 export interface Slot {
   /** The decision step has (re-)registered and is awaiting a move. */
   registered: boolean;

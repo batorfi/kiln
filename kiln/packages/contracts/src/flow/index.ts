@@ -5,6 +5,13 @@ import type { FlowDefinition, GateDefinition } from "./types.ts";
 import { v1 } from "./v1.ts";
 import { v2 } from "./v2.ts";
 
+// r14: the pure rules over the data (engine, applicability, the glob dialect).
+export * from "./engine.ts";
+export { applicability, atUiSlot } from "./applies.ts";
+export { validateFlow, BUILTIN_ORDER, CONDITIONAL } from "./validate.ts";
+export { compileGlob, firstMatch, globProblem, matchGlob } from "./glob.ts";
+export type * from "./types.ts";
+
 export const flows: { readonly v1: FlowDefinition; readonly v2: FlowDefinition } = { v1, v2 };
 /** The flow all new work uses (constitution v2.1.0). */
 export const CURRENT_FLOW = "v2" satisfies FlowVersion;

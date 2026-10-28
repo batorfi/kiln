@@ -1,10 +1,11 @@
 // The registry `kiln check` runs (contracts/cli-check.md). Each story registers its check here.
 
 import { checkLegacy } from "./legacy-identity.ts";
+import { checkFlow } from "./flow.ts";
 import { checkBoundaries } from "./boundaries.ts";
 import { checkNetwork } from "./network-lint.ts";
 
-export type CheckName = "network" | "boundaries" | "legacy";
+export type CheckName = "network" | "boundaries" | "legacy" | "flow";
 
 export interface CheckResult {
   name: CheckName;
@@ -18,12 +19,13 @@ export interface CheckResult {
 }
 
 /** Run order: the order of this list. */
-export const CHECK_NAMES: readonly CheckName[] = ["network", "boundaries", "legacy"];
+export const CHECK_NAMES: readonly CheckName[] = ["network", "boundaries", "legacy", "flow"];
 
 export const registry: Partial<Record<CheckName, () => CheckResult>> = {
   network: () => checkNetwork(),
   boundaries: () => checkBoundaries(),
   legacy: () => checkLegacy(),
+  flow: () => checkFlow(),
 };
 
 /** Runs every named check, each even when an earlier one fails. */

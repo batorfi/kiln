@@ -1,4 +1,4 @@
 {
   "name": "@kiln/durable",
-  "responsibility": "The one seam over Pi Durable: the gate contract (open a gate whole; a move and its completion in one commit; keyed, first move wins, never by clock), task kinds and their resume, the command ledger, one owner per store and its private local channel; the only importer of the library (src/library/)."
+  "responsibility": "The one seam over Pi Durable: the gate contract (open a gate whole; a move and its completion in one commit; keyed, first move wins, never by clock), task kinds and their resume, the command ledger, one owner per store and its private local channel; the only importer of the library (src/library/), and (r14) the walk of a feature: the owner opens each next gate from the flow's data, applies a person's move, and ends a gate a feature-level move withdraws."
 }

@@ -6,6 +6,7 @@ import { dirname } from "node:path";
 import { userInfo } from "node:os";
 import { ensureSafeChannelDir, secureSocketFile, socketProblem } from "./path.ts";
 import { ChannelUnsafe, type Channel, type GateSpec, type GateState, type Key, type Move, type OpenOutcome, type Outcome } from "../types.ts";
+import type { WalkApi } from "../walk/api.ts";
 import { MAX_LINE, encode, parseRequest, type ChannelReply } from "./protocol.ts";
 
 export interface ChannelHandlers {
@@ -13,6 +14,8 @@ export interface ChannelHandlers {
   open(key: Key, spec: GateSpec): Promise<OpenOutcome>;
   submit(gateId: string, key: Key, move: Move): Promise<Outcome>;
   state(gateId: string): Promise<GateState>;
+  /** r14: the walks of features. */
+  walks: WalkApi;
 }
 
 export async function startChannel(socketPath: string, handlers: ChannelHandlers): Promise<Channel> {
@@ -28,6 +31,8 @@ export async function startChannel(socketPath: string, handlers: ChannelHandlers
   const server = net.createServer((socket) => {
     socket.setEncoding("utf8");
     let buffer = "";
+    const gone = new AbortController(); // a request that waits (`feature.next`) ends when this connection does
+    socket.on("close", () => gone.abort());
     const send = (r: ChannelReply): void => void (socket.destroyed || socket.write(encode(r)));
     const handle = async (line: string): Promise<void> => {
       const req = parseRequest(line);
@@ -39,6 +44,11 @@ export async function startChannel(socketPath: string, handlers: ChannelHandlers
           case "gate.open": return send({ id: req.id, ok: true, result: await handlers.open(req.key, req.spec) });
           case "gate.move": return send({ id: req.id, ok: true, result: await handlers.submit(req.gateId, req.key, req.move) });
           case "gate.state": return send({ id: req.id, ok: true, result: await handlers.state(req.gateId) });
+          case "feature.admit": return send({ id: req.id, ok: true, result: await handlers.walks.admit(req.key, req.feature, req.walk) });
+          case "feature.state": return send({ id: req.id, ok: true, result: await handlers.walks.state(req.feature) });
+          // waits on an in-process event (never a timer, never a poll) and answers from the store; an owner that closes releases it with an error
+          case "feature.move": return send({ id: req.id, ok: true, result: await handlers.walks.move(req.feature, req.key, req.move) });
+          case "feature.next": return send({ id: req.id, ok: true, result: await handlers.walks.next(req.feature, req.after, gone.signal) });
         }
       } catch (e) {
         send({ id: req.id, ok: false, error: `owner error: ${(e as Error).message}` });

@@ -26,15 +26,34 @@ export const KILL_POINTS = [
   "unit.step-begin",
   "unit.step-after-work",
   "unit.step-committed",
+  // the walk (r14): each point is declared by the task that first fires it
+  "walk.admit-opened",
+  "walk.admission-read",
+  "walk.pin-begin",
+  "walk.pin-after-write",
+  "walk.pin-committed",
+  "walk.unit-created",
+  "walk.gate-opening",
+  "walk.gate-opened",
+  "walk.settled-read",
+  "walk.consume-after-write",
+  "walk.consume-committed",
+  "walk.withdraw-received",
+  "walk.withdraw-after-write",
+  "walk.withdraw-committed",
+  "walk.fix-round-begin",
+  "walk.fix-round-committed",
   // the lane: before the commit that changes it ends (nothing stored yet) and right after (stored, the generation not yet started / not yet released)
   "lane.acquire-after-write",
   "lane.acquire-committed",
   "lane.release-after-write",
   "lane.release-committed",
 ] as const;
-/** The points of the gate's own life (the gate proofs drive these); the unit points are driven by the unit proof, the lane points by the lane proof. */
-export const GATE_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => !/^(unit|lane)\./.test(p));
+/** The points of the gate's own life (the gate proofs drive these); the unit points are driven by the unit proof, the lane points by the lane proof, the walk points by the walk proof (r14). */
+export const GATE_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => !/^(unit|lane|walk)\./.test(p));
 export const UNIT_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => p.startsWith("unit."));
+/** r14: the walk's points. Each is declared in `KILL_POINTS` by the task that first fires it (the declared set must EQUAL the set the source uses), so this list grows with the walk. */
+export const WALK_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => p.startsWith("walk."));
 export type KillPoint = (typeof KILL_POINTS)[number] | (string & {});
 
 export const FAULT_POINTS = ["store-write"] as const;

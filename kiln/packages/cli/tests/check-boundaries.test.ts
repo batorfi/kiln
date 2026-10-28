@@ -51,10 +51,11 @@ test("contracts importing node:fs exits 1 with boundary-contracts-io", () => {
   });
 });
 
-test("all three checks together: the real tree passes npm run check's command and the exit code is 0", () => {
+test("all four checks together: the real tree passes npm run check's command and the exit code is 0 (three until r14 added `flow`)", () => {
   const r = cli(kilnDir);
   assert.match(r.stdout, /^PASS network/m);
   assert.match(r.stdout, /^PASS boundaries/m);
   assert.match(r.stdout, /^PASS legacy/m);
+  assert.match(r.stdout, /^PASS flow/m);
   assert.equal(r.status, 0, r.stdout + r.stderr);
 });

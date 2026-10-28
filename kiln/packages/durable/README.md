@@ -39,6 +39,12 @@ From another process, through the owner: `kiln owner --store <dir>` and `kiln ga
 
 A command key lives **as long as the thing it created exists in the live store.** A task-creation key lasts as long as the task; a gate-open key as long as the gate; a move key as long as the gate's move record — that is, forever. Anything that later archives or compacts the store (r15) may drop a key **only together with what it created**, and must keep the keys of anything still referenced. A dropped key whose thing still exists would let a retried command run twice; the ledger's `requestHash` comparison is what turns a reused key with a different request into a `key-conflict` instead of a silent second effect.
 
+## The walk (r14)
+
+`kiln.row` has a `walk` form: one feature walked through the flow's data (`src/walk/`; the pure rules are in `packages/contracts/src/flow/`). After a person's move settles a gate, **the owner** opens the next one under a deterministic key (`walk:<feature>:open:<gate>:<round>`), so a kill between the move and the next opening is repaired by the same key coming back as a `repeat`. The row never writes a move record and has no path that completes a gate.
+A gate can also end **withdrawn**: a feature-level `reject` (any time, `kiln feature move`) is delivered into the open gate's decision slot and the decision step's one commit writes the withdrawal — no move record, never `gate.settled`. Feature-move keys live as long as the walk's `kiln.walk` document, i.e. forever in the live store: the r15 archive must keep them with it, like command keys.
+Contracts: `specs/012-gates-as-data-walked-headless/contracts/`.
+
 ## The power-loss boundary
 
 What is covered: **abrupt death of the owner process** — `SIGKILL`, a crash, an out-of-memory kill — at every named step of a gate's life and of a unit's step, and at random instants (see the proof in `tests/proof/`). After any such death a fresh reader finds each gate absent, waiting with no record, or settled with exactly one record, never partial.

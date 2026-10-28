@@ -1,0 +1,11 @@
+[
+  { "id": "us4-drop-anchor-rule", "why": "delete the Merge-is-last rule from validateFlow: the suite must name the hole", "file": "packages/contracts/src/flow/validate.ts",
+    "find": "add(\"flow-after-merge\", `${keys.length - 1 - merge} gate(s) follow Merge", "replace": "void (\"flow-after-merge\", `${keys.length - 1 - merge} gate(s) follow Merge",
+    "tests": ["checks/tests/flow-check.test.ts"], "expect": "flow-after-merge" },
+  { "id": "us4-vacuous-passes", "why": "make an empty flow pass: the flow-vacuous member must be accepted and the suite must fail", "file": "packages/contracts/src/flow/validate.ts",
+    "find": "if (gates.length === 0) {\n    add(\"flow-vacuous\"", "replace": "if (false as boolean) {\n    add(\"flow-vacuous\"",
+    "tests": ["checks/tests/flow-check.test.ts"], "expect": "flow-vacuous|a check examines something" },
+  { "id": "us4-glob-permissive", "why": "let the glob dialect accept anything: the glob member must slip through", "file": "packages/contracts/src/flow/glob.ts",
+    "find": "const UNSUPPORTED = new Set([\"[\", \"]\", \"{\", \"}\", \"(\", \")\", \"!\", \"|\", \"\\\\\"]);", "replace": "const UNSUPPORTED = new Set<string>();",
+    "tests": ["checks/tests/flow-check.test.ts", "packages/contracts/tests/glob.test.ts"], "expect": "glob" }
+]

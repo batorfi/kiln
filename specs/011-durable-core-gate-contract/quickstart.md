@@ -23,7 +23,7 @@ grep -c "no dependency\|nothing to install" ../README.md package.json   # 0 — 
 
 ```bash
 npm ci                                     # the one network act
-npm run check                              # three PASS: network, boundaries, legacy
+npm run check                              # three PASS: network, boundaries, legacy   (four since r14, which added `flow`)
 npm test                                   # new + legacy; exit 0
 ```
 

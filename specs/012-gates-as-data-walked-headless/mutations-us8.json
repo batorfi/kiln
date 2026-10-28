@@ -1,0 +1,11 @@
+[
+  { "id": "us8-vocabulary-in-the-data-only", "why": "narrow Architecture's vocabulary in v2.ts only: the drift test must name the gate and the field", "file": "packages/contracts/src/flow/v2.ts",
+    "find": "moves: [\"approve\", \"revise\", \"reject\"], judge: \"architecture-critic\",", "replace": "moves: [\"approve\", \"reject\"], judge: \"architecture-critic\",",
+    "tests": ["packages/contracts/tests/gate-rail-drift.test.ts"], "expect": "2-architecture · moves" },
+  { "id": "us8-vocabulary-in-the-contract-only", "why": "narrow Architecture's vocabulary in gate-rail.md only", "file": "packages/contracts/gate-rail.md",
+    "find": "| `2-architecture` | 2 | Architecture | Is this the right structure? | approve · revise · reject |", "replace": "| `2-architecture` | 2 | Architecture | Is this the right structure? | approve · reject |",
+    "tests": ["packages/contracts/tests/gate-rail-drift.test.ts"], "expect": "2-architecture · moves" },
+  { "id": "us8-consequence-row-in-the-contract-only", "why": "change where a restart leads in the contract's table only: the row must be run through the engine and fail", "file": "packages/contracts/gate-rail.md",
+    "find": "| `restart@6-review` | `@build` |", "replace": "| `restart@6-review` | `6-review` |",
+    "tests": ["packages/contracts/tests/gate-rail-drift.test.ts"], "expect": "restart@6-review: goes to" }
+]

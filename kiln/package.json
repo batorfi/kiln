@@ -28,6 +28,7 @@
     "test": "node tests/run.ts",
     "test:new": "node tests/run.ts --new-only",
     "test:legacy": "node tests/run.ts --legacy-only",
+    "proof": "node tests/run.ts --new-only --proof",
     "kiln": "node packages/cli/src/main.ts",
     "check": "node packages/cli/src/main.ts check",
     "validate:log": "node packages/record/src/log.ts",

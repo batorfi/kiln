@@ -6,7 +6,7 @@ import type { Inspection, MoveRecord, StoredOutboxEntry } from "./types.ts";
 import type { StoreRecord } from "./store-version.ts";
 
 interface GateDoc { gateId?: string; present?: boolean }
-interface MoveDoc { record: MoveRecord | null }
+interface MoveDoc { record: MoveRecord | null; withdrawn?: { key: string; by: string } }
 interface OutboxDoc { next: number; entries: StoredOutboxEntry[] }
 interface LaneDoc { resident: string | null; hold: boolean; swaps: number; lease: { holder: string; since: number } | null }
 interface CommandDoc { key?: string; kind: string; requestHash: string }
@@ -29,7 +29,8 @@ export async function inspectWith(reader: Reader, gateId?: string): Promise<Insp
   for (const c of await reader.docs<CommandDoc>("kiln.command")) (commands[c.key] ??= []).push(c.value.requestHash);
 
   let gate: Inspection["gate"] = "absent";
-  let documents = { gate: false, brief: false, opened: false, moveCommitted: false, gateSettled: false };
+  let documents: Inspection["documents"] = { gate: false, brief: false, opened: false, moveCommitted: false, gateSettled: false };
+  let withdrawal: Inspection["withdrawal"] = null;
   let records: MoveRecord[] = [];
   let decision: Inspection["decision"] = "absent";
   let gateTask: Inspection["gateTask"] = "absent";
@@ -47,21 +48,27 @@ export async function inspectWith(reader: Reader, gateId?: string): Promise<Insp
       opened: outbox.some((e) => e.type === "gate.opened" && e.subject === gateId),
       moveCommitted: outbox.some((e) => e.type === "move.committed" && e.subject === gateId),
       gateSettled: outbox.some((e) => e.type === "gate.settled" && e.subject === gateId),
+      // present only when true, so a store that never withdrew a gate inspects exactly as it did under r13
+      ...(outbox.some((e) => e.type === "gate.withdrawn" && e.subject === gateId) ? { gateWithdrawn: true } : {}),
     };
+    withdrawal = m?.withdrawn ? { key: m.withdrawn.key, by: m.withdrawn.by } : null;
     const mine = tasks.filter((t) => (t.input as { gateId?: string } | null)?.gateId === gateId);
     const dec = mine.find((t) => t.kind === "kiln.decision");
     decision = !dec ? "absent" : dec.status === "terminal" ? "terminal" : "live";
     const gt = mine.find((t) => t.kind === "kiln.gate");
     gateTask = !gt ? "absent" : gt.status === "terminal" ? "terminal" : "live";
-    decisionMatchesRecord = dec?.status === "terminal" ? dec.outcome?.status === "completed" && records.length === 1 && (dec.outcome.result as { key?: string } | null)?.key === records[0].key : true;
+    decisionMatchesRecord = dec?.status === "terminal"
+      ? dec.outcome?.status === "completed" && (records.length === 1 ? (dec.outcome.result as { key?: string } | null)?.key === records[0].key : withdrawal !== null && (dec.outcome.result as { key?: string; withdrawn?: boolean } | null)?.key === withdrawal.key && (dec.outcome.result as { withdrawn?: boolean } | null)?.withdrawn === true)
+      : true;
     for (const t of mine) if (t.status === "sleeping") timers.push(`${t.kind} sleeping`);
-    gate = records.length > 0 ? "settled" : hasGate ? "waiting" : "absent";
+    gate = records.length > 0 ? "settled" : withdrawal ? "withdrawn" : hasGate ? "waiting" : "absent";
   }
   return {
     store: { libraryVersion: rec?.libraryVersion ?? null, contract: rec?.contract ?? null },
     tasks: tasks.map((t) => ({ id: t.id, kind: t.kind, owner: t.owner ?? ("factory" as const), status: t.status, ...(t.outcome ? { outcome: t.outcome.status === "completed" ? { status: "completed" as const, result: t.outcome.result } : { status: t.outcome.status } } : {}) })),
     gate,
     documents,
+    withdrawal,
     records,
     decision,
     gateTask,

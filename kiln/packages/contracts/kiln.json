@@ -1,4 +1,4 @@
 {
   "name": "@kiln/contracts",
-  "responsibility": "Gate ids, move kinds, versioned flow definitions, judge rosters, the tier policy, record types and JSON schemas \u2014 pure, with no I/O."
+  "responsibility": "Gate ids, move kinds, versioned flow definitions, judge rosters, the tier policy, record types and JSON schemas — pure, with no I/O — and (r14) the pure flow engine: order, next gate, applicability and its reasons, where a move leads, triage, the cap, and the validator behind `kiln check flow`."
 }

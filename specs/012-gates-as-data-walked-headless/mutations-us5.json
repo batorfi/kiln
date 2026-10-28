@@ -1,0 +1,17 @@
+[
+  { "id": "us5-withdraw-writes-a-move-record", "why": "make the withdraw path also write a move record: a withdrawn gate would be settled too — I10 and the withdrawn-has-no-record test must fail", "file": "packages/durable/src/gate/tasks.ts",
+    "find": "md.withdrawn = plain({ key: request.key, by: request.move.decidedBy,", "replace": "md.record = plain({ gateId, key: request.key, move: { kind: \"reject\", decidedBy: request.move.decidedBy, briefRef: \"x\" }, decidedAt: at, seq: 1 as const }); md.withdrawn = plain({ key: request.key, by: request.move.decidedBy,",
+    "tests": ["packages/durable/tests/walk/feature-move.test.ts", "packages/durable/tests/proof/walk-withdraw.test.ts"] },
+  { "id": "us5-withdrawn-gate-takes-a-move", "why": "let a person's move be judged as 'lost-race' instead of stale on a withdrawn gate (the winner is no longer told correctly)", "file": "packages/durable/src/gate/move.ts",
+    "find": "if (!ended?.record && ended?.withdrawn) return refused(\"stale\", { winner: ended.withdrawn.key,", "replace": "if (!ended?.record && ended?.withdrawn) return refused(\"lost-race\", { winner: ended.withdrawn.key,",
+    "tests": ["packages/durable/tests/walk/feature-move.test.ts"], "expect": "stale" },
+  { "id": "us5-pending-never-applied", "why": "the walk never applies a recorded feature-level move: 'no gate is open' would silently drop the person's reject", "file": "packages/durable/src/walk/walk.ts",
+    "find": "if (!peek?.pending) return false;", "replace": "return false;",
+    "tests": ["packages/durable/tests/walk/feature-move.test.ts"] },
+  { "id": "us5-reject-does-not-recross", "why": "a reject to an earlier gate re-crosses nothing (every later gate would be carried across a change it did not see)", "file": "packages/contracts/src/flow/engine.ts",
+    "find": "return { goto: t, work: \"author\", recross: fromHere(flow, pins, t), leaves: false, records: \"returned\" };", "replace": "return { goto: t, work: \"author\", recross: [], leaves: false, records: \"returned\" };",
+    "tests": ["packages/contracts/tests/consequences.test.ts", "packages/durable/tests/walk/moves.test.ts"] },
+  { "id": "us5-restart-skips-code-review", "why": "restart returns to the gate it was made at instead of re-crossing from the build (the FR-025 defect)", "file": "packages/contracts/src/flow/engine.ts",
+    "find": "case \"rebuild-then-recross\": return { goto: \"@build\", work: \"rebuild\", recross: afterBuild(flow, pins), leaves: false, records: \"returned\" };", "replace": "case \"rebuild-then-recross\": return { goto: gate, work: \"rebuild\", recross: [], leaves: false, records: \"returned\" };",
+    "tests": ["packages/contracts/tests/consequences.test.ts", "packages/durable/tests/walk/moves.test.ts"] }
+]

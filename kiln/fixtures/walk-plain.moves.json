@@ -1,0 +1,9 @@
+{
+  "gate0": { "kind": "approve", "admit": {} },
+  "3-spec#1": { "kind": "revise", "note": "FR-3 is not testable: give it a number" },
+  "4-plan#1": { "kind": "reject", "note": "the spec is wrong about ordering", "target": "3-spec" },
+  "5-checkpoint#1": { "kind": "split+revise", "note": "the export part becomes its own feature" },
+  "6-review#1": { "kind": "restart", "note": "wrong approach: rebuild" },
+  "7-verification#1": { "kind": "reject", "note": "requirement 3 still fails on the current code" },
+  "*": { "kind": "approve" }
+}

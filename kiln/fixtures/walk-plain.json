@@ -1,0 +1,4 @@
+{
+  "flow": "v2",
+  "facts": { "paths": ["src/lib/a.ts", "docs/readme.md"], "labels": [], "journeys": [] }
+}

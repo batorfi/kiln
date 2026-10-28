@@ -10,5 +10,7 @@ export interface BriefDocData {
 }
 export interface MoveDocData {
   record: MoveRecord | null;
+  /** r14: the gate ENDED WITHOUT being settled — a feature-level move withdrew it. At most one of `record` and `withdrawn` is ever set. */
+  withdrawn?: { key: string; by: string; at: number; target: string; note: string };
 }
 export const gateExists = (g: GateDocData | undefined): g is GateDocData & Required<Pick<GateDocData, "gateId" | "briefRef" | "vocabulary">> => !!g && g.gateId !== undefined && g.briefRef !== undefined && Array.isArray(g.vocabulary);

@@ -1,6 +1,7 @@
 // Input validation for the three shell kinds, as pure functions (so `tasks.create` can refuse by name before anything is written). The shells are SCRIPTED (research R8): nothing here reads flow
 // data except the roadmap's gate; any new behaviour belongs to r14/r16/r18 and needs a spec line first.
 import type { JSON } from "../types.ts";
+import { checkWalk, FEATURE_PATTERN, type WalkInput } from "../walk/input.ts";
 
 export interface UnitSpec {
   label: string;
@@ -12,10 +13,8 @@ export interface UnitSpec {
   /** Scripted duration of each step in ms (0–60000): the work a kill can interrupt. */
   stepMs?: number;
 }
-export interface RowInput {
-  feature: string;
-  script: UnitSpec[];
-}
+/** A row is EITHER the r13 scripted list of units OR (r14) a walk of the flow — exactly one. */
+export type RowInput = { feature: string; script: UnitSpec[]; walk?: undefined } | { feature: string; walk: WalkInput; script?: undefined };
 export interface RoadmapInput {
   factory: string;
 }
@@ -39,12 +38,19 @@ export function checkUnit(v: unknown): string | null {
   if (v.stepMs !== undefined && (!Number.isInteger(v.stepMs) || (v.stepMs as number) < 0 || (v.stepMs as number) > 60_000)) return "stepMs is an integer from 0 to 60000";
   return null;
 }
+const RESERVED_FEATURES: readonly string[] = ["lane"];
 export function checkRow(v: unknown): string | null {
   if (!isObj(v)) return "a row's input is an object";
-  const extra = only(v, ["feature", "script"]);
+  const extra = only(v, ["feature", "script", "walk"]);
   if (extra) return extra;
   if (typeof v.feature !== "string" || v.feature.trim() === "") return "a row needs a feature";
-  if (!Array.isArray(v.script) || v.script.length > 50) return "script is a list of at most 50 unit specs";
+  if (v.script !== undefined && v.walk !== undefined) return "a row has a script OR a walk, not both";
+  if (v.walk !== undefined) {
+    if (!FEATURE_PATTERN.test(v.feature)) return `a walk's feature name goes into gate ids: it matches ${FEATURE_PATTERN} (lower-case letters, digits, . _ -)`;
+    if (RESERVED_FEATURES.includes(v.feature)) return `"${v.feature}" is reserved: the owner's own entries are recorded under it`;
+    return checkWalk(v.walk);
+  }
+  if (!Array.isArray(v.script) || v.script.length > 50) return "script is a list of at most 50 unit specs (or give a walk)";
   for (const [i, u] of v.script.entries()) {
     const bad = checkUnit(u);
     if (bad) return `script[${i}]: ${bad}`;
