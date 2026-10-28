@@ -114,3 +114,17 @@ The first pass of the matrix was not clean, twice, and the matrix did its job: (
 | Checks | `npm run check` | exit **0** — `PASS network` / `boundaries` (74 files) · `legacy` (168) · `flow` (1 file, **12 gates examined**) |
 | `legacy/` tree id | `git rev-parse HEAD:legacy` | `20a82c7e214be256c804f6e8f1cd4cce9c8e9874` — **equal to the "before"** |
 | Guarded paths | `git diff --stat main -- specs/ROADMAP.md legacy` | **empty** |
+
+## Fresh clone (T086) — 2026-10-28
+
+`git clone --branch 012-gates-as-data-walked-headless` → `/tmp/kiln-r14-fresh` at `8b55b3e`; `cd kiln && npm ci` (91 packages; the one network act); then the quickstart as written:
+
+| § | Command | Result |
+|---|---|---|
+| 0 | `npm test` | exit **0** — `new: 643 tests · legacy: 500 tests (30 skipped)`, 109 s (the default tier says `10 proof files not run; npm run proof runs them`) |
+| 1 | `npm run check`; `npm run kiln -- check flow` | four `PASS`; `PASS flow` with `note: 12 gates examined` |
+| 2 | `kiln owner` · `kiln feature admit` · `node tests/walk/drive.ts … walk-interface.approve-all.json` · `kiln feature state` | `listening`/`ready`; `created`; **12 gates** driven (`{"done":true,"status":"done","gates":12}`); state `done`, no open gate, **12** `move.committed` |
+| 3 | the same with `walk-plain.json` | **10 gates**; `gate.not-applicable` for `2a-experience` and `6a-ui-review`; 10 moves |
+| 8 | guards | `specs/ROADMAP.md` and `legacy/` unchanged in the working tree (the clone has no local `main`, so the diff was checked in the main checkout: empty; `legacy/` tree id equal to the "before") |
+
+The quickstart's §4–§7 (kill and resume, moves, triage and fix rounds, the contract) are the proof tier and the in-process tests recorded above; they were not re-run by hand in the clone.

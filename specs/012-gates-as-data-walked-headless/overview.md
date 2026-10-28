@@ -1,7 +1,6 @@
 # Technical overview: r14 — gates as data, walked headless
 
-**Row**: `r14` of the `kiln-v1` firing program · **Feature**: `012-gates-as-data-walked-headless` · **Written**: 2026-10-27 · **Status**: **specified, clarified, planned and analysed — nothing is built yet** (89 tasks, none started). Every section says what the design *will* do; where something is already true of the code r14 builds on, it says so. The status table in §14 is the thing to update as phases land.
-**Audience**: the engineer who has to build r14 or the row after it (r15 records the walk, r18 directs it, r20 puts it on the web, r26 adds gates from files), and the reviewer who has to decide whether a walk can be trusted.
+**Row**: `r14` of the `kiln-v1` firing program · **Feature**: `012-gates-as-data-walked-headless` · **Written**: 2026-10-27 · **Status**: **built and proven** (2026-10-28) — all 89 tasks done; the readings are in [baseline.md](./baseline.md), the account of the work in [implementation-report.md](./implementation-report.md). Sections written before the build say **[built]** in their heading; where the build differed from the design the text was corrected, and §13 lists the differences. **Audience**: the engineer who has to build r14 or the row after it (r15 records the walk, r18 directs it, r20 puts it on the web, r26 adds gates from files), and the reviewer who has to decide whether a walk can be trusted.
 **Companions**: [spec.md](./spec.md) (what and why, normative; 41 requirements, 12 success criteria) · [plan.md](./plan.md) · [research.md](./research.md) (R1–R18, the design decisions) · [data-model.md](./data-model.md) · [contracts/](./contracts/) (`flow-data.md`, `walk-contract.md`, `check-flow.md`) · [quickstart.md](./quickstart.md) (the acceptance run) · [tasks.md](./tasks.md) · the predecessor overview, [../011-durable-core-gate-contract/overview.md](../011-durable-core-gate-contract/overview.md).
 
 > **Reading guide.** §1–3 say what the row is and what it inherited. §4–7 are the design: the pure engine, applicability, the walk, and what changes in the gate. §8–9 are the check and the command line. §10 is the data. §11 is how the design will be *attacked* — as in r13, the proof is the real product. §12–15 are governance, decisions, status and risks. §16–17 are a glossary and a reading order.
@@ -89,7 +88,7 @@ What r14 deliberately is *not*: added gates and flows from files (r26), the ten-
 
 ---
 
-## 4. The flow as data, and the engine over it **[planned]**
+## 4. The flow as data, and the engine over it **[built]**
 
 ### 4.1 Data
 
@@ -126,7 +125,7 @@ v2 already lists twelve gates with a move vocabulary each. r14 adds, all optiona
 
 ---
 
-## 5. Applicability and its reasons **[planned]**
+## 5. Applicability and its reasons **[built]**
 
 Experience design and UI review apply only to interface work. r14 turns "declared" into "decided, once, and provable":
 
@@ -140,7 +139,7 @@ Not applicable ≠ skipped ≠ settled. They are three different recorded outcom
 
 ---
 
-## 6. The walk **[planned]**
+## 6. The walk **[built]**
 
 ### 6.1 One row, one checkpoint
 
@@ -155,8 +154,8 @@ Not applicable ≠ skipped ≠ settled. They are three different recorded outcom
 | `pin` | reads the **stored** record; takes `admit` (gates required, triage override, fix-round cap); evaluates applicability, triage and cap | **one commit**: `walk.admitted`, one `gate.not-applicable`/`gate.skipped` each, status → active, checkpoint |
 | `work` | the scripted units of the cursor gate: an *author* unit, a distinct *judge* unit where the gate has a judge, *workers* or a *rebuild* where the last consequence says so, Verification's fix rounds | per unit, keyed |
 | `open` | opens the cursor gate's next round with its brief, `noteRequired` and `returnsTo`; **binds it to the feature** (see §7.3) | atomic with `openGateId`, keyed `walk:<f>:open:<gate>:<round>` |
-| `decide` | waits for the gate task. It ends *only because the gate ended* — settled or withdrawn | — |
-| `consume` | reads the **stored** move record (never memory), applies the consequence, records its outcome | **one commit**: new walk state, outbox entry, checkpoint |
+| `decide` | the checkpoint *is* "waiting on the gate task"; the function that runs when it wakes reads the **stored** record (a person's move, or a feature-level withdrawal), applies the consequence the flow data gives, and records the outcome. It ends *only because the gate ended*. | **one commit**: new walk state, outbox entries, checkpoint |
+| `verify` | Verification only: takes the scripted verifier's next verdict; while it is `fail` and fewer than the pinned cap of automatic rounds has run (and no person has rejected), records a `walk.fix-round` and queues a worker unit and a re-check | **one commit** per round |
 
 **The row never writes a move record and has no path that completes a gate.** The only things that end `decide` are r13's decision step (a person's move) or a withdrawal (a person's feature-level move). A weakened row that treated a restart as approval is part of the proof — and must be caught.
 
@@ -188,7 +187,7 @@ The store treats a brief as opaque JSON. The walk attaches the small, determinis
 
 ---
 
-## 7. What changes in the gate **[planned]**
+## 7. What changes in the gate **[built]**
 
 ### 7.1 The move gains three optional fields
 
@@ -210,7 +209,7 @@ First-move-wins and exactly-once are the same proved mechanism: a gate move that
 
 ---
 
-## 8. `kiln check flow` and its negative suite **[planned]**
+## 8. `kiln check flow` and its negative suite **[built]**
 
 `checkFlow({flow?})` calls the pure `validateFlow` and maps every fault to `{code, file, detail}`. **All-or-nothing**: it reports every fault it finds, then fails. It is never vacuous: it notes how many gates it examined, and examining none is `flow-vacuous`. Stable codes, one per rule of FLOW-7:
 
@@ -233,7 +232,7 @@ Two limits to know: the check is for the *default* flow (FLOW-7 "Must (default f
 
 ---
 
-## 9. The command line and the driver **[planned]**
+## 9. The command line and the driver **[built]**
 
 ```
 kiln check [network|boundaries|legacy|flow]… [--json]
@@ -250,7 +249,7 @@ Exit codes are r13's: 0 any answered request (a refusal is an answer), 2 usage, 
 
 ---
 
-## 10. Data **[planned]**
+## 10. Data **[built]**
 
 * **One new document family**, `kiln.walk/<feature>`: `{status, openGateId, moves (keyed), pending}`. It exists because the opening commit and a completer's command must read the *cross-task* facts — which gate is open, whether a move is waiting — and a task's checkpoint can be read by neither. Everything else about the walk stays in the checkpoint.
 * **Gate documents** gain `noteRequired` and `returnsTo`; the `kiln.move` document gains an optional `withdrawn` field. No other family changes; r13 documents are open objects, and a test opens an r13-shaped store under the new owner.
@@ -259,7 +258,7 @@ Exit codes are r13's: 0 any answered request (a refusal is an answer), 2 usage, 
 
 ---
 
-## 11. How the design will be attacked **[planned]**
+## 11. How the design will be attacked **[built]**
 
 The method is r13's, extended; the new things are what a *walk* adds to a gate.
 
@@ -277,7 +276,7 @@ The method is r13's, extended; the new things are what a *walk* adds to a gate.
 
 ---
 
-## 12. Governance **[planned]**
+## 12. Governance **[built]**
 
 | Principle | How r14 meets it |
 |---|---|
@@ -321,23 +320,9 @@ The method is r13's, extended; the new things are what a *walk* adds to a gate.
 
 ## 14. Status and what remains
 
-89 tasks, none started. Phases in implementation order (the story order is US4 → US1 → US2 → US3 → US5 → US6 → US7 → US8):
+**All 89 tasks are done.** Measured on Node 25.9.0: `npm test` 643 new + 500 legacy tests (111 s), `npm run proof` 92 tests (276 s), four checks `PASS`; the default tier passes on Node 22.19.0 / 23.6.0 / 24.1.0 in 75–78 s and the proof tier on 22.19.0. See [baseline.md](./baseline.md) and the [implementation report](./implementation-report.md), which also lists what this row did *not* decide (a person versus a program as decider; scripted steps; the ten-part brief; arming; the event stream).
 
-| Phase | Tasks | State |
-|---|---|---|
-| 1 Setup — baseline, the "three checks" text list, the proof tier in the runner | T001–T003 | pending |
-| 2 Foundational — flow types/data, glob, applicability, engine core; the gate's extended shape; r13 green unchanged | T004–T016 | pending |
-| 3 **US4** `kiln check flow` and its negative suite (first, so the check exists before the data it judges) | T017–T024 | pending |
-| 4 **US1** the interface walk through the CLI (12 gates) | T025–T040 | pending |
-| 5 **US2** applicability, the plain walk (10 gates), required gates | T041–T047 | pending |
-| 6 **US3** kill and resume: oracle, harness, smoke, proof-tier matrix, storm, clock, weakened walk | T048–T058 | pending |
-| 7 **US5** where moves lead, the re-crossing kill, the feature-level move and `withdrawn` | T059–T072 | pending |
-| 8–10 **US6** triage · **US7** fix rounds · **US8** the contract rewrite | T073–T081 | pending |
-| 11 Polish — floor matrix, proof run recorded, statements, fresh-clone quickstart, report | T082–T089 | pending |
-
-**MVP** is phases 1–5: the flow is data, the check refuses bad data, and both acceptance walks run through the CLI. Validate quickstart §1–§3 there before building the kill matrix.
-
-**r14 stays `queued`.** Closing the row is the human's Roadmap-gate move; this row does not edit `ROADMAP.md`, and `legacy/` stays byte-identical.
+**r14 stays `queued`.** Closing the row is the human's Roadmap-gate move; this row does not edit `ROADMAP.md`, and `legacy/` is byte-identical.
 
 ---
 
