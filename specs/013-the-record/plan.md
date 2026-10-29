@@ -19,7 +19,7 @@ The rest of the row is **proof**: `kiln check record` (never vacuous, with an 18
 
 ## Technical Context
 
-**Language/Version**: TypeScript run by Node's type stripping (as r12–r14). Node `^22.19.0 || >=23.6.0` unchanged. No parameter properties, enums or namespaces.
+**Language/Version**: TypeScript run by Node's type stripping (as r12–r14). Node `^22.19.0 || >=24.1.0` (raised from `>=23.6.0` while building: spec, implementation report §7). No parameter properties, enums or namespaces.
 
 **Primary Dependencies**: none added. The three pinned packages stay behind `durable/src/library/`. `contracts` keeps `builtins: none` (no `node:crypto`: the id is arithmetic and the digest is injected); the SHA-256 and file I/O live in `durable`/`record`.
 

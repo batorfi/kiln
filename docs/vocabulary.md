@@ -297,7 +297,7 @@ KILN does not claim a guarantee it has not tried to break. These are the words o
 
 **Separate-process completer** — the same exactly-once and kill-point cases driven through `kiln gate …` instead of in-process.
 
-**Canary** — a test that fails loudly, by name, if an assumption about the platform (Node's built-in SQLite) stops being true. **Floor matrix** — the suite and `kiln check` run on the lowest supported Node versions (22.19.0, 23.6.0, 24.1.0) and the installed one. **Baseline** (`baseline.md`) — measured readings recorded per phase.
+**Canary** — a test that fails loudly, by name, if an assumption about the platform (Node's built-in SQLite) stops being true. **Floor matrix** — the suite and `kiln check` run on the lowest supported Node versions (22.19.0, 24.1.0) and the installed one. **Baseline** (`baseline.md`) — measured readings recorded per phase.
 
 **Spike** (research sense) — a time-boxed, ungated experiment that ends in a measured report and a verdict; **r42** was the spike that decided the durable core could be built (verdict `go`). **Planted violation** — a deliberately wrong file placed in a copy of the tree to prove a check fails on it.
 
@@ -327,7 +327,7 @@ KILN does not claim a guarantee it has not tried to break. These are the words o
 
 **External seam** — a dependency declared in `boundaries.json` as reachable from one named package only. **Pin** — an exact version (no `^`, `~`, tag). **Lockfile** — the committed `package-lock.json`. **`DEPENDENCIES.md`** — the recorded decision: each dependency's version, integrity, licence, reason and seam, plus the `node:sqlite` posture and the upgrade rule ("a deliberate, recorded change with its own row and review"). A test keeps it equal to `package.json` and the lock.
 
-**Floor** — the minimum Node (`^22.19.0 || >=23.6.0`). **Type stripping** — Node runs TypeScript directly with no build step; so no enums, namespaces or constructor parameter properties. **Import map** — `#durable/…`, `#contracts/…` aliases in `package.json`.
+**Floor** — the minimum Node (`^22.19.0 || >=24.1.0`). **Type stripping** — Node runs TypeScript directly with no build step; so no enums, namespaces or constructor parameter properties. **Import map** — `#durable/…`, `#contracts/…` aliases in `package.json`.
 
 **Row (spec sense)** / **Spec directory** — a Spec Kit feature directory `specs/NNN-name/` with `spec.md`, `plan.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`, `tasks.md`, plus KILN's `baseline.md`, `notes.md`, `overview.md`.
 

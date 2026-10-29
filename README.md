@@ -218,7 +218,7 @@ The new KILN is not built yet. You can run and inspect the foundation the restar
 
 **Requirements**
 
-- **Node.js `^22.19.0 || >=23.6.0`** — TypeScript runs directly through Node's type-stripping, with no build step. If you
+- **Node.js `^22.19.0 || >=24.1.0`** — TypeScript runs directly through Node's type-stripping, with no build step. If you
   see `ERR_UNKNOWN_FILE_EXTENSION`, your Node is too old. On 22.x Node prints `ExperimentalWarning: SQLite is an experimental feature`: the durable core rests on Node's built-in SQLite, which is accepted with that warning (see [`kiln/DEPENDENCIES.md`](./kiln/DEPENDENCIES.md)). Verified on macOS only.
 - **Git.** Three pinned runtime dependencies (the durable runtime and its two companions, recorded in [`kiln/DEPENDENCIES.md`](./kiln/DEPENDENCIES.md)); **one install step**: `cd kiln && npm ci` — the one network act (≈ 112 MB). `legacy/` needs no install.
 - *Optional:* [Ollama](https://ollama.com) with a model for the live tier (tests default to `gemma4:12b`; set

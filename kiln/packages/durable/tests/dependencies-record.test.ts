@@ -48,6 +48,16 @@ test("DEPENDENCIES.md equals package.json and the lock: every dependency, its ex
   assert.deepEqual(compare(pkg.dependencies, lock, record), []);
 });
 
+test("the lock's own engines.node equals package.json's, and the README, DEPENDENCIES.md and the quickstart quote the same range", () => {
+  const rootLock = JSON.parse(read("package-lock.json")).packages[""] as { engines: { node: string } };
+  assert.equal(rootLock.engines.node, pkg.engines.node);
+  const range = pkg.engines.node as string;
+  assert.ok(readme().includes(range), "README.md quotes engines.node");
+  assert.ok(read("DEPENDENCIES.md").includes(range), "DEPENDENCIES.md quotes engines.node");
+  const quickstart = readFileSync(join(KILN, "..", "specs", "013-the-record", "quickstart.md"), "utf8");
+  assert.ok(quickstart.includes(range), "the r15 quickstart quotes engines.node");
+});
+
 test("a dependency missing from the record, a version that differs and an integrity that differs each fail by name", () => {
   const deps = { a: "1.0.0", b: "2.0.0" };
   const lk = { "node_modules/a": { version: "1.0.0", integrity: "sha512-A" }, "node_modules/b": { version: "2.0.0", integrity: "sha512-B" } };
@@ -74,5 +84,5 @@ test("the statements that kiln/ has no dependency or nothing to install are gone
     assert.doesNotMatch(text, old, `${file} still says kiln/ has nothing to install`);
   }
   assert.match(pkg.description, /three pinned dependencies/i);
-  assert.match(readme(), /\^22\.19\.0 \|\| >=23\.6\.0/);
+  assert.match(readme(), /\^22\.19\.0 \|\| >=24\.1\.0/);
 });

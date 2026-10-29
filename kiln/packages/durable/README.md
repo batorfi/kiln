@@ -60,11 +60,11 @@ What is covered: **abrupt death of the owner process** — `SIGKILL`, a crash, a
 
 What is **not** covered, and not tested: **loss of host power or a kernel crash**. Durability here is the storage engine's own: a commit acknowledged to a caller has been handed to the operating system, and on power loss the newest commit(s) may be lost. Nothing is ever *half*-applied by that either (the commit is atomic), but a move acknowledged moments before the power went may not be there afterwards — retry the same key.
 
-Other stated limits: macOS is the only platform measured; the storage rests on Node's built-in SQLite, which is experimental on the supported Node range (`^22.19.0 || >=23.6.0`) and prints a warning there, accepted and recorded.
+Other stated limits: macOS is the only platform measured; the storage rests on Node's built-in SQLite, which is experimental on the supported Node range (`^22.19.0 || >=24.1.0`) and prints a warning there, accepted and recorded.
 
 ## One connection fact
 
-Node 23.6.0 ignores `DatabaseSync`'s `timeout` option (the busy timeout stays 0), so a second connection that met a committing owner failed at once with "database is locked". `src/library/open.ts` sets `PRAGMA busy_timeout = 5000` on the owner's and every reader's connection itself; `tests/busy-timeout.test.ts` asserts it on whichever Node runs the suite.
+Node 23.6.0 ignores `DatabaseSync`'s `timeout` option (the busy timeout stays 0), so a second connection that met a committing owner failed at once with "database is locked". Every Node in the supported range (`^22.19.0 || >=24.1.0`) applies the option; the 23.x line is outside it for that reason. `tests/busy-timeout.test.ts` asserts the wait on the owner's and on every reader's connection, and fails by name on a Node that does not apply it.
 
 ## Kill points (tests only)
 

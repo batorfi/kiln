@@ -1,6 +1,6 @@
 # Quickstart: the acceptance run (row r15)
 
-Prerequisites: `cd kiln && npm ci` (Node `^22.19.0 || >=23.6.0`); `npm test` and `npm run proof` green on the base. Every command below is offline; none opens a network port beyond r13's private socket.
+Prerequisites: `cd kiln && npm ci` (Node `^22.19.0 || >=24.1.0`); `npm test` and `npm run proof` green on the base. Every command below is offline; none opens a network port beyond r13's private socket.
 
 ## 1. The record of a walk, and the factory-log built from it (US1, US2, US3)
 

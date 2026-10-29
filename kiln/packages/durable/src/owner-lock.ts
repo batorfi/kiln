@@ -46,7 +46,8 @@ export const defaultPidAlive = (pid: number): boolean => {
 
 function open(path: string): DatabaseSync {
   const db = new DatabaseSync(path, { timeout: 10_000 }); // a competing starter holds the write lock only for the few statements of its own decision
-  db.exec("PRAGMA busy_timeout = 10000"); // the `timeout` option above is ignored by older Node (23.6: "database is locked" at once); the pragma works on every supported version
+  const waits = (db.prepare("PRAGMA busy_timeout").get() as { timeout: number }).timeout;
+  if (waits <= 0) { db.close(); throw new Error(`Node ${process.versions.node} ignores the SQLite busy-timeout option, so competing starters would fail with "database is locked" (KILN supports Node ^22.19.0 || >=24.1.0)`); }
   db.exec(LOCK_SCHEMA);
   return db;
 }

@@ -76,10 +76,11 @@ What matters for the record:
 | A task step that throws ends the task **failed, for good**. | Anything that must be retried (the archive) catches its own failure and records it. |
 | A task cannot read after its first table write (`tx.task()`). | Writers read what they need *before* writing; creators pass the correlation explicitly. |
 
-One more thing the database does *not* give on every Node: **a wait for a lock.** Node 23.6.0 ignores the `timeout`
+One more thing the database does not give on *every* Node: **a wait for a lock.** Node 23.6.0 ignores the `timeout`
 option of `DatabaseSync` (busy timeout stays 0), so a second connection that met the owner mid-commit failed at once with
-"database is locked". The seam (`library/open.ts`) therefore sets `PRAGMA busy_timeout = 5000` on the owner's connection
-and on every reader's, and `tests/busy-timeout.test.ts` checks it on whatever Node runs the suite.
+"database is locked". That is why the supported range is `^22.19.0 || >=24.1.0` and leaves out the 23.x line: every Node in it applies the
+option (measured on 22.18, 22.19, 24.1 and 25.9), and `tests/busy-timeout.test.ts` checks the owner's and every reader's wait on whatever
+Node runs the suite — it fails by name on one that does not.
 
 **Readers.** Tools such as `kiln record show` and the proofs' judges open the store *without* being its owner
 (`openReader`): read-only snapshots of documents and tasks, never a write. They are what lets a test look at a store "as a
@@ -306,8 +307,8 @@ Exit codes: 0 answered · 1 a verification failed (or examined nothing) · 2 usa
 name (`cursor-ahead-of-head`) instead of silently skipping events it has never seen. Fix by resetting that consumer's cursor
 (a version bump does it) and letting it catch up; the factory-log is simply rebuilt.
 
-**Moving a store to a machine with a different Node** is fine within the supported range (`^22.19.0 || >=23.6.0`); the
-database file is the same, only the connection's busy-timeout setup differs, and the seam sets it explicitly.
+**Moving a store to a machine with a different Node** is fine within the supported range (`^22.19.0 || >=24.1.0`); the
+database file is the same.
 
 ---
 
