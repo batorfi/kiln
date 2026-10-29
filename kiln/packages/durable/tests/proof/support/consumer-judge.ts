@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { openFactory } from "#durable/factory.ts";
 import { fromReader, headOf } from "#durable/record/read.ts";
 import { openReader } from "#durable/library/open.ts";
-import { checkConsumerInvariants, checkProjectionInvariants } from "./record-oracle.ts";
+import { checkArchiveInvariants, checkConsumerInvariants, checkProjectionInvariants, checkRecordInvariants } from "./record-oracle.ts";
 import { deliveryLog, testConsumers } from "./test-consumers.ts";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -13,12 +13,17 @@ export async function catchUpAndJudge(store: string, broken = false): Promise<st
   const f = await openFactory({ store, consumers: testConsumers(store, broken) });
   try {
     await f.ready;
-    for (let i = 0; i < 400; i++) { if ((await f.backbone.status()).every((s) => s.lag === 0 && !s.failed)) break; await sleep(25); }
+    for (let i = 0; i < 600; i++) {
+      const lagging = !(await f.backbone.status()).every((s) => s.lag === 0 && !s.failed);
+      const archiving = (await checkArchiveInvariants(store, { requireArchived: true })).length > 0; // an ended walk is archived by whoever starts next
+      if (!lagging && !archiving) break;
+      await sleep(25);
+    }
     await sleep(broken ? 400 : 0); // the weakened consumer\'s late work
   } finally {
     await f.close();
   }
-  const v = [...(await checkConsumerInvariants(store, deliveryLog(store))), ...(await checkProjectionInvariants(store))];
+  const v = [...(await checkConsumerInvariants(store, deliveryLog(store))), ...(await checkProjectionInvariants(store)), ...(await checkArchiveInvariants(store, { requireArchived: true })), ...(await checkRecordInvariants(store))];
   const r = await openReader(store);
   const head = (await headOf(fromReader(r))).next - 1;
   const applied = (await r.snapshot<{ applied?: number[] }>("kiln.projection", "count"))?.applied ?? [];

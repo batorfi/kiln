@@ -79,3 +79,15 @@ test("a settlement made by r13/r14\'s own events becomes a gate-completion with 
 test("wallClock: MM:SS, and HH:MM:SS from a hundred minutes (the first program\'s pattern)", () => {
   assert.deepEqual([wallClock(0), wallClock(61_000), wallClock(59 * 60_000 + 59_000), wallClock(100 * 60_000), wallClock(-5)], ["00:00", "01:01", "59:59", "01:40:00", "00:00"]);
 });
+
+test("the reducer does what the mapping table says: a type mapped to a record type produces exactly one line of that type, a type mapped to null produces none", async () => {
+  const { EXAMPLES } = await import("./support/examples.ts");
+  for (const [type, record] of Object.entries(FACTORY_LOG_MAP)) {
+    const data = EXAMPLES[type];
+    assert.ok(data !== undefined, `no example for ${type}`);
+    const e = eventOf(type, data, { subject: type.startsWith("gate.") || type === "move.committed" ? "gate:f:3-spec:1" : "f" }) as unknown as Event;
+    const lines = step(initialState(), e).lines.map((l) => JSON.parse(l));
+    assert.equal(lines.length, record === null ? 0 : 1, `${type} → ${record}`);
+    if (record !== null) assert.equal(lines[0].recordType, record, type);
+  }
+});

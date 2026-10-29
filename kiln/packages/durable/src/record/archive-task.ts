@@ -50,7 +50,7 @@ export function archiveKind(s: Services, dir: string): TaskKind<ArchiveInput, Ar
         try {
           const content = await exportFeature(s.store, feature);
           const gates = content.lines.map((l) => JSON.parse(l)).filter((r) => r.kind === "doc" && r.name === "kiln.gate").map((r) => r.key as string);
-          const file = writeArchive(dir, content);
+          const file = await writeArchive(dir, content);
           await s.hooks.at("archive.export-written"); // the file is on disk, nothing recorded: a kill here writes the same bytes again
           await run.commit(() => ({ status: "running", checkpoint: { phase: "verify", file, counts: content.counts, keys: content.keys, gates } }));
         } catch (e) {

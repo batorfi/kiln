@@ -31,7 +31,7 @@ async function finishArchive(store: string): Promise<void> {
 
 async function killAt(point: string, nth: number): Promise<void> {
   const base = await baseline("plain+human", PLAIN, HUMAN);
-  const run = await runWalk({ feature: FEATURE, walk: PLAIN, choose: HUMAN, killAt: point, killNth: nth });
+  const run = await runWalk({ feature: FEATURE, walk: PLAIN, choose: HUMAN, killAt: point, killNth: nth, holdMs: 700 }); // the owner lives a moment past the walk's end so the archive that follows it can run
   try {
     assert.ok(run.fired.includes(point), `proof-point-not-fired: ${point} (hit ${nth})`);
     // E6 must hold at EVERY moment, including the wreck the kill left (nothing compacted before it was recorded, nothing recorded without its file)

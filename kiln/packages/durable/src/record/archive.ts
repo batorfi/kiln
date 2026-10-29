@@ -1,7 +1,8 @@
 // The feature archive (research R12, contracts/archive.md, CORE-7): what a finished feature leaves the live store as — one checksummed file beside the store, never in git. This module is the FILE:
 // what goes in (`exportFeature`, a pure function of the stored state), how it is written (`writeArchive`: temp file, fsync, rename), how it is checked (`verifyArchive`) and read back (`readArchive`).
 // The task that runs it, and the tombstones it leaves, are in archive-task.ts.
-import { closeSync, existsSync, fsyncSync, mkdirSync, openSync, readFileSync, renameSync, writeSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+import { mkdir, open, rename } from "node:fs/promises";
 import { join } from "node:path";
 import { canonicalJson, sha256Hex } from "../canonical.ts";
 import type { Event } from "#contracts/events/types.ts";
@@ -85,21 +86,21 @@ export async function exportFeature(store: Pick<Reader, "snapshot" | "docs" | "t
 }
 
 /** Writes the archive so a reader sees nothing, or the whole file. The name carries the first eight hex digits of the checksum. Idempotent: the same content gives the same file. */
-export function writeArchive(store: string, content: ArchiveContent): ArchivedFile {
+export async function writeArchive(store: string, content: ArchiveContent): Promise<ArchivedFile> {
   const text = content.lines.map((l) => `${l}\n`).join("");
   const sha256 = sha256Hex(text);
   const name = `${content.feature.replace(/[^A-Za-z0-9._-]/g, "_")}-${sha256.slice(0, 8)}.kiln-archive`;
-  mkdirSync(archiveDir(store), { recursive: true });
+  await mkdir(archiveDir(store), { recursive: true });
   const path = archivePath(store, name);
   const tmp = `${path}.tmp-${process.pid}`;
-  const fd = openSync(tmp, "w");
+  const fh = await open(tmp, "w"); // asynchronous: the owner's thread is shared with the walks it archives
   try {
-    writeSync(fd, text);
-    fsyncSync(fd);
+    await fh.writeFile(text);
+    await fh.sync();
   } finally {
-    closeSync(fd);
+    await fh.close();
   }
-  renameSync(tmp, path);
+  await rename(tmp, path);
   return { name, sha256, bytes: Buffer.byteLength(text, "utf8") };
 }
 
