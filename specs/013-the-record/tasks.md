@@ -193,8 +193,8 @@ description: "Task list for the record (row r15)"
 - [X] T070 Floor matrix: the default tier on Node 22.19.0, 23.6.0, 24.1.0 and the proof tier on 22.19.0; record the seconds against the budget in `S/baseline.md` (r14: 75–78 s default).
 - [X] T071 [P] Documents: `D/README.md` (the record section: chunked storage, `legacyThrough`, the backbone, the archive, key retention for archived features — r14's carried item closed), root `README.md`, the `kiln.json` responsibilities of `contracts`, `record`, `durable`, `checks` and `cli`, `D/kiln.json`; `kiln/DEPENDENCIES.md` is unchanged (a test already keeps it equal).
 - [X] T072 [P] Amend `S/spec.md`'s Assumptions to what was built (names kept, tombstones, trace null) — they were amended while planning; make the final pass — and write `S/overview.md` (the design as built, one reading page) and `S/implementation-report.md` (what exists, how far the evidence can be trusted, deviations, what went wrong, open items — including the missing old walks and the library's no-delete limit raised for the dependency record).
-- [ ] T073 Run `S/quickstart.md` start to finish from a **fresh clone** of the branch (`git clone`, `cd kiln && npm ci`); record the outcome in `S/baseline.md`.
-- [ ] T074 Final guardrails: `git diff main -- legacy` is empty, `legacy/` tree id equals T001's, `specs/ROADMAP.md` hash equals T001's, `npm run check` five `PASS`, no file under `kiln/` imports `legacy/`; then the code review (`/code-review` or the r14 method) before the PR.
+- [X] T073 Run `S/quickstart.md` start to finish from a **fresh clone** of the branch (`git clone`, `cd kiln && npm ci`); record the outcome in `S/baseline.md`.
+- [X] T074 Final guardrails: `git diff main -- legacy` is empty, `legacy/` tree id equals T001's, `specs/ROADMAP.md` hash equals T001's, `npm run check` five `PASS`, no file under `kiln/` imports `legacy/`; then the code review (`/code-review` or the r14 method) before the PR.
 
 ---
 

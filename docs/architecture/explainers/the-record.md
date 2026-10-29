@@ -130,7 +130,7 @@ Things worth noticing:
 * **`actor` has a grammar.** A person is `<name>@<token>`; the other forms are for programs. A delegated approval is
   `delegation:…` — a *different* event from a person's move, never disguised as one. A program may not pose as a person
   (the first program's validator refuses a walk "decided by" `script:r14`).
-* **`causation` is required.** Every event says what made it. An `evt:n` cause must name an *earlier* event.
+* **`causation` is required.** Every event says what made it. An `evt:n` cause must name an *earlier* event, and it can only be said with the writer's `causeEvent` field: a command key is always `cmd:<key>`, even a key that happens to look like `evt:3`.
 * **`data` holds facts and content pairs.** A content pair is `{ "ref": "move:<gate>#note", "digest": "<sha-256>" }`: where
   the text lives, and a fingerprint of what it said. Text itself is never in `data`.
 

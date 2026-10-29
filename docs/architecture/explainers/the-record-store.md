@@ -94,7 +94,7 @@ crash left it".
 | family | key | holds | written by |
 |---|---|---|---|
 | `kiln.event` | chunk number `n` | `{ events: Event[] }` — complete envelopes, in sequence order | `appendEvent`, inside the caller's commit |
-| `kiln.record` | `head` | `{ next, legacyThrough }` | `appendEvent` |
+| `kiln.record` | `head` | `{ next, legacyThrough, lastAt }` | `appendEvent` |
 | `kiln.record` | `run:<feature>` | `{ seqs: number[] }` — sequence numbers of that run | `appendEvent`, when the event has a correlation |
 | `kiln.outbox` | `main` | `{ next, entries: Entry0[] }` — r13/r14's version 0 entries | **nobody, from r15 on** |
 | `kiln.cursor` | consumer name | `{ seq, version, failed? }` | the backbone |
@@ -133,10 +133,11 @@ never edited), so old chunks are cold data.
 
 ## 5. The head and the run index
 
-**The head** (`kiln.record/head`) is two numbers:
+**The head** (`kiln.record/head`) is three numbers:
 
 * `next` — the sequence number the next event will get. The record has events `1 … next−1`.
 * `legacyThrough` — the last sequence number held in the old outbox (0 for a store that never had one).
+* `lastAt` — the time of the newest event. A writer may read its clock before its commit (or two commits interleave, or the wall clock steps back), so an event is never stamped earlier than the one before it: the record's time never goes backwards.
 
 Numbering always comes from the stored head, *inside* the commit, never from memory. That is what keeps the numbers
 gap-free across crashes, and why a writer that numbered from memory is one of the weakened implementations the oracle must

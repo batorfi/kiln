@@ -15,7 +15,7 @@ import { collect, fromReader, readRun } from "./read.ts";
 import { digestOf } from "./refs.ts";
 
 export interface ArchiveInput { feature: string; /** The sequence number of the event that ended the walk: the cause of `feature.archived`. */ endSeq: number }
-type Carried = { file: ArchivedFile; counts: ArchiveCounts; keys: string[]; gates: string[] };
+type Carried = { file: ArchivedFile; counts: ArchiveCounts; keys: string[]; gates: string[]; /** The last sequence number of the run the file holds: the commit refuses to compact a run that has moved on. */ headSeq: number };
 type ArchiveCheckpoint = { phase: "export" } | ({ phase: "verify" } & Carried) | ({ phase: "commit" } & Carried);
 export interface ArchiveDoc {
   status?: "archived" | "failed";
@@ -52,7 +52,8 @@ export function archiveKind(s: Services, dir: string): TaskKind<ArchiveInput, Ar
           const gates = content.lines.map((l) => JSON.parse(l)).filter((r) => r.kind === "doc" && r.name === "kiln.gate").map((r) => r.key as string);
           const file = await writeArchive(dir, content);
           await s.hooks.at("archive.export-written"); // the file is on disk, nothing recorded: a kill here writes the same bytes again
-          await run.commit(() => ({ status: "running", checkpoint: { phase: "verify", file, counts: content.counts, keys: content.keys, gates } }));
+          const headSeq = (JSON.parse(content.lines[0]) as { headSeq: number }).headSeq;
+          await run.commit(() => ({ status: "running", checkpoint: { phase: "verify", file, counts: content.counts, keys: content.keys, gates, headSeq } }));
         } catch (e) {
           await fail(run, feature, e);
         }
@@ -61,7 +62,7 @@ export function archiveKind(s: Services, dir: string): TaskKind<ArchiveInput, Ar
         const { feature } = task.input;
         const { file, counts } = task.checkpoint;
         try {
-          verifyArchive(dir, file, counts);
+          await verifyArchive(dir, file, counts);
           await s.hooks.at("archive.verified"); // the archive is proven whole; nothing is compacted yet
           await run.commit(() => ({ status: "running", checkpoint: { ...task.checkpoint, phase: "commit" } }));
         } catch (e) {
@@ -70,12 +71,15 @@ export function archiveKind(s: Services, dir: string): TaskKind<ArchiveInput, Ar
       },
       commit: async (task, run) => {
         const { feature, endSeq } = task.input;
-        const { file, counts, keys, gates } = task.checkpoint;
+        const { file, counts, keys, gates, headSeq } = task.checkpoint;
         try {
           await run.commit(async (tx) => {
             const mark = await tx.doc<ArchiveDoc>("kiln.archive", feature, {});
             if (mark.status === "archived") return { status: "terminal", outcome: { status: "completed", result: { archived: true } } }; // exactly once
-            await appendEvent(tx, { type: "feature.archived", subject: feature, at: s.now(), actor: "system", cause: `evt:${endSeq}`, data: { archive: file.name, sha256: file.sha256, bytes: file.bytes, counts } });
+            // the file holds the run up to `headSeq`; if the run has moved on since (an event appended between export and now) the file is stale: nothing is compacted, the export is made again
+            const seqs = (await tx.doc<{ seqs: number[] }>("kiln.record", `run:${feature}`, { seqs: [] })).seqs;
+            if (seqs.length > 0 && seqs[seqs.length - 1] > headSeq) return { status: "running", checkpoint: { phase: "export" } }; // (a run that lives wholly in the old outbox has no index: nothing can have moved on)
+            await appendEvent(tx, { type: "feature.archived", subject: feature, at: s.now(), actor: "system", cause: "", causeEvent: endSeq, data: { archive: file.name, sha256: file.sha256, bytes: file.bytes, counts } });
             for (const gateId of gates) {
               const brief = await tx.doc<BriefDocData & { archivedIn?: string }>("kiln.brief", gateId, {});
               if (brief.content !== undefined && brief.archivedIn === undefined) { brief.content = { archived: true }; brief.archivedIn = file.name; }

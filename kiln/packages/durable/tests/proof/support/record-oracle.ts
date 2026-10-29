@@ -191,7 +191,7 @@ export async function checkArchiveInvariants(store: string, opts: { requireArchi
       if (evs.length === 1) {
         const d = evs[0].data as { archive: string; sha256: string; bytes: number; counts: { docs: number; tasks: number; events: number; texts: number } };
         if (mark?.status !== "archived" || mark.sha256 !== d.sha256) v.push(`E6: ${feature}: feature.archived names ${d.sha256.slice(0, 12)}… but kiln.archive says ${mark?.status} ${mark?.sha256?.slice(0, 12) ?? ""}`);
-        try { verifyArchive(store, { name: d.archive, sha256: d.sha256, bytes: d.bytes }, d.counts); } catch (e) { v.push(`E6: ${feature}: ${(e as Error).message}`); }
+        try { await verifyArchive(store, { name: d.archive, sha256: d.sha256, bytes: d.bytes }, d.counts); } catch (e) { v.push(`E6: ${feature}: ${(e as Error).message}`); }
         if (briefs.length > 0 && compactedBriefs !== briefs.length) v.push(`E6: ${feature} is archived but ${briefs.length - compactedBriefs} of ${briefs.length} briefs still hold their content`);
         if (textInMoves > 0) v.push(`E6: ${feature} is archived but ${textInMoves} move records still hold note text`);
       } else {

@@ -1,9 +1,10 @@
 // The feature archive (research R12, contracts/archive.md, CORE-7): what a finished feature leaves the live store as — one checksummed file beside the store, never in git. This module is the FILE:
 // what goes in (`exportFeature`, a pure function of the stored state), how it is written (`writeArchive`: temp file, fsync, rename), how it is checked (`verifyArchive`) and read back (`readArchive`).
 // The task that runs it, and the tombstones it leaves, are in archive-task.ts.
-import { existsSync, readFileSync } from "node:fs";
-import { mkdir, open, rename } from "node:fs/promises";
-import { join } from "node:path";
+import { createHash } from "node:crypto";
+import { createReadStream, existsSync, readFileSync } from "node:fs";
+import { mkdir, open, readFile, rename, stat } from "node:fs/promises";
+import { isAbsolute, join } from "node:path";
 import { canonicalJson, sha256Hex } from "../canonical.ts";
 import type { Event } from "#contracts/events/types.ts";
 import { parseRef } from "#contracts/events/grammar.ts";
@@ -13,7 +14,8 @@ import { collect, fromReader, readRun } from "./read.ts";
 import { digestOf, resolveRef } from "./refs.ts";
 
 export const archiveDir = (store: string): string => join(store, "archive");
-export const archivePath = (store: string, name: string): string => join(archiveDir(store), name);
+/** A name beside the store, or an absolute path (an archive copied off the machine is read where it is). */
+export const archivePath = (store: string, name: string): string => (isAbsolute(name) ? name : join(archiveDir(store), name));
 
 export interface ArchiveCounts { docs: number; tasks: number; events: number; texts: number }
 export interface ArchiveContent {
@@ -113,17 +115,25 @@ export class ArchiveError extends Error {
   }
 }
 
+/** SHA-256 of a file, streamed: the owner\'s thread is shared with the walks, and an archive can be large. */
+async function hashFile(path: string): Promise<{ sha256: string; bytes: number }> {
+  const h = createHash("sha256");
+  let bytes = 0;
+  for await (const chunk of createReadStream(path)) { h.update(chunk as Buffer); bytes += (chunk as Buffer).length; }
+  return { sha256: h.digest("hex"), bytes };
+}
+const exists = (path: string): Promise<boolean> => stat(path).then(() => true, () => false);
+
 /** Re-reads the file and recomputes its checksum and counts; throws by name when anything differs from what was recorded. */
-export function verifyArchive(store: string, file: ArchivedFile, counts?: ArchiveCounts): void {
+export async function verifyArchive(store: string, file: ArchivedFile, counts?: ArchiveCounts): Promise<void> {
   const path = archivePath(store, file.name);
-  if (!existsSync(path)) throw new ArchiveError("archive-missing", `${file.name} does not exist beside the store`);
-  const text = readFileSync(path, "utf8");
-  const sha = sha256Hex(text);
-  if (sha !== file.sha256) throw new ArchiveError("archive-checksum-mismatch", `${file.name} hashes to ${sha.slice(0, 12)}…, recorded ${file.sha256.slice(0, 12)}…`);
-  if (Buffer.byteLength(text, "utf8") !== file.bytes) throw new ArchiveError("archive-checksum-mismatch", `${file.name} is ${Buffer.byteLength(text, "utf8")} bytes, recorded ${file.bytes}`);
+  if (!(await exists(path))) throw new ArchiveError("archive-missing", `${file.name} does not exist beside the store`);
+  const got = await hashFile(path);
+  if (got.sha256 !== file.sha256) throw new ArchiveError("archive-checksum-mismatch", `${file.name} hashes to ${got.sha256.slice(0, 12)}…, recorded ${file.sha256.slice(0, 12)}…`);
+  if (got.bytes !== file.bytes) throw new ArchiveError("archive-checksum-mismatch", `${file.name} is ${got.bytes} bytes, recorded ${file.bytes}`);
   if (counts) {
-    const got = readArchiveText(text).header;
-    for (const k of ["docs", "tasks", "events", "texts"] as const) if (got[k] !== counts[k]) throw new ArchiveError("archive-malformed", `the header says ${got[k]} ${k}, the export held ${counts[k]}`);
+    const header = readArchiveText(await readFile(path, "utf8")).header;
+    for (const k of ["docs", "tasks", "events", "texts"] as const) if (header[k] !== counts[k]) throw new ArchiveError("archive-malformed", `the header says ${header[k]} ${k}, the export held ${counts[k]}`);
   }
 }
 

@@ -125,7 +125,7 @@ export function gateKinds(s: Services): TaskKind<any, any, any>[] {
           const at = s.now();
           // FR-014: a gate does not settle without a decider. The settlement names the move and the person from the STORED record; with no record there is nothing to settle.
           const stored = (await tx.doc<MoveDocData>("kiln.move", task.input.gateId, { record: null })).record;
-          if (!stored) throw new Error(`gate ${task.input.gateId} would settle with no committed move: nothing settles a gate but a person's move`);
+          if (!stored) return { status: "terminal", outcome: { status: "aborted" } }; // the decision ended without a move (aborted): nothing settles a gate but a person's move, so no `gate.settled` — and a throw here would fail the task for good
           await appendEvent(tx, { type: "gate.settled", subject: task.input.gateId, at, actor: "factory", cause: key || "(no key)", data: { key, move: stored.move.kind, decidedBy: stored.move.decidedBy } });
           return { status: "terminal", outcome: { status: "completed", result: { key } } };
         });

@@ -73,7 +73,7 @@ Types for groups of later rows (tool approval, model, egress, wiki, host, bench,
 | Family | Key | Value | Written by |
 |---|---|---|---|
 | `kiln.event` | chunk number `n` | `{events: Event[]}` — events `256n+1…256n+256`, complete envelopes | `appendEvent`, same commit as the state |
-| `kiln.record` | `head` | `{next, legacyThrough, chunk}` — `next` the next sequence number; `legacyThrough` the last sequence number held in `kiln.outbox/main` | `appendEvent` |
+| `kiln.record` | `head` | `{next, legacyThrough, lastAt}` — `next` the next sequence number; `legacyThrough` the last sequence number held in `kiln.outbox/main`; `lastAt` the newest event's time in ms (an event is never stamped earlier than it) | `appendEvent` |
 | `kiln.record` | `run:<feature>` | `{seqs: number[]}` — the run's events | `appendEvent` when `correlation` is set |
 | `kiln.cursor` | consumer name | `{seq, version, failed?: {seq, error}}` (`error` may be `cursor-ahead-of-head`) | the backbone |
 | `kiln.projection` | `log:<feature>` | `{state, lines: string[], seq}` — the reducer state and the lines so far | consumer `factory-log` |

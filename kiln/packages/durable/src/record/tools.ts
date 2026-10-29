@@ -5,7 +5,7 @@ import { validateEvent } from "#record/events/validate.ts";
 import { fileOf, foldRun } from "#record/projections/factory-log.ts";
 import { checkStream } from "#record/streams.ts";
 import { openReader } from "../library/open.ts";
-import { basename } from "node:path";
+import { basename, resolve } from "node:path";
 import { ArchiveError, readArchive, verifyArchive } from "./archive.ts";
 import { collect, fromReader, headOf, readRecord, readRun } from "./read.ts";
 
@@ -76,15 +76,16 @@ export const rebuildLog = (store: string, run: string): Promise<{ text: string; 
  */
 export async function showArchive(store: string, file: string, opts: { verify?: boolean; kind?: string } = {}): Promise<{ name: string; verified: boolean; lines: string[] }> {
   const name = basename(file);
+  const where = file.includes("/") || file.includes("\\") ? resolve(file) : name; // a bare name is looked up beside the store; a path (a copy taken off the machine) is read where it is
   let verified = false;
   if (opts.verify) {
     const ev = (await showRecord(store)).find((e) => e.type === "feature.archived" && (e.data as { archive: string }).archive === name);
     if (!ev) throw new ArchiveError("archive-missing", `no feature.archived event in the record names ${name}`);
     const d = ev.data as { archive: string; sha256: string; bytes: number; counts: { docs: number; tasks: number; events: number; texts: number } };
-    verifyArchive(store, { name, sha256: d.sha256, bytes: d.bytes }, d.counts);
+    await verifyArchive(store, { name: where, sha256: d.sha256, bytes: d.bytes }, d.counts);
     verified = true;
   }
-  const a = readArchive(store, name);
+  const a = readArchive(store, where);
   const all: { kind: string; line: unknown }[] = [
     { kind: "header", line: a.header },
     ...a.docs.map((line) => ({ kind: "doc", line })), ...a.tasks.map((line) => ({ kind: "task", line })),

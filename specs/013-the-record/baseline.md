@@ -136,3 +136,33 @@ Default tier = `node tests/run.ts --new-only` with the Node under test; the proo
 What this does and does not say: no run produced a wrong answer. Three runs were disturbed by load; they are reported, not hidden, and the one test that still failed on a clean-ish machine was a start-up wait, not a result. The proof tier's "green" therefore means: green when the machine gives each spawned owner CPU within 45 s.
 
 The one real finding of the matrix: **Node 23.6.0 ignores `DatabaseSync`'s `timeout` option** (`PRAGMA busy_timeout` reads 0; 3000 on 25.9.0 for `timeout: 3000`). Fixed in the seam (`library/open.ts`: `PRAGMA busy_timeout = 5000` on the owner and every reader) and asserted by `tests/busy-timeout.test.ts` on whichever Node runs the suite.
+
+## 13. The quickstart from a fresh clone (T073) — 2026-10-29
+
+`git clone --branch 013-the-record` of the committed branch (`1676599`) into an empty directory, `cd kiln && npm ci` (0 vulnerabilities), Node 25.9.0.
+
+| Quickstart | Result |
+|---|---|
+| §1 owner → admit → drive the plain walk through the CLI → `record verify` → `record show --run demo` → `record rebuild-log --out` → `cmp` against the live file → the first program's validator | `PASS record — examined: 76 events, reached seq 76`; **BYTE-IDENTICAL** (20 lines, 65 events of the run); validator `PASS`; no note text in `record show` |
+| §2 `append-negative.test.ts` | 16 pass |
+| §3 `kiln check record` and `replay.test.ts` | `PASS record` (42 types, 24 committed; 3 of 5 named rows replayed — r2, r3, r7; missing r1, r8 with reasons); 5 pass |
+| §4 `store-compat.test.ts` | 3 pass |
+| §5 `backbone.test.ts` | 10 pass |
+| §6 `archive.test.ts`; the walk's end made `archive/demo-<8 hex>.kiln-archive` with no command; `archive-show --verify yes` answered | 8 pass |
+| §7 the proof tier | not re-run in the clone (the code is identical); see §12 |
+| §9 `npm test` | exit 0 · new 809 · legacy 500 (30 skipped) · 111 s; the clone's working tree clean afterwards |
+
+Two corrections to the quickstart itself came out of this: the `record verify` output reads `examined: <N> events, reached seq <N>` (not `<R> runs`), and `archive-show` takes `--store`, `--archive <file name>` and `--verify yes`. Both are fixed in `quickstart.md`.
+
+## 14. After the code review (T074) — 2026-10-29
+
+The review (`/code-review high` against `main`) found 10 issues; 9 were real and are fixed (implementation-report §8.7), 1 is recorded as an open item (§7). Readings after the fixes, Node 25.9.0:
+
+| Reading | Value |
+|---|---|
+| `npm test` | exit 0 · `new: 812 tests · legacy: 500 tests (30 skipped)` · **112 s** |
+| `npm run proof` | exit 0 · **128 tests, 128 pass** · **467 s** (all of §12's load-sensitive tests included) |
+| `npm run check` | five `PASS`: network 113 · boundaries 113 · legacy 168 · flow 1 · record 105 |
+| `git diff main -- legacy` | empty (0 lines) · `legacy/` tree id `20a82c7e214be256c804f6e8f1cd4cce9c8e9874` (T001's) |
+| `specs/ROADMAP.md` | sha256 `2fd48236de6caed7…` (T001's); no diff against `main` |
+| imports of `legacy/` from `kiln/` | none. The one textual match is a scratch-file string inside `checks/tests/boundaries.test.ts`, the negative test that proves the check refuses such an import; `kiln check boundaries` enforces the rule |

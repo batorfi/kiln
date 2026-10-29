@@ -1,5 +1,6 @@
 // References to text kept elsewhere in the store (Clarification Q1, research R6): the record carries a locator and a digest, never the text. `resolve` reads the text back from where it lives —
-// the move record, the walk document or the row's input — and, once a feature is archived, from its archive (archive.ts supplies that fallback).
+// the move record, the walk document or the row's input. Once a feature is archived its texts are in the archive file (`readArchive(...).texts`, which carries each ref with its digest); `resolveRef`
+// answers `undefined` for them, never a guess.
 import type { RefLocator } from "#contracts/events/grammar.ts";
 import { parseRef, refString } from "#contracts/events/grammar.ts";
 import { sha256Hex } from "../canonical.ts";

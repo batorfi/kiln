@@ -66,6 +66,7 @@ async function decide(s: Services, gateId: GateId, key: Key, move: Move): Promis
     if (typeof move.decidedBy !== "string" || move.decidedBy.trim() === "") return refused("invalid-move", { detail: "decidedBy is empty: a move with no decider is refused" });
     if (!isActor(move.decidedBy)) return refused("invalid-move", { detail: `decidedBy "${move.decidedBy}" is not an actor id (<name>@<token>, e.g. human@batorfi, or script:<name>)` });
     if (typeof move.kind !== "string") return refused("invalid-move", { detail: "the move has no kind" });
+    if ("noteDigest" in move) return refused("invalid-move", { detail: "noteDigest is what the archive leaves of a note: a caller sends the note, never its digest" });
     if (typeof move.briefRef !== "string" || move.briefRef === "") return refused("invalid-move", { detail: "the move names no brief: a decision is made on a brief that was shown" });
 
     const g = await s.store.snapshot<GateDocData>("kiln.gate", gateId);

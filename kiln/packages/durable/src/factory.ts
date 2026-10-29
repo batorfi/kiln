@@ -77,6 +77,16 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
     throw e;
   }
   services.store = store;
+  try {
+    // the factory-log is a projection of the record (EVT-5): always followed, beside whatever else a caller registers. Registered before anything runs, and a refusal (a name taken, a consumer without
+    // its handler, a factory function that throws) releases the store and the lock like any other failure to open.
+    backbone.register(factoryLogConsumer(services, opts.store));
+    for (const c of typeof opts.consumers === "function" ? opts.consumers(services) : (opts.consumers ?? [])) backbone.register(c);
+  } catch (e) {
+    await store.close().catch(() => {});
+    lock.release();
+    throw e;
+  }
   store.resume();
   try {
     await opts.lane?.start?.(); // the lane task exists and no dead generation still holds the lane — before any step can ask for it
@@ -88,9 +98,6 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   const readyPromise = converge(services, opts.readyTimeoutMs ?? 5000);
   readyPromise.catch(() => {}); // a caller that never awaits `ready` must not cause an unhandled rejection
   services.whenReady = readyPromise;
-  // the factory-log is a projection of the record (EVT-5): always followed, beside whatever else a caller registers
-  backbone.register(factoryLogConsumer(services, opts.store));
-  for (const c of typeof opts.consumers === "function" ? opts.consumers(services) : (opts.consumers ?? [])) backbone.register(c);
   void readyPromise.then(() => { backbone.start(); return ensureArchives(services); }, () => {}).catch(() => {}); // consumers follow the record once the factory has converged; a walk that ended without an archive gets one
   let closed = false;
   let channel: Channel | undefined;

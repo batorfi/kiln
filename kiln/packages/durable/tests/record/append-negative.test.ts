@@ -33,7 +33,7 @@ const CASES: [string, Partial<EventDraft>, string, string?][] = [
   ["event-actor-invalid: none", { actor: "" }, "event-actor-invalid"],
   ["event-actor-invalid: not an actor", { actor: "somebody" }, "event-actor-invalid"],
   ["event-cause-missing", { cause: "" }, "event-cause-missing"],
-  ["event-cause-dangling", { cause: "evt:99" }, "event-cause-dangling"],
+  ["event-cause-dangling", { cause: "", causeEvent: 99 }, "event-cause-dangling"],
   ["event-subject-invalid", { subject: "Not A Subject" }, "event-subject-invalid"],
   ["event-time-invalid: not a number", { at: Number.NaN }, "event-time-invalid"],
   ["event-time-invalid: before 1970", { at: -5 }, "event-time-invalid"],
@@ -45,4 +45,21 @@ test("an event for the gate settle with no decider cannot be written (FR-014)", 
 
 test("the refusal names the rule, the type and the path in its message", () => withStore(async (s) => {
   await assert.rejects(s.commit((tx) => appendEvent(tx, draft({ data: { approved: [], note: "x" } }))), /event-field-forbidden: walk\.completed data\.note — "note" may never appear/);
+}));
+
+test("a command key that looks like an event reference is a command key: \"evt:1\" is recorded as cmd:evt:1, never as a cause that points at event 1", () => withStore(async (s) => {
+  await s.commit((tx) => appendEvent(tx, draft())); // event 1
+  const e = await s.commit((tx) => appendEvent(tx, draft({ cause: "evt:1" })));
+  assert.equal(e.causation, "cmd:evt:1");
+  const earlier = await s.commit((tx) => appendEvent(tx, draft({ cause: "", causeEvent: 1 })));
+  assert.equal(earlier.causation, "evt:1", "an earlier event as the cause is said with causeEvent");
+}));
+
+test("the record's time never goes backwards: an event handed an earlier instant than the one before it is stamped with that one's", () => withStore(async (s) => {
+  const a = await s.commit((tx) => appendEvent(tx, draft({ at: 2_000_000_000_000 })));
+  const b = await s.commit((tx) => appendEvent(tx, draft({ at: 1_000_000_000_000 }))); // a writer that read the clock before another commit, or a wall clock that stepped back
+  assert.equal(b.time, a.time);
+  assert.ok(b.id > a.id, "ids still sort by (time, seq)");
+  const c = await s.commit((tx) => appendEvent(tx, draft({ at: 2_000_000_000_500 })));
+  assert.equal(Date.parse(c.time), 2_000_000_000_500, "a later instant is kept as it is");
 }));

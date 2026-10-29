@@ -30,7 +30,7 @@ test("a walk that ends is archived with no command: the file is beside the store
   const mark = (await archiveDoc(store, "w"))!;
   assert.match(mark.archive!, /^w-[0-9a-f]{8}\.kiln-archive$/);
   assert.ok(existsSync(archivePath(store, mark.archive!)));
-  verifyArchive(store, { name: mark.archive!, sha256: mark.sha256!, bytes: mark.bytes! }, mark.counts);
+  await verifyArchive(store, { name: mark.archive!, sha256: mark.sha256!, bytes: mark.bytes! }, mark.counts);
   const ev = (await f.inspect()).outbox.filter((e) => e.type === "feature.archived");
   assert.equal(ev.length, 1);
   assert.deepEqual([ev[0].actor, ev[0].subject, ev[0].correlation], ["system", "w", "run:w"]);
@@ -150,7 +150,7 @@ test("a damaged archive is reported by name, NOTHING is compacted, other feature
     // the next start tries again — and this time the archive is whole
     const g = await reopen();
     await until(archived(store, "a"), "the retry at the next start");
-    verifyArchive(store, { name: (await archiveDoc(store, "a"))!.archive!, sha256: (await archiveDoc(store, "a"))!.sha256!, bytes: (await archiveDoc(store, "a"))!.bytes! });
+    await verifyArchive(store, { name: (await archiveDoc(store, "a"))!.archive!, sha256: (await archiveDoc(store, "a"))!.sha256!, bytes: (await archiveDoc(store, "a"))!.bytes! });
     assert.equal((await g.inspect()).outbox.filter((e) => e.type === "feature.archived" && e.subject === "a").length, 1);
   });
 });
@@ -177,3 +177,32 @@ test("nothing is archived while the walk is running — only an ended walk has a
   assert.equal(existsSync(join(store, "archive")), false);
   assert.equal((await f.tasks.list()).filter((t) => t.kind === "kiln.archive").length, 0);
 }));
+
+test("an event that lands in the run between the export and the compacting commit is not lost: the stale file is not committed, the run is exported again, and the final archive holds the event", async () => {
+  const { appendEvent } = await import("#durable/record/append.ts");
+  let services: { store: { commit: (fn: (tx: any) => Promise<unknown>) => Promise<unknown> } } | undefined;
+  let late = 0;
+  const hooks: Hooks = {
+    async at(p) {
+      if (p === "archive.verified" && late++ === 0) await services!.store.commit((tx) => appendEvent(tx, { type: "lane.released", subject: "lane", at: Date.now(), actor: "factory", cause: "late", correlation: "run:w", data: { holder: 4242 } }));
+    },
+    fault() {},
+  };
+  const dir = mkdtempSync(join(tmpdir(), "k15-archstale-"));
+  const store = join(dir, "s");
+  const f = await openFactory({ store, hooks, tasks: (s) => { services = s as never; return []; } });
+  try {
+    await f.ready;
+    await f.walks.admit("k1", "w", PLAIN);
+    assert.equal((await drive(f, "w", HUMAN())).last.status, "done");
+    await until(archived(store, "w"), "the archive").catch(async (e) => { throw new Error(`${e.message}: ${JSON.stringify(await archiveDoc(store, "w"))}`); });
+    const mark = (await archiveDoc(store, "w"))!;
+    const a = readArchive(store, mark.archive!);
+    assert.ok(a.events.some((e) => e.type === "lane.released" && (e.data as { holder: number }).holder === 4242), "the final archive holds the event that arrived after the first export");
+    assert.equal((await f.inspect()).outbox.filter((e) => e.type === "feature.archived").length, 1, "archived once");
+    assert.equal(late, 2, "the verified point was reached twice: the stale file was dropped and the run exported again");
+  } finally {
+    await f.close().catch(() => {});
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

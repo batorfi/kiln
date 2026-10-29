@@ -35,6 +35,7 @@ export async function submitFeatureMove(s: Services, feature: string, key: Key, 
     if (typeof key !== "string" || key.trim() === "" || key.length > KEY_MAX) return refused("invalid-move", { detail: "the key is a non-empty string of at most 200 characters" });
     if (typeof move !== "object" || move === null) return refused("invalid-move", { detail: "the move is not an object" });
     if (typeof move.decidedBy === "string" && move.decidedBy.trim() !== "" && !isActor(move.decidedBy)) return refused("invalid-move", { detail: `decidedBy "${move.decidedBy}" is not an actor id (<name>@<token>, e.g. human@batorfi, or script:<name>)` });
+    if ("noteDigest" in move) return refused("invalid-move", { detail: "noteDigest is what the archive leaves of a note: a caller sends the note, never its digest" });
     if (move.kind !== "reject") return refused("invalid-move", { detail: `"${String(move.kind)}" is not a feature-level move: only a reject can be made on a feature` });
     if (typeof move.decidedBy !== "string" || move.decidedBy.trim() === "") return refused("invalid-move", { detail: "decidedBy is empty: a move with no decider is refused" });
     if (typeof move.note !== "string" || move.note.trim() === "") return refused("invalid-move", { detail: "a reject needs a note: it becomes the next step's instruction" });
