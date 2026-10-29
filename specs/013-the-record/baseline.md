@@ -106,3 +106,33 @@ After T059–T065 (the archive file, the `kiln.archive` task and its tombstones,
 | `npm test` | exit 0 · `new: 807 tests · legacy: 500 tests (30 skipped)` · **113 s** (load averages 4.7 / 7.2 / 6.6) |
 | `npm run proof` | exit 0 · **127 tests**, 127 pass · **393 s** (load averages 2.9 / 7.1 / 6.4 at the end) |
 | `npm run check` | five `PASS`: network 113 files · boundaries 113 · legacy 168 · flow 1 · record 105 (42 types, 24 committed types) |
+
+## 11. Measurements (T067) — `tests/measure/{outbox-baseline,record,walk-time}.ts`, run on demand, macOS, Node 25.9.0
+
+SC-009 asks for the report, not a threshold. Method: each script builds its own scratch store, appends or folds, prints the numbers; the times are medians of the process's own clock and vary with machine load by tens of percent.
+
+| Reading | r13/r14 single document (§2) | r15 chunked record |
+|---|---|---|
+| append latency at 10³ → 10⁵ events (runs of ~90 events) | 0.11 ms → 0.89 ms, **linear** | **0.18–0.25 ms, flat** |
+| append latency, one run of 10⁵ events | — | grows to ~1.6 ms: the run's index is rewritten whole (O(run)). No feature has such a run: a full interface walk is 94 events |
+| one full interface walk | — | **94 events, 34,340 bytes** (365 bytes/event) |
+| a generated year (12 gates × 30 features/week × 52 weeks + unit, lane and command events) | — | **100,010 events, 40 MB**; `readRecord` 115 ms; fold of every run 105 ms; live catch-up of the factory-log consumer from zero 8.2 s, writing 1,370 files |
+| one feature's archive file | — | **62,238 bytes** |
+| r14 in-process walk (`walk-time.ts`) | 25 ms | **36 ms** (budget 3 s). The first consumer wrote its file with a synchronous `fsync` in the commit's tick and made the same walk 347 ms; the write is asynchronous now (notes §11.1) |
+
+Not measured, and said so: the live store's size before and after archiving. The pinned library cannot delete a document or a task (research R12), so tombstoning shrinks a feature's text, not the number of documents; the figure that matters — what the archive file holds — is above.
+
+## 12. Floor matrix and full proof (T068, T070) — 2026-10-29
+
+Default tier = `node tests/run.ts --new-only` with the Node under test; the proof tier = `--proof`. Seconds are wall-clock on a machine that was not idle (other applications running; load averages 3–13 over the session). r14's reading was 75–78 s for the default tier.
+
+| Node | Default tier | `kiln check` | Proof tier |
+|---|---|---|---|
+| 22.19.0 | **809 pass, 76 s** | 5 PASS | 127 of 128 on the clean rerun (423 s); the 1 failure was `record-random-kill` hitting the harness's 15 s owner-start wait with no output at all from the owner. Wait raised to 45 s; that test then **passed twice in a row (383 s, 383 s)**. In the first, loaded run 13 of 128 failed — every one "owner did not start within 15000 ms" — and each passed when run alone. |
+| 23.6.0 | **809 pass, 79 s** | 5 PASS | not run (the matrix asks for 22.19.0 only); `walk-withdraw` passed 3 of 3 alone after the busy-timeout fix (it failed intermittently before) |
+| 24.1.0 | **809 pass, 81 s** on the clean rerun. The first run had 2 failures — the r13 kill test at `move.committed` and `zero-tests` — each a 150–173 s stall; both passed 3 of 3 alone (65 s) | 5 PASS | not run |
+| 25.9.0 (the development Node) | 807 new + 500 legacy, 113 s | 5 PASS | 127 pass, 393 s (§10) |
+
+What this does and does not say: no run produced a wrong answer. Three runs were disturbed by load; they are reported, not hidden, and the one test that still failed on a clean-ish machine was a start-up wait, not a result. The proof tier's "green" therefore means: green when the machine gives each spawned owner CPU within 45 s.
+
+The one real finding of the matrix: **Node 23.6.0 ignores `DatabaseSync`'s `timeout` option** (`PRAGMA busy_timeout` reads 0; 3000 on 25.9.0 for `timeout: 3000`). Fixed in the seam (`library/open.ts`: `PRAGMA busy_timeout = 5000` on the owner and every reader) and asserted by `tests/busy-timeout.test.ts` on whichever Node runs the suite.

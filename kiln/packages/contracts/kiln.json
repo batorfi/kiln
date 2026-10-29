@@ -1,4 +1,4 @@
 {
   "name": "@kiln/contracts",
-  "responsibility": "Gate ids, move kinds, versioned flow definitions, judge rosters, the tier policy, record types and JSON schemas — pure, with no I/O — and (r14) the pure flow engine: order, next gate, applicability and its reasons, where a move leads, triage, the cap, and the validator behind `kiln check flow`."
+  "responsibility": "Gate ids, move kinds, versioned flow definitions, judge rosters, the tier policy, record types and JSON schemas — pure, with no I/O — and (r14) the pure flow engine: order, next gate, applicability and its reasons, where a move leads, triage, the cap, and the validator behind `kiln check flow` — and (r15) the event envelope, id and grammar, the versioned closed-schema catalog, the pure upcasters and the table that maps events to the first program's factory-log records."
 }

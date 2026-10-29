@@ -148,10 +148,13 @@ export async function runOwner(ts: TestStore, o: OwnerOptions = {}): Promise<Own
   }
 }
 
+/** How long a freshly spawned owner gets to say STARTED. A process that gets no CPU on a loaded machine prints nothing at all (not even Node's own warnings) for tens of seconds; a real hang is still caught, only later. */
+const START_TIMEOUT_MS = 45_000;
+
 /** Start an owner and keep it alive (a `hold` step): resolves once it has STARTED. */
 export async function startOwner(ts: TestStore, o: OwnerOptions = {}): Promise<OwnerRun> {
   const run = spawnOwner(ts, { ...o, script: [...(o.script ?? []), { op: "hold" }] });
-  const timeout = new Promise<never>((_, rej) => setTimeout(() => rej(new OwnerFailed(`the owner did not start within ${o.timeoutMs ?? 15_000} ms\n${run.stdout()}${run.stderr()}`)), o.timeoutMs ?? 15_000).unref());
+  const timeout = new Promise<never>((_, rej) => setTimeout(() => rej(new OwnerFailed(`the owner did not start within ${o.timeoutMs ?? START_TIMEOUT_MS} ms\n${run.stdout()}${run.stderr()}`)), o.timeoutMs ?? START_TIMEOUT_MS).unref());
   await Promise.race([o.serve ? Promise.all([run.started, run.listening]) : run.started, timeout]);
   return run;
 }

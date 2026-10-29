@@ -9,7 +9,7 @@ export S=$(mktemp -d)/store
 node packages/cli/src/main.ts owner --store $S &                     # prints: listening … ready
 node packages/cli/src/main.ts feature admit --store $S --key a1 --feature demo --walk fixtures/walk-plain.json
 node tests/walk/drive.ts --store $S --feature demo --script fixtures/walk-plain.approve-all.json --by human@r15-script    # approves every gate through the CLI
-node packages/cli/src/main.ts record verify --store $S                # PASS record — examined: <N> events, <R> runs
+node packages/cli/src/main.ts record verify --store $S                # PASS record — examined: <N> events, reached seq <N>
 node packages/cli/src/main.ts record show --store $S --run demo | head -5          # envelopes: id, seq, type, schema, time, subject, actor, …
 node packages/cli/src/main.ts record rebuild-log --store $S --run demo --out /tmp/rebuilt.jsonl
 cmp /tmp/rebuilt.jsonl $S/projections/factory-log/demo.jsonl && echo BYTE-IDENTICAL
@@ -43,7 +43,7 @@ Expected: every walk that has an original replays to its bytes; the r7 stream ke
 
 ```sh
 node tests/run.ts packages/durable/tests/record/archive.test.ts
-node packages/cli/src/main.ts record archive-show --archive $S/archive/demo-*.kiln-archive --verify
+node packages/cli/src/main.ts record archive-show --store $S --archive $(ls $S/archive | head -1) --verify yes
 ```
 
 Expected: the walk's end creates the archive with no command; checksum verified before any tombstone; `record show --run demo` and `feature state` answer as before; a repeated move key of the archived feature is `repeat`/`stale`, never new; `feature admit` of `demo` is refused.

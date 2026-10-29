@@ -82,6 +82,8 @@ export interface Reader {
   docs<T extends object>(name: DocName): Promise<{ key: string; value: T }[]>;
   /** Tasks as stored, optionally of one kind. */
   tasks(filter?: { kind?: string }): Promise<TaskLite[]>;
+  /** The busy timeout (ms) in force on this connection — a diagnostic: it must be the same on every supported Node (library/open.ts). */
+  busyTimeout(): Promise<number>;
   close(): Promise<void>;
 }
 
