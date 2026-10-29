@@ -14,7 +14,10 @@
 - `busy-timeout`, `owner-lock` and `dependencies-record` tests on **Node 22.19.0**: 14 of 14 pass.
 - The same busy-timeout and owner-lock tests on **Node 23.6.0**: they fail, and the error names the Node version and the supported range.
 
-**Not run**: the proof tier, and the default tier on 22.19.0 and 24.1.0. The floor matrix in the report predates this review's code changes.
+**Re-run after the fixes** (2026-10-29, one machine, run one after another):
+- Default tier on **Node 22.19.0**: 813 of 813 pass (84 s). On **Node 24.1.0**: 813 of 813 pass (91 s).
+- Proof tier on **Node 25.9.0**: 128 of 128 pass (500 s).
+- Proof tier on **Node 22.19.0**: **126 of 128**. The two failures are one test in `different-process.proof.test.ts` ("a move during start-up is not-ready") and the never-vacuous check that depends on it. The move was committed instead of refused, and the load average was above 20 at the time. Run alone on 22.19.0 the file then gave one failure ("the owner did not start within 45000 ms", 151 s for the test) and one pass. At `c18ae9e` (before this change) it passed 3 of 3 runs, and at HEAD 3 of 3 more. So 2 failures in 6 runs at HEAD against 0 in 3 before: **not shown to be caused by this change, and not ruled out either.** The earlier report records the same kind of load-sensitive failures on 22.19.0. A repeated clean run on a quiet machine would settle it.
 
 ## 2. Verdict
 
@@ -76,5 +79,5 @@ Nothing is committed.
 - **F7, other living docs.** The implementation report §7 records that the PRD (§7), `docs/concepts/first-run.md` and its mockup, `kiln-v1.md` §platform and the older specs were *not* edited because they are final or historical. This review did not override that. Two of them are user-facing: the first-run page tells a user that `^22.18 || >=23.6` works, which is now false (and was already stale against 22.19 since r13). Whether to edit them, or to put a note in them, is yours to decide.
 - **Failure mode untested in-product.** The refuse-by-name path is exercised only by running the tests on 23.6.0 by hand; no test fakes a 0 timeout to check it on a supported Node. A seam for that would mean injecting the storage, which the current shape does not allow cheaply.
 - **Other 23.x releases** (the report suspects 23.10+ apply the option) were not measured and stay excluded with the line.
-- **Not re-run:** the floor matrix on 22.19.0 and 24.1.0 and the proof tier. The code changed after the report's matrix, so they should be re-run before the row closes.
+- **Open:** the 22.19.0 proof-tier result above (126 of 128). Everything else in the floor matrix is green after the change.
 - **Method limit.** The review ran at `high` effort on the diff. It is not a line-by-line audit of the 13 prior commits.
