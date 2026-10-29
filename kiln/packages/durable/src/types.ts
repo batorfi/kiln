@@ -67,6 +67,8 @@ export interface Move {
   target?: Target;
   /** r14: only on `approve` at gate0. */
   admit?: Admit;
+  /** r15: what an ARCHIVED move's note leaves in the live store — the SHA-256 of the text, which went into the feature archive. A repeat of the move is judged by it. Never sent by a caller. */
+  noteDigest?: string;
 }
 export interface MoveRecord {
   gateId: GateId;
@@ -123,7 +125,7 @@ export interface FeatureMoveRecord {
 export type FeatureOutcome = { status: "committed"; record: FeatureMoveRecord } | { status: "repeat"; record: FeatureMoveRecord } | Refusal;
 
 // ── tasks ───────────────────────────────────────────────────────────────────────────────────────────────────────────────
-export type TaskKindName = "kiln.roadmap" | "kiln.row" | "kiln.unit" | "kiln.gate" | "kiln.decision" | "kiln.lane";
+export type TaskKindName = "kiln.roadmap" | "kiln.row" | "kiln.unit" | "kiln.gate" | "kiln.decision" | "kiln.lane" | "kiln.archive";
 export interface TaskSummary {
   id: TaskId;
   kind: string;

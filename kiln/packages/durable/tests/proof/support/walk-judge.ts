@@ -51,7 +51,7 @@ export async function judge(run: WalkRun, walk: WalkInput, base: Baseline | unde
     assert.equal(gi.gate, "settled", `${g} ended settled`);
     assert.equal(gi.records.length, 1, `${g}: exactly one move record`);
   }
-  assert.deepEqual(i.tasks.filter((t) => t.status !== "terminal").map((t) => `${t.kind}:${t.status}`), [], "nothing left waiting or parked");
+  assert.deepEqual(i.tasks.filter((t) => t.status !== "terminal" && t.kind !== "kiln.archive").map((t) => `${t.kind}:${t.status}`), [], "nothing left waiting or parked (the archive task is its own step, judged by E6)");
   assert.equal(i.timers.length, 0, "no timer on any gate");
   if (base) assert.deepEqual(walkOutcomes(i, FEATURE), base.outcomes, "walk equality: the killed-and-resumed walk equals the uninterrupted one");
 }

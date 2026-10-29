@@ -8,4 +8,5 @@ export const GATE_USAGE = `usage: kiln owner --store <dir>
        kiln feature state --store <dir> --feature <f>
        kiln feature move  --store <dir> --feature <f> --key <k> --by <decider> --target <gate|@build> --note <text>   (always a reject)
        kiln record show|status|verify --store <dir> [--run <feature>] [--from <n>] [--to <n>]
-       kiln record rebuild-log --store <dir> --run <feature> [--out <file>]`;
+       kiln record rebuild-log --store <dir> --run <feature> [--out <file>]
+       kiln record archive-show --store <dir> --archive <name|path> [--verify yes] [--kind header|doc|task|event|text]`;

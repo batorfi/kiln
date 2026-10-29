@@ -3,14 +3,19 @@
 // A move is validated against the gate's STORED vocabulary, must name a decider and the brief the gate was opened with (invalid-move otherwise). `committed` is returned only after the
 // commit resolved: it means durable.
 import { KEY_MAX, refused, type FeatureMove, type GateId, type Key, type Move, type MoveRecord, type Outcome } from "../types.ts";
-import { canonicalJson, plain } from "../canonical.ts";
+import { canonicalJson, plain, sha256Hex } from "../canonical.ts";
 import { flowOf } from "#contracts/flow/index.ts";
 import { isActor } from "#contracts/events/grammar.ts";
 import type { Services } from "../services.ts";
 import { gateExists, type GateDocData, type MoveDocData } from "./documents.ts";
 
 // Equal means equal in EVERY field the record holds (r14: the note, the target and the admission decisions too) — compared as canonical JSON, so key order never matters.
-const sameMove = (a: Move, b: Move): boolean => canonicalJson(a) === canonicalJson(b);
+/** A move's identity for `repeat` / `key-conflict`: every field the record holds, with a note taken as its DIGEST — so a move whose feature was archived (its note text gone, its digest kept) still repeats. */
+const identity = (m: Move): unknown => {
+  const { note, ...rest } = m;
+  return note !== undefined ? { ...rest, noteDigest: sha256Hex(note) } : rest;
+};
+const sameMove = (a: Move, b: Move): boolean => canonicalJson(identity(a)) === canonicalJson(identity(b));
 
 const FIX_ROUNDS = [0, 1, 2, 3];
 const ADMIT_KEYS = ["require", "overrideTriage", "fixRounds"];

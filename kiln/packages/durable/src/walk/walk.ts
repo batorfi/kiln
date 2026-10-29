@@ -41,9 +41,9 @@ const done = (r: WalkResult): NextState<any, WalkResult> => ({ status: "terminal
 const factoryActor = "factory";
 
 /** One of the reducers' intents as an event: its facts, plus a reference and a digest for each text it names. */
-async function emit(tx: Tx, s: Services, feature: string, e: OutboxIntent): Promise<void> {
+async function emit(tx: Tx, s: Services, feature: string, e: OutboxIntent): Promise<number> {
   const refs = Object.assign({}, ...(e.refs ?? []).map((r) => pairOf(r.prefix, r.locator, r.text)));
-  await appendEvent(tx, { type: e.type, subject: feature, at: s.now(), actor: e.actor, cause: e.cause, data: { ...e.data, ...refs } });
+  return (await appendEvent(tx, { type: e.type, subject: feature, at: s.now(), actor: e.actor, cause: e.cause, data: { ...e.data, ...refs } })).seq;
 }
 
 // ── admit ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -73,7 +73,8 @@ export async function admission(s: Services, task: Task<Extract<WalkCheckpoint, 
     if (kind === "approve") return { status: "running", checkpoint: { phase: "pin", admission: { gateId, key: rec.key, decidedBy, admit: admit ?? {} } } };
     if (kind === "reject") {
       wd.status = "not-admitted";
-      await appendEvent(tx, { type: "walk.not-admitted", subject: feature, at: s.now(), actor: decidedBy, cause: rec.key, data: { gate: "gate0", round, ...pairOf("note", { kind: "move", gateId }, note) } });
+      const ended = await appendEvent(tx, { type: "walk.not-admitted", subject: feature, at: s.now(), actor: decidedBy, cause: rec.key, data: { gate: "gate0", round, ...pairOf("note", { kind: "move", gateId }, note) } });
+      await tx.createTask("kiln.archive", { feature, endSeq: ended.seq } as never, { kind: "factory" }); // the walk has ended: its archive is created in the same commit
       return done({ outcome: "not-admitted", approved: [] });
     }
     // revise and the row edits: the proposal is drawn again, with the note as its instruction
@@ -267,9 +268,14 @@ export async function decide(s: Services, task: Task<Extract<WalkCheckpoint, { p
       }
     }
     if (!out) throw new Error(`the gate ${gateId} was withdrawn but no feature-level move is waiting for the walk`);
-    for (const e of out.outbox) await emit(tx, s, feature, e);
+    let endSeq = 0;
+    for (const e of out.outbox) {
+      const seq = await emit(tx, s, feature, e);
+      if (e.type === "walk.completed" || e.type === "walk.left-lane") endSeq = seq;
+    }
     if (out.end) {
       wd.status = out.end.status;
+      await tx.createTask("kiln.archive", { feature, endSeq } as never, { kind: "factory" }); // the walk has ended: its archive is created in the same commit (a walk that ends has one, and only one that ends does)
       await s.hooks.at("walk.consume-after-write");
       return done({ outcome: out.end.outcome, approved: Object.keys(out.w.approved) });
     }

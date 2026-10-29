@@ -4,7 +4,7 @@
 //   · no gate is open → one commit records the move as `pending`; the row consumes it at its next wake and ignores the step it was running
 // Everything is judged against the STORE (the `kiln.walk` document), never against memory.
 import { earlierThan, flowOf } from "#contracts/flow/index.ts";
-import { canonicalJson, plain } from "../canonical.ts";
+import { canonicalJson, plain, sha256Hex } from "../canonical.ts";
 import type { MoveDocData } from "../gate/documents.ts";
 import { deliverWithdraw } from "../gate/move.ts";
 import { isActor } from "#contracts/events/grammar.ts";
@@ -14,7 +14,12 @@ import { KEY_MAX, refused, type FeatureMove, type FeatureMoveRecord, type Featur
 import { ENDED, walkDoc, walkExists, type WalkDoc } from "./doc.ts";
 import { pinsOf, type WalkState } from "./state.ts";
 
-const sameMove = (a: FeatureMove, b: FeatureMove): boolean => canonicalJson(a) === canonicalJson(b);
+// a note is compared as its digest, so a feature-level move of an ARCHIVED feature (note text gone, digest kept) still repeats
+const identity = (m: FeatureMove & { noteDigest?: string }): unknown => {
+  const { note, ...rest } = m;
+  return note !== undefined ? { ...rest, noteDigest: sha256Hex(note) } : rest;
+};
+const sameMove = (a: FeatureMove, b: FeatureMove): boolean => canonicalJson(identity(a)) === canonicalJson(identity(b));
 
 /** The gate the walk is at and its state, from the row's checkpoint (the one place a walk's state lives). */
 async function cursorOf(s: Services, feature: string): Promise<{ w: WalkState } | null> {

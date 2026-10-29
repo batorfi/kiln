@@ -1,7 +1,7 @@
 // `kiln record show|status|verify|rebuild-log` (r15, contracts/backbone-and-projection.md §5): the record read from outside, offline, through a fresh reader — never an owner. Exit codes as the other
 // commands: 0 answered, 1 a verification that failed (or examined nothing), 2 usage, 3 the store cannot be read.
 import { writeFileSync } from "node:fs";
-import { rebuildLog, recordStatus, showRecord, verifyRecord } from "#durable/record/tools.ts";
+import { rebuildLog, recordStatus, showArchive, showRecord, verifyRecord } from "#durable/record/tools.ts";
 import { GATE_USAGE } from "./gate-usage.ts";
 import { flags, need } from "./cli-flags.ts";
 
@@ -14,7 +14,7 @@ const int = (v: string | undefined): number | undefined => (v === undefined ? un
 export async function recordCommand(sub: string | undefined, args: string[]): Promise<number> {
   const f = flags(args);
   if ("error" in f) return usage(f.error);
-  const wants = sub === "show" || sub === "status" || sub === "verify" ? ["store"] : sub === "rebuild-log" ? ["store", "run"] : null;
+  const wants = sub === "show" || sub === "status" || sub === "verify" ? ["store"] : sub === "rebuild-log" ? ["store", "run"] : sub === "archive-show" ? ["store", "archive"] : null;
   if (!wants) return usage(`unknown record command "${String(sub)}"`);
   const bad = need(f, wants);
   if (bad) return usage(bad);
@@ -37,6 +37,18 @@ export async function recordCommand(sub: string | undefined, args: string[]): Pr
         for (const x of v.faults) console.log(`  ${x}`);
       }
       return v.ok ? 0 : 1;
+    }
+    if (sub === "archive-show") {
+      try {
+        const a = await showArchive(f.store, f.archive, { verify: f.verify === "yes", kind: f.kind });
+        if (a.verified) console.error(`verified: ${a.name} matches the checksum, size and counts that feature.archived recorded`);
+        for (const l of a.lines) console.log(l);
+        return 0;
+      } catch (e) {
+        const code = (e as { code?: string }).code;
+        if (code === "archive-checksum-mismatch" || code === "archive-malformed") { console.log(`FAIL ${code}: ${(e as Error).message.replace(/^archive-[a-z-]+: /, "")}`); return 1; }
+        throw e;
+      }
     }
     const r = await rebuildLog(f.store, f.run);
     if (f.out) {

@@ -96,3 +96,13 @@ After T055–T057 (the r14 stores opened by the new owner, a breaking version wi
 | `npm test` | exit 0 · `new: 797 tests · legacy: 500 tests (30 skipped)` · 133 s (load averages 6 / 8 / 11) |
 | `npm run check` | five `PASS` (record 103 files; walks: 3 of 5 named rows replayed) |
 | SC-005 | both r14-written stores open with the new owner; `kiln.outbox/main` is **byte-identical** after the owner opened, followed and closed it, and after the waiting walk was driven to Merge on top of it |
+
+## 10. US7 checkpoint (T066) — a finished feature leaves the live store in a checksummed archive, automatically
+
+After T059–T065 (the archive file, the `kiln.archive` task and its tombstones, the start-up safety net, the failure paths, E6 and the archive kill proof, the weakened archive, `kiln record archive-show`):
+
+| Reading | Value |
+|---|---|
+| `npm test` | exit 0 · `new: 807 tests · legacy: 500 tests (30 skipped)` · **113 s** (load averages 4.7 / 7.2 / 6.6) |
+| `npm run proof` | exit 0 · **127 tests**, 127 pass · **393 s** (load averages 2.9 / 7.1 / 6.4 at the end) |
+| `npm run check` | five `PASS`: network 113 files · boundaries 113 · legacy 168 · flow 1 · record 105 (42 types, 24 committed types) |

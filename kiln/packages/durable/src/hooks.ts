@@ -50,6 +50,11 @@ export const KILL_POINTS = [
   "backbone.apply-after-write",
   "backbone.committed",
   "backbone.delivered",
+  // the archive (r15): the file is written; verified; mid-commit with its tombstones; committed
+  "archive.export-written",
+  "archive.verified",
+  "archive.commit-after-write",
+  "archive.committed",
   // the lane: before the commit that changes it ends (nothing stored yet) and right after (stored, the generation not yet started / not yet released)
   "lane.acquire-after-write",
   "lane.acquire-committed",
@@ -57,11 +62,13 @@ export const KILL_POINTS = [
   "lane.release-committed",
 ] as const;
 /** The points of the gate's own life (the gate proofs drive these); the unit points are driven by the unit proof, the lane points by the lane proof, the walk points by the walk proof (r14). */
-export const GATE_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => !/^(unit|lane|walk|record|backbone)\./.test(p));
+export const GATE_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => !/^(unit|lane|walk|record|backbone|archive)\./.test(p));
 /** r15: the record's own points (the event append). */
 export const RECORD_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => p.startsWith("record."));
 /** r15: the backbone's points (a batch read, applied, committed, delivered). */
 export const BACKBONE_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => p.startsWith("backbone."));
+/** r15: the archive's points (file written, verified, mid-commit, committed). */
+export const ARCHIVE_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => p.startsWith("archive."));
 export const UNIT_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => p.startsWith("unit."));
 /** r14: the walk's points. Each is declared in `KILL_POINTS` by the task that first fires it (the declared set must EQUAL the set the source uses), so this list grows with the walk. */
 export const WALK_KILL_POINTS: readonly string[] = KILL_POINTS.filter((p) => p.startsWith("walk."));

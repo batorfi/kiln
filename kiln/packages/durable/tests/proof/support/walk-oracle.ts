@@ -98,6 +98,7 @@ export function walkOutcomes(i: Inspection, feature: string): string[] {
   return [...i.outbox]
     .sort((a, b) => a.seq - b.seq)
     .filter((e) => e.subject === feature || parse(e.subject)?.feature === feature)
+    .filter((e) => e.type !== "feature.archived") // the archive is a step of its own, judged by E6; its checksum depends on the run's clock and ids, and it may not have finished when a walk is inspected
     .map((e) => `${e.type}|${e.subject}|${e.actor}|${e.cause}|${canonicalJson(e.data)}`);
 }
 

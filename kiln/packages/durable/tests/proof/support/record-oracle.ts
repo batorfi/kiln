@@ -166,3 +166,42 @@ export async function checkProjectionInvariants(store: string): Promise<string[]
   }
   return v;
 }
+
+/**
+ * E6 (research R14, contracts/archive.md): for every walk that ended — `feature.archived` appears at most once; where it appears, the archive file exists and verifies against the checksum and counts
+ * the event names, `kiln.archive/<feature>` agrees, every brief of the feature is a tombstone and no move holds note text; where it does not appear nothing was compacted (briefs have their content,
+ * notes their text). `requireArchived` additionally demands that EVERY ended walk is archived (judge it after a fresh owner has had the chance to finish).
+ */
+export async function checkArchiveInvariants(store: string, opts: { requireArchived?: boolean } = {}): Promise<string[]> {
+  const { verifyArchive } = await import("#durable/record/archive.ts");
+  const v: string[] = [];
+  const r = await openReader(store);
+  try {
+    const events = await collect(readRecord(fromReader(r)));
+    for (const w of await r.docs<WalkDoc>("kiln.walk")) {
+      const feature = w.key;
+      if (!["done", "left-lane", "not-admitted"].includes(w.value.status ?? "")) continue;
+      const evs = events.filter((e) => e.type === "feature.archived" && e.subject === feature);
+      const mark = await r.snapshot<{ status?: string; archive?: string; sha256?: string; bytes?: number; counts?: { docs: number; tasks: number; events: number; texts: number } }>("kiln.archive", feature);
+      const briefs = (await r.docs<{ content?: { archived?: boolean } }>("kiln.brief")).filter((d) => d.key.startsWith(`gate:${feature}:`));
+      const moves = (await r.docs<{ record: { move: { note?: string; noteDigest?: string } } | null }>("kiln.move")).filter((d) => d.key.startsWith(`gate:${feature}:`) && d.value.record);
+      const compactedBriefs = briefs.filter((b) => b.value.content?.archived === true).length;
+      const textInMoves = moves.filter((m) => m.value.record!.move.note !== undefined).length;
+      if (evs.length > 1) v.push(`E6: ${feature} has ${evs.length} feature.archived events`);
+      if (evs.length === 1) {
+        const d = evs[0].data as { archive: string; sha256: string; bytes: number; counts: { docs: number; tasks: number; events: number; texts: number } };
+        if (mark?.status !== "archived" || mark.sha256 !== d.sha256) v.push(`E6: ${feature}: feature.archived names ${d.sha256.slice(0, 12)}… but kiln.archive says ${mark?.status} ${mark?.sha256?.slice(0, 12) ?? ""}`);
+        try { verifyArchive(store, { name: d.archive, sha256: d.sha256, bytes: d.bytes }, d.counts); } catch (e) { v.push(`E6: ${feature}: ${(e as Error).message}`); }
+        if (briefs.length > 0 && compactedBriefs !== briefs.length) v.push(`E6: ${feature} is archived but ${briefs.length - compactedBriefs} of ${briefs.length} briefs still hold their content`);
+        if (textInMoves > 0) v.push(`E6: ${feature} is archived but ${textInMoves} move records still hold note text`);
+      } else {
+        if (mark?.status === "archived") v.push(`E6: ${feature}: kiln.archive says archived but there is no feature.archived event`);
+        if (compactedBriefs > 0) v.push(`E6: ${feature} has no feature.archived event but ${compactedBriefs} briefs are already compacted (compaction before the archive was recorded)`);
+        if (opts.requireArchived) v.push(`E6: ${feature} ended and is not archived`);
+      }
+    }
+  } finally {
+    await r.close();
+  }
+  return v;
+}

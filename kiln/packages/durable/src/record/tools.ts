@@ -5,6 +5,8 @@ import { validateEvent } from "#record/events/validate.ts";
 import { fileOf, foldRun } from "#record/projections/factory-log.ts";
 import { checkStream } from "#record/streams.ts";
 import { openReader } from "../library/open.ts";
+import { basename } from "node:path";
+import { ArchiveError, readArchive, verifyArchive } from "./archive.ts";
 import { collect, fromReader, headOf, readRecord, readRun } from "./read.ts";
 
 async function withReader<T>(store: string, f: (r: Awaited<ReturnType<typeof openReader>>) => Promise<T>): Promise<T> {
@@ -67,3 +69,26 @@ export const rebuildLog = (store: string, run: string): Promise<{ text: string; 
     const lines = foldRun(events);
     return { text: fileOf(lines), lines: lines.length, events: events.length };
   });
+
+/**
+ * An archive file, read back (r15 US7, contracts/archive.md §4): offline, never re-hydrating the live store. `file` is a name beside the store or a path. With `verify`, the checksum, size and counts
+ * are compared with what the record says — the `feature.archived` event that names the file — and any difference throws by name.
+ */
+export async function showArchive(store: string, file: string, opts: { verify?: boolean; kind?: string } = {}): Promise<{ name: string; verified: boolean; lines: string[] }> {
+  const name = basename(file);
+  let verified = false;
+  if (opts.verify) {
+    const ev = (await showRecord(store)).find((e) => e.type === "feature.archived" && (e.data as { archive: string }).archive === name);
+    if (!ev) throw new ArchiveError("archive-missing", `no feature.archived event in the record names ${name}`);
+    const d = ev.data as { archive: string; sha256: string; bytes: number; counts: { docs: number; tasks: number; events: number; texts: number } };
+    verifyArchive(store, { name, sha256: d.sha256, bytes: d.bytes }, d.counts);
+    verified = true;
+  }
+  const a = readArchive(store, name);
+  const all: { kind: string; line: unknown }[] = [
+    { kind: "header", line: a.header },
+    ...a.docs.map((line) => ({ kind: "doc", line })), ...a.tasks.map((line) => ({ kind: "task", line })),
+    ...a.events.map((line) => ({ kind: "event", line })), ...a.texts.map((line) => ({ kind: "text", line })),
+  ];
+  return { name, verified, lines: all.filter((x) => !opts.kind || x.kind === opts.kind).map((x) => JSON.stringify(x.line)) };
+}

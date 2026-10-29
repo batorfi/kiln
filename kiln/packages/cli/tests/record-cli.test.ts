@@ -85,3 +85,31 @@ test("usage errors are exit 2 and name the problem; an unreadable store is exit 
   assert.equal(kiln("rebuild-log", "--store", "/nonexistent-r15").status, 2);
   assert.equal(kiln("show", "--store", "/nonexistent-r15", "--from", "x").status, 2);
 });
+
+test("archive-show prints an archive's lines by kind, and --verify yes checks it against what the record says; a damaged file fails by name", async () => {
+  const dir = mkdtempSync(join(tmpdir(), "k15-reccli-"));
+  const store = join(dir, "s");
+  try {
+    const f = await openFactory({ store });
+    await f.ready;
+    await f.walks.admit("k1", "demo", PLAIN);
+    await drive(f, "demo", (g) => ({ kind: "approve", decidedBy: "human@r15-script", ...(g.gateKey === "gate0" ? { admit: {} } : {}) }));
+    let name = "";
+    for (let i = 0; i < 300 && !name; i++) { const ev = (await f.inspect()).outbox.find((e) => e.type === "feature.archived"); name = (ev?.data as { archive?: string } | undefined)?.archive ?? ""; if (!name) await new Promise((r) => setTimeout(r, 20)); }
+    await f.close();
+    assert.match(name, /^demo-[0-9a-f]{8}\.kiln-archive$/);
+    const header = kiln("archive-show", "--store", store, "--archive", name, "--kind", "header");
+    assert.equal(header.status, 0, header.stderr);
+    assert.equal(JSON.parse(header.stdout).feature, "demo");
+    const ok = kiln("archive-show", "--store", store, "--archive", name, "--verify", "yes", "--kind", "event");
+    assert.equal(ok.status, 0, ok.stdout);
+    assert.match(ok.stderr, /verified:/);
+    assert.ok(ok.stdout.trim().split("\n").length > 40);
+    const { appendFileSync } = await import("node:fs");
+    appendFileSync(join(store, "archive", name), "tampered\n");
+    const bad = kiln("archive-show", "--store", store, "--archive", name, "--verify", "yes");
+    assert.equal(bad.status, 1);
+    assert.match(bad.stdout, /FAIL archive-checksum-mismatch/);
+    assert.equal(kiln("archive-show", "--store", store, "--archive", "nope.kiln-archive").status, 3, "an archive that does not exist is an unreadable store, exit 3");
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});

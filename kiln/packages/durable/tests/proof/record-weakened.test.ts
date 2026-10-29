@@ -119,3 +119,32 @@ test("a missing file for a run that has lines is caught too (E4)", async () => {
     assert.ok((await checkProjectionInvariants(w.store)).some((x) => x.includes("(no file)")));
   } finally { w.cleanup(); }
 });
+
+// ── T064: a weakened archive ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+import type { Hooks } from "#durable/hooks.ts";
+import { brokenArchiveKind } from "./support/broken-archive.ts";
+import { checkArchiveInvariants } from "./support/record-oracle.ts";
+
+async function archiveFailingOnce(weak: boolean): Promise<string[]> {
+  const dir = mkdtempSync(join(tmpdir(), "k15-weakarch-"));
+  const store = join(dir, "s");
+  let n = 0;
+  const hooks: Hooks = { at(p) { if (p === "archive.export-written" && n++ === 0) throw new Error("injected: the archive cannot be written"); }, fault() {} };
+  const f = await openFactory({ store, hooks, ...(weak ? { tasks: (s) => [brokenArchiveKind(s, store)] } : {}) });
+  try {
+    await f.ready;
+    await f.walks.admit("k1", "w", PLAIN_WALK);
+    await drive(f, "w", ((g: { gateKey: string }) => ({ kind: "approve" as const, decidedBy: "human@r15-script", ...(g.gateKey === "gate0" ? { admit: {} } : {}) })) as never);
+    for (let i = 0; i < 200; i++) { const r = await openReader(store); const m = await r.snapshot<{ status?: string }>("kiln.archive", "w"); await r.close(); if (m?.status === "failed") break; await new Promise((r2) => setTimeout(r2, 25)); }
+    return await checkArchiveInvariants(store);
+  } finally {
+    await f.close().catch(() => {});
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+test("an archive that compacts BEFORE it has written and verified is caught by E6 — the real one, failing at the same moment, compacts nothing", async () => {
+  const weak = await archiveFailingOnce(true);
+  assert.ok(weak.some((x) => x.startsWith("E6") && /compaction before the archive was recorded/.test(x)), JSON.stringify(weak));
+  assert.deepEqual(await archiveFailingOnce(false), [], "the real archive, failing at the same step, leaves the feature whole");
+});

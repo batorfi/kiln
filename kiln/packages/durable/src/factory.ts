@@ -20,6 +20,7 @@ import { Watch } from "./walk/watch.ts";
 import { Backbone } from "./record/backbone.ts";
 import type { Consumer } from "./record/consumer.ts";
 import { factoryLogConsumer } from "./record/consumers/factory-log.ts";
+import { archiveKind, ensureArchives } from "./record/archive-task.ts";
 import { makeWalkApi, type WalkApi } from "./walk/api.ts";
 import type { Channel, CommandApi, GateApi, Inspection, LaneApi, TaskApi } from "./types.ts";
 
@@ -70,7 +71,7 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   services.backbone = backbone;
   let store: Store;
   try {
-    store = await openStore({ dir: opts.store, now: services.now, kinds: [...builtinKinds(services), ...(typeof opts.tasks === "function" ? opts.tasks(services) : (opts.tasks ?? []))], installedLibraryVersion: opts.installedLibraryVersion, hooks, onAppended: () => backbone.notify() });
+    store = await openStore({ dir: opts.store, now: services.now, kinds: [...builtinKinds(services, opts.store), ...(typeof opts.tasks === "function" ? opts.tasks(services) : (opts.tasks ?? []))], installedLibraryVersion: opts.installedLibraryVersion, hooks, onAppended: () => backbone.notify() });
   } catch (e) {
     lock.release();
     throw e;
@@ -90,7 +91,7 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   // the factory-log is a projection of the record (EVT-5): always followed, beside whatever else a caller registers
   backbone.register(factoryLogConsumer(services, opts.store));
   for (const c of typeof opts.consumers === "function" ? opts.consumers(services) : (opts.consumers ?? [])) backbone.register(c);
-  void readyPromise.then(() => backbone.start(), () => {}); // consumers follow the record once the factory has converged
+  void readyPromise.then(() => { backbone.start(); return ensureArchives(services); }, () => {}).catch(() => {}); // consumers follow the record once the factory has converged; a walk that ended without an archive gets one
   let closed = false;
   let channel: Channel | undefined;
   const gates: GateApi = { open: (key, spec) => openGate(services, key, spec), submit: (gateId, key, move) => submitMove(services, gateId, key, move), state: (gateId) => gateState(services, gateId) };
@@ -126,8 +127,8 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
 }
 
 /** The task kinds the durable core itself provides (filled in as they are built). */
-function builtinKinds(services: Services): TaskKind<any, any, any>[] {
-  return [...gateKinds(services), ...shellKinds(services)];
+function builtinKinds(services: Services, dir: string): TaskKind<any, any, any>[] {
+  return [...gateKinds(services), ...shellKinds(services), archiveKind(services, dir)];
 }
 
 /**
