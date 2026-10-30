@@ -1,11 +1,12 @@
 // `kiln.unit` — one step of a feature (CORE-2). A SHELL with scripted work (research R8): each invocation does the next scripted step, then commits its checkpoint; the RESULT is committed once, at the
 // end. A kill mid-step re-runs that step from the last checkpoint, and because nothing but the checkpoint and the final result is ever stored, a half-done step never commits its result (CORE-4).
 // The step's duration (`stepMs`) is WORK a kill can interrupt — it is not a durable timer and settles nothing.
+import { appendUnitEvent } from "../record/unit-events.ts";
 import type { Services } from "../services.ts";
 import { defineKilnTask, type TaskKind } from "../store.ts";
 import type { UnitSpec } from "./validate.ts";
 
-type UnitCheckpoint = { phase: "work"; done: number; results: string[] };
+type UnitCheckpoint = { phase: "work"; done: number; results: string[]; started?: true };
 type UnitResult = { label: string; results: string[] };
 
 export function unitKind(s: Services): TaskKind<UnitSpec, UnitCheckpoint, UnitResult> {
@@ -17,6 +18,14 @@ export function unitKind(s: Services): TaskKind<UnitSpec, UnitCheckpoint, UnitRe
       work: async (task, run) => {
         const { label, steps, stepMs, needsLane, model, hold } = task.input;
         const i = task.checkpoint.done;
+        if (task.checkpoint.started !== true) {
+          // r15: the unit's first step is recorded in its own commit (the event and the flag together), before any work: a kill re-enters here and finds the flag or the event, never one without the other
+          await run.commit(async (tx) => {
+            await appendUnitEvent(tx, s, "unit.started", { unit: task.id, label, owner: (await tx.task(task.id))?.owner ?? null, actor: `task:${task.id}`, cause: `task:${task.id}` });
+            return { status: "running", checkpoint: { ...task.checkpoint, started: true } };
+          });
+          return;
+        }
         await s.hooks.at("unit.step-begin");
         if (needsLane) {
           // the scripted generation runs only while the unit holds the lane; a lease the previous process left behind was released at start, so a redone step simply asks again
@@ -37,11 +46,11 @@ export function unitKind(s: Services): TaskKind<UnitSpec, UnitCheckpoint, UnitRe
           if (run.signal.aborted) return; // the factory is closing: nothing is committed
           await s.hooks.at("unit.step-after-work"); // the work is done and NOT yet recorded: a kill here redoes it
           const results = [...task.checkpoint.results, `${label}:${i}`];
-          await run.commit(() =>
-            i + 1 >= steps
-              ? { status: "terminal", outcome: { status: "completed", result: { label, results } } }
-              : { status: "running", checkpoint: { phase: "work", done: i + 1, results } },
-          );
+          await run.commit(async (tx) => {
+            if (i + 1 < steps) return { status: "running", checkpoint: { phase: "work", done: i + 1, results, started: true } };
+            await appendUnitEvent(tx, s, "unit.settled", { unit: task.id, label, owner: (await tx.task(task.id))?.owner ?? null, actor: `task:${task.id}`, cause: `task:${task.id}` });
+            return { status: "terminal", outcome: { status: "completed", result: { label, results } } };
+          });
           await s.hooks.at("unit.step-committed");
           if (held) {
             await s.lane!.release(task.id);
@@ -54,8 +63,11 @@ export function unitKind(s: Services): TaskKind<UnitSpec, UnitCheckpoint, UnitRe
         }
       },
     },
-    abort: async (_task, run) => {
-      await run.commit(() => ({ status: "terminal", outcome: { status: "aborted" } }));
+    abort: async (task, run) => {
+      await run.commit(async (tx) => {
+        await appendUnitEvent(tx, s, "unit.aborted", { unit: task.id, label: task.input.label, owner: (await tx.task(task.id))?.owner ?? null, actor: `task:${task.id}`, cause: `task:${task.id}` });
+        return { status: "terminal", outcome: { status: "aborted" } };
+      });
     },
   });
 }

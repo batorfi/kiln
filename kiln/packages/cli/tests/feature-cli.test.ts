@@ -89,7 +89,8 @@ test("US2: the plain feature walks 10 gates through the CLI; the two interface g
   const na = state.history.filter((h: any) => h.type === "gate.not-applicable");
   assert.deepEqual(na.map((h: any) => h.data.gate).sort(), ["2a-experience", "6a-ui-review"]);
   for (const h of na) {
-    assert.match(h.data.reason.text, /^does not apply: no path matches \[.*\]; no label is one of \[ui\](; the row cites no journey)?$/);
+    assert.ok(!("text" in h.data.reason), "the record holds the reason's facts, not its sentence");
+    assert.deepEqual([h.data.reason.verdict, h.data.reason.evaluated.paths, h.data.reason.evaluated.labels], [false, "no-match", "no-match"]);
     assert.equal(h.actor, "factory");
   }
   const refused = await kiln(["gate", "move", "--store", w.store, "--gate", "gate:f-plain:2a-experience:1", "--key", "x", "--kind", "approve", "--by", "script:r14", "--brief-ref", "0".repeat(64)], w.env);

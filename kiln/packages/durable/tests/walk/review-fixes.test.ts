@@ -100,7 +100,8 @@ test("F3: a feature-level move that arrives while the person's own move is being
     assert.equal(ignored.length, 1);
     assert.equal(ignored[0].cause, "fm1");
     assert.equal(ignored[0].actor, DECIDER);
-    assert.match(String((ignored[0].data as { because: string }).because), /the walk ended \(merged\)/);
+    assert.equal((ignored[0].data as { why: string }).why, "walk-ended-merged");
+    assert.ok(!("note" in (ignored[0].data as object)) && (ignored[0].data as any).noteRef === "walk:f/moves/fm1#note");
     assert.equal(v.history.filter((h) => h.type === "walk.returned").length, 0, "nothing was sent back");
   } finally {
     release?.();

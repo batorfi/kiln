@@ -1,6 +1,6 @@
 # `kiln.gate` and `kiln.decision` — two tasks that make one gate
 
-> **Status:** [built] (r13) — the heart of the row. **Code:** `kiln/packages/durable/src/gate/{tasks,open,move,slots,state}.ts`. **Proof:** `tests/proof/{open,outcomes,exactly-once,kill-points,random-kill,storm,clock,negative,different-process}.test.ts`. **Contract:** [gate-contract](../../../../specs/011-durable-core-gate-contract/contracts/gate-contract.md). **See also:** [overview](./README.md) · [vocabulary §4](../../../vocabulary.md).
+> **Status:** [built] (r13) — the heart of the row. **Code:** `kiln/packages/durable/src/gate/{tasks,open,move,slots,state}.ts`. **Proof:** `tests/proof/{open,outcomes,exactly-once,kill-points,random-kill,storm,clock,negative,different-process}.test.ts`. **Contract:** [gate-contract](../../../../specs/011-durable-core-gate-contract/contracts/gate-contract.md). **See also:** [overview](./README.md) · [the twelve gates, one by one](../gates/README.md) (what each gate asks and decides) · [vocabulary §4](../../../vocabulary.md).
 
 ## What they are
 

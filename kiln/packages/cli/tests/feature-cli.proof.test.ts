@@ -114,6 +114,6 @@ test("US6: triage through the command line — a small plain feature walks 7 fea
     const state = last(await kiln(["feature", "state", "--store", w.store, "--feature", name], w.env));
     const skipped = state.history.filter((h: any) => h.type === "gate.skipped");
     assert.deepEqual(skipped.map((h: any) => h.data.gate), ["1-concept", "2-architecture"]);
-    assert.ok(skipped.every((h: any) => /^a (one-line|copy) change/.test(h.data.reasoning)));
+    assert.ok(skipped.every((h: any) => h.data.reasoningRef === "row:" + h.subject + "#triage.reasoning" && /^[0-9a-f]{64}$/.test(h.data.reasoningDigest) && !("reasoning" in h.data)));
   }
 });

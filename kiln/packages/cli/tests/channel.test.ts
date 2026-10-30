@@ -268,15 +268,15 @@ test("the safe-directory rule over a stat result: a directory owned by someone e
   assert.match(directoryProblem(stat({ mode: 0o40750 }), 501)!, /750/);
 });
 
-test("the command line reaches the durable package through exactly three modules: the channel client, the path arithmetic and the owner runner", () => {
+test("the command line reaches the durable package through exactly four modules: the channel client, the path arithmetic, the owner runner and (r15) the offline record tools — which read through a fresh reader and never own the store", () => {
   const src = join(fileURLToPath(new URL("../src", import.meta.url)));
-  const allowed = new Set(["#durable/channel/client.ts", "#durable/channel/path.ts", "#durable/owner.ts"]);
+  const allowed = new Set(["#durable/channel/client.ts", "#durable/channel/path.ts", "#durable/owner.ts", "#durable/record/tools.ts"]);
   const found = new Set<string>();
   for (const f of readdirSync(src).filter((n) => n.endsWith(".ts"))) {
     const text = readFileSync(join(src, f), "utf8");
     for (const m of text.matchAll(/from\s+["'](#durable\/[^"']+)["']/g)) {
       found.add(m[1]);
-      assert.ok(allowed.has(m[1]), `${f} imports ${m[1]}, which is not one of the three`);
+      assert.ok(allowed.has(m[1]), `${f} imports ${m[1]}, which is not one of the four`);
     }
     assert.doesNotMatch(text, /node:sqlite|pi-durable|store\.ts|factory\.ts/, `${f} must never open the store or the library`);
   }

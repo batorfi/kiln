@@ -1,0 +1,15 @@
+{
+ "$id": "kiln:event:transcript.aged-out/1",
+ "additionalProperties": false,
+ "properties": {
+  "archive": {
+   "minLength": 1,
+   "type": "string"
+  }
+ },
+ "required": [
+  "archive"
+ ],
+ "title": "transcript.aged-out (version 1)",
+ "type": "object"
+}

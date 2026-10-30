@@ -93,7 +93,7 @@ for (const [point, expectWithdrawnBeforeRetry] of [["walk.withdraw-received", fa
       assert.equal(i.outbox.filter((e) => e.type === "gate.withdrawn").length, 1, "withdrawn exactly once");
       const all = await inspectStore(ts.store);
       assert.deepEqual(checkWalkInvariants(all, { feature: "f1", facts: PLAIN.facts }), []);
-      assert.deepEqual(all.tasks.filter((t) => t.status !== "terminal"), [], "nothing left waiting or parked");
+      assert.deepEqual(all.tasks.filter((t) => t.status !== "terminal" && t.kind !== "kiln.archive"), [], "nothing left waiting or parked (the archive that follows a walk's end is its own step, judged by E6)");
     } finally {
       ts.cleanup();
     }

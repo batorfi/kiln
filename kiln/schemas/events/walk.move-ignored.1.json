@@ -1,0 +1,34 @@
+{
+ "$id": "kiln:event:walk.move-ignored/1",
+ "additionalProperties": false,
+ "properties": {
+  "noteDigest": {
+   "pattern": "^[0-9a-f]{64}$",
+   "type": "string"
+  },
+  "noteRef": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "target": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "why": {
+   "enum": [
+    "walk-ended-merged",
+    "walk-ended-left-lane",
+    "walk-ended-not-admitted"
+   ],
+   "type": "string"
+  }
+ },
+ "required": [
+  "target",
+  "noteRef",
+  "noteDigest",
+  "why"
+ ],
+ "title": "walk.move-ignored (version 1)",
+ "type": "object"
+}

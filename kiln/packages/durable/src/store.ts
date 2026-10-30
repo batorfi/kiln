@@ -2,8 +2,8 @@
 // `library/` implements these interfaces; nothing outside it can see how. No import of the library here, no library name (SC-010).
 import type { JSON, OutboxEntry, StoredOutboxEntry, TaskId } from "./types.ts";
 
-export type DocName = "kiln.store" | "kiln.gate" | "kiln.brief" | "kiln.move" | "kiln.command" | "kiln.lane" | "kiln.outbox" | "kiln.walk";
-export const DOC_NAMES: readonly DocName[] = ["kiln.store", "kiln.gate", "kiln.brief", "kiln.move", "kiln.command", "kiln.lane", "kiln.outbox", "kiln.walk"];
+export type DocName = "kiln.store" | "kiln.gate" | "kiln.brief" | "kiln.move" | "kiln.command" | "kiln.lane" | "kiln.outbox" | "kiln.walk" | "kiln.event" | "kiln.record" | "kiln.cursor" | "kiln.projection" | "kiln.archive";
+export const DOC_NAMES: readonly DocName[] = ["kiln.store", "kiln.gate", "kiln.brief", "kiln.move", "kiln.command", "kiln.lane", "kiln.outbox", "kiln.walk", "kiln.event", "kiln.record", "kiln.cursor", "kiln.projection", "kiln.archive"];
 
 /** Who owns a task: the factory itself, or another task. */
 export type Owner = { kind: "factory" } | { kind: "task"; taskId: TaskId };
@@ -40,6 +40,8 @@ export interface Tx {
   doc<T extends object>(name: DocName, key: string, seed: T): Promise<T>;
   createTask(kind: string, input: JSON, owner: Owner): Promise<TaskId>;
   task(id: TaskId): Promise<TaskLite | undefined>;
+  /** The factory's kill/fault hooks, so code running INSIDE a commit (the record's append) can name a mid-commit point. Absent when the store was opened with none. */
+  hooks?: { at(point: string): void | Promise<void> };
 }
 
 // ── task kinds ───────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -80,6 +82,8 @@ export interface Reader {
   docs<T extends object>(name: DocName): Promise<{ key: string; value: T }[]>;
   /** Tasks as stored, optionally of one kind. */
   tasks(filter?: { kind?: string }): Promise<TaskLite[]>;
+  /** The busy timeout (ms) in force on this connection — a diagnostic: it must be the same on every supported Node (library/open.ts). */
+  busyTimeout(): Promise<number>;
   close(): Promise<void>;
 }
 
@@ -99,5 +103,9 @@ export interface OpenStoreOptions {
   kinds: TaskKind<never, never, never>[] | TaskKind<any, any, any>[];
   /** TESTS ONLY: the installed library version the store guard compares with (FR-047). Default: the installed package's own version. */
   installedLibraryVersion?: string;
+  /** Passed to every transaction as `tx.hooks` (r15: the record's mid-commit kill point). */
+  hooks?: { at(point: string): void | Promise<void> };
+  /** Called AFTER a commit that appended an event has resolved (never for one that rolled back or threw): the backbone's wake-up (research R8). Task steps commit through the runtime, so the seam does it. */
+  onAppended?: () => void;
 }
 export type { OutboxEntry, StoredOutboxEntry };

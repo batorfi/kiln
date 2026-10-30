@@ -4,7 +4,7 @@
 // env (r14: HIT_LOG=<file> appends every kill point reached, so a matrix knows how far to go · BROKEN_WALK=1 replaces `kiln.row` with the deliberately weakened walk): SERVE=1 (also serve the private channel, so a separate process can complete gates through it; prints LISTENING) · BROKEN_GATE=1 (replace the decision step with the deliberately half-applying one) · STAY_ALIVE=1 (after the script, wait to be killed) · KILL_AT=<point> · KILL_NTH=<n> (die at the n-th time the point is reached; default 1) · KILL_LOG=<file> · FAULT_AT=<point> · HOLD_AT=<point> HOLD_MS=<n> (delay a step) · CLOCK_OFFSET_MS=<n> · LIBRARY_VERSION=<v> · READY_TIMEOUT_MS=<n> · LANE_MODULE=<file>
 // steps: {op:"ready"} (waits for ready; reports how long start-up took) {op:"submitAll",moves:[{gate,key,move}],concurrency?} · {op:"open",key,spec} {op:"submit",gate,key,move} {op:"submitMany",gate,moves:[{key,move}],concurrency?} {op:"state",gate} {op:"createTask",key,kind,input,owner}
 //        {op:"inspect",gate?} {op:"tasks"} {op:"early",gate,key,move} (a move BEFORE ready, then the same after) {op:"hold"} (stay alive until killed) {op:"sleep",ms}
-import { appendFileSync } from "node:fs";
+import { appendFileSync, existsSync } from "node:fs";
 import { openFactory, type Factory } from "#durable/factory.ts";
 import type { Hooks } from "#durable/hooks.ts";
 
@@ -29,6 +29,10 @@ const hooks: Hooks = {
       process.kill(process.pid, "SIGKILL");
       Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10_000); // SIGKILL cannot be caught; make sure nothing after the point runs meanwhile
     }
+    if (env.HOLD_AT === point && env.HOLD_UNTIL_FILE) { // held until the test releases it by creating the file (a fixed delay races the test's own process start-up); never longer than 60 s
+      const file = env.HOLD_UNTIL_FILE;
+      return new Promise<void>((r) => { const until = Date.now() + 60_000; const poll = (): void => (existsSync(file) || Date.now() > until ? r() : void setTimeout(poll, 20)); poll(); });
+    }
     if (env.HOLD_AT === point) return new Promise<void>((r) => setTimeout(r, Number(env.HOLD_MS ?? 0)));
   },
   fault(point) {
@@ -48,12 +52,14 @@ if (env.LANE_MODULE) {
   lane = made.api;
   laneKinds = made.kinds;
 }
+let consumers: any[] | undefined;
+if (env.TEST_CONSUMERS) consumers = (await import("./test-consumers.ts")).testConsumers(store, !!env.BROKEN_CONSUMER); // r15: a transactional and an effect consumer, for the backbone proofs
 const extra = (s: any): any[] => [...(broken ? [broken(s)] : []), ...(brokenWalk ? [brokenWalk(s)] : []), ...(laneKinds ? laneKinds(s) : [])];
 
 const t0 = performance.now(); // start-up is timed from here: before the factory is opened
 let factory: Factory;
 try {
-  factory = await openFactory({ store, hooks, now: () => Date.now() + offset, tasks: extra, lane, installedLibraryVersion: env.LIBRARY_VERSION, readyTimeoutMs: env.READY_TIMEOUT_MS ? Number(env.READY_TIMEOUT_MS) : undefined });
+  factory = await openFactory({ store, hooks, consumers, now: () => Date.now() + offset, tasks: extra, lane, installedLibraryVersion: env.LIBRARY_VERSION, readyTimeoutMs: env.READY_TIMEOUT_MS ? Number(env.READY_TIMEOUT_MS) : undefined });
 } catch (e) {
   console.log(`ERR ${(e as Error).name} ${(e as Error).message}`);
   process.exit(1);

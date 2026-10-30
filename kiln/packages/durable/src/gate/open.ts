@@ -2,7 +2,8 @@
 // key) and creates the gate task. After any crash the gate is absent or whole (I3). Keyed through the command ledger: the same key opens one gate.
 import { briefRef, plain } from "../canonical.ts";
 import { Refuse, runCommand, validKey } from "../commands.ts";
-import { appendOutbox } from "../outbox.ts";
+import { isActor } from "#contracts/events/grammar.ts";
+import { appendEvent } from "../record/append.ts";
 import type { Services } from "../services.ts";
 import { GATE_ID_PATTERN, refused, type GateDocument, type GateSpec, type JSON, type Key, type OpenOutcome, type TaskId } from "../types.ts";
 import type { BriefDocData, GateDocData } from "./documents.ts";
@@ -22,6 +23,7 @@ export async function openGate(s: Services, key: Key, spec: GateSpec, opts: { aw
   const vocabulary = vocabularyOf(spec.gateKey, spec.flow);
   if (!vocabulary) return refused("invalid-move", { detail: `"${String(spec.gateKey)}" is not a gate of flow ${String(spec.flow)}` });
   if (typeof spec.openedBy !== "string" || spec.openedBy.trim() === "") return refused("invalid-move", { detail: "openedBy names who opens the gate (it becomes the actor of gate.opened)" });
+  if (!isActor(spec.openedBy)) return refused("invalid-move", { detail: `openedBy "${spec.openedBy}" is not an actor id (a task:<n>, factory, system, director, <name>@<token> or script:<name>)` });
   if (spec.returnsTo !== undefined && !(Array.isArray(spec.returnsTo) && spec.returnsTo.every((t) => typeof t === "string" && t !== ""))) return refused("invalid-move", { detail: "returnsTo is a list of gate keys, @build or roadmap" });
   // r14 move semantics (a note on every corrective move) belong to the gates of a WALK — opened with `walk` or `returnsTo`. A gate opened the r13 way keeps r13's behaviour exactly (FR-070).
   const carriesWalkSemantics = spec.walk !== undefined || spec.returnsTo !== undefined;
@@ -41,7 +43,8 @@ export async function openGate(s: Services, key: Key, spec: GateSpec, opts: { aw
     const brief = await tx.doc<BriefDocData>("kiln.brief", spec.gateId, {});
     brief.briefRef = ref;
     brief.content = plain(spec.brief);
-    await appendOutbox(tx, { type: "gate.opened", subject: spec.gateId, at: openedAt, actor: spec.openedBy, cause: key, data: { briefRef: ref, gateKey: spec.gateKey } });
+    const round = Number(spec.gateId.split(":").pop());
+    await appendEvent(tx, { type: "gate.opened", subject: spec.gateId, at: openedAt, actor: spec.openedBy, cause: key, data: { briefRef: ref, gateKey: spec.gateKey, flow: spec.flow, ...(/^gate:/.test(spec.gateId) && Number.isInteger(round) ? { round } : {}) } });
     const taskId = await tx.createTask("kiln.gate", { gateId: spec.gateId }, { kind: "factory" });
     g.gateTask = taskId;
     if (spec.walk) {
@@ -53,7 +56,7 @@ export async function openGate(s: Services, key: Key, spec: GateSpec, opts: { aw
     }
     await s.hooks.at("open.after-write"); // the writes are made, the commit has not returned
     return { gate, taskId };
-  });
+  }, spec.openedBy);
   if (out.status === "refused") return out;
   if (out.status === "applied") await s.hooks.at("open.committed");
   if (opts.awaitRegistered !== false) await registered(s, spec.gateId, 3000); // `opened` means the gate can take a move: wait (bounded) for its decision step to register

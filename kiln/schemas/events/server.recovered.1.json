@@ -1,0 +1,19 @@
+{
+ "$id": "kiln:event:server.recovered/1",
+ "additionalProperties": false,
+ "properties": {
+  "contract": {
+   "type": "integer"
+  },
+  "libraryVersion": {
+   "minLength": 1,
+   "type": "string"
+  }
+ },
+ "required": [
+  "contract",
+  "libraryVersion"
+ ],
+ "title": "server.recovered (version 1)",
+ "type": "object"
+}

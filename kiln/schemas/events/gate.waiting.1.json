@@ -1,0 +1,22 @@
+{
+ "$id": "kiln:event:gate.waiting/1",
+ "additionalProperties": false,
+ "properties": {
+  "deadline": {
+   "type": "string"
+  },
+  "gate": {
+   "type": "string"
+  },
+  "token": {
+   "type": "string"
+  }
+ },
+ "required": [
+  "gate",
+  "token",
+  "deadline"
+ ],
+ "title": "gate.waiting (version 1)",
+ "type": "object"
+}

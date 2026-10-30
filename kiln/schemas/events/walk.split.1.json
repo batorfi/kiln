@@ -1,0 +1,25 @@
+{
+ "$id": "kiln:event:walk.split/1",
+ "additionalProperties": false,
+ "properties": {
+  "from": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "remainderDigest": {
+   "pattern": "^[0-9a-f]{64}$",
+   "type": "string"
+  },
+  "remainderRef": {
+   "minLength": 1,
+   "type": "string"
+  }
+ },
+ "required": [
+  "from",
+  "remainderRef",
+  "remainderDigest"
+ ],
+ "title": "walk.split (version 1)",
+ "type": "object"
+}

@@ -1,0 +1,25 @@
+{
+ "$id": "kiln:event:charter.amended/1",
+ "additionalProperties": false,
+ "properties": {
+  "by": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "digest": {
+   "pattern": "^[0-9a-f]{64}$",
+   "type": "string"
+  },
+  "version": {
+   "minLength": 1,
+   "type": "string"
+  }
+ },
+ "required": [
+  "version",
+  "digest",
+  "by"
+ ],
+ "title": "charter.amended (version 1)",
+ "type": "object"
+}

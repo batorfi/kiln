@@ -1,0 +1,18 @@
+{
+ "$id": "kiln:event:lane.cost-recorded/1",
+ "additionalProperties": false,
+ "properties": {
+  "switches": {
+   "type": "integer"
+  },
+  "wallClock": {
+   "type": "string"
+  }
+ },
+ "required": [
+  "switches",
+  "wallClock"
+ ],
+ "title": "lane.cost-recorded (version 1)",
+ "type": "object"
+}

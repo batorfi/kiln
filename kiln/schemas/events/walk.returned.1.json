@@ -1,0 +1,54 @@
+{
+ "$id": "kiln:event:walk.returned/1",
+ "additionalProperties": false,
+ "properties": {
+  "from": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "kind": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "noteDigest": {
+   "pattern": "^[0-9a-f]{64}$",
+   "type": "string"
+  },
+  "noteRef": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "recross": {
+   "items": {
+    "type": "string"
+   },
+   "type": "array"
+  },
+  "round": {
+   "type": "integer"
+  },
+  "scope": {
+   "enum": [
+    "feature"
+   ],
+   "type": "string"
+  },
+  "target": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "work": {
+   "type": "string"
+  }
+ },
+ "required": [
+  "from",
+  "kind",
+  "target",
+  "recross",
+  "noteRef",
+  "noteDigest"
+ ],
+ "title": "walk.returned (version 1)",
+ "type": "object"
+}

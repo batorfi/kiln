@@ -17,9 +17,10 @@ test("a plain feature walks 9 feature gates after the Roadmap gate; Experience d
   assert.deepEqual(na.map((e) => (e.data as { gate: string }).gate).sort(), ["2a-experience", "6a-ui-review"]);
   assert.ok(na.every((e) => e.actor === "factory" && e.cause === "walk:f-plain:pin"));
   const exp = na.find((e) => (e.data as { gate: string }).gate === "2a-experience")!;
-  const want = applicability(gateDef(flowOf("v2"), "2a-experience"), PLAIN.facts, []).reason;
-  assert.deepEqual((exp.data as { reason: unknown }).reason, want, "the recorded reason is exactly the engine's");
-  assert.match((exp.data as { reason: { text: string } }).reason.text, /^does not apply: no path matches/);
+  const { text: sentence, ...facts } = applicability(gateDef(flowOf("v2"), "2a-experience"), PLAIN.facts, []).reason as any;
+  assert.deepEqual((exp.data as { reason: unknown }).reason, facts, "the recorded reason is exactly the engine's facts (r15: its rendered sentence is not in the record)");
+  assert.ok(!("text" in (exp.data as { reason: object }).reason), "the sentence is not an event field");
+  assert.match(sentence, /^does not apply: no path matches/, "the engine can still render it");
   // no gate task, no gate document for the gates that do not apply
   const i = await f.inspect("gate:f-plain:2a-experience:1");
   assert.equal(i.gate, "absent");

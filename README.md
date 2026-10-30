@@ -207,7 +207,7 @@ All concept documents live in [`docs/concepts/`](./docs/concepts). Start with th
 | **The law** | the [constitution](./.specify/memory/constitution.md) **v2.1.0**, amended for the restart on 2026-10-21 and for the experience charter on 2026-10-25 — [explained for engineers](./docs/architecture/explainers/kiln-constitution.md) |
 | **The roadmap** | **admitted** at the Roadmap gate on 2026-10-22 by human@batorfi — [the program](./specs/ROADMAP.md) ([what `kiln-v1` delivers](./docs/architecture/explainers/kiln-v1.md)) of 41 feature-sized rows (r12–r52; `kiln-v1` is 26 of them, including the r42 spike, the team space, the explore space and Zed phase 1), `kiln-v1` at r32 — **r12 is the admitted next row** |
 | **Beyond `kiln-v1`** | [what `kiln-v1.x` adds](./docs/architecture/explainers/kiln-v1x.md); proposals for [exploring codebases before adoption](./docs/concepts/code-exploration.md), [hybrid deployments](./docs/concepts/hybrid-deployments.md) and [KILN in Zed](./docs/concepts/zed-integration.md); research snapshots of [models](./docs/concepts/model-landscape.md), [routers](./docs/concepts/model-routers.md) and [dev machines](./docs/concepts/dev-machines.md) (2026-10) |
-| **The code** | two trees. [`legacy/`](./legacy) is the **first program** (rows r1–r8, KILN as a Pi extension), frozen byte-for-byte and still tested. [`kiln/`](./kiln) is the **restart's codebase**, begun by row r12 (*foundations reset*): the PRD's package layout, the flow and the judge roster as versioned data (v1 the first program's rail, v2 the twelve-gate flow), the record validators, the pure affinity logic, and `kiln check` — which proves the source makes no network call, respects its package boundaries, leaves `legacy/` untouched, and (since r14) that the standard flow's data is valid. The durable core, the workers and the web front door are later rows |
+| **The code** | two trees. [`legacy/`](./legacy) is the **first program** (rows r1–r8, KILN as a Pi extension), frozen byte-for-byte and still tested. [`kiln/`](./kiln) is the **restart's codebase**, begun by row r12 (*foundations reset*): the PRD's package layout, the flow and the judge roster as versioned data (v1 the first program's rail, v2 the twelve-gate flow), the record validators, the pure affinity logic, and `kiln check` — which proves the source makes no network call, respects its package boundaries, leaves `legacy/` untouched, that the standard flow's data is valid (r14) and that the event catalog and the first program's replayed walks hold (r15). The durable core and **the record** (every state change an event; the factory-log and the feature archive built from it) are in; the workers and the web front door are later rows |
 
 The first program's roadmap and decision log are archived in
 [`specs/archive/`](./specs/archive/ROADMAP-2026-09-kiln-on-pi.md).
@@ -218,7 +218,7 @@ The new KILN is not built yet. You can run and inspect the foundation the restar
 
 **Requirements**
 
-- **Node.js `^22.19.0 || >=23.6.0`** — TypeScript runs directly through Node's type-stripping, with no build step. If you
+- **Node.js `^22.19.0 || >=24.1.0`** — TypeScript runs directly through Node's type-stripping, with no build step. If you
   see `ERR_UNKNOWN_FILE_EXTENSION`, your Node is too old. On 22.x Node prints `ExperimentalWarning: SQLite is an experimental feature`: the durable core rests on Node's built-in SQLite, which is accepted with that warning (see [`kiln/DEPENDENCIES.md`](./kiln/DEPENDENCIES.md)). Verified on macOS only.
 - **Git.** Three pinned runtime dependencies (the durable runtime and its two companions, recorded in [`kiln/DEPENDENCIES.md`](./kiln/DEPENDENCIES.md)); **one install step**: `cd kiln && npm ci` — the one network act (≈ 112 MB). `legacy/` needs no install.
 - *Optional:* [Ollama](https://ollama.com) with a model for the live tier (tests default to `gemma4:12b`; set
@@ -234,7 +234,7 @@ cd kiln/kiln                                         # the restart's codebase
 npm ci                                               # the one install step (the network act); then everything below runs offline
 
 npm test                                             # the new suite, then the first program's (legacy) suite; the live-Pi tier skips on an unmeasured Pi, printing why
-npm run check                                        # kiln check: network, boundaries, legacy, flow — each fails by name
+npm run check                                        # kiln check: network, boundaries, legacy, flow, record — each fails by name
 npm run proof                                        # the proof tier (r14): every walk kill point × every hit × both walks, a re-crossing walk, a fix-round walk and 300 random kills (~3 min); the runner prints which tier ran
 npm run kiln -- check flow                           # the standard flow's data, validated all-or-nothing (r14); its negative suite refuses every invalid flow
 npm run validate:roadmap -- ../specs/ROADMAP.md      # the project's own roadmap, judged by its own validator
@@ -263,7 +263,7 @@ Any run that executes **zero** tests fails, so a mistyped path cannot pass silen
 | [`docs/prd/`](./docs/prd/kiln-prd.md) | the product requirements for the restart |
 | [`docs/brand/`](./docs/brand/README.md) | the KILN mark (nested gates) and logos |
 | [`specs/`](./specs) | [`ROADMAP.md`](./specs/ROADMAP.md) (the program, admitted by a person at the Roadmap gate), [one explainer per roadmap row](./specs/explainers/README.md), one directory per feature with its spec, plan, tasks and evidence, and the archived first program |
-| [`kiln/`](./kiln) | the restart's codebase (row r12 onward): `packages/` (contracts, record, lane, and the empty places of the rest, each with a `kiln.json` stating its single responsibility), `checks/` (the network lint, package boundaries, legacy identity and flow check behind `kiln check`), `tests/` (the runner for both suites) and the committed fixtures of real runs |
+| [`kiln/`](./kiln) | the restart's codebase (row r12 onward): `packages/` (contracts, record, lane, and the empty places of the rest, each with a `kiln.json` stating its single responsibility), `checks/` (the network lint, package boundaries, legacy identity, flow and record checks behind `kiln check`), `tests/` (the runner for both suites) and the committed fixtures of real runs |
 | [`legacy/`](./legacy) | the first program's whole tree (rows r1–r8: runtime, gate and log machinery, validators and probes, the Pi extension, tests), **frozen** byte-for-byte and proven so by `kiln check legacy`; retired when each part is ported. Older specs and reports name its files as `kiln/…` — read that as `legacy/…` |
 | [`.specify/`](./.specify), [`.pi/`](./.pi) | the Spec Kit scaffolding and Pi prompts the project is built with, and KILN's constitution |
 

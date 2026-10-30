@@ -1,0 +1,30 @@
+{
+ "$id": "kiln:event:gate.opened/1",
+ "additionalProperties": false,
+ "properties": {
+  "briefRef": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "flow": {
+   "enum": [
+    "v1",
+    "v2"
+   ],
+   "type": "string"
+  },
+  "gateKey": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "round": {
+   "type": "integer"
+  }
+ },
+ "required": [
+  "briefRef",
+  "gateKey"
+ ],
+ "title": "gate.opened (version 1)",
+ "type": "object"
+}

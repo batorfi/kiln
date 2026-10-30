@@ -11,7 +11,7 @@ export function brokenRow(s: Services): TaskKind<any, any, any> {
   // a store that invents an approval where none exists (built at CALL time: `s.store` does not exist yet while the kinds are being defined)
   const inventing = (): Services => ({ ...s, store: Object.create(s.store, { snapshot: { value: async (name: string, key: string) => {
     const found = await s.store.snapshot(name as never, key);
-    if (name === "kiln.move" && !(found as { record?: unknown } | undefined)?.record) return { record: { gateId: key, key: "(restart)", move: { kind: "approve", decidedBy: "restart", briefRef: "" }, decidedAt: 0, seq: 1 } };
+    if (name === "kiln.move" && !(found as { record?: unknown } | undefined)?.record) return { record: { gateId: key, key: "(restart)", move: { kind: "approve", decidedBy: "system@restart", briefRef: "" }, decidedAt: 0, seq: 1 } };
     return found;
   } } }) });
   return {

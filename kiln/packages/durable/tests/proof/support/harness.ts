@@ -46,6 +46,8 @@ export interface OwnerOptions {
   faultAt?: string;
   holdAt?: string;
   holdMs?: number;
+  /** Instead of a fixed `holdMs`: hold at `holdAt` until this file exists (the test releases the owner when it has seen what it needs; capped at 60 s so a forgotten release cannot hang a run). */
+  holdUntilFile?: string;
   clockOffsetMs?: number;
   libraryVersion?: string;
   /** After the script the child stays alive, to be killed by the harness. */
@@ -81,12 +83,12 @@ export interface OwnerRun {
 
 export function spawnOwner(ts: TestStore, o: OwnerOptions = {}): OwnerRun {
   const env: Record<string, string> = {};
-  for (const [k, v] of Object.entries(process.env)) if (v !== undefined && !/^(KILL_AT|FAULT_AT|HOLD_AT|HOLD_MS|CLOCK_OFFSET_MS|LIBRARY_VERSION|READY_TIMEOUT_MS|LANE_MODULE|KILL_LOG|STAY_ALIVE|BROKEN_GATE|BROKEN_WALK|HIT_LOG|SERVE|KILL_NTH)$/.test(k)) env[k] = v;
+  for (const [k, v] of Object.entries(process.env)) if (v !== undefined && !/^(KILL_AT|FAULT_AT|HOLD_AT|HOLD_MS|HOLD_UNTIL_FILE|CLOCK_OFFSET_MS|LIBRARY_VERSION|READY_TIMEOUT_MS|LANE_MODULE|KILL_LOG|STAY_ALIVE|BROKEN_GATE|BROKEN_WALK|HIT_LOG|SERVE|KILL_NTH)$/.test(k)) env[k] = v;
   env.KILL_LOG = ts.killLog;
   if (o.killAt) env.KILL_AT = o.killAt;
   if (o.killNth) env.KILL_NTH = String(o.killNth);
   if (o.faultAt) env.FAULT_AT = o.faultAt;
-  if (o.holdAt) { env.HOLD_AT = o.holdAt; env.HOLD_MS = String(o.holdMs ?? 0); }
+  if (o.holdAt) { env.HOLD_AT = o.holdAt; env.HOLD_MS = String(o.holdMs ?? 0); if (o.holdUntilFile) env.HOLD_UNTIL_FILE = o.holdUntilFile; }
   if (o.clockOffsetMs) env.CLOCK_OFFSET_MS = String(o.clockOffsetMs);
   if (o.libraryVersion) env.LIBRARY_VERSION = o.libraryVersion;
   if (o.stayAlive) env.STAY_ALIVE = "1";
@@ -148,10 +150,13 @@ export async function runOwner(ts: TestStore, o: OwnerOptions = {}): Promise<Own
   }
 }
 
+/** How long a freshly spawned owner gets to say STARTED. A process that gets no CPU on a loaded machine prints nothing at all (not even Node's own warnings) for tens of seconds; a real hang is still caught, only later. */
+const START_TIMEOUT_MS = 45_000;
+
 /** Start an owner and keep it alive (a `hold` step): resolves once it has STARTED. */
 export async function startOwner(ts: TestStore, o: OwnerOptions = {}): Promise<OwnerRun> {
   const run = spawnOwner(ts, { ...o, script: [...(o.script ?? []), { op: "hold" }] });
-  const timeout = new Promise<never>((_, rej) => setTimeout(() => rej(new OwnerFailed(`the owner did not start within ${o.timeoutMs ?? 15_000} ms\n${run.stdout()}${run.stderr()}`)), o.timeoutMs ?? 15_000).unref());
+  const timeout = new Promise<never>((_, rej) => setTimeout(() => rej(new OwnerFailed(`the owner did not start within ${o.timeoutMs ?? START_TIMEOUT_MS} ms\n${run.stdout()}${run.stderr()}`)), o.timeoutMs ?? START_TIMEOUT_MS).unref());
   await Promise.race([o.serve ? Promise.all([run.started, run.listening]) : run.started, timeout]);
   return run;
 }

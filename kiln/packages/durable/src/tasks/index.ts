@@ -6,6 +6,8 @@ import { refused, type JSON, type Key, type TaskApi, type TaskCreateOutcome, typ
 import { roadmapKind } from "./roadmap.ts";
 import { rowKind } from "./row.ts";
 import { unitKind } from "./unit.ts";
+import { correlationOfTask } from "../record/runs.ts";
+import { appendUnitEvent } from "../record/unit-events.ts";
 import { walkDoc } from "../walk/doc.ts";
 import { checkRoadmap, checkRow, checkUnit } from "./validate.ts";
 
@@ -33,7 +35,11 @@ export function makeTaskApi(s: Services): TaskApi {
           if (wd.admittedBy !== undefined) throw new Refuse(refused("key-conflict", { original: wd.admittedBy, detail: `the feature "${walk.feature}" already has a walk (admitted under key "${wd.admittedBy}"); a feature is admitted once` }));
           wd.admittedBy = key;
         }
-        return { id: await tx.createTask(kind, input, owner) };
+        // the run is read BEFORE the first table write (the library cannot read a task after one)
+        const run = kind === "kiln.unit" ? await correlationOfTask(tx, owner.kind === "task" ? owner.taskId : null) : null;
+        const id = await tx.createTask(kind, input, owner);
+        if (kind === "kiln.unit") await appendUnitEvent(tx, s, "unit.queued", { unit: id, label: (input as { label: string }).label, owner: owner.kind === "task" ? owner.taskId : null, actor: "system", cause: key, correlation: run });
+        return { id };
       });
       if (out.status === "refused") return out;
       return { status: out.status === "applied" ? "created" : "repeat", id: out.result.id };

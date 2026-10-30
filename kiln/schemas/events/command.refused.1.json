@@ -1,0 +1,19 @@
+{
+ "$id": "kiln:event:command.refused/1",
+ "additionalProperties": false,
+ "properties": {
+  "kind": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "reason": {
+   "type": "string"
+  }
+ },
+ "required": [
+  "kind",
+  "reason"
+ ],
+ "title": "command.refused (version 1)",
+ "type": "object"
+}

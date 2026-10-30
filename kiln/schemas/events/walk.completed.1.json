@@ -1,0 +1,17 @@
+{
+ "$id": "kiln:event:walk.completed/1",
+ "additionalProperties": false,
+ "properties": {
+  "approved": {
+   "items": {
+    "type": "string"
+   },
+   "type": "array"
+  }
+ },
+ "required": [
+  "approved"
+ ],
+ "title": "walk.completed (version 1)",
+ "type": "object"
+}

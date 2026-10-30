@@ -67,6 +67,8 @@ export interface Move {
   target?: Target;
   /** r14: only on `approve` at gate0. */
   admit?: Admit;
+  /** r15: what an ARCHIVED move's note leaves in the live store — the SHA-256 of the text, which went into the feature archive. A repeat of the move is judged by it. Never sent by a caller. */
+  noteDigest?: string;
 }
 export interface MoveRecord {
   gateId: GateId;
@@ -87,11 +89,8 @@ export type GateState = { state: "unknown" } | { state: "waiting" } | { state: "
 export const refused = (reason: RefusalReason, extra: { winner?: Key; original?: Key; detail?: string } = {}): Refusal => ({ status: "refused", reason, ...extra });
 
 // ── the outbox: the interim event stream (FR-019; r15 adopts it) ─────────────────────────────────────────────────────────
-export type OutboxType =
-  | "gate.opened" | "move.committed" | "gate.settled" | "lane.acquired" | "lane.released" | "lane.swapped"
-  // r14 (data-model §6): what the walk records, each in the commit of the state it changes
-  | "walk.admitted" | "gate.not-applicable" | "gate.became-applicable" | "gate.skipped" | "gate.withdrawn" | "walk.returned" | "walk.fix-round" | "walk.split"
-  | "walk.left-lane" | "walk.not-admitted" | "walk.completed" | "walk.move-ignored";
+/** A catalog type name (contracts/src/events/catalog). r15 froze the interim list: the record's types are the catalog's, and a type outside it cannot be committed. */
+export type OutboxType = string;
 export interface OutboxEntry {
   type: OutboxType;
   /** The gate id, or "lane". */
@@ -102,6 +101,8 @@ export interface OutboxEntry {
   /** What caused it (a command key, a move key). MUST be non-empty. */
   cause: string;
   data: JSON;
+  /** r15: "run:<feature>" for an event belonging to a feature run, else null (absent in the r13/r14 shape). */
+  correlation?: string | null;
 }
 export type StoredOutboxEntry = OutboxEntry & { seq: number };
 
@@ -124,7 +125,7 @@ export interface FeatureMoveRecord {
 export type FeatureOutcome = { status: "committed"; record: FeatureMoveRecord } | { status: "repeat"; record: FeatureMoveRecord } | Refusal;
 
 // ── tasks ───────────────────────────────────────────────────────────────────────────────────────────────────────────────
-export type TaskKindName = "kiln.roadmap" | "kiln.row" | "kiln.unit" | "kiln.gate" | "kiln.decision" | "kiln.lane";
+export type TaskKindName = "kiln.roadmap" | "kiln.row" | "kiln.unit" | "kiln.gate" | "kiln.decision" | "kiln.lane" | "kiln.archive";
 export interface TaskSummary {
   id: TaskId;
   kind: string;

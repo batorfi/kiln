@@ -50,7 +50,7 @@ test(`${REPEATS} concurrent identical moves → exactly 1 committed, ${REPEATS -
 
 test(`${RACERS} different keys at once → exactly 1 committed, ${RACERS - 1} refused (lost-race | stale) each naming the winner, 1 record`, () => withStore(async (ts) => {
   const kinds = ["approve", "revise", "reject"];
-  const moves = Array.from({ length: RACERS }, (_, n) => ({ key: `race-${n}`, move: mv({ kind: kinds[n % 3], decidedBy: `person-${n}` }) }));
+  const moves = Array.from({ length: RACERS }, (_, n) => ({ key: `race-${n}`, move: mv({ kind: kinds[n % 3], decidedBy: `person-${n}@example` }) }));
   const run = await runThenKill(ts, { script: [OPEN, { op: "submitMany", gate: GATE, moves, concurrency: RACERS }] });
   const t = tally(run.results[1] as any[]);
   assert.equal(t.committed.length, 1);

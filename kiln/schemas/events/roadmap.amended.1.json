@@ -1,0 +1,20 @@
+{
+ "$id": "kiln:event:roadmap.amended/1",
+ "additionalProperties": false,
+ "properties": {
+  "by": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "rowsDigest": {
+   "pattern": "^[0-9a-f]{64}$",
+   "type": "string"
+  }
+ },
+ "required": [
+  "rowsDigest",
+  "by"
+ ],
+ "title": "roadmap.amended (version 1)",
+ "type": "object"
+}

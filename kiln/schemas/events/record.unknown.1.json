@@ -1,0 +1,20 @@
+{
+ "$id": "kiln:event:record.unknown/1",
+ "additionalProperties": false,
+ "properties": {
+  "digest": {
+   "pattern": "^[0-9a-f]{64}$",
+   "type": "string"
+  },
+  "originalType": {
+   "minLength": 1,
+   "type": "string"
+  }
+ },
+ "required": [
+  "originalType",
+  "digest"
+ ],
+ "title": "record.unknown (version 1)",
+ "type": "object"
+}

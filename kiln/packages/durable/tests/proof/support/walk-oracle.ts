@@ -69,7 +69,9 @@ export function checkWalkInvariants(i: Inspection, o: WalkExpectation): WalkInva
     seen.set(id, (seen.get(id) ?? 0) + 1);
     if (e.type === "gate.not-applicable") {
       const want = applicability(gateDef(flow, (e.data as { gate: GateKey }).gate), o.facts, o.required ?? []).reason;
-      if (canonicalJson((e.data as { reason: unknown }).reason) !== canonicalJson(want)) v.add("W2");
+      // r15: the record carries the reason's facts (rule, evaluated, verdict), not its rendered sentence
+      const { text: _sentence, ...facts } = (want ?? {}) as unknown as Record<string, unknown>;
+      if (canonicalJson((e.data as { reason: unknown }).reason) !== canonicalJson(facts)) v.add("W2");
     }
   }
   if ([...seen.values()].some((n) => n > 1)) v.add("W2");
@@ -96,6 +98,7 @@ export function walkOutcomes(i: Inspection, feature: string): string[] {
   return [...i.outbox]
     .sort((a, b) => a.seq - b.seq)
     .filter((e) => e.subject === feature || parse(e.subject)?.feature === feature)
+    .filter((e) => e.type !== "feature.archived") // the archive is a step of its own, judged by E6; its checksum depends on the run's clock and ids, and it may not have finished when a walk is inspected
     .map((e) => `${e.type}|${e.subject}|${e.actor}|${e.cause}|${canonicalJson(e.data)}`);
 }
 

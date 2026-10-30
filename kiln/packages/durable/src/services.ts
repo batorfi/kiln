@@ -17,6 +17,8 @@ export interface Services {
   lane?: LaneApi;
   /** r14: tells a waiting `feature next` that something changed for a feature (never a source of truth; the answer is re-read from the store). */
   watch: Watch;
+  /** r15: delivers committed events to consumers (research R8). Set by the factory. */
+  backbone?: import("./record/backbone.ts").Backbone;
   /** Settles when waiting gates can take moves again (the factory's `ready`). A walk's row asks it before it uses the gate API: a step that resumes during start-up must WAIT for readiness, not fail on `not-ready`. */
   whenReady?: Promise<void>;
 }

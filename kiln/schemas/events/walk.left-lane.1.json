@@ -1,0 +1,29 @@
+{
+ "$id": "kiln:event:walk.left-lane/1",
+ "additionalProperties": false,
+ "properties": {
+  "from": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "noteDigest": {
+   "pattern": "^[0-9a-f]{64}$",
+   "type": "string"
+  },
+  "noteRef": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "round": {
+   "type": "integer"
+  }
+ },
+ "required": [
+  "from",
+  "round",
+  "noteRef",
+  "noteDigest"
+ ],
+ "title": "walk.left-lane (version 1)",
+ "type": "object"
+}

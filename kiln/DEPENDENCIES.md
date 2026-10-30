@@ -36,7 +36,7 @@ The runtime's only durable storage is Node's built-in `node:sqlite`, which Node 
 
 - **Opened in one place.** The storage is opened in one file (`library/open.ts`: `openStore` for the owner, `openReader` for a reader with no owner); the one other use is the owner lock (`owner-lock.ts`), a tiny separate database whose single transaction decides who owns a store. No other file touches `node:sqlite`.
 - **Canary-tested.** `packages/durable/tests/canary-sqlite.test.ts` fails loudly, by name, if the module is missing or behaves differently on the running Node (open, write, read, close, and the transaction the lock depends on).
-- **Floor.** `engines.node` is `^22.19.0 || >=23.6.0`; the new suite and `kiln check` are run on 22.19.0, 23.6.0, 24.1.0 and the installed Node (`specs/011-durable-core-gate-contract/baseline.md`).
+- **Floor.** `engines.node` is `^22.19.0 || >=24.1.0`; the new suite and `kiln check` are run on 22.19.0, 24.1.0 and the installed Node (`specs/011-durable-core-gate-contract/baseline.md`). The 23.x line is out of the range since r15: Node 23.6.0 ignores the busy-timeout option of `DatabaseSync`, so a second connection failed at once with "database is locked" while the owner committed; every Node in the range applies it, and `packages/durable/tests/busy-timeout.test.ts` fails by name on one that does not.
 - **Platform.** macOS is the only platform measured.
 
 ## The upgrade rule

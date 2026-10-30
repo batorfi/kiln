@@ -68,7 +68,7 @@ test("gate.open and gate.move keys obey the same rule: a repeat is a repeat, ano
     const a = await runThenKill(ts, { script: [
       { op: "open", key: "o1", spec: spec() },
       { op: "open", key: "o1", spec: spec() },                                // repeat
-      { op: "open", key: "o1", spec: spec({ openedBy: "someone-else" }) },     // same key, another request
+      { op: "open", key: "o1", spec: spec({ openedBy: "someone@else" }) },     // same key, another request
       { op: "open", key: "o2", spec: spec() },                                // another key for the same gate
       { op: "submit", gate: GATE, key: "m1", move: mv() },
       { op: "submit", gate: GATE, key: "m1", move: mv() },                     // repeat

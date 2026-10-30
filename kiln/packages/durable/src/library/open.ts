@@ -19,14 +19,35 @@ const ctx = BACKGROUND_CONTEXT;
 
 export const STORE_FILE = "factory.sqlite";
 
+/**
+ * The wait a second connection gets before "database is locked": the library asks for it through `DatabaseSync`'s `timeout` option and its pinned default is 5 s (`tests/busy-timeout.test.ts` compares the
+ * connection with this number, so a library upgrade that changes the default shows up there). Every library transaction — a read of one document included — begins `BEGIN IMMEDIATE`, so a second connection
+ * (a `kiln record` tool, an inspector, a proof) that meets the owner mid-commit relies on this wait. Node 23.6.0 IGNORES the option (measured: `PRAGMA busy_timeout` stays 0; 22.18, 22.19, 24.1 and 25.9 apply
+ * it), which is why 23.x is outside the supported range (`^22.19.0 || >=24.1.0`). The seam sets nothing itself; it REFUSES to open on a Node that does not apply the option (`assertBusyTimeout`).
+ */
+export const BUSY_TIMEOUT_MS = 5_000;
+/** The busy timeout actually in force on this storage's connection. */
+export async function busyTimeoutOf(storage: any): Promise<number> {
+  return (await storage.db.get("PRAGMA busy_timeout")).timeout as number;
+}
+/** `npm` only warns about `engines`, so a Node outside the range reaches here: refuse by name, and close the connection, rather than fail later with "database is locked". */
+async function assertBusyTimeout(storage: any): Promise<void> {
+  const timeout = await busyTimeoutOf(storage);
+  if (timeout > 0) return;
+  await storage.close(ctx);
+  throw new Error(`Node ${process.versions.node} ignores the SQLite busy-timeout option (PRAGMA busy_timeout is ${timeout}): a second connection would fail at once with "database is locked". KILN supports Node ^22.19.0 || >=24.1.0`);
+}
+
 export async function openStore(opts: OpenStoreOptions): Promise<Store> {
   mkdirSync(opts.dir, { recursive: true });
   const now = opts.now ?? Date.now;
   const installed = opts.installedLibraryVersion ?? INSTALLED_LIBRARY_VERSION;
   const storage = await openNodeSqliteStorage(join(opts.dir, STORE_FILE));
+  await assertBusyTimeout(storage);
   const reports: Report[] = [];
   const byName = new Map<string, any>();
-  for (const kind of opts.kinds as any[]) byName.set(kind.name, toLibraryTask(kind, byName));
+  const seam = { hooks: opts.hooks, onAppended: opts.onAppended };
+  for (const kind of opts.kinds as any[]) byName.set(kind.name, toLibraryTask(kind, byName, seam));
   const registry = createRegistry();
   registry.install(defineExtension({ name: "kiln", tasks: [...byName.values()] }));
 
@@ -60,12 +81,23 @@ export async function openStore(opts: OpenStoreOptions): Promise<Store> {
   const reader = readersOver(storage, (name, key) => harness.snapshot(DOC_TOKENS[name], ROOT_CONVERSATION_ID, key, ctx));
   return {
     reports,
-    commit: <T>(change: (tx: Tx) => Promise<T> | T): Promise<T> => root.commit((libTx: any) => change(wrapTx(libTx, byName)), ctx),
+    commit: async <T>(change: (tx: Tx) => Promise<T> | T): Promise<T> => {
+      let appended = false;
+      const out = await root.commit(async (libTx: any) => {
+        const tx = wrapTx(libTx, byName, seam);
+        const r = await change(tx);
+        appended = tx.appended();
+        return r;
+      }, ctx);
+      if (appended) seam.onAppended?.();
+      return out;
+    },
     snapshot: reader.snapshot,
     docs: reader.docs,
     tasks: reader.tasks,
     live: async (): Promise<LiveTask[]> => (await harness.inspect(ctx)).tasks.map((t: any) => ({ id: t.record.id, kind: t.record.kind, state: t.state.kind })),
     resume: () => harness.resume(),
+    busyTimeout: () => busyTimeoutOf(storage),
     close: () => harness.close(ctx),
   };
 }
@@ -103,7 +135,8 @@ function readersOver(storage: any, snap: (name: DocName, key: string) => Promise
 /** A reader with NO owner: opens the same file read-through a bare session, never resumes anything, never compares versions (a diagnosing reader must be able to read an old store). */
 export async function openReader(dir: string): Promise<Reader> {
   const storage = await openNodeSqliteStorage(join(dir, STORE_FILE));
+  await assertBusyTimeout(storage);
   const session = createSession(storage);
   const r = readersOver(storage, (name, key) => session.snapshot(DOC_TOKENS[name], ROOT_CONVERSATION_ID, key, ctx));
-  return { ...r, close: () => session.close(ctx) };
+  return { ...r, busyTimeout: () => busyTimeoutOf(storage), close: () => session.close(ctx) };
 }

@@ -1,4 +1,4 @@
 {
   "name": "@kiln/record",
-  "responsibility": "The factory-log and roadmap validators, report formatting and the deterministic clock; the event stream itself arrives with r15."
+  "responsibility": "The factory-log and roadmap validators, report formatting and the deterministic clock; and (r15) the pure parts of the record: commit-time event validation, the factory-log as a pure reducer over a run's events, the conversion of the first program's streams to events, and the replay of its committed walks."
 }

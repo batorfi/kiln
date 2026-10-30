@@ -1,0 +1,15 @@
+{
+  "name": "r3-program-walk-broken",
+  "row": "r3",
+  "walker": "legacy/src/walk.ts buildProgramWalk({ brokenAutoApprove: true })",
+  "options": {
+    "brokenAutoApprove": true
+  },
+  "originalSha256": "d01c691965d7cdae6f6f606610c621ccadde649a45e4821379e10059d6873513",
+  "eventsSha256": "0e23c06d1251c2561d4410f1dd5b45de15e924480a9927ff03342e714615d8b8",
+  "records": 6,
+  "derivedBy": "spikes/015-capture-walks/capture.ts (record/src/legacy-convert.ts)",
+  "capturedOn": "2026-10-28",
+  "expect": "R3",
+  "note": "the same walk with the gate-0 decider stripped: kept because it MUST fail the first program's no-silent-approval rule (R3)"
+}

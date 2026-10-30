@@ -1,6 +1,6 @@
 # @kiln/durable — the durable core and its one seam
 
-Everything KILN keeps across crashes goes through this package: **gates** (a person's decision, waited for as long as it takes), **tasks** (roadmap, row, unit; the lane arrives with the lane task), **commands** (each happens once), the **outbox** (what the core changed, with actor and cause), and the **one owner** of a store with its private local channel.
+Everything KILN keeps across crashes goes through this package: **gates** (a person's decision, waited for as long as it takes), **tasks** (roadmap, row, unit; the lane arrives with the lane task), **commands** (each happens once), the **record** (every state change as an event, written in the commit that changed it), and the **one owner** of a store with its private local channel.
 
 The durable runtime underneath is reached from **one directory only**, `src/library/`. Nothing else in `kiln/` imports it, and nothing exported from this package names it: the contract is written in KILN's own words (gate, move, key, outcome, refusal, task, checkpoint) so that it outlives the runtime's API. `kiln check boundaries` refuses any other import by name; `tests/seam.test.ts` pins the directory and scans the exported declarations.
 
@@ -37,13 +37,22 @@ From another process, through the owner: `kiln owner --store <dir>` and `kiln ga
 
 ## The key-retention rule
 
-A command key lives **as long as the thing it created exists in the live store.** A task-creation key lasts as long as the task; a gate-open key as long as the gate; a move key as long as the gate's move record — that is, forever. Anything that later archives or compacts the store (r15) may drop a key **only together with what it created**, and must keep the keys of anything still referenced. A dropped key whose thing still exists would let a retried command run twice; the ledger's `requestHash` comparison is what turns a reused key with a different request into a `key-conflict` instead of a silent second effect.
+A command key lives **as long as the thing it created exists in the live store.** A task-creation key lasts as long as the task; a gate-open key as long as the gate; a move key as long as the gate's move record — that is, forever. The r15 archive follows it: it drops a key **only together with what it created** and keeps the keys of anything still referenced — a feature's move keys are written into the archive file and a marker (`kiln.archive/<feature>`) keeps them in the store, so a repeated move is still judged `repeat` / `key-conflict` / `stale`, never new. A dropped key whose thing still exists would let a retried command run twice; the ledger's `requestHash` comparison is what turns a reused key with a different request into a `key-conflict` instead of a silent second effect.
 
 ## The walk (r14)
 
 `kiln.row` has a `walk` form: one feature walked through the flow's data (`src/walk/`; the pure rules are in `packages/contracts/src/flow/`). After a person's move settles a gate, **the owner** opens the next one under a deterministic key (`walk:<feature>:open:<gate>:<round>`), so a kill between the move and the next opening is repaired by the same key coming back as a `repeat`. The row never writes a move record and has no path that completes a gate.
-A gate can also end **withdrawn**: a feature-level `reject` (any time, `kiln feature move`) is delivered into the open gate's decision slot and the decision step's one commit writes the withdrawal — no move record, never `gate.settled`. Feature-move keys live as long as the walk's `kiln.walk` document, i.e. forever in the live store: the r15 archive must keep them with it, like command keys.
+A gate can also end **withdrawn**: a feature-level `reject` (any time, `kiln feature move`) is delivered into the open gate's decision slot and the decision step's one commit writes the withdrawal — no move record, never `gate.settled`. Feature-move keys live as long as the walk's `kiln.walk` document, i.e. forever in the live store; the r15 archive keeps them with it, like command keys.
 Contracts: `specs/012-gates-as-data-walked-headless/contracts/`.
+
+## The record (r15)
+
+Every state change is an **event** appended in the same commit (`src/record/append.ts`): validated against a versioned, closed catalog (`packages/contracts/src/events/catalog/`), numbered gap-free, stored in chunks of 256 (`kiln.event/<n>`) with a head and a per-run index. A fault throws `EventRejected` and the commit rolls back. The record holds facts and `{ref, digest}` pairs, never a person's text. Entries r13/r14 wrote (`kiln.outbox/main`) are read, upcast to the current version, and never touched. After a commit that wrote events, the seam wakes the **backbone** (`src/record/backbone.ts`): one loop per consumer with a durable cursor, no timer. The first-program factory-log is a consumer — a pure reducer over a run's events — and `kiln record rebuild-log` rebuilds it byte-identically.
+`kiln record show|status|verify|rebuild-log|archive-show` reads it. Start with the explainers [how the record works](../../../docs/architecture/explainers/the-record.md) and [the record store](../../../docs/architecture/explainers/the-record-store.md); contracts: `specs/013-the-record/contracts/`; the design as built: `specs/013-the-record/overview.md`.
+
+## The archive (r15)
+
+When a walk ends, the same commit creates a `kiln.archive` task: **export** (a canonical, checksummed file, written asynchronously) → **verify** (re-read and recompute) → **commit** (`feature.archived`, tombstones, the key marker). Nothing is compacted before the file verifies. The pinned library cannot delete a document or a task, so "compacted" means briefs become `{archived: true}` and a move's note text goes while its digest stays. A failed archive is recorded by name and retried at the next start.
 
 ## The power-loss boundary
 
@@ -51,8 +60,12 @@ What is covered: **abrupt death of the owner process** — `SIGKILL`, a crash, a
 
 What is **not** covered, and not tested: **loss of host power or a kernel crash**. Durability here is the storage engine's own: a commit acknowledged to a caller has been handed to the operating system, and on power loss the newest commit(s) may be lost. Nothing is ever *half*-applied by that either (the commit is atomic), but a move acknowledged moments before the power went may not be there afterwards — retry the same key.
 
-Other stated limits: macOS is the only platform measured; the storage rests on Node's built-in SQLite, which is experimental on the supported Node range (`^22.19.0 || >=23.6.0`) and prints a warning there, accepted and recorded.
+Other stated limits: macOS is the only platform measured; the storage rests on Node's built-in SQLite, which is experimental on the supported Node range (`^22.19.0 || >=24.1.0`) and prints a warning there, accepted and recorded.
+
+## One connection fact
+
+Node 23.6.0 ignores `DatabaseSync`'s `timeout` option (the busy timeout stays 0), so a second connection that met a committing owner failed at once with "database is locked". Every Node in the supported range (`^22.19.0 || >=24.1.0`) applies the option; the 23.x line is outside it for that reason. `tests/busy-timeout.test.ts` asserts the wait on the owner's and on every reader's connection, and fails by name on a Node that does not apply it.
 
 ## Kill points (tests only)
 
-The product calls `hooks.at("<point>")` at each named step; the default does nothing and **no environment variable under `src/` can kill or fault a factory**. The declared lists are in `src/hooks.ts` (gate points, unit points, later lane points) and a test keeps them equal to the names the source uses. Arming a point is the job of the test-only child owner in `tests/proof/support/owner-main.ts`.
+The product calls `hooks.at("<point>")` at each named step; the default does nothing and **no environment variable under `src/` can kill or fault a factory**. The declared lists are in `src/hooks.ts` (gate, unit, record, backbone and archive points; later lane points) and a test keeps them equal to the names the source uses. Arming a point is the job of the test-only child owner in `tests/proof/support/owner-main.ts`.

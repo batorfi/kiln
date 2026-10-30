@@ -1,0 +1,13 @@
+{
+  "name": "r2-stub-walk",
+  "row": "r2",
+  "walker": "legacy/src/walk.ts buildStubWalk()",
+  "options": {},
+  "originalSha256": "f6badc7e5f0c45882f81addc1c2215462fcda519ef9a4a0c33e605530d800283",
+  "eventsSha256": "3063c32451547a20538c67fd0e4e26ffd9ab250682a7b34c3d95a5c60e6dc779",
+  "records": 11,
+  "derivedBy": "spikes/015-capture-walks/capture.ts (record/src/legacy-convert.ts)",
+  "capturedOn": "2026-10-28",
+  "expect": "valid",
+  "note": "the stub rail walk of the lane runtime (specs/002-kiln-lane): lane transitions, a swap and its cost, a human decision, a pre-delegation, a wait"
+}

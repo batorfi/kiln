@@ -1,0 +1,97 @@
+{
+ "$id": "kiln:event:gate.became-applicable/1",
+ "additionalProperties": false,
+ "properties": {
+  "gate": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "reason": {
+   "additionalProperties": false,
+   "properties": {
+    "evaluated": {
+     "additionalProperties": false,
+     "properties": {
+      "diff": {
+       "enum": [
+        "match",
+        "no-match",
+        "absent"
+       ],
+       "type": "string"
+      },
+      "journeys": {
+       "enum": [
+        "match",
+        "no-match",
+        "absent"
+       ],
+       "type": "string"
+      },
+      "labels": {
+       "enum": [
+        "match",
+        "no-match",
+        "absent"
+       ],
+       "type": "string"
+      },
+      "paths": {
+       "enum": [
+        "match",
+        "no-match",
+        "absent"
+       ],
+       "type": "string"
+      }
+     },
+     "required": [],
+     "type": "object"
+    },
+    "rule": {
+     "additionalProperties": false,
+     "properties": {
+      "diff": {
+       "items": {
+        "type": "string"
+       },
+       "type": "array"
+      },
+      "journeys": {
+       "type": "string"
+      },
+      "labels": {
+       "items": {
+        "type": "string"
+       },
+       "type": "array"
+      },
+      "paths": {
+       "items": {
+        "type": "string"
+       },
+       "type": "array"
+      }
+     },
+     "required": [],
+     "type": "object"
+    },
+    "verdict": {
+     "type": "boolean"
+    }
+   },
+   "required": [
+    "rule",
+    "evaluated",
+    "verdict"
+   ],
+   "type": "object"
+  }
+ },
+ "required": [
+  "gate",
+  "reason"
+ ],
+ "title": "gate.became-applicable (version 1)",
+ "type": "object"
+}

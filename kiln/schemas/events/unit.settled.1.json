@@ -1,0 +1,23 @@
+{
+ "$id": "kiln:event:unit.settled/1",
+ "additionalProperties": false,
+ "properties": {
+  "label": {
+   "type": "string"
+  },
+  "owner": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "unit": {
+   "type": "integer"
+  }
+ },
+ "required": [
+  "unit",
+  "label",
+  "owner"
+ ],
+ "title": "unit.settled (version 1)",
+ "type": "object"
+}

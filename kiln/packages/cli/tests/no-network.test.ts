@@ -52,7 +52,7 @@ test("the owner has NO network socket while serving, after a move, and after a S
 
   const o = await kiln(["gate", "open", "--store", store, "--key", "o1", "--gate", "gate:demo:gate0:1", "--gate-key", "gate0", "--flow", "v2", "--brief", BRIEF, "--by", "factory"], env);
   const ref = json(o).gate.briefRef as string;
-  const m = await kiln(["gate", "move", "--store", store, "--gate", "gate:demo:gate0:1", "--key", "m1", "--kind", "approve", "--by", "p", "--brief-ref", ref], env);
+  const m = await kiln(["gate", "move", "--store", store, "--gate", "gate:demo:gate0:1", "--key", "m1", "--kind", "approve", "--by", "p@test", "--brief-ref", ref], env);
   assert.equal(json(m).status, "committed");
   assert.equal(networkFiles(first.pid), "", "after a move");
 

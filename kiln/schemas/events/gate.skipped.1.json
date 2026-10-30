@@ -1,0 +1,25 @@
+{
+ "$id": "kiln:event:gate.skipped/1",
+ "additionalProperties": false,
+ "properties": {
+  "gate": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "reasoningDigest": {
+   "pattern": "^[0-9a-f]{64}$",
+   "type": "string"
+  },
+  "reasoningRef": {
+   "minLength": 1,
+   "type": "string"
+  }
+ },
+ "required": [
+  "gate",
+  "reasoningRef",
+  "reasoningDigest"
+ ],
+ "title": "gate.skipped (version 1)",
+ "type": "object"
+}

@@ -1,0 +1,13 @@
+{
+  "name": "r7-live-broken",
+  "row": "r7",
+  "walker": "legacy/fixtures/r7-live-broken.jsonl (committed; captured from a real local model by the first program)",
+  "options": {},
+  "originalSha256": "07e01c36acd36667662acaa4b5eaa1b3753a200d1f5046043d995a93b8e8b949",
+  "eventsSha256": "5e89fcb49ddaab13de3f23988a3e9a35d3dcb8b329dc365049241e58b6e7d710",
+  "records": 25,
+  "derivedBy": "spikes/015-capture-walks/capture.ts (record/src/legacy-convert.ts)",
+  "capturedOn": "2026-10-28",
+  "expect": "R3",
+  "note": "its no-decidedBy sibling: kept because it MUST fail R3"
+}

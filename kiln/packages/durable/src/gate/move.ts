@@ -3,13 +3,19 @@
 // A move is validated against the gate's STORED vocabulary, must name a decider and the brief the gate was opened with (invalid-move otherwise). `committed` is returned only after the
 // commit resolved: it means durable.
 import { KEY_MAX, refused, type FeatureMove, type GateId, type Key, type Move, type MoveRecord, type Outcome } from "../types.ts";
-import { canonicalJson, plain } from "../canonical.ts";
+import { canonicalJson, plain, sha256Hex } from "../canonical.ts";
 import { flowOf } from "#contracts/flow/index.ts";
+import { isActor } from "#contracts/events/grammar.ts";
 import type { Services } from "../services.ts";
 import { gateExists, type GateDocData, type MoveDocData } from "./documents.ts";
 
 // Equal means equal in EVERY field the record holds (r14: the note, the target and the admission decisions too) — compared as canonical JSON, so key order never matters.
-const sameMove = (a: Move, b: Move): boolean => canonicalJson(a) === canonicalJson(b);
+/** A move's identity for `repeat` / `key-conflict`: every field the record holds, with a note taken as its DIGEST — so a move whose feature was archived (its note text gone, its digest kept) still repeats. */
+const identity = (m: Move): unknown => {
+  const { note, ...rest } = m;
+  return note !== undefined ? { ...rest, noteDigest: sha256Hex(note) } : rest;
+};
+const sameMove = (a: Move, b: Move): boolean => canonicalJson(identity(a)) === canonicalJson(identity(b));
 
 const FIX_ROUNDS = [0, 1, 2, 3];
 const ADMIT_KEYS = ["require", "overrideTriage", "fixRounds"];
@@ -58,7 +64,9 @@ async function decide(s: Services, gateId: GateId, key: Key, move: Move): Promis
     if (typeof key !== "string" || key.trim() === "" || key.length > KEY_MAX) return refused("invalid-move", { detail: "the key is a non-empty string of at most 200 characters" });
     if (typeof move !== "object" || move === null) return refused("invalid-move", { detail: "the move is not an object" });
     if (typeof move.decidedBy !== "string" || move.decidedBy.trim() === "") return refused("invalid-move", { detail: "decidedBy is empty: a move with no decider is refused" });
+    if (!isActor(move.decidedBy)) return refused("invalid-move", { detail: `decidedBy "${move.decidedBy}" is not an actor id (<name>@<token>, e.g. human@batorfi, or script:<name>)` });
     if (typeof move.kind !== "string") return refused("invalid-move", { detail: "the move has no kind" });
+    if ("noteDigest" in move) return refused("invalid-move", { detail: "noteDigest is what the archive leaves of a note: a caller sends the note, never its digest" });
     if (typeof move.briefRef !== "string" || move.briefRef === "") return refused("invalid-move", { detail: "the move names no brief: a decision is made on a brief that was shown" });
 
     const g = await s.store.snapshot<GateDocData>("kiln.gate", gateId);

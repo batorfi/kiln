@@ -1,7 +1,7 @@
 // A DELIBERATELY half-applying decision step, for the tests only — the control that shows the proof can fail (FR-061). It stores the move in ONE commit and completes the decision in a SECOND,
 // with a kill point between them: the two-commit design r42 showed to be wrong. It replaces the real `kiln.decision` kind (same name) when the child owner is started with BROKEN_GATE=1.
 import { plain } from "#durable/canonical.ts";
-import { appendOutbox } from "#durable/outbox.ts";
+import { appendEvent } from "#durable/record/append.ts";
 import type { Hooks } from "#durable/hooks.ts";
 import type { Services } from "#durable/services.ts";
 import type { MoveDocData } from "#durable/gate/documents.ts";
@@ -31,7 +31,7 @@ export function brokenDecision(s: Services & { hooks: Hooks }): TaskKind<any, an
           await run.commit(async (tx) => {
             const md = await tx.doc<MoveDocData>("kiln.move", gateId, { record: null });
             md.record = plain({ gateId, key: request.key, move: { ...request.move }, decidedAt: s.now(), seq: 1 as const });
-            await appendOutbox(tx, { type: "move.committed", subject: gateId, at: s.now(), actor: request.move.decidedBy, cause: request.key, data: { kind: request.move.kind, briefRef: request.move.briefRef } });
+            await appendEvent(tx, { type: "move.committed", subject: gateId, at: s.now(), actor: request.move.decidedBy, cause: request.key, data: { kind: request.move.kind, briefRef: request.move.briefRef, decidedBy: request.move.decidedBy } });
             return { status: "running", checkpoint: { phase: "wait" } };
           });
           await s.hooks.at("between-commits"); // a kill here leaves a move on a gate that never settled

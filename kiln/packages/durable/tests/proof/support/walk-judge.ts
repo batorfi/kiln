@@ -6,6 +6,7 @@ import type { WalkInput } from "#durable/walk/input.ts";
 import { checkInvariants } from "./oracle.ts";
 import { approveAll, runWalk, type Chooser, type WalkRun } from "./walk-harness.ts";
 import { checkWalkInvariants, walkGateIds, walkOutcomes } from "./walk-oracle.ts";
+import { checkRecordInvariants } from "./record-oracle.ts";
 
 export const INTERFACE: WalkInput = { flow: "v2", facts: { paths: ["web/app.tsx"], labels: ["ui"], journeys: ["J1.3"] }, built: { ui_files_changed: true } };
 export const PLAIN: WalkInput = { flow: "v2", facts: { paths: ["src/lib/a.ts"], labels: [], journeys: [] } };
@@ -18,11 +19,12 @@ export interface Baseline {
 }
 const cache = new Map<string, Promise<Baseline>>();
 /** The uninterrupted walk of this input (run once per test file and cached): the thing every killed walk must equal. */
-export function baseline(name: string, walk: WalkInput, choose: Chooser = approveAll): Promise<Baseline> {
+/** `owner` configures the child owner the baseline runs on (r15: consumers following the walk allocate task ids too, so the baseline must run with the same ones). */
+export function baseline(name: string, walk: WalkInput, choose: Chooser = approveAll, owner?: Parameters<typeof runWalk>[0]["owner"]): Promise<Baseline> {
   let p = cache.get(name);
   if (!p) {
     p = (async () => {
-      const run = await runWalk({ feature: FEATURE, walk, choose, countHits: true });
+      const run = await runWalk({ feature: FEATURE, walk, choose, countHits: true, ...(owner ? { owner } : {}) });
       try {
         assert.equal(run.deaths, 0);
         await judge(run, walk, undefined);
@@ -42,13 +44,14 @@ export async function judge(run: WalkRun, walk: WalkInput, base: Baseline | unde
   assert.equal(run.view.openGate, null);
   assert.ok(run.steps.every((s) => s.status === "committed" || s.status === "repeat"), `no move was refused: ${JSON.stringify(run.steps.filter((s) => s.status !== "committed" && s.status !== "repeat"))}`);
   assert.deepEqual(checkWalkInvariants(i, { feature: FEATURE, facts: walk.facts, cap: opts.cap }), [], "walk invariants W1–W4");
+  assert.deepEqual(await checkRecordInvariants(run.ts.store), [], "record invariants E1–E3, E7");
   for (const g of walkGateIds(i, FEATURE)) {
     const gi = await inspectStore(run.ts.store, g);
     assert.deepEqual(checkInvariants(gi), [], `gate invariants I1–I9 at ${g}`);
     assert.equal(gi.gate, "settled", `${g} ended settled`);
     assert.equal(gi.records.length, 1, `${g}: exactly one move record`);
   }
-  assert.deepEqual(i.tasks.filter((t) => t.status !== "terminal").map((t) => `${t.kind}:${t.status}`), [], "nothing left waiting or parked");
+  assert.deepEqual(i.tasks.filter((t) => t.status !== "terminal" && t.kind !== "kiln.archive").map((t) => `${t.kind}:${t.status}`), [], "nothing left waiting or parked (the archive task is its own step, judged by E6)");
   assert.equal(i.timers.length, 0, "no timer on any gate");
   if (base) assert.deepEqual(walkOutcomes(i, FEATURE), base.outcomes, "walk equality: the killed-and-resumed walk equals the uninterrupted one");
 }

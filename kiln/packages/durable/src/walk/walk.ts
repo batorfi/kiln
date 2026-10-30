@@ -10,14 +10,17 @@ import type { Applicability, FlowDefinition } from "#contracts/flow/types.ts";
 import type { GateKey } from "#contracts/moves.ts";
 import { openGate } from "../gate/open.ts";
 import type { MoveDocData } from "../gate/documents.ts";
-import { appendOutbox } from "../outbox.ts";
+import { appendEvent } from "../record/append.ts";
+import { appendUnitEvent } from "../record/unit-events.ts";
+import { pairOf } from "../record/refs.ts";
 import type { Services } from "../services.ts";
 import type { NextState, RunningTask, Runtime } from "../store.ts";
 import type { Admit, JSON, TaskId } from "../types.ts";
 import { admissionBrief, gateBrief } from "./brief.ts";
 import { walkDoc, type WalkDoc } from "./doc.ts";
 import type { WalkInput } from "./input.ts";
-import { applyFeatureReject, applyMove, pinsOf, queueFor, startState, withRev, type Applied, type PinnedState, type WalkState } from "./state.ts";
+import { applyFeatureReject, applyMove, pinsOf, queueFor, startState, withRev, type Applied, type OutboxIntent, type PinnedState, type WalkState } from "./state.ts";
+import type { Tx } from "../store.ts";
 
 export type WalkCheckpoint =
   | { phase: "admit"; round: number; instruction?: string }
@@ -36,6 +39,12 @@ type Task<C extends WalkCheckpoint> = RunningTask<{ feature: string; walk: WalkI
 const FLOW = (): FlowDefinition => flowOf("v2");
 const done = (r: WalkResult): NextState<any, WalkResult> => ({ status: "terminal", outcome: { status: "completed", result: r } });
 const factoryActor = "factory";
+
+/** One of the reducers' intents as an event: its facts, plus a reference and a digest for each text it names. */
+async function emit(tx: Tx, s: Services, feature: string, e: OutboxIntent): Promise<number> {
+  const refs = Object.assign({}, ...(e.refs ?? []).map((r) => pairOf(r.prefix, r.locator, r.text)));
+  return (await appendEvent(tx, { type: e.type, subject: feature, at: s.now(), actor: e.actor, cause: e.cause, data: { ...e.data, ...refs } })).seq;
+}
 
 // ── admit ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 export async function admit(s: Services, task: Task<Extract<WalkCheckpoint, { phase: "admit" }>>, run: Run): Promise<void> {
@@ -64,7 +73,8 @@ export async function admission(s: Services, task: Task<Extract<WalkCheckpoint, 
     if (kind === "approve") return { status: "running", checkpoint: { phase: "pin", admission: { gateId, key: rec.key, decidedBy, admit: admit ?? {} } } };
     if (kind === "reject") {
       wd.status = "not-admitted";
-      await appendOutbox(tx, { type: "walk.not-admitted", subject: feature, at: s.now(), actor: decidedBy, cause: rec.key, data: { gate: "gate0", round, note: note ?? "" } });
+      const ended = await appendEvent(tx, { type: "walk.not-admitted", subject: feature, at: s.now(), actor: decidedBy, cause: rec.key, data: { gate: "gate0", round, ...pairOf("note", { kind: "move", gateId }, note) } });
+      await tx.createTask("kiln.archive", { feature, endSeq: ended.seq } as never, { kind: "factory" }); // the walk has ended: its archive is created in the same commit
       return done({ outcome: "not-admitted", approved: [] });
     }
     // revise and the row edits: the proposal is drawn again, with the note as its instruction
@@ -96,15 +106,15 @@ export async function pin(s: Services, task: Task<Extract<WalkCheckpoint, { phas
   await run.commit(async (tx) => {
     const wd = await walkDoc(tx, feature);
     wd.status = "active";
-    await appendOutbox(tx, {
+    await appendEvent(tx, {
       type: "walk.admitted", subject: feature, at: s.now(), actor: adm.decidedBy, cause: adm.key,
       data: { gate: adm.gateId, required, cap: pinned.cap, overrideTriage: pinned.overrideTriage, applicability: Object.fromEntries(Object.entries(applic).map(([k, a]) => [k, { applies: a!.applies, why: a!.why }])), skipped: skip } as unknown as JSON,
     });
     for (const [k, a] of Object.entries(applic) as [GateKey, Applicability][]) {
       if (a.applies) continue;
-      await appendOutbox(tx, { type: "gate.not-applicable", subject: feature, at: s.now(), actor: factoryActor, cause: `walk:${feature}:pin`, data: { gate: k, reason: a.reason as unknown as JSON } });
+      await appendEvent(tx, { type: "gate.not-applicable", subject: feature, at: s.now(), actor: factoryActor, cause: `walk:${feature}:pin`, data: { gate: k, reason: (({ text: _t, ...facts }) => facts)(a.reason as unknown as Record<string, unknown>) as unknown as JSON } });
     }
-    for (const k of skip) await appendOutbox(tx, { type: "gate.skipped", subject: feature, at: s.now(), actor: factoryActor, cause: `walk:${feature}:pin`, data: { gate: k, reasoning: walk.triage!.reasoning } });
+    for (const k of skip) await appendEvent(tx, { type: "gate.skipped", subject: feature, at: s.now(), actor: factoryActor, cause: `walk:${feature}:pin`, data: { gate: k, ...pairOf("reasoning", { kind: "triage", feature }, walk.triage!.reasoning) } });
     await s.hooks.at("walk.pin-after-write");
     return { status: "running", checkpoint: { phase: "work", w, todo: queueFor(flow, w) } };
   });
@@ -134,10 +144,10 @@ async function consumePending(s: Services, feature: string, w: WalkState, run: R
     const wd = await walkDoc(tx, feature);
     const f = wd.pending;
     if (!f) throw new Error("the pending feature-level move vanished: only the row consumes it");
-    const out = applyFeatureReject(flow, w, { key: f.key, decidedBy: f.move.decidedBy, target: f.move.target, note: f.move.note, gateId: f.gateId });
+    const out = applyFeatureReject(flow, w, { feature, key: f.key, decidedBy: f.move.decidedBy, target: f.move.target, note: f.move.note, gateId: f.gateId });
     wd.pending = null;
     wd.openGateId = null;
-    for (const e of out.outbox) await appendOutbox(tx, { type: e.type, subject: feature, at: s.now(), actor: e.actor, cause: e.cause, data: e.data as unknown as JSON });
+    for (const e of out.outbox) await emit(tx, s, feature, e);
     await s.hooks.at("walk.consume-after-write");
     return { status: "running", checkpoint: { phase: "work", w: out.w, todo: out.todo } };
   });
@@ -169,7 +179,9 @@ export async function work(s: Services, task: Task<Extract<WalkCheckpoint, { pha
   const round = (w.rounds[w.cursor] ?? 0) + 1;
   const stepMs = task.input.walk.script?.stepMs;
   await run.commit(async (tx) => {
-    const id = await tx.createTask("kiln.unit", { label: `${role}:${w.cursor}:${round}`, steps: 1, ...(stepMs ? { stepMs } : {}) } as unknown as JSON, { kind: "task", taskId: task.id });
+    const label = `${role}:${w.cursor}:${round}`;
+    const id = await tx.createTask("kiln.unit", { label, steps: 1, ...(stepMs ? { stepMs } : {}) } as unknown as JSON, { kind: "task", taskId: task.id });
+    await appendUnitEvent(tx, s, "unit.queued", { unit: id, label, owner: task.id, actor: `task:${task.id}`, cause: `task:${task.id}`, correlation: `run:${task.input.feature}` });
     return { status: "waiting", checkpoint: { phase: "work", w, todo: rest, unitId: id }, on: [id] };
   });
   await s.hooks.at("walk.unit-created");
@@ -192,7 +204,7 @@ export async function verify(s: Services, task: Task<Extract<WalkCheckpoint, { p
     const pass = (w.rounds[w.cursor] ?? 0) + 1;
     await s.hooks.at("walk.fix-round-begin");
     await run.commit(async (tx) => {
-      await appendOutbox(tx, { type: "walk.fix-round", subject: feature, at: s.now(), actor: factoryActor, cause: `walk:${feature}:fix:${pass}:${n}`, data: { kind: "mitigate", n, cap: w.pinned.cap, verdict, pass } });
+      await appendEvent(tx, { type: "walk.fix-round", subject: feature, at: s.now(), actor: factoryActor, cause: `walk:${feature}:fix:${pass}:${n}`, data: { kind: "mitigate", n, cap: w.pinned.cap, verdict, pass } });
       return { status: "running", checkpoint: { phase: "work", w: { ...w, fix: { ...fix, used: n } }, todo: ["workers", "judge"] } };
     });
     await s.hooks.at("walk.fix-round-committed");
@@ -248,17 +260,22 @@ export async function decide(s: Services, task: Task<Extract<WalkCheckpoint, { p
       // a feature-level move that arrived while this gate's own move was being committed (or that withdrew the gate): applied AFTER the gate's own outcome — unless the walk has just ended
       wd.pending = null;
       if (!out || !out.end) {
-        const next = applyFeatureReject(flow, out ? out.w : w, { key: f.key, decidedBy: f.move.decidedBy, target: f.move.target, note: f.move.note, gateId: f.gateId });
+        const next = applyFeatureReject(flow, out ? out.w : w, { feature, key: f.key, decidedBy: f.move.decidedBy, target: f.move.target, note: f.move.note, gateId: f.gateId });
         out = out ? { w: next.w, todo: next.todo, outbox: [...out.outbox, ...next.outbox] } : next;
       } else {
         // the person's own move ended the walk, so there is nothing to send back: the feature-level move was accepted but cannot act. Say so in the same commit, never silently.
-        await appendOutbox(tx, { type: "walk.move-ignored", subject: feature, at: s.now(), actor: f.move.decidedBy, cause: f.key, data: { target: f.move.target, note: f.move.note, because: `the walk ended (${out.end.outcome}) by the move that settled ${gateId}` } });
+        await appendEvent(tx, { type: "walk.move-ignored", subject: feature, at: s.now(), actor: f.move.decidedBy, cause: f.key, data: { target: f.move.target, ...pairOf("note", { kind: "feature-move", feature, key: f.key }, f.move.note), why: `walk-ended-${out.end.outcome}` } });
       }
     }
     if (!out) throw new Error(`the gate ${gateId} was withdrawn but no feature-level move is waiting for the walk`);
-    for (const e of out.outbox) await appendOutbox(tx, { type: e.type, subject: feature, at: s.now(), actor: e.actor, cause: e.cause, data: e.data as unknown as JSON });
+    let endSeq = 0;
+    for (const e of out.outbox) {
+      const seq = await emit(tx, s, feature, e);
+      if (e.type === "walk.completed" || e.type === "walk.left-lane") endSeq = seq;
+    }
     if (out.end) {
       wd.status = out.end.status;
+      await tx.createTask("kiln.archive", { feature, endSeq } as never, { kind: "factory" }); // the walk has ended: its archive is created in the same commit (a walk that ends has one, and only one that ends does)
       await s.hooks.at("walk.consume-after-write");
       return done({ outcome: out.end.outcome, approved: Object.keys(out.w.approved) });
     }

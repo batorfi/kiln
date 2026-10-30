@@ -2,12 +2,12 @@
 // never with the owner's memory (guarantee e). It never resumes anything and never compares versions: a diagnosing reader must be able to read an old store.
 import { openReader } from "./library/open.ts";
 import type { Reader } from "./store.ts";
+import { collect, fromReader, interimView, readRecord } from "./record/read.ts";
 import type { Inspection, MoveRecord, StoredOutboxEntry } from "./types.ts";
 import type { StoreRecord } from "./store-version.ts";
 
 interface GateDoc { gateId?: string; present?: boolean }
 interface MoveDoc { record: MoveRecord | null; withdrawn?: { key: string; by: string } }
-interface OutboxDoc { next: number; entries: StoredOutboxEntry[] }
 interface LaneDoc { resident: string | null; hold: boolean; swaps: number; lease: { holder: string; since: number } | null }
 interface CommandDoc { key?: string; kind: string; requestHash: string }
 
@@ -23,7 +23,7 @@ export async function inspectStore(store: string, gateId?: string): Promise<Insp
 export async function inspectWith(reader: Reader, gateId?: string): Promise<Inspection> {
   const rec = await reader.snapshot<StoreRecord>("kiln.store", "main");
   const tasks = await reader.tasks();
-  const outbox = (await reader.snapshot<OutboxDoc>("kiln.outbox", "main"))?.entries ?? [];
+  const outbox = (await collect(readRecord(fromReader(reader)))).map(interimView) as unknown as StoredOutboxEntry[];
   const laneDoc = await reader.snapshot<LaneDoc>("kiln.lane", "main");
   const commands: Record<string, string[]> = {};
   for (const c of await reader.docs<CommandDoc>("kiln.command")) (commands[c.key] ??= []).push(c.value.requestHash);

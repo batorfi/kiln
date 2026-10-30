@@ -1,0 +1,37 @@
+{
+ "$id": "kiln:event:walk.fix-round/1",
+ "additionalProperties": false,
+ "properties": {
+  "cap": {
+   "type": "integer"
+  },
+  "kind": {
+   "enum": [
+    "mitigate"
+   ],
+   "type": "string"
+  },
+  "n": {
+   "type": "integer"
+  },
+  "pass": {
+   "type": "integer"
+  },
+  "verdict": {
+   "enum": [
+    "pass",
+    "fail"
+   ],
+   "type": "string"
+  }
+ },
+ "required": [
+  "kind",
+  "n",
+  "cap",
+  "verdict",
+  "pass"
+ ],
+ "title": "walk.fix-round (version 1)",
+ "type": "object"
+}

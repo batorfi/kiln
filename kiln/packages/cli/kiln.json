@@ -1,4 +1,4 @@
 {
   "name": "@kiln/cli",
-  "responsibility": "The kiln command line: `kiln check`, the owner and the gate commands (r13), and (r14) `kiln feature admit|next|state|move`; init, doctor, status and needs follow in later rows."
+  "responsibility": "The kiln command line: `kiln check`, the owner and the gate commands (r13), and (r14) `kiln feature admit|next|state|move`, and (r15) `kiln record show|status|verify|rebuild-log|archive-show`; init, doctor, status and needs follow in later rows."
 }

@@ -1,0 +1,3964 @@
+{
+ "interface-done": [
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225643000,
+   "actor": "task:10",
+   "cause": "walk:f:open:gate0:1",
+   "data": {
+    "briefRef": "04c58211138a333194254c5a2e3b4435ee07783ae097ad6595219857dc965c23",
+    "gateKey": "gate0"
+   },
+   "seq": 1
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225689000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "04c58211138a333194254c5a2e3b4435ee07783ae097ad6595219857dc965c23"
+   },
+   "seq": 2
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225715000,
+   "actor": "factory",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "key": "m:gate:f:gate0:1"
+   },
+   "seq": 3
+  },
+  {
+   "type": "walk.admitted",
+   "subject": "f",
+   "at": 1767225744000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "gate": "gate:f:gate0:1",
+    "required": [],
+    "cap": 2,
+    "overrideTriage": false,
+    "applicability": {
+     "2a-experience": {
+      "applies": true,
+      "why": "rule"
+     },
+     "6a-ui-review": {
+      "applies": true,
+      "why": "rule"
+     }
+    },
+    "skipped": []
+   },
+   "seq": 4
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225788000,
+   "actor": "task:10",
+   "cause": "walk:f:open:1-concept:1",
+   "data": {
+    "briefRef": "6e30522fd1caad3f5b5fb6070ea6e37cc6260fb7f23111b7254d61c3cbeed503",
+    "gateKey": "1-concept"
+   },
+   "seq": 5
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225834000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "6e30522fd1caad3f5b5fb6070ea6e37cc6260fb7f23111b7254d61c3cbeed503"
+   },
+   "seq": 6
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225860000,
+   "actor": "factory",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "key": "m:gate:f:1-concept:1"
+   },
+   "seq": 7
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225948000,
+   "actor": "task:10",
+   "cause": "walk:f:open:2-architecture:1",
+   "data": {
+    "briefRef": "6b123817f98a3688b1bb72773d95d5d151da1f5f8068a0b6fa890ee7e600b6da",
+    "gateKey": "2-architecture"
+   },
+   "seq": 8
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225994000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "6b123817f98a3688b1bb72773d95d5d151da1f5f8068a0b6fa890ee7e600b6da"
+   },
+   "seq": 9
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767226020000,
+   "actor": "factory",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "key": "m:gate:f:2-architecture:1"
+   },
+   "seq": 10
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:2a-experience:1",
+   "at": 1767226108000,
+   "actor": "task:10",
+   "cause": "walk:f:open:2a-experience:1",
+   "data": {
+    "briefRef": "acf711c98fefafd956f8659e7eadae7dd4390a8f5adfe3c9690c067453e52f26",
+    "gateKey": "2a-experience"
+   },
+   "seq": 11
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:2a-experience:1",
+   "at": 1767226154000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:2a-experience:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "acf711c98fefafd956f8659e7eadae7dd4390a8f5adfe3c9690c067453e52f26"
+   },
+   "seq": 12
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:2a-experience:1",
+   "at": 1767226180000,
+   "actor": "factory",
+   "cause": "m:gate:f:2a-experience:1",
+   "data": {
+    "key": "m:gate:f:2a-experience:1"
+   },
+   "seq": 13
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226241000,
+   "actor": "task:10",
+   "cause": "walk:f:open:3-spec:1",
+   "data": {
+    "briefRef": "008549f59365a52fda4a9114a3895c02f8b3046e31591fac84c849fe41f9f7c0",
+    "gateKey": "3-spec"
+   },
+   "seq": 14
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226287000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "008549f59365a52fda4a9114a3895c02f8b3046e31591fac84c849fe41f9f7c0"
+   },
+   "seq": 15
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226313000,
+   "actor": "factory",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "key": "m:gate:f:3-spec:1"
+   },
+   "seq": 16
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226374000,
+   "actor": "task:10",
+   "cause": "walk:f:open:4-plan:1",
+   "data": {
+    "briefRef": "0d2135ed5fdbb362526ad0f8671cd82b8ea145fa450240991e1575a02b6224c1",
+    "gateKey": "4-plan"
+   },
+   "seq": 17
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226420000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:4-plan:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "0d2135ed5fdbb362526ad0f8671cd82b8ea145fa450240991e1575a02b6224c1"
+   },
+   "seq": 18
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226446000,
+   "actor": "factory",
+   "cause": "m:gate:f:4-plan:1",
+   "data": {
+    "key": "m:gate:f:4-plan:1"
+   },
+   "seq": 19
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226507000,
+   "actor": "task:10",
+   "cause": "walk:f:open:5-checkpoint:1",
+   "data": {
+    "briefRef": "c4105c9b34a23d9d9fe9dc57ff567e6b9e6008aa2a8669617e2a2a46706f6361",
+    "gateKey": "5-checkpoint"
+   },
+   "seq": 20
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226553000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:5-checkpoint:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "c4105c9b34a23d9d9fe9dc57ff567e6b9e6008aa2a8669617e2a2a46706f6361"
+   },
+   "seq": 21
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226579000,
+   "actor": "factory",
+   "cause": "m:gate:f:5-checkpoint:1",
+   "data": {
+    "key": "m:gate:f:5-checkpoint:1"
+   },
+   "seq": 22
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226640000,
+   "actor": "task:10",
+   "cause": "walk:f:open:6-review:1",
+   "data": {
+    "briefRef": "d1b9d763b5af9de9acb0474638be818259cc07a6bdd208e64d209a44d28a4e16",
+    "gateKey": "6-review"
+   },
+   "seq": 23
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226686000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:6-review:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "d1b9d763b5af9de9acb0474638be818259cc07a6bdd208e64d209a44d28a4e16"
+   },
+   "seq": 24
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226712000,
+   "actor": "factory",
+   "cause": "m:gate:f:6-review:1",
+   "data": {
+    "key": "m:gate:f:6-review:1"
+   },
+   "seq": 25
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:6a-ui-review:1",
+   "at": 1767226800000,
+   "actor": "task:10",
+   "cause": "walk:f:open:6a-ui-review:1",
+   "data": {
+    "briefRef": "4df91b7870ae9d1368cff435c14d5dd7408eb143ec7f92375cb63146cb40e423",
+    "gateKey": "6a-ui-review"
+   },
+   "seq": 26
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:6a-ui-review:1",
+   "at": 1767226846000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:6a-ui-review:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "4df91b7870ae9d1368cff435c14d5dd7408eb143ec7f92375cb63146cb40e423"
+   },
+   "seq": 27
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:6a-ui-review:1",
+   "at": 1767226872000,
+   "actor": "factory",
+   "cause": "m:gate:f:6a-ui-review:1",
+   "data": {
+    "key": "m:gate:f:6a-ui-review:1"
+   },
+   "seq": 28
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:7-verification:1",
+   "at": 1767226939000,
+   "actor": "task:10",
+   "cause": "walk:f:open:7-verification:1",
+   "data": {
+    "briefRef": "7567c56125c7e118a2a4e0b6af233b09e94cd078a4f2395f88de07273a16e5d7",
+    "gateKey": "7-verification"
+   },
+   "seq": 29
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:7-verification:1",
+   "at": 1767226985000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:7-verification:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "7567c56125c7e118a2a4e0b6af233b09e94cd078a4f2395f88de07273a16e5d7"
+   },
+   "seq": 30
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:7-verification:1",
+   "at": 1767227011000,
+   "actor": "factory",
+   "cause": "m:gate:f:7-verification:1",
+   "data": {
+    "key": "m:gate:f:7-verification:1"
+   },
+   "seq": 31
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:8-docs:1",
+   "at": 1767227072000,
+   "actor": "task:10",
+   "cause": "walk:f:open:8-docs:1",
+   "data": {
+    "briefRef": "5377a96fdc6257212518592960593fc36240fd5d9f1bd64a92d583d42ec6797a",
+    "gateKey": "8-docs"
+   },
+   "seq": 32
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:8-docs:1",
+   "at": 1767227118000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:8-docs:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "5377a96fdc6257212518592960593fc36240fd5d9f1bd64a92d583d42ec6797a"
+   },
+   "seq": 33
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:8-docs:1",
+   "at": 1767227144000,
+   "actor": "factory",
+   "cause": "m:gate:f:8-docs:1",
+   "data": {
+    "key": "m:gate:f:8-docs:1"
+   },
+   "seq": 34
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:9-pr:1",
+   "at": 1767227205000,
+   "actor": "task:10",
+   "cause": "walk:f:open:9-pr:1",
+   "data": {
+    "briefRef": "4b6f3886358439ed1aa85f5391f1ef29e0dbec4957d28ce5aacd34345ffd9cda",
+    "gateKey": "9-pr"
+   },
+   "seq": 35
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:9-pr:1",
+   "at": 1767227251000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:9-pr:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "4b6f3886358439ed1aa85f5391f1ef29e0dbec4957d28ce5aacd34345ffd9cda"
+   },
+   "seq": 36
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:9-pr:1",
+   "at": 1767227277000,
+   "actor": "factory",
+   "cause": "m:gate:f:9-pr:1",
+   "data": {
+    "key": "m:gate:f:9-pr:1"
+   },
+   "seq": 37
+  },
+  {
+   "type": "walk.completed",
+   "subject": "f",
+   "at": 1767227296000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:9-pr:1",
+   "data": {
+    "approved": [
+     "1-concept",
+     "2-architecture",
+     "2a-experience",
+     "3-spec",
+     "4-plan",
+     "5-checkpoint",
+     "6-review",
+     "6a-ui-review",
+     "7-verification",
+     "8-docs",
+     "9-pr"
+    ]
+   },
+   "seq": 38
+  }
+ ],
+ "plain-not-applicable": [
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225643000,
+   "actor": "task:10",
+   "cause": "walk:f:open:gate0:1",
+   "data": {
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d",
+    "gateKey": "gate0"
+   },
+   "seq": 1
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225689000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d"
+   },
+   "seq": 2
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225715000,
+   "actor": "factory",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "key": "m:gate:f:gate0:1"
+   },
+   "seq": 3
+  },
+  {
+   "type": "walk.admitted",
+   "subject": "f",
+   "at": 1767225744000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "gate": "gate:f:gate0:1",
+    "required": [],
+    "cap": 2,
+    "overrideTriage": false,
+    "applicability": {
+     "2a-experience": {
+      "applies": false,
+      "why": "rule"
+     },
+     "6a-ui-review": {
+      "applies": false,
+      "why": "rule"
+     }
+    },
+    "skipped": []
+   },
+   "seq": 4
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225746000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "2a-experience",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ],
+      "journeys": "any"
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match",
+      "journeys": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]; the row cites no journey"
+    }
+   },
+   "seq": 5
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225747000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "6a-ui-review",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ]
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]"
+    }
+   },
+   "seq": 6
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225790000,
+   "actor": "task:10",
+   "cause": "walk:f:open:1-concept:1",
+   "data": {
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9",
+    "gateKey": "1-concept"
+   },
+   "seq": 7
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225836000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9"
+   },
+   "seq": 8
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225862000,
+   "actor": "factory",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "key": "m:gate:f:1-concept:1"
+   },
+   "seq": 9
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225950000,
+   "actor": "task:10",
+   "cause": "walk:f:open:2-architecture:1",
+   "data": {
+    "briefRef": "dcc61215617f859a02ce422dfaecc2c35e24e321d7cc92f38eb68f57e5b0ace7",
+    "gateKey": "2-architecture"
+   },
+   "seq": 10
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225996000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "dcc61215617f859a02ce422dfaecc2c35e24e321d7cc92f38eb68f57e5b0ace7"
+   },
+   "seq": 11
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767226022000,
+   "actor": "factory",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "key": "m:gate:f:2-architecture:1"
+   },
+   "seq": 12
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226083000,
+   "actor": "task:10",
+   "cause": "walk:f:open:3-spec:1",
+   "data": {
+    "briefRef": "1764182bb2c406990a20b1339c95491d46d6e538d9e5b4eb300e99d5bb6ca56f",
+    "gateKey": "3-spec"
+   },
+   "seq": 13
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226129000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "1764182bb2c406990a20b1339c95491d46d6e538d9e5b4eb300e99d5bb6ca56f"
+   },
+   "seq": 14
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226155000,
+   "actor": "factory",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "key": "m:gate:f:3-spec:1"
+   },
+   "seq": 15
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226216000,
+   "actor": "task:10",
+   "cause": "walk:f:open:4-plan:1",
+   "data": {
+    "briefRef": "e36c5a0805153ffbbcf539e524c35d4437895dfb2b3a7b2defd23549d2113ab1",
+    "gateKey": "4-plan"
+   },
+   "seq": 16
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226262000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:4-plan:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "e36c5a0805153ffbbcf539e524c35d4437895dfb2b3a7b2defd23549d2113ab1"
+   },
+   "seq": 17
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226288000,
+   "actor": "factory",
+   "cause": "m:gate:f:4-plan:1",
+   "data": {
+    "key": "m:gate:f:4-plan:1"
+   },
+   "seq": 18
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226349000,
+   "actor": "task:10",
+   "cause": "walk:f:open:5-checkpoint:1",
+   "data": {
+    "briefRef": "3ee1ee4282cd884266941255dc88df7f5fa58eb257a8e1fa4eda0eef26f2a27a",
+    "gateKey": "5-checkpoint"
+   },
+   "seq": 19
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226395000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:5-checkpoint:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "3ee1ee4282cd884266941255dc88df7f5fa58eb257a8e1fa4eda0eef26f2a27a"
+   },
+   "seq": 20
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226421000,
+   "actor": "factory",
+   "cause": "m:gate:f:5-checkpoint:1",
+   "data": {
+    "key": "m:gate:f:5-checkpoint:1"
+   },
+   "seq": 21
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226482000,
+   "actor": "task:10",
+   "cause": "walk:f:open:6-review:1",
+   "data": {
+    "briefRef": "a9bd62a0d37a56863759ddb4e8886fd6a6e780ab201088beef07e43db6350734",
+    "gateKey": "6-review"
+   },
+   "seq": 22
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226528000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:6-review:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "a9bd62a0d37a56863759ddb4e8886fd6a6e780ab201088beef07e43db6350734"
+   },
+   "seq": 23
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226554000,
+   "actor": "factory",
+   "cause": "m:gate:f:6-review:1",
+   "data": {
+    "key": "m:gate:f:6-review:1"
+   },
+   "seq": 24
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:7-verification:1",
+   "at": 1767226621000,
+   "actor": "task:10",
+   "cause": "walk:f:open:7-verification:1",
+   "data": {
+    "briefRef": "a230bd82c4396a72de0e2d6c05231171139b90fe21ced9920c38d30cb96fa1e3",
+    "gateKey": "7-verification"
+   },
+   "seq": 25
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:7-verification:1",
+   "at": 1767226667000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:7-verification:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "a230bd82c4396a72de0e2d6c05231171139b90fe21ced9920c38d30cb96fa1e3"
+   },
+   "seq": 26
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:7-verification:1",
+   "at": 1767226693000,
+   "actor": "factory",
+   "cause": "m:gate:f:7-verification:1",
+   "data": {
+    "key": "m:gate:f:7-verification:1"
+   },
+   "seq": 27
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:8-docs:1",
+   "at": 1767226754000,
+   "actor": "task:10",
+   "cause": "walk:f:open:8-docs:1",
+   "data": {
+    "briefRef": "cb0d9a21d026908e7f28eca14c524ca9828ac085543b8ab1a1adc7988901e857",
+    "gateKey": "8-docs"
+   },
+   "seq": 28
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:8-docs:1",
+   "at": 1767226800000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:8-docs:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "cb0d9a21d026908e7f28eca14c524ca9828ac085543b8ab1a1adc7988901e857"
+   },
+   "seq": 29
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:8-docs:1",
+   "at": 1767226826000,
+   "actor": "factory",
+   "cause": "m:gate:f:8-docs:1",
+   "data": {
+    "key": "m:gate:f:8-docs:1"
+   },
+   "seq": 30
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:9-pr:1",
+   "at": 1767226887000,
+   "actor": "task:10",
+   "cause": "walk:f:open:9-pr:1",
+   "data": {
+    "briefRef": "a605f7903110d5b458e84e6d228bb01fbb93203f2ceaca4f515d202014560323",
+    "gateKey": "9-pr"
+   },
+   "seq": 31
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:9-pr:1",
+   "at": 1767226933000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:9-pr:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "a605f7903110d5b458e84e6d228bb01fbb93203f2ceaca4f515d202014560323"
+   },
+   "seq": 32
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:9-pr:1",
+   "at": 1767226959000,
+   "actor": "factory",
+   "cause": "m:gate:f:9-pr:1",
+   "data": {
+    "key": "m:gate:f:9-pr:1"
+   },
+   "seq": 33
+  },
+  {
+   "type": "walk.completed",
+   "subject": "f",
+   "at": 1767226978000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:9-pr:1",
+   "data": {
+    "approved": [
+     "1-concept",
+     "2-architecture",
+     "3-spec",
+     "4-plan",
+     "5-checkpoint",
+     "6-review",
+     "7-verification",
+     "8-docs",
+     "9-pr"
+    ]
+   },
+   "seq": 34
+  }
+ ],
+ "reject-to-build": [
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225643000,
+   "actor": "task:10",
+   "cause": "walk:f:open:gate0:1",
+   "data": {
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d",
+    "gateKey": "gate0"
+   },
+   "seq": 1
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225689000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d"
+   },
+   "seq": 2
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225715000,
+   "actor": "factory",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "key": "m:gate:f:gate0:1"
+   },
+   "seq": 3
+  },
+  {
+   "type": "walk.admitted",
+   "subject": "f",
+   "at": 1767225744000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "gate": "gate:f:gate0:1",
+    "required": [],
+    "cap": 2,
+    "overrideTriage": false,
+    "applicability": {
+     "2a-experience": {
+      "applies": false,
+      "why": "rule"
+     },
+     "6a-ui-review": {
+      "applies": false,
+      "why": "rule"
+     }
+    },
+    "skipped": []
+   },
+   "seq": 4
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225746000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "2a-experience",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ],
+      "journeys": "any"
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match",
+      "journeys": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]; the row cites no journey"
+    }
+   },
+   "seq": 5
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225747000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "6a-ui-review",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ]
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]"
+    }
+   },
+   "seq": 6
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225790000,
+   "actor": "task:10",
+   "cause": "walk:f:open:1-concept:1",
+   "data": {
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9",
+    "gateKey": "1-concept"
+   },
+   "seq": 7
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225836000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9"
+   },
+   "seq": 8
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225862000,
+   "actor": "factory",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "key": "m:gate:f:1-concept:1"
+   },
+   "seq": 9
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225950000,
+   "actor": "task:10",
+   "cause": "walk:f:open:2-architecture:1",
+   "data": {
+    "briefRef": "dcc61215617f859a02ce422dfaecc2c35e24e321d7cc92f38eb68f57e5b0ace7",
+    "gateKey": "2-architecture"
+   },
+   "seq": 10
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225996000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "dcc61215617f859a02ce422dfaecc2c35e24e321d7cc92f38eb68f57e5b0ace7"
+   },
+   "seq": 11
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767226022000,
+   "actor": "factory",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "key": "m:gate:f:2-architecture:1"
+   },
+   "seq": 12
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226083000,
+   "actor": "task:10",
+   "cause": "walk:f:open:3-spec:1",
+   "data": {
+    "briefRef": "1764182bb2c406990a20b1339c95491d46d6e538d9e5b4eb300e99d5bb6ca56f",
+    "gateKey": "3-spec"
+   },
+   "seq": 13
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226129000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "1764182bb2c406990a20b1339c95491d46d6e538d9e5b4eb300e99d5bb6ca56f"
+   },
+   "seq": 14
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226155000,
+   "actor": "factory",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "key": "m:gate:f:3-spec:1"
+   },
+   "seq": 15
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226216000,
+   "actor": "task:10",
+   "cause": "walk:f:open:4-plan:1",
+   "data": {
+    "briefRef": "e36c5a0805153ffbbcf539e524c35d4437895dfb2b3a7b2defd23549d2113ab1",
+    "gateKey": "4-plan"
+   },
+   "seq": 16
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226262000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:4-plan:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "e36c5a0805153ffbbcf539e524c35d4437895dfb2b3a7b2defd23549d2113ab1"
+   },
+   "seq": 17
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226288000,
+   "actor": "factory",
+   "cause": "m:gate:f:4-plan:1",
+   "data": {
+    "key": "m:gate:f:4-plan:1"
+   },
+   "seq": 18
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226349000,
+   "actor": "task:10",
+   "cause": "walk:f:open:5-checkpoint:1",
+   "data": {
+    "briefRef": "3ee1ee4282cd884266941255dc88df7f5fa58eb257a8e1fa4eda0eef26f2a27a",
+    "gateKey": "5-checkpoint"
+   },
+   "seq": 19
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226395000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:5-checkpoint:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "3ee1ee4282cd884266941255dc88df7f5fa58eb257a8e1fa4eda0eef26f2a27a"
+   },
+   "seq": 20
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226421000,
+   "actor": "factory",
+   "cause": "m:gate:f:5-checkpoint:1",
+   "data": {
+    "key": "m:gate:f:5-checkpoint:1"
+   },
+   "seq": 21
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226482000,
+   "actor": "task:10",
+   "cause": "walk:f:open:6-review:1",
+   "data": {
+    "briefRef": "a9bd62a0d37a56863759ddb4e8886fd6a6e780ab201088beef07e43db6350734",
+    "gateKey": "6-review"
+   },
+   "seq": 22
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226528000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:6-review:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "a9bd62a0d37a56863759ddb4e8886fd6a6e780ab201088beef07e43db6350734"
+   },
+   "seq": 23
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226554000,
+   "actor": "factory",
+   "cause": "m:gate:f:6-review:1",
+   "data": {
+    "key": "m:gate:f:6-review:1"
+   },
+   "seq": 24
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:7-verification:1",
+   "at": 1767226621000,
+   "actor": "task:10",
+   "cause": "walk:f:open:7-verification:1",
+   "data": {
+    "briefRef": "a230bd82c4396a72de0e2d6c05231171139b90fe21ced9920c38d30cb96fa1e3",
+    "gateKey": "7-verification"
+   },
+   "seq": 25
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:7-verification:1",
+   "at": 1767226667000,
+   "actor": "script:r14",
+   "cause": "mv:gate:f:7-verification:1",
+   "data": {
+    "kind": "reject",
+    "briefRef": "a230bd82c4396a72de0e2d6c05231171139b90fe21ced9920c38d30cb96fa1e3"
+   },
+   "seq": 26
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:7-verification:1",
+   "at": 1767226693000,
+   "actor": "factory",
+   "cause": "mv:gate:f:7-verification:1",
+   "data": {
+    "key": "mv:gate:f:7-verification:1"
+   },
+   "seq": 27
+  },
+  {
+   "type": "walk.returned",
+   "subject": "f",
+   "at": 1767226712000,
+   "actor": "script:r14",
+   "cause": "mv:gate:f:7-verification:1",
+   "data": {
+    "from": "7-verification",
+    "round": 1,
+    "kind": "reject",
+    "target": "@build",
+    "work": "workers",
+    "recross": [
+     "6-review",
+     "7-verification",
+     "8-docs",
+     "9-pr"
+    ],
+    "note": "the build is wrong"
+   },
+   "seq": 28
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:6-review:2",
+   "at": 1767226784000,
+   "actor": "task:10",
+   "cause": "walk:f:open:6-review:2",
+   "data": {
+    "briefRef": "72bad5c803f6539489ddcc1c9e0af3a7fb9e7cb0de891b535392af25cb67fed4",
+    "gateKey": "6-review"
+   },
+   "seq": 29
+  }
+ ],
+ "reject-earlier": [
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225643000,
+   "actor": "task:10",
+   "cause": "walk:f:open:gate0:1",
+   "data": {
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d",
+    "gateKey": "gate0"
+   },
+   "seq": 1
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225689000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d"
+   },
+   "seq": 2
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225715000,
+   "actor": "factory",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "key": "m:gate:f:gate0:1"
+   },
+   "seq": 3
+  },
+  {
+   "type": "walk.admitted",
+   "subject": "f",
+   "at": 1767225744000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "gate": "gate:f:gate0:1",
+    "required": [],
+    "cap": 2,
+    "overrideTriage": false,
+    "applicability": {
+     "2a-experience": {
+      "applies": false,
+      "why": "rule"
+     },
+     "6a-ui-review": {
+      "applies": false,
+      "why": "rule"
+     }
+    },
+    "skipped": []
+   },
+   "seq": 4
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225746000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "2a-experience",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ],
+      "journeys": "any"
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match",
+      "journeys": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]; the row cites no journey"
+    }
+   },
+   "seq": 5
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225747000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "6a-ui-review",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ]
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]"
+    }
+   },
+   "seq": 6
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225790000,
+   "actor": "task:10",
+   "cause": "walk:f:open:1-concept:1",
+   "data": {
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9",
+    "gateKey": "1-concept"
+   },
+   "seq": 7
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225836000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9"
+   },
+   "seq": 8
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225862000,
+   "actor": "factory",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "key": "m:gate:f:1-concept:1"
+   },
+   "seq": 9
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225950000,
+   "actor": "task:10",
+   "cause": "walk:f:open:2-architecture:1",
+   "data": {
+    "briefRef": "dcc61215617f859a02ce422dfaecc2c35e24e321d7cc92f38eb68f57e5b0ace7",
+    "gateKey": "2-architecture"
+   },
+   "seq": 10
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225996000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "dcc61215617f859a02ce422dfaecc2c35e24e321d7cc92f38eb68f57e5b0ace7"
+   },
+   "seq": 11
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767226022000,
+   "actor": "factory",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "key": "m:gate:f:2-architecture:1"
+   },
+   "seq": 12
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226083000,
+   "actor": "task:10",
+   "cause": "walk:f:open:3-spec:1",
+   "data": {
+    "briefRef": "1764182bb2c406990a20b1339c95491d46d6e538d9e5b4eb300e99d5bb6ca56f",
+    "gateKey": "3-spec"
+   },
+   "seq": 13
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226129000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "1764182bb2c406990a20b1339c95491d46d6e538d9e5b4eb300e99d5bb6ca56f"
+   },
+   "seq": 14
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226155000,
+   "actor": "factory",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "key": "m:gate:f:3-spec:1"
+   },
+   "seq": 15
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226216000,
+   "actor": "task:10",
+   "cause": "walk:f:open:4-plan:1",
+   "data": {
+    "briefRef": "e36c5a0805153ffbbcf539e524c35d4437895dfb2b3a7b2defd23549d2113ab1",
+    "gateKey": "4-plan"
+   },
+   "seq": 16
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226262000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:4-plan:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "e36c5a0805153ffbbcf539e524c35d4437895dfb2b3a7b2defd23549d2113ab1"
+   },
+   "seq": 17
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226288000,
+   "actor": "factory",
+   "cause": "m:gate:f:4-plan:1",
+   "data": {
+    "key": "m:gate:f:4-plan:1"
+   },
+   "seq": 18
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226349000,
+   "actor": "task:10",
+   "cause": "walk:f:open:5-checkpoint:1",
+   "data": {
+    "briefRef": "3ee1ee4282cd884266941255dc88df7f5fa58eb257a8e1fa4eda0eef26f2a27a",
+    "gateKey": "5-checkpoint"
+   },
+   "seq": 19
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226395000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:5-checkpoint:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "3ee1ee4282cd884266941255dc88df7f5fa58eb257a8e1fa4eda0eef26f2a27a"
+   },
+   "seq": 20
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226421000,
+   "actor": "factory",
+   "cause": "m:gate:f:5-checkpoint:1",
+   "data": {
+    "key": "m:gate:f:5-checkpoint:1"
+   },
+   "seq": 21
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226482000,
+   "actor": "task:10",
+   "cause": "walk:f:open:6-review:1",
+   "data": {
+    "briefRef": "a9bd62a0d37a56863759ddb4e8886fd6a6e780ab201088beef07e43db6350734",
+    "gateKey": "6-review"
+   },
+   "seq": 22
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226528000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:6-review:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "a9bd62a0d37a56863759ddb4e8886fd6a6e780ab201088beef07e43db6350734"
+   },
+   "seq": 23
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226554000,
+   "actor": "factory",
+   "cause": "m:gate:f:6-review:1",
+   "data": {
+    "key": "m:gate:f:6-review:1"
+   },
+   "seq": 24
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:7-verification:1",
+   "at": 1767226621000,
+   "actor": "task:10",
+   "cause": "walk:f:open:7-verification:1",
+   "data": {
+    "briefRef": "a230bd82c4396a72de0e2d6c05231171139b90fe21ced9920c38d30cb96fa1e3",
+    "gateKey": "7-verification"
+   },
+   "seq": 25
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:7-verification:1",
+   "at": 1767226667000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:7-verification:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "a230bd82c4396a72de0e2d6c05231171139b90fe21ced9920c38d30cb96fa1e3"
+   },
+   "seq": 26
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:7-verification:1",
+   "at": 1767226693000,
+   "actor": "factory",
+   "cause": "m:gate:f:7-verification:1",
+   "data": {
+    "key": "m:gate:f:7-verification:1"
+   },
+   "seq": 27
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:8-docs:1",
+   "at": 1767226754000,
+   "actor": "task:10",
+   "cause": "walk:f:open:8-docs:1",
+   "data": {
+    "briefRef": "cb0d9a21d026908e7f28eca14c524ca9828ac085543b8ab1a1adc7988901e857",
+    "gateKey": "8-docs"
+   },
+   "seq": 28
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:8-docs:1",
+   "at": 1767226800000,
+   "actor": "script:r14",
+   "cause": "mv:gate:f:8-docs:1",
+   "data": {
+    "kind": "reject",
+    "briefRef": "cb0d9a21d026908e7f28eca14c524ca9828ac085543b8ab1a1adc7988901e857"
+   },
+   "seq": 29
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:8-docs:1",
+   "at": 1767226826000,
+   "actor": "factory",
+   "cause": "mv:gate:f:8-docs:1",
+   "data": {
+    "key": "mv:gate:f:8-docs:1"
+   },
+   "seq": 30
+  },
+  {
+   "type": "walk.returned",
+   "subject": "f",
+   "at": 1767226845000,
+   "actor": "script:r14",
+   "cause": "mv:gate:f:8-docs:1",
+   "data": {
+    "from": "8-docs",
+    "round": 1,
+    "kind": "reject",
+    "target": "3-spec",
+    "recross": [
+     "3-spec",
+     "4-plan",
+     "5-checkpoint",
+     "6-review",
+     "7-verification",
+     "8-docs",
+     "9-pr"
+    ],
+    "note": "the spec is wrong about ordering"
+   },
+   "seq": 31
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:3-spec:2",
+   "at": 1767226890000,
+   "actor": "task:10",
+   "cause": "walk:f:open:3-spec:2",
+   "data": {
+    "briefRef": "c4aed8dbb1e22ab5b050ad5701a5494d15764ec87366b9b55dcb4b020c730f99",
+    "gateKey": "3-spec"
+   },
+   "seq": 32
+  }
+ ],
+ "restart": [
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225643000,
+   "actor": "task:10",
+   "cause": "walk:f:open:gate0:1",
+   "data": {
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d",
+    "gateKey": "gate0"
+   },
+   "seq": 1
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225689000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d"
+   },
+   "seq": 2
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225715000,
+   "actor": "factory",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "key": "m:gate:f:gate0:1"
+   },
+   "seq": 3
+  },
+  {
+   "type": "walk.admitted",
+   "subject": "f",
+   "at": 1767225744000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "gate": "gate:f:gate0:1",
+    "required": [],
+    "cap": 2,
+    "overrideTriage": false,
+    "applicability": {
+     "2a-experience": {
+      "applies": false,
+      "why": "rule"
+     },
+     "6a-ui-review": {
+      "applies": false,
+      "why": "rule"
+     }
+    },
+    "skipped": []
+   },
+   "seq": 4
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225746000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "2a-experience",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ],
+      "journeys": "any"
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match",
+      "journeys": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]; the row cites no journey"
+    }
+   },
+   "seq": 5
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225747000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "6a-ui-review",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ]
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]"
+    }
+   },
+   "seq": 6
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225790000,
+   "actor": "task:10",
+   "cause": "walk:f:open:1-concept:1",
+   "data": {
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9",
+    "gateKey": "1-concept"
+   },
+   "seq": 7
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225836000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9"
+   },
+   "seq": 8
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225862000,
+   "actor": "factory",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "key": "m:gate:f:1-concept:1"
+   },
+   "seq": 9
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225950000,
+   "actor": "task:10",
+   "cause": "walk:f:open:2-architecture:1",
+   "data": {
+    "briefRef": "dcc61215617f859a02ce422dfaecc2c35e24e321d7cc92f38eb68f57e5b0ace7",
+    "gateKey": "2-architecture"
+   },
+   "seq": 10
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225996000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "dcc61215617f859a02ce422dfaecc2c35e24e321d7cc92f38eb68f57e5b0ace7"
+   },
+   "seq": 11
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767226022000,
+   "actor": "factory",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "key": "m:gate:f:2-architecture:1"
+   },
+   "seq": 12
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226083000,
+   "actor": "task:10",
+   "cause": "walk:f:open:3-spec:1",
+   "data": {
+    "briefRef": "1764182bb2c406990a20b1339c95491d46d6e538d9e5b4eb300e99d5bb6ca56f",
+    "gateKey": "3-spec"
+   },
+   "seq": 13
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226129000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "1764182bb2c406990a20b1339c95491d46d6e538d9e5b4eb300e99d5bb6ca56f"
+   },
+   "seq": 14
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226155000,
+   "actor": "factory",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "key": "m:gate:f:3-spec:1"
+   },
+   "seq": 15
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226216000,
+   "actor": "task:10",
+   "cause": "walk:f:open:4-plan:1",
+   "data": {
+    "briefRef": "e36c5a0805153ffbbcf539e524c35d4437895dfb2b3a7b2defd23549d2113ab1",
+    "gateKey": "4-plan"
+   },
+   "seq": 16
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226262000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:4-plan:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "e36c5a0805153ffbbcf539e524c35d4437895dfb2b3a7b2defd23549d2113ab1"
+   },
+   "seq": 17
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226288000,
+   "actor": "factory",
+   "cause": "m:gate:f:4-plan:1",
+   "data": {
+    "key": "m:gate:f:4-plan:1"
+   },
+   "seq": 18
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226349000,
+   "actor": "task:10",
+   "cause": "walk:f:open:5-checkpoint:1",
+   "data": {
+    "briefRef": "3ee1ee4282cd884266941255dc88df7f5fa58eb257a8e1fa4eda0eef26f2a27a",
+    "gateKey": "5-checkpoint"
+   },
+   "seq": 19
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226395000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:5-checkpoint:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "3ee1ee4282cd884266941255dc88df7f5fa58eb257a8e1fa4eda0eef26f2a27a"
+   },
+   "seq": 20
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226421000,
+   "actor": "factory",
+   "cause": "m:gate:f:5-checkpoint:1",
+   "data": {
+    "key": "m:gate:f:5-checkpoint:1"
+   },
+   "seq": 21
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226482000,
+   "actor": "task:10",
+   "cause": "walk:f:open:6-review:1",
+   "data": {
+    "briefRef": "a9bd62a0d37a56863759ddb4e8886fd6a6e780ab201088beef07e43db6350734",
+    "gateKey": "6-review"
+   },
+   "seq": 22
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226528000,
+   "actor": "script:r14",
+   "cause": "mv:gate:f:6-review:1",
+   "data": {
+    "kind": "restart",
+    "briefRef": "a9bd62a0d37a56863759ddb4e8886fd6a6e780ab201088beef07e43db6350734"
+   },
+   "seq": 23
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226554000,
+   "actor": "factory",
+   "cause": "mv:gate:f:6-review:1",
+   "data": {
+    "key": "mv:gate:f:6-review:1"
+   },
+   "seq": 24
+  },
+  {
+   "type": "walk.returned",
+   "subject": "f",
+   "at": 1767226573000,
+   "actor": "script:r14",
+   "cause": "mv:gate:f:6-review:1",
+   "data": {
+    "from": "6-review",
+    "round": 1,
+    "kind": "restart",
+    "target": "@build",
+    "work": "rebuild",
+    "recross": [
+     "6-review",
+     "7-verification",
+     "8-docs",
+     "9-pr"
+    ],
+    "note": "rebuild from the restorable commit"
+   },
+   "seq": 25
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:6-review:2",
+   "at": 1767226645000,
+   "actor": "task:10",
+   "cause": "walk:f:open:6-review:2",
+   "data": {
+    "briefRef": "ac6e0c21bad75e3b014ddc330de1d780ba5130e558b4e2b4d05f67beb9e17aca",
+    "gateKey": "6-review"
+   },
+   "seq": 26
+  }
+ ],
+ "split": [
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225643000,
+   "actor": "task:10",
+   "cause": "walk:f:open:gate0:1",
+   "data": {
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d",
+    "gateKey": "gate0"
+   },
+   "seq": 1
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225689000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d"
+   },
+   "seq": 2
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225715000,
+   "actor": "factory",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "key": "m:gate:f:gate0:1"
+   },
+   "seq": 3
+  },
+  {
+   "type": "walk.admitted",
+   "subject": "f",
+   "at": 1767225744000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "gate": "gate:f:gate0:1",
+    "required": [],
+    "cap": 2,
+    "overrideTriage": false,
+    "applicability": {
+     "2a-experience": {
+      "applies": false,
+      "why": "rule"
+     },
+     "6a-ui-review": {
+      "applies": false,
+      "why": "rule"
+     }
+    },
+    "skipped": []
+   },
+   "seq": 4
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225746000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "2a-experience",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ],
+      "journeys": "any"
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match",
+      "journeys": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]; the row cites no journey"
+    }
+   },
+   "seq": 5
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225747000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "6a-ui-review",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ]
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]"
+    }
+   },
+   "seq": 6
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225790000,
+   "actor": "task:10",
+   "cause": "walk:f:open:1-concept:1",
+   "data": {
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9",
+    "gateKey": "1-concept"
+   },
+   "seq": 7
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225836000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9"
+   },
+   "seq": 8
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225862000,
+   "actor": "factory",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "key": "m:gate:f:1-concept:1"
+   },
+   "seq": 9
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225950000,
+   "actor": "task:10",
+   "cause": "walk:f:open:2-architecture:1",
+   "data": {
+    "briefRef": "dcc61215617f859a02ce422dfaecc2c35e24e321d7cc92f38eb68f57e5b0ace7",
+    "gateKey": "2-architecture"
+   },
+   "seq": 10
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225996000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "dcc61215617f859a02ce422dfaecc2c35e24e321d7cc92f38eb68f57e5b0ace7"
+   },
+   "seq": 11
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767226022000,
+   "actor": "factory",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "key": "m:gate:f:2-architecture:1"
+   },
+   "seq": 12
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226083000,
+   "actor": "task:10",
+   "cause": "walk:f:open:3-spec:1",
+   "data": {
+    "briefRef": "1764182bb2c406990a20b1339c95491d46d6e538d9e5b4eb300e99d5bb6ca56f",
+    "gateKey": "3-spec"
+   },
+   "seq": 13
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226129000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "1764182bb2c406990a20b1339c95491d46d6e538d9e5b4eb300e99d5bb6ca56f"
+   },
+   "seq": 14
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226155000,
+   "actor": "factory",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "key": "m:gate:f:3-spec:1"
+   },
+   "seq": 15
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226216000,
+   "actor": "task:10",
+   "cause": "walk:f:open:4-plan:1",
+   "data": {
+    "briefRef": "e36c5a0805153ffbbcf539e524c35d4437895dfb2b3a7b2defd23549d2113ab1",
+    "gateKey": "4-plan"
+   },
+   "seq": 16
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226262000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:4-plan:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "e36c5a0805153ffbbcf539e524c35d4437895dfb2b3a7b2defd23549d2113ab1"
+   },
+   "seq": 17
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226288000,
+   "actor": "factory",
+   "cause": "m:gate:f:4-plan:1",
+   "data": {
+    "key": "m:gate:f:4-plan:1"
+   },
+   "seq": 18
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226349000,
+   "actor": "task:10",
+   "cause": "walk:f:open:5-checkpoint:1",
+   "data": {
+    "briefRef": "3ee1ee4282cd884266941255dc88df7f5fa58eb257a8e1fa4eda0eef26f2a27a",
+    "gateKey": "5-checkpoint"
+   },
+   "seq": 19
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226395000,
+   "actor": "script:r14",
+   "cause": "mv:gate:f:5-checkpoint:1",
+   "data": {
+    "kind": "split+revise",
+    "briefRef": "3ee1ee4282cd884266941255dc88df7f5fa58eb257a8e1fa4eda0eef26f2a27a"
+   },
+   "seq": 20
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226421000,
+   "actor": "factory",
+   "cause": "mv:gate:f:5-checkpoint:1",
+   "data": {
+    "key": "mv:gate:f:5-checkpoint:1"
+   },
+   "seq": 21
+  },
+  {
+   "type": "walk.returned",
+   "subject": "f",
+   "at": 1767226440000,
+   "actor": "script:r14",
+   "cause": "mv:gate:f:5-checkpoint:1",
+   "data": {
+    "from": "5-checkpoint",
+    "round": 1,
+    "kind": "split+revise",
+    "target": "same-gate",
+    "recross": [
+     "4-plan",
+     "5-checkpoint",
+     "6-review",
+     "7-verification",
+     "8-docs",
+     "9-pr"
+    ],
+    "note": "the remainder goes back to the roadmap"
+   },
+   "seq": 22
+  },
+  {
+   "type": "walk.split",
+   "subject": "f",
+   "at": 1767226442000,
+   "actor": "script:r14",
+   "cause": "mv:gate:f:5-checkpoint:1",
+   "data": {
+    "from": "5-checkpoint",
+    "remainder": "the remainder goes back to the roadmap"
+   },
+   "seq": 23
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:4-plan:2",
+   "at": 1767226486000,
+   "actor": "task:10",
+   "cause": "walk:f:open:4-plan:2",
+   "data": {
+    "briefRef": "b28a8ac699192622e118cff231136ae4941bedbd6096eff49cfdf08c9c547a62",
+    "gateKey": "4-plan"
+   },
+   "seq": 24
+  }
+ ],
+ "left-lane": [
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225643000,
+   "actor": "task:10",
+   "cause": "walk:f:open:gate0:1",
+   "data": {
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d",
+    "gateKey": "gate0"
+   },
+   "seq": 1
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225689000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d"
+   },
+   "seq": 2
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225715000,
+   "actor": "factory",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "key": "m:gate:f:gate0:1"
+   },
+   "seq": 3
+  },
+  {
+   "type": "walk.admitted",
+   "subject": "f",
+   "at": 1767225744000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "gate": "gate:f:gate0:1",
+    "required": [],
+    "cap": 2,
+    "overrideTriage": false,
+    "applicability": {
+     "2a-experience": {
+      "applies": false,
+      "why": "rule"
+     },
+     "6a-ui-review": {
+      "applies": false,
+      "why": "rule"
+     }
+    },
+    "skipped": []
+   },
+   "seq": 4
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225746000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "2a-experience",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ],
+      "journeys": "any"
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match",
+      "journeys": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]; the row cites no journey"
+    }
+   },
+   "seq": 5
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225747000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "6a-ui-review",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ]
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]"
+    }
+   },
+   "seq": 6
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225790000,
+   "actor": "task:10",
+   "cause": "walk:f:open:1-concept:1",
+   "data": {
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9",
+    "gateKey": "1-concept"
+   },
+   "seq": 7
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225836000,
+   "actor": "script:r14",
+   "cause": "mv:gate:f:1-concept:1",
+   "data": {
+    "kind": "reject",
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9"
+   },
+   "seq": 8
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225862000,
+   "actor": "factory",
+   "cause": "mv:gate:f:1-concept:1",
+   "data": {
+    "key": "mv:gate:f:1-concept:1"
+   },
+   "seq": 9
+  },
+  {
+   "type": "walk.left-lane",
+   "subject": "f",
+   "at": 1767225881000,
+   "actor": "script:r14",
+   "cause": "mv:gate:f:1-concept:1",
+   "data": {
+    "from": "1-concept",
+    "round": 1,
+    "note": "not worth building"
+   },
+   "seq": 10
+  }
+ ],
+ "not-admitted": [
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225643000,
+   "actor": "task:10",
+   "cause": "walk:f:open:gate0:1",
+   "data": {
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d",
+    "gateKey": "gate0"
+   },
+   "seq": 1
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225689000,
+   "actor": "script:r14",
+   "cause": "no",
+   "data": {
+    "kind": "reject",
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d"
+   },
+   "seq": 2
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225715000,
+   "actor": "factory",
+   "cause": "no",
+   "data": {
+    "key": "no"
+   },
+   "seq": 3
+  },
+  {
+   "type": "walk.not-admitted",
+   "subject": "f",
+   "at": 1767225734000,
+   "actor": "script:r14",
+   "cause": "no",
+   "data": {
+    "gate": "gate0",
+    "round": 1,
+    "note": "not this quarter"
+   },
+   "seq": 4
+  }
+ ],
+ "withdrawn": [
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225643000,
+   "actor": "task:10",
+   "cause": "walk:f:open:gate0:1",
+   "data": {
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d",
+    "gateKey": "gate0"
+   },
+   "seq": 1
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225689000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d"
+   },
+   "seq": 2
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225715000,
+   "actor": "factory",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "key": "m:gate:f:gate0:1"
+   },
+   "seq": 3
+  },
+  {
+   "type": "walk.admitted",
+   "subject": "f",
+   "at": 1767225744000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "gate": "gate:f:gate0:1",
+    "required": [],
+    "cap": 2,
+    "overrideTriage": false,
+    "applicability": {
+     "2a-experience": {
+      "applies": false,
+      "why": "rule"
+     },
+     "6a-ui-review": {
+      "applies": false,
+      "why": "rule"
+     }
+    },
+    "skipped": []
+   },
+   "seq": 4
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225746000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "2a-experience",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ],
+      "journeys": "any"
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match",
+      "journeys": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]; the row cites no journey"
+    }
+   },
+   "seq": 5
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225747000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "6a-ui-review",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ]
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]"
+    }
+   },
+   "seq": 6
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225790000,
+   "actor": "task:10",
+   "cause": "walk:f:open:1-concept:1",
+   "data": {
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9",
+    "gateKey": "1-concept"
+   },
+   "seq": 7
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225836000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9"
+   },
+   "seq": 8
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225862000,
+   "actor": "factory",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "key": "m:gate:f:1-concept:1"
+   },
+   "seq": 9
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225950000,
+   "actor": "task:10",
+   "cause": "walk:f:open:2-architecture:1",
+   "data": {
+    "briefRef": "dcc61215617f859a02ce422dfaecc2c35e24e321d7cc92f38eb68f57e5b0ace7",
+    "gateKey": "2-architecture"
+   },
+   "seq": 10
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225996000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "dcc61215617f859a02ce422dfaecc2c35e24e321d7cc92f38eb68f57e5b0ace7"
+   },
+   "seq": 11
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767226022000,
+   "actor": "factory",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "key": "m:gate:f:2-architecture:1"
+   },
+   "seq": 12
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226083000,
+   "actor": "task:10",
+   "cause": "walk:f:open:3-spec:1",
+   "data": {
+    "briefRef": "1764182bb2c406990a20b1339c95491d46d6e538d9e5b4eb300e99d5bb6ca56f",
+    "gateKey": "3-spec"
+   },
+   "seq": 13
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226129000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "1764182bb2c406990a20b1339c95491d46d6e538d9e5b4eb300e99d5bb6ca56f"
+   },
+   "seq": 14
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226155000,
+   "actor": "factory",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "key": "m:gate:f:3-spec:1"
+   },
+   "seq": 15
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226216000,
+   "actor": "task:10",
+   "cause": "walk:f:open:4-plan:1",
+   "data": {
+    "briefRef": "e36c5a0805153ffbbcf539e524c35d4437895dfb2b3a7b2defd23549d2113ab1",
+    "gateKey": "4-plan"
+   },
+   "seq": 16
+  },
+  {
+   "type": "gate.withdrawn",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226263000,
+   "actor": "script:r14",
+   "cause": "fm1",
+   "data": {
+    "target": "2-architecture",
+    "note": "the architecture is wrong"
+   },
+   "seq": 17
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226263000,
+   "actor": "script:r14",
+   "cause": "fm1",
+   "data": {
+    "kind": "reject",
+    "scope": "feature",
+    "target": "2-architecture"
+   },
+   "seq": 18
+  },
+  {
+   "type": "walk.returned",
+   "subject": "f",
+   "at": 1767226303000,
+   "actor": "script:r14",
+   "cause": "fm1",
+   "data": {
+    "from": "4-plan",
+    "kind": "reject",
+    "scope": "feature",
+    "target": "2-architecture",
+    "recross": [
+     "2-architecture",
+     "3-spec",
+     "4-plan",
+     "5-checkpoint",
+     "6-review",
+     "7-verification",
+     "8-docs",
+     "9-pr"
+    ],
+    "note": "the architecture is wrong"
+   },
+   "seq": 19
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:2-architecture:2",
+   "at": 1767226375000,
+   "actor": "task:10",
+   "cause": "walk:f:open:2-architecture:2",
+   "data": {
+    "briefRef": "d0587d606b648b418929810a159dd9d6cbd236891fd89aaf385829ee012e4215",
+    "gateKey": "2-architecture"
+   },
+   "seq": 20
+  }
+ ],
+ "triage-skip": [
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225643000,
+   "actor": "task:10",
+   "cause": "walk:f:open:gate0:1",
+   "data": {
+    "briefRef": "500ade0e2989e50b77bd0d0606fa87f3c5ac0a5c86790992b28460a18c818517",
+    "gateKey": "gate0"
+   },
+   "seq": 1
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225689000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "500ade0e2989e50b77bd0d0606fa87f3c5ac0a5c86790992b28460a18c818517"
+   },
+   "seq": 2
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225715000,
+   "actor": "factory",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "key": "m:gate:f:gate0:1"
+   },
+   "seq": 3
+  },
+  {
+   "type": "walk.admitted",
+   "subject": "f",
+   "at": 1767225744000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "gate": "gate:f:gate0:1",
+    "required": [],
+    "cap": 2,
+    "overrideTriage": false,
+    "applicability": {
+     "2a-experience": {
+      "applies": false,
+      "why": "rule"
+     },
+     "6a-ui-review": {
+      "applies": false,
+      "why": "rule"
+     }
+    },
+    "skipped": [
+     "1-concept",
+     "2-architecture"
+    ]
+   },
+   "seq": 4
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225746000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "2a-experience",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ],
+      "journeys": "any"
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match",
+      "journeys": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]; the row cites no journey"
+    }
+   },
+   "seq": 5
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225747000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "6a-ui-review",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ]
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]"
+    }
+   },
+   "seq": 6
+  },
+  {
+   "type": "gate.skipped",
+   "subject": "f",
+   "at": 1767225748000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "1-concept",
+    "reasoning": "a one-line copy change"
+   },
+   "seq": 7
+  },
+  {
+   "type": "gate.skipped",
+   "subject": "f",
+   "at": 1767225749000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "2-architecture",
+    "reasoning": "a one-line copy change"
+   },
+   "seq": 8
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767225792000,
+   "actor": "task:10",
+   "cause": "walk:f:open:3-spec:1",
+   "data": {
+    "briefRef": "750f3ffb884e8f6e60f118eb7c8ff482d710594896eb0ffe3a570c888bcb907c",
+    "gateKey": "3-spec"
+   },
+   "seq": 9
+  }
+ ],
+ "fix-rounds": [
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225643000,
+   "actor": "task:10",
+   "cause": "walk:f:open:gate0:1",
+   "data": {
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d",
+    "gateKey": "gate0"
+   },
+   "seq": 1
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225689000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d"
+   },
+   "seq": 2
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225715000,
+   "actor": "factory",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "key": "m:gate:f:gate0:1"
+   },
+   "seq": 3
+  },
+  {
+   "type": "walk.admitted",
+   "subject": "f",
+   "at": 1767225744000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "gate": "gate:f:gate0:1",
+    "required": [],
+    "cap": 2,
+    "overrideTriage": false,
+    "applicability": {
+     "2a-experience": {
+      "applies": false,
+      "why": "rule"
+     },
+     "6a-ui-review": {
+      "applies": false,
+      "why": "rule"
+     }
+    },
+    "skipped": []
+   },
+   "seq": 4
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225746000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "2a-experience",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ],
+      "journeys": "any"
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match",
+      "journeys": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]; the row cites no journey"
+    }
+   },
+   "seq": 5
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225747000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "6a-ui-review",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ]
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]"
+    }
+   },
+   "seq": 6
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225790000,
+   "actor": "task:10",
+   "cause": "walk:f:open:1-concept:1",
+   "data": {
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9",
+    "gateKey": "1-concept"
+   },
+   "seq": 7
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225836000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9"
+   },
+   "seq": 8
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225862000,
+   "actor": "factory",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "key": "m:gate:f:1-concept:1"
+   },
+   "seq": 9
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225950000,
+   "actor": "task:10",
+   "cause": "walk:f:open:2-architecture:1",
+   "data": {
+    "briefRef": "dcc61215617f859a02ce422dfaecc2c35e24e321d7cc92f38eb68f57e5b0ace7",
+    "gateKey": "2-architecture"
+   },
+   "seq": 10
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225996000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "dcc61215617f859a02ce422dfaecc2c35e24e321d7cc92f38eb68f57e5b0ace7"
+   },
+   "seq": 11
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767226022000,
+   "actor": "factory",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "key": "m:gate:f:2-architecture:1"
+   },
+   "seq": 12
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226083000,
+   "actor": "task:10",
+   "cause": "walk:f:open:3-spec:1",
+   "data": {
+    "briefRef": "1764182bb2c406990a20b1339c95491d46d6e538d9e5b4eb300e99d5bb6ca56f",
+    "gateKey": "3-spec"
+   },
+   "seq": 13
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226129000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "1764182bb2c406990a20b1339c95491d46d6e538d9e5b4eb300e99d5bb6ca56f"
+   },
+   "seq": 14
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226155000,
+   "actor": "factory",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "key": "m:gate:f:3-spec:1"
+   },
+   "seq": 15
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226216000,
+   "actor": "task:10",
+   "cause": "walk:f:open:4-plan:1",
+   "data": {
+    "briefRef": "e36c5a0805153ffbbcf539e524c35d4437895dfb2b3a7b2defd23549d2113ab1",
+    "gateKey": "4-plan"
+   },
+   "seq": 16
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226262000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:4-plan:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "e36c5a0805153ffbbcf539e524c35d4437895dfb2b3a7b2defd23549d2113ab1"
+   },
+   "seq": 17
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226288000,
+   "actor": "factory",
+   "cause": "m:gate:f:4-plan:1",
+   "data": {
+    "key": "m:gate:f:4-plan:1"
+   },
+   "seq": 18
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226349000,
+   "actor": "task:10",
+   "cause": "walk:f:open:5-checkpoint:1",
+   "data": {
+    "briefRef": "3ee1ee4282cd884266941255dc88df7f5fa58eb257a8e1fa4eda0eef26f2a27a",
+    "gateKey": "5-checkpoint"
+   },
+   "seq": 19
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226395000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:5-checkpoint:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "3ee1ee4282cd884266941255dc88df7f5fa58eb257a8e1fa4eda0eef26f2a27a"
+   },
+   "seq": 20
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226421000,
+   "actor": "factory",
+   "cause": "m:gate:f:5-checkpoint:1",
+   "data": {
+    "key": "m:gate:f:5-checkpoint:1"
+   },
+   "seq": 21
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226482000,
+   "actor": "task:10",
+   "cause": "walk:f:open:6-review:1",
+   "data": {
+    "briefRef": "a9bd62a0d37a56863759ddb4e8886fd6a6e780ab201088beef07e43db6350734",
+    "gateKey": "6-review"
+   },
+   "seq": 22
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226528000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:6-review:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "a9bd62a0d37a56863759ddb4e8886fd6a6e780ab201088beef07e43db6350734"
+   },
+   "seq": 23
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226554000,
+   "actor": "factory",
+   "cause": "m:gate:f:6-review:1",
+   "data": {
+    "key": "m:gate:f:6-review:1"
+   },
+   "seq": 24
+  },
+  {
+   "type": "walk.fix-round",
+   "subject": "f",
+   "at": 1767226616000,
+   "actor": "factory",
+   "cause": "walk:f:fix:1:1",
+   "data": {
+    "kind": "mitigate",
+    "n": 1,
+    "cap": 2,
+    "verdict": "fail",
+    "pass": 1
+   },
+   "seq": 25
+  },
+  {
+   "type": "walk.fix-round",
+   "subject": "f",
+   "at": 1767226685000,
+   "actor": "factory",
+   "cause": "walk:f:fix:1:2",
+   "data": {
+    "kind": "mitigate",
+    "n": 2,
+    "cap": 2,
+    "verdict": "fail",
+    "pass": 1
+   },
+   "seq": 26
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:7-verification:1",
+   "at": 1767226759000,
+   "actor": "task:10",
+   "cause": "walk:f:open:7-verification:1",
+   "data": {
+    "briefRef": "e2a96b71c7a25803143e74073080da51f464b7c2289e396aa2de71d3cddc29bf",
+    "gateKey": "7-verification"
+   },
+   "seq": 27
+  }
+ ],
+ "became-applicable": [
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225643000,
+   "actor": "task:10",
+   "cause": "walk:f:open:gate0:1",
+   "data": {
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d",
+    "gateKey": "gate0"
+   },
+   "seq": 1
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225689000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "be2bcdea7e841d9dcbda5c9123f222c01d42abd8ffe624e294fc7d8ceccb493d"
+   },
+   "seq": 2
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:gate0:1",
+   "at": 1767225715000,
+   "actor": "factory",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "key": "m:gate:f:gate0:1"
+   },
+   "seq": 3
+  },
+  {
+   "type": "walk.admitted",
+   "subject": "f",
+   "at": 1767225744000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:gate0:1",
+   "data": {
+    "gate": "gate:f:gate0:1",
+    "required": [],
+    "cap": 2,
+    "overrideTriage": false,
+    "applicability": {
+     "2a-experience": {
+      "applies": false,
+      "why": "rule"
+     },
+     "6a-ui-review": {
+      "applies": false,
+      "why": "rule"
+     }
+    },
+    "skipped": []
+   },
+   "seq": 4
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225746000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "2a-experience",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ],
+      "journeys": "any"
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match",
+      "journeys": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]; the row cites no journey"
+    }
+   },
+   "seq": 5
+  },
+  {
+   "type": "gate.not-applicable",
+   "subject": "f",
+   "at": 1767225747000,
+   "actor": "factory",
+   "cause": "walk:f:pin",
+   "data": {
+    "gate": "6a-ui-review",
+    "reason": {
+     "rule": {
+      "paths": [
+       "web/**",
+       "app/**",
+       "**/*.tsx",
+       "**/*.vue",
+       "**/*.css",
+       "design/**"
+      ],
+      "labels": [
+       "ui"
+      ]
+     },
+     "evaluated": {
+      "paths": "no-match",
+      "labels": "no-match"
+     },
+     "verdict": false,
+     "text": "does not apply: no path matches [web/**, app/**, **/*.tsx, **/*.vue, **/*.css, design/**]; no label is one of [ui]"
+    }
+   },
+   "seq": 6
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225790000,
+   "actor": "task:10",
+   "cause": "walk:f:open:1-concept:1",
+   "data": {
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9",
+    "gateKey": "1-concept"
+   },
+   "seq": 7
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225836000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "1863c2347be18cad9d6c65c5d7dedabe1f2fb672a70e4dd26b1552558a997fa9"
+   },
+   "seq": 8
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:1-concept:1",
+   "at": 1767225862000,
+   "actor": "factory",
+   "cause": "m:gate:f:1-concept:1",
+   "data": {
+    "key": "m:gate:f:1-concept:1"
+   },
+   "seq": 9
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225950000,
+   "actor": "task:10",
+   "cause": "walk:f:open:2-architecture:1",
+   "data": {
+    "briefRef": "dcc61215617f859a02ce422dfaecc2c35e24e321d7cc92f38eb68f57e5b0ace7",
+    "gateKey": "2-architecture"
+   },
+   "seq": 10
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767225996000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "dcc61215617f859a02ce422dfaecc2c35e24e321d7cc92f38eb68f57e5b0ace7"
+   },
+   "seq": 11
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:2-architecture:1",
+   "at": 1767226022000,
+   "actor": "factory",
+   "cause": "m:gate:f:2-architecture:1",
+   "data": {
+    "key": "m:gate:f:2-architecture:1"
+   },
+   "seq": 12
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226083000,
+   "actor": "task:10",
+   "cause": "walk:f:open:3-spec:1",
+   "data": {
+    "briefRef": "1764182bb2c406990a20b1339c95491d46d6e538d9e5b4eb300e99d5bb6ca56f",
+    "gateKey": "3-spec"
+   },
+   "seq": 13
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226129000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "1764182bb2c406990a20b1339c95491d46d6e538d9e5b4eb300e99d5bb6ca56f"
+   },
+   "seq": 14
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:3-spec:1",
+   "at": 1767226155000,
+   "actor": "factory",
+   "cause": "m:gate:f:3-spec:1",
+   "data": {
+    "key": "m:gate:f:3-spec:1"
+   },
+   "seq": 15
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226216000,
+   "actor": "task:10",
+   "cause": "walk:f:open:4-plan:1",
+   "data": {
+    "briefRef": "e36c5a0805153ffbbcf539e524c35d4437895dfb2b3a7b2defd23549d2113ab1",
+    "gateKey": "4-plan"
+   },
+   "seq": 16
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226262000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:4-plan:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "e36c5a0805153ffbbcf539e524c35d4437895dfb2b3a7b2defd23549d2113ab1"
+   },
+   "seq": 17
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:4-plan:1",
+   "at": 1767226288000,
+   "actor": "factory",
+   "cause": "m:gate:f:4-plan:1",
+   "data": {
+    "key": "m:gate:f:4-plan:1"
+   },
+   "seq": 18
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226349000,
+   "actor": "task:10",
+   "cause": "walk:f:open:5-checkpoint:1",
+   "data": {
+    "briefRef": "3ee1ee4282cd884266941255dc88df7f5fa58eb257a8e1fa4eda0eef26f2a27a",
+    "gateKey": "5-checkpoint"
+   },
+   "seq": 19
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226395000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:5-checkpoint:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "3ee1ee4282cd884266941255dc88df7f5fa58eb257a8e1fa4eda0eef26f2a27a"
+   },
+   "seq": 20
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:5-checkpoint:1",
+   "at": 1767226421000,
+   "actor": "factory",
+   "cause": "m:gate:f:5-checkpoint:1",
+   "data": {
+    "key": "m:gate:f:5-checkpoint:1"
+   },
+   "seq": 21
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226482000,
+   "actor": "task:10",
+   "cause": "walk:f:open:6-review:1",
+   "data": {
+    "briefRef": "a9bd62a0d37a56863759ddb4e8886fd6a6e780ab201088beef07e43db6350734",
+    "gateKey": "6-review"
+   },
+   "seq": 22
+  },
+  {
+   "type": "move.committed",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226528000,
+   "actor": "script:r14",
+   "cause": "m:gate:f:6-review:1",
+   "data": {
+    "kind": "approve",
+    "briefRef": "a9bd62a0d37a56863759ddb4e8886fd6a6e780ab201088beef07e43db6350734"
+   },
+   "seq": 23
+  },
+  {
+   "type": "gate.settled",
+   "subject": "gate:f:6-review:1",
+   "at": 1767226554000,
+   "actor": "factory",
+   "cause": "m:gate:f:6-review:1",
+   "data": {
+    "key": "m:gate:f:6-review:1"
+   },
+   "seq": 24
+  },
+  {
+   "type": "gate.became-applicable",
+   "subject": "f",
+   "at": 1767226573000,
+   "actor": "factory",
+   "cause": "walk:f:ui-slot",
+   "data": {
+    "gate": "6a-ui-review",
+    "reason": {
+     "rule": {
+      "diff": [
+       "ui_files_changed",
+       "tokens_changed",
+       "routes_changed"
+      ]
+     },
+     "evaluated": {
+      "diff": "match"
+     },
+     "verdict": true,
+     "text": "applies: the changed files meet \"ui_files_changed\" (the gate was pinned not applicable at admission)"
+    }
+   },
+   "seq": 25
+  },
+  {
+   "type": "gate.opened",
+   "subject": "gate:f:6a-ui-review:1",
+   "at": 1767226645000,
+   "actor": "task:10",
+   "cause": "walk:f:open:6a-ui-review:1",
+   "data": {
+    "briefRef": "d8a00d618d2057d9dee4fc521621fc6a655bdd14f7cbe9ad014a4994034f5caf",
+    "gateKey": "6a-ui-review"
+   },
+   "seq": 26
+  }
+ ]
+}

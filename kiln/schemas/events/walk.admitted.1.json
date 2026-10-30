@@ -1,0 +1,57 @@
+{
+ "$id": "kiln:event:walk.admitted/1",
+ "additionalProperties": false,
+ "properties": {
+  "applicability": {
+   "additionalProperties": {
+    "additionalProperties": false,
+    "properties": {
+     "applies": {
+      "type": "boolean"
+     },
+     "why": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "applies",
+     "why"
+    ],
+    "type": "object"
+   },
+   "type": "object"
+  },
+  "cap": {
+   "type": "integer"
+  },
+  "gate": {
+   "minLength": 1,
+   "type": "string"
+  },
+  "overrideTriage": {
+   "type": "boolean"
+  },
+  "required": {
+   "items": {
+    "type": "string"
+   },
+   "type": "array"
+  },
+  "skipped": {
+   "items": {
+    "type": "string"
+   },
+   "type": "array"
+  }
+ },
+ "required": [
+  "gate",
+  "required",
+  "cap",
+  "overrideTriage",
+  "applicability",
+  "skipped"
+ ],
+ "title": "walk.admitted (version 1)",
+ "type": "object"
+}
