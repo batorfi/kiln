@@ -2,7 +2,7 @@
 
 > **Type:** explainer — for understanding, not a specification. **Audience:** engineers who will build on KILN's durable core (the walk of r14, workers of r16, the director of r18) and need to know exactly what each kind of durable task *is*, what it stores, how it waits, and what survives a crash.
 > **Status tags:** **[built]** exists and is proven in row r13; **[planned]** is named in the code or the roadmap but not built yet.
-> **Basis:** the code in `kiln/packages/durable/src/{tasks,gate}/` and `kiln/packages/lane/src/lane-task.ts`, and the proofs in their `tests/`. **Vocabulary:** [docs/vocabulary.md](../../../vocabulary.md). **The runtime underneath:** [Pi Durable tasks](../pi-durable-tasks.md).
+> **Basis:** the code in `kiln/packages/durable/src/{tasks,gate}/` and `kiln/packages/lane/src/lane-task.ts`, and the proofs in their `tests/`. **Vocabulary:** [docs/vocabulary.md](../../../vocabulary.md). **The runtime underneath:** [Pi Durable tasks](../pi-durable-tasks.md). **What the gates ask and decide:** [the twelve gates](../gates/README.md).
 
 ## 1. What "a task kind" means here
 
