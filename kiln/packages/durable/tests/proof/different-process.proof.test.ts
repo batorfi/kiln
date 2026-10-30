@@ -13,8 +13,9 @@ import { checkInvariants, checkStability } from "./support/oracle.ts";
 import { assertAllFired } from "./support/guard.ts";
 import { killNow, makeStore, spawnOwner, startOwner, type OwnerOptions, type TestStore } from "./support/harness.ts";
 import { json, kiln, type Ran } from "../../../cli/tests/support/kiln.ts";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 
 const GATE = "gate:demo:gate0:1";
 const BRIEF_FILE = fileURLToPath(new URL("../../../../fixtures/demo-brief.json", import.meta.url));
@@ -125,10 +126,12 @@ test("separate process: a move during start-up is not-ready (transient), and the
   const life1 = await serve(ts);
   await open(ts);
   await killNow(life1);
-  const life2 = await serve(ts, { holdAt: "wait.before-register", holdMs: 1500 });
+  const release = join(ts.dir, "release-start-up");
+  const life2 = await serve(ts, { holdAt: "wait.before-register", holdUntilFile: release }); // held until WE release it: a fixed delay raced the start-up of the command-line process below
   const early = await move(ts, "m1");
   assert.equal(early.code, 0, early.stderr);
   assert.deepEqual([json(early).status, json(early).reason], ["refused", "not-ready"]);
+  writeFileSync(release, "go");
   const deadline = Date.now() + 15_000;
   let again = await move(ts, "m1");
   while (json(again).reason === "not-ready" && Date.now() < deadline) { await sleep(200); again = await move(ts, "m1"); }
