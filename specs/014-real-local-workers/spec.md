@@ -23,6 +23,9 @@
 - Q: Before r17 ships configuration as files, what carries r16's role→tier→tool roster for its own proof? → A: **A small provisional roster module inside this row's own package** (`packages/workers/`), not a config file format and not scattered constants — one place r17 deletes and replaces wholesale. It declares, for each role this row proves (at least one producer and one judge): its tier, its permitted tools, and whether it is a judge (feeding the existing `isJudge`/`bindRole`). It is explicitly marked provisional in its own file header, and `kiln check` gets no new check *for* it (r17 owns validating the real config format).
 - Q: Which local model(s) does the proof (and CI) require? → A: **One pinned default, overridable by an environment variable**, following the existing legacy convention (`KILN_LIVE_MODEL`, default `gemma4:12b` there) rather than inventing a new one. The proof walk may run a worker and a judge step on the *same* resident model when memory does not allow two residents on the test machine — this still proves every mechanism (real conversation, replay discipline, residency, tier refusal when the model is made unavailable) except a genuine tier-driven swap, which is proven separately with a second, smaller model asserted only where the test machine supports it. Readiness probes run against whatever models are actually installed and are skipped, by name, for a model that is not.
 - Q: What is the minimal tool set r16 needs to prove replay discipline (WORK-4) without r17's full tool-configuration system? → A: **Two tools, hand-declared for this row's proof roles**: one read-only tool (reads a file in the feature's workspace) and one write tool (writes a file in the feature's workspace) — enough to exercise both branches of FR-010–FR-013 for real. No shell/command tool and no subagent tool are given to any role in this row (WORK-3 forbids the latter outright); a broader tool library is r17's and later rows'.
+- Q: What should happen when a real model call simply never returns? → A: **A per-step timeout, configured per tier.** A step that exceeds it fails by name (`unit.failed`), releases the lane lease it holds, and the gate it belongs to simply keeps waiting for a person — a timeout ends a *step*, never a gate (constitution V: nothing settles on a clock).
+- Q: Does this row need to record real per-step token usage and cost, or only detect whether a model is capable of reporting it? → A: **Capability-detection only.** The readiness probe (FR-040) reports whether a model *can* report usage; this row does not persist real token or cost figures per step. Actually recording and surfacing usage/cost is left to the rows that already own it — r27 (health) and r36 (full observability).
+- Q: How much detail does the interruption notice (FR-012) give the resumed model? → A: **A structured list.** Each tool call made before the interruption is named with its arguments; a write or command call is explicitly flagged as already executed and must not be repeated. Specific enough to make "don't repeat this" an exact, testable instruction rather than prose the model might not heed.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -57,6 +60,7 @@ A timer is free to redo. A real generation is not: a kill between a tool call an
 2. **Given** a step mid-generation whose model already called a write or command tool, **When** the owner is killed and restarts, **Then** that call is never re-issued; the resumed conversation's first turn tells the model it was interrupted and states what already happened.
 3. **Given** a step that never called a non-replay-safe tool before the kill, **When** it resumes, **Then** it behaves exactly as an uninterrupted step would — no interruption notice is needed or given.
 4. **Given** the step eventually finishes, **When** its result commits, **Then** it commits exactly once, in the same atomic checkpoint-then-commit discipline `kiln.unit` already uses (CORE-4): a half-done generation never commits a result.
+5. **Given** a step's generation exceeds its tier's configured timeout, **When** the timeout fires, **Then** the step fails by name (`unit.failed`), releases the lane lease it holds, and the gate it belongs to continues waiting for a person — the timeout never settles a gate.
 
 ---
 
@@ -134,6 +138,7 @@ The row's own "Proven when" line. A feature already defined as a flow walk (r14)
 - A write tool's effect is ambiguous after a kill (uncertain whether the write landed): the resumed conversation is told of the interruption regardless of certainty — never assumed safe because "it probably didn't run."
 - The resident model is removed from Ollama between a judge's readiness probe and its actual step: detected and refused at the real acquire, not assumed still valid from an earlier probe (User Story 5, FR-042).
 - The harness's own housekeeping (compaction) needs a model while its own step already holds the lane lease: it MUST share that lease, not acquire a second one.
+- A model call hangs past its tier's configured timeout: the step fails by name, releases the lane, and the gate it belongs to keeps waiting for a person — never settled by the clock (constitution V).
 
 ## Requirements *(mandatory)*
 
@@ -147,12 +152,18 @@ The row's own "Proven when" line. A feature already defined as a flow walk (r14)
 - **FR-004**: Every step MUST carry a deterministic `requestId` derived from (feature, gate, step, attempt), so a redone request is identifiable as the same request, not a new one.
 - **FR-005**: A role's permitted tool set MUST be enforced by what the conversation is actually offered, never by an instruction to the model alone.
 
+**Timeouts and hung generations (reliability)**
+
+- **FR-006**: A step's generation MUST have a timeout, configurable per tier; a step that exceeds it MUST be treated as a named failure (`unit.failed`), never left running indefinitely.
+- **FR-007**: A step that times out MUST release the lane lease it holds before it fails, so a hung step never blocks a later step from acquiring the lane.
+- **FR-008**: A timeout MUST NOT settle a gate: the gate the timed-out step belonged to MUST continue waiting for a person's move, exactly as it would after any other failed or stalled step (constitution V).
+
 **Replay discipline (WORK-4)**
 
 - **FR-010**: Every tool available to a role MUST be classified, once and declared (never inferred), as read-only (replay-safe) or write/command (not replay-safe).
 - **FR-011**: When a step resumes after an interruption, a read-only tool call already made in that step's unfinished generation MAY be re-issued, or its recorded result reused, with no visible effect on the conversation.
-- **FR-012**: When a step resumes after an interruption, a write or command tool call already made in that step's unfinished generation MUST NOT be re-issued. The resumed conversation's first turn MUST tell the model it was interrupted and state what is already known to have happened.
-- **FR-013**: A step's checkpoint MUST record enough about what the model did before an interruption to tell replay-safe work apart from not-yet-replayed, unsafe work; a checkpoint that cannot make this distinction MUST NOT be committed.
+- **FR-012**: When a step resumes after an interruption, a write or command tool call already made in that step's unfinished generation MUST NOT be re-issued. The resumed conversation's first turn MUST tell the model it was interrupted and give a **structured list** of every tool call already made — its name and arguments — with each write or command call explicitly flagged as already executed and not to be repeated.
+- **FR-013**: A step's checkpoint MUST record enough about what the model did before an interruption — each tool call's name, arguments and replay-safety classification — to build FR-012's structured list and to tell replay-safe work apart from not-yet-replayed, unsafe work; a checkpoint that cannot make this distinction MUST NOT be committed.
 - **FR-014**: A step's result MUST commit exactly once, in the same checkpoint-then-commit discipline `kiln.unit` already uses (CORE-4): a half-done generation MUST NOT commit a result.
 
 **Residency and the lane (LANE-1, LANE-2, LANE-3)**
@@ -174,9 +185,10 @@ The row's own "Proven when" line. A feature already defined as a flow walk (r14)
 
 **Readiness**
 
-- **FR-040**: A readiness probe MUST exist for each model named by the row's provisional configuration, checking at least: tool-calling support, streaming support, usage/token accounting, and context-window size.
+- **FR-040**: A readiness probe MUST exist for each model named by the row's provisional configuration, checking at least: tool-calling support, streaming support, usage/token-accounting **capability**, and context-window size.
 - **FR-041**: A role requiring a capability (for example tool calling) MUST NOT be bound to a model whose readiness probe reports that capability absent; the refusal MUST name the missing capability.
 - **FR-042**: A readiness result MUST be re-checked at the point a model is actually requested to become resident, not only cached from an earlier probe, so a model removed after its probe is caught at acquire time.
+- **FR-043**: This row MUST NOT persist real per-step token usage or cost figures; the usage-accounting probe (FR-040) reports only whether a model is *capable* of reporting usage. Recording and surfacing real usage/cost is explicitly left to r27 (health) and r36 (full observability).
 
 **The provisional roster (pending r17)**
 
@@ -197,19 +209,20 @@ The row's own "Proven when" line. A feature already defined as a flow walk (r14)
 - **KILN provider**: the one front for every model request — including the harness's own — enforcing that a request targets the resident model and holds the right lane lease.
 - **Model pool**: the host's resident set within a memory budget; extends the existing `kiln.lane` document (`resident`, `hold`, `swaps`, `lease`) with real loads and unloads.
 - **Readiness probe**: a per-model check of tool-calling, streaming, usage accounting and context window, run before a role may bind to that model and re-checked at acquire time.
-- **Interruption notice**: the message a resumed conversation receives in its first turn after a kill, naming what is already known to have happened.
+- **Interruption notice**: the structured list a resumed conversation receives in its first turn after a kill — each prior tool call's name and arguments, with every write or command call flagged as already executed and not to be repeated.
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
 - **SC-001**: A scripted feature (reusing the r14/r15 interface-feature fixture) walks every applicable gate with every worker and judge step a real pi-ai conversation against a resident Ollama model — **0** steps use the old `stepMs` stand-in — and reaches Merge with a person deciding every gate.
-- **SC-002**: Killing the owner mid-generation at a named point and restarting resumes the walk to the same completed state as an uninterrupted run; across a named set of kill points, a write or command tool the model called before the kill executes exactly **once** — **0** double-executions.
+- **SC-002**: Killing the owner mid-generation at a named point and restarting resumes the walk to the same completed state as an uninterrupted run; across a named set of kill points, a write or command tool the model called before the kill executes exactly **once** — **0** double-executions — and **100%** of resumed steps that had a prior tool call receive a structured interruption notice naming that call and, for a write or command, flagging it as already executed.
 - **SC-003**: Every judge step in the proof walk records a model that is the strongest the row's configuration allows; **100%** of attempts to bind a judge to a weaker tier are refused before any conversation opens.
 - **SC-004**: A model loaded directly against Ollama outside the KILN provider is detected and recorded as a broken-guarantee event in **100%** of a negative suite's attempts.
 - **SC-005**: Every model named by the row's configuration has a readiness result for tool calling, streaming, usage accounting and context window; **100%** of a negative suite's attempts to bind a role to a model failing a capability it needs are refused by name.
 - **SC-006**: The resident set never exceeds the configured memory budget during the proof walk; a swap is counted only when the required tier actually changed, matching the existing affinity logic's prediction exactly, in every run.
 - **SC-007**: Everything r13, r14 and r15 proved still passes (default tier, proof tier); `legacy/` and `specs/ROADMAP.md` are unchanged by the build; `kiln check` passes, with no new network port and no egress beyond loopback.
+- **SC-008**: A step whose generation is made to exceed its tier's timeout fails by name in **100%** of trials, releases its lane lease before failing, and the gate it belonged to is never settled by the timeout — only by a person's later move.
 
 ## Assumptions
 
