@@ -73,9 +73,9 @@ description: "Task list for real local workers (row r16)"
 
 **Independent Test**: configure a judge step whose strongest model is deliberately made unavailable; show the step waits and names the reason rather than running on a different resident model; make it available and show it proceeds.
 
-- [ ] T015 [P] [US4] Prove T008's `bindConversationRole` refusal happens before any `pi-ai` call: `W/tests/judge-tier-refusal.test.ts` with a spy on `W/src/provider.ts`'s request function — a judge entry bound to anything but `strongest` throws and the spy is never called.
-- [ ] T016 [P] [US4] Prove a judge's residency failure never substitutes a different model: `L/tests/residency.test.ts` (or a new `L/tests/judge-no-fallback.test.ts`) — make the strongest model's `load()` reject (fake HTTP layer); the caller's step waits (no `unit.settled`, lane released per the existing failure path), and a later successful `load()` of the **same** model, on the walk's own re-ask, lets the step proceed — never a different, already-resident model instead (FR-031).
-- [ ] T017 [US4] **Checkpoint**: green; commit; `S/baseline.md`.
+- [X] T015 [P] [US4] Prove T008's `bindConversationRole` refusal happens before any `pi-ai` call: `W/tests/judge-tier-refusal.test.ts` with a spy on `W/src/provider.ts`'s request function — a judge entry bound to anything but `strongest` throws and the spy is never called. **As built**: the real `PROVISIONAL_ROSTER.reviewer` entry is already `strongest`, so the test proves the *sequencing invariant* `runTurn` (T018) will follow — `bindRole`/`bindConversationRole` checked before a spy standing in for the provider call — rather than forcing a weaker tier through the real roster module.
+- [X] T016 [P] [US4] Prove a judge's residency failure never substitutes a different model: new `L/tests/judge-no-fallback.test.ts` — the strongest model's `load()` rejects (fake HTTP layer), never falling back to a different, already-resident model; a later re-ask for the **same** model succeeds once Ollama can load it; a second test confirms the tier check (T015) precedes any residency request at all.
+- [X] T017 [US4] **Checkpoint**: green; commit; `S/baseline.md`. `npm test` 865 new + 500 legacy (30 skipped), exit 0; `npm run check` five `PASS`.
 
 **Checkpoint**: constitution II holds under the new machinery, proven before the big mechanism (US1) exists.
 

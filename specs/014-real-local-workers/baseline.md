@@ -23,3 +23,11 @@ After T001–T013, all new source is built and unit-tested in isolation; `kiln.u
 - The live-model tier (`npm run test:live-models`) runs for real against this machine's installed Ollama (0.35.1) and `gemma4:12b` — not merely skipping: a real `pi-ai` completion, a real residency probe (tool-calling/streaming/usage all confirmed `true`), and a real `load()` with `keep_alive: -1` verified by request inspection.
 - `npm run proof` — exit `0`. `proof: 128 tests`, ~533s — same 128 as before this phase (no new proof-tier kill-point tests yet; those land in T026/US2).
 - `git diff main -- legacy` — empty, unchanged. `specs/ROADMAP.md` hash unchanged from T001.
+
+## Phase 3 checkpoint (T017) — US4: a judge is never silently weaker
+
+Pure proof on top of Foundational's existing machinery — no `unit.ts` change yet, no new source files beyond two test files.
+
+- `cd kiln && npm test` — exit `0`. `new: 865 tests · legacy: 500 tests (30 skipped)` (5 new: `judge-tier-refusal` ×3, `judge-no-fallback` ×2).
+- `npm run check` — all five checks `PASS`, unchanged from T014.
+- Proves: `bindConversationRole`'s tier refusal happens before any provider call (sequencing proof via spy, since the real roster's `reviewer` entry is already `strongest`); a judge's residency failure never substitutes a different model — only a retry of the *same* model can succeed; the tier check happens before residency is ever asked for a model at all.
