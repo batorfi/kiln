@@ -151,8 +151,15 @@ export interface LaneApi {
    * Take the lane for `step`, waiting its turn (at most one holder). One commit: the lease, the resident model, the hold flag, the swap count and the `lane.*` outbox entries (FR-031). Rejects if
    * `opts.signal` aborts while waiting. `hold` defaults to false; `model` left out keeps the resident one.
    */
-  acquire(step: TaskId, opts?: { model?: string; hold?: boolean; signal?: AbortSignal; cause?: string }): Promise<Lease>;
+  /** `pin` (r16, FR-024): the resident model survives a later `release()`'s unload — for a judge that must not cause its strongest model to be unloaded between judged steps. */
+  acquire(step: TaskId, opts?: { model?: string; hold?: boolean; pin?: boolean; signal?: AbortSignal; cause?: string }): Promise<Lease>;
   release(step: TaskId): Promise<void>;
+  /**
+   * r16 T012: true iff `step` currently holds the lease, synchronously, with no wait and no commit — so a caller
+   * (the KILN provider) can tell "I already hold it" apart from "I need to ask" before deciding whether to acquire.
+   * Optional so an implementation without it is simply never asked (`requestThroughLane` falls back to acquiring).
+   */
+  holds?(step: TaskId): boolean;
 }
 
 // ── inspection: read by a fresh reader with NO owner (data-model §7) ─────────────────────────────────────────────────────

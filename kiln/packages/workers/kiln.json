@@ -1,4 +1,4 @@
 {
   "name": "@kiln/workers",
-  "responsibility": "Role conversations on models — tool sets, replay policy and providers; the only importer of pi-ai for model calls (the durable seam imports pi-ai's model registry only to satisfy the library's required option, with no provider) — arrives with r16."
+  "responsibility": "Role conversations on real local models (r16): the provisional role roster (tier, tools, judge flag — replaced wholesale by r17), the two hand-declared tools and their replay-safety classification, the Ollama provider registered on pi-ai's openai-completions API, and the structured interruption notice built from a step's checkpoint. The only package that imports pi-ai's request surface (`stream`/`complete`, `createModels`/`setProvider`); the durable seam's own `createModels()` call stays at zero providers, unchanged."
 }
