@@ -156,11 +156,11 @@ test("a malformed allowlist fails network-allowlist-invalid instead of throwing"
   tree({ ...OK, "checks/network-allowlist.json": "{ not json" }, (k) => assert.deepEqual(codes(checkNetwork({ kilnDir: k })), ["network-allowlist-invalid"]));
 });
 
-test("the REAL tree passes, scans a non-trivial number of files, and the allowlist is empty", () => {
+test("the REAL tree passes, scans a non-trivial number of files, and the allowlist has r16's one loopback-only entry", () => {
   const r = checkNetwork();
   assert.deepEqual(r.failures, []);
   assert.ok((r.scanned ?? 0) >= 15, `scanned ${r.scanned}`);
-  assert.ok(r.notes.some((n) => /allowlist: 0 entries/.test(n)));
+  assert.ok(r.notes.some((n) => /allowlist: 1 entry/.test(n)));
 });
 
 // ── lex.ts: what the boundary check shares ──────────────────────────────────────────────────────────────────────────────────────────

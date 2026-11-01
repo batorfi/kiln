@@ -35,7 +35,7 @@ test("the real tree passes, and its notes say what was checked", () => {
   const r = checkBoundaries();
   assert.deepEqual(r.failures, []);
   assert.ok(r.notes.some((n) => /3 dependencies, exact and locked/.test(n)), r.notes.join("|"));
-  assert.ok(r.notes.some((n) => /1 external seam/.test(n)), r.notes.join("|"));
+  assert.ok(r.notes.some((n) => /2 external seams/.test(n)), r.notes.join("|")); // r16: durable's seam to pi-durable, workers' seam to pi-ai
 });
 
 test("a scratch tree with the three pins and an agreeing lockfile passes", () => {

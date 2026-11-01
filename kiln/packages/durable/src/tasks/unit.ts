@@ -6,6 +6,18 @@
 // the workers port (`s.workers`, `#durable/types.ts`'s `WorkersApi` — durable cannot import workers, the same
 // inversion as the lane). Everything AROUND that call — the commit/checkpoint shape, the lane acquire/hold/release,
 // the kill-point hooks, the release-on-error below — is exactly what a scripted unit already uses, unchanged.
+//
+// r16 T023: `runTurn` now returns `{kind:"continue"}` after EACH tool call (never the whole conversation at once), so
+// the commit below happens once per tool call, exactly as it already does once per scripted step — a kill between
+// two tool calls can only lose work that was never committed (CORE-4, now proven for a real generation too).
+//
+// r16 T025: a generation that exceeds its tier's timeout rejects `runTurn`'s promise with `GenerationTimeoutError`
+// (research R6) — `run.signal.aborted` is still false for this (it is a SEPARATE signal from the factory's own close
+// signal), so the existing `catch` block below already takes the right path with no special case: the lane is
+// released (held && !aborted) and the error propagates uncaught, which is exactly how the pinned library turns an
+// uncaught phase error into the task's own `unit.failed` outcome (unit-events.ts) — never a gate, never a clock
+// (constitution V, FR-008): only this ONE step fails, and the gate it belonged to is left exactly as any other
+// failed step leaves it, waiting for a person.
 import { appendUnitEvent } from "../record/unit-events.ts";
 import type { Services } from "../services.ts";
 import { defineKilnTask, type TaskKind } from "../store.ts";
@@ -51,11 +63,13 @@ export function unitKind(s: Services): TaskKind<UnitSpec, UnitCheckpoint, UnitRe
             });
             if (run.signal.aborted) return; // the factory is closing: nothing is committed
             await s.hooks.at("unit.step-after-work"); // the work is done and NOT yet recorded: a kill here redoes it
+            if (turn.kind === "done") await s.hooks.at("unit.pre-result-commit"); // r16 T026: the generation is finished, its result not yet committed
             await run.commit(async (tx) => {
               if (turn.kind === "continue") return { status: "running", checkpoint: turn.checkpoint };
               await appendUnitEvent(tx, s, "unit.settled", { unit: task.id, label, owner: (await tx.task(task.id))?.owner ?? null, actor: `task:${task.id}`, cause: `task:${task.id}` });
               return { status: "terminal", outcome: { status: "completed", result: turn.result } };
             });
+            if (turn.kind === "continue") await s.hooks.at("unit.tool-call-committed"); // r16 T026: this one tool call's result just committed, before the model's next turn
           } else {
             // the scripted work of step i — pure in its inputs, so redoing it after a kill gives the same answer
             if (stepMs) await new Promise<void>((resolve) => {

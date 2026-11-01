@@ -10,16 +10,20 @@ Types and signatures only, in KILN's terms. `packages/workers/` is the **only** 
 interface TurnInput {
   unit: TaskId;
   role: string;                         // a key into the provisional roster (data-model.md §1)
+  model: string;                        // AS BUILT: the model this turn's conversation runs on — the unit's own `model` field, reused
+  workspace: string;                    // AS BUILT: the conversation's tools' working directory
   inputs: ArtifactRef[];                // the step's explicit, recorded inputs (spec FR-002) — never free text
-  checkpoint: UnitCheckpoint;            // the unit's current checkpoint (data-model.md §3); toolCalls, if any, drive resume behaviour
+  checkpoint: UnitCheckpoint;            // the unit's current checkpoint (data-model.md §3); toolCalls/pending, if any, drive resume behaviour
   signal: AbortSignal;                   // composed with the factory's own close signal (unit.ts already has this)
 }
 type TurnResult =
-  | { kind: "continue"; checkpoint: UnitCheckpoint }   // more turns needed; unit.ts re-invokes runTurn with the new checkpoint
-  | { kind: "done"; result: UnitResult };               // the step's real artifact — replaces the sleep stand-in's {label, results}
+  | { kind: "continue"; checkpoint: UnitCheckpoint }   // ONE tool call just ran and committed; unit.ts re-invokes runTurn with the new checkpoint before anything else happens
+  | { kind: "done"; result: UnitResult };               // the model's reply carried no tool calls — the step's real artifact, replacing the sleep stand-in's {label, results}
 
 function runTurn(input: TurnInput): Promise<TurnResult>;   // throws GenerationTimeoutError on the role's tier timeout (R6); never swallows an abort
 ```
+
+**AS BUILT (T023), a correction**: `"continue"` is not "more turns needed" in the loose sense first sketched — it is returned after EXACTLY one tool call's result has been committed, never after a whole round. A reply with several tool calls is drained one at a time across several `"continue"` calls (`checkpoint.pending` holds the rest) before `runTurn` ever asks the model again. This is what makes a kill between any two tool calls safe: only committed calls ever happened as far as the record is concerned.
 
 `runTurn` is the **only** function `unit.ts`'s `work` phase calls in place of today's `sleep(stepMs)`. It does not acquire or release the lane itself — `unit.ts` still does that around the call, exactly as it does today, because the lease boundary (one lease per step, released on every exit path) is already proven and this row does not re-derive it.
 

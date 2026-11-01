@@ -91,3 +91,16 @@ packages/contracts/src/events/catalog/lane.ts:
 ## T022 checkpoint — the live-model tier ran fully, nothing skipped
 
 `npm run test:live-models` — 82 of 82, 0 skipped: this host's Ollama (0.35.1) and `gemma4:12b` were both present for every live case across `tests/runner/live-gate.test.ts`, `packages/workers/tests/*` and `packages/lane/tests/*`, including the new end-to-end worker-turn test (a real provider call, a real `KilnProvider` lease, a real `read-file` tool execution). `npm run proof` was re-run in full (not just the default tier) specifically because `unit.ts`'s structural change (the new `role` branch sharing the existing try/catch/lane-release path) is exactly the kind of change the proof tier's kill-point matrix exists to catch if it were wrong — see the T022 checkpoint entry in `S/baseline.md` for the result.
+
+## Found starting T023: three checkpoints' own `npm test` had been silently passing a FAILING suite since T014
+
+**Root cause, confirmed, not guessed**: every prior checkpoint in this row ran `npm test` piped into something (`| tail -80`, for this session's own first background run) — a pipe reports the LAST command's exit code (`tail`'s, always 0), not `npm test`'s own. The actual suite had been failing since T014's own commit and nobody saw it, because nobody ran it unpiped until this phase.
+
+**What was actually broken, all pre-existing from T001–T014, none of it T023's own code**: five hardcoded literal assertions in test files that check `kiln check`'s exact printed text against the REAL tree, written when r16 had zero external seams to pi-ai and an empty network allowlist, never updated when T009/T011 legitimately added one of each:
+- `packages/cli/tests/check-boundaries.test.ts` and `checks/tests/boundaries-dependencies.test.ts`: expected `"1 external seam"`, the real tree has said `"2 external seams"` since T004/T009 (durable's seam to pi-durable, workers' new seam to pi-ai). Fixed: both now expect `2`.
+- `packages/cli/tests/check-network.test.ts` and `checks/tests/network-lint.test.ts`: expected `"allowlist: 0 entries"`, the real tree has said `"1 entry"` since T014 (`residency.ts`'s loopback-only fetch). Fixed: both now expect `1`.
+- `packages/durable/tests/seam.test.ts`'s test (c), written in r13 to prove **nothing in the whole tree** registers a model provider — true before r16, and r16 is *exactly* the row that makes it stop being true, on purpose, in exactly one place. Fixed: the test now excludes `packages/workers/` by name (the one place research R2/R9 sanctions this) and keeps asserting it of everywhere else, including the durable seam itself — not deleted, narrowed to what it can still honestly prove.
+
+**Not touched**: `checks/network-lint.test.ts`'s OTHER real-tree-adjacent tests that build a synthetic `NONE`-allowlist fixture (unaffected — they were never about the real tree) stay as they were.
+
+**Lesson for every checkpoint from here on**: run `npm test`/`npm run proof` directly, check `$?` explicitly, never through a pipe that can swallow the real exit code.

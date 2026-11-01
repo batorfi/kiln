@@ -28,7 +28,7 @@ test("kiln check network on the real tree exits 0 and reports the files scanned 
   const r = cli(kilnDir, "network");
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.match(r.stdout, /^PASS network — scanned \d+ files/m);
-  assert.match(r.stdout, /note: allowlist: 0 entries/);
+  assert.match(r.stdout, /note: allowlist: 1 entry/); // r16: packages/lane/src/residency.ts, loopback only
 });
 
 test("a fetch( planted in packages/lane/src exits 1, naming the file and network-call", () => {

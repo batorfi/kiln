@@ -162,12 +162,31 @@ export interface LaneApi {
   holds?(step: TaskId): boolean;
 }
 
-// ── the unit's checkpoint and result (r13; r16 T019 moves these here, unchanged, so the workers port below can name them; T023 extends the checkpoint with a tool-call log) ─────────────
+// ── the unit's checkpoint and result (r13; r16 T019 moves these here, unchanged, so the workers port below can name them) ─────────────
+/** One tool call, already executed and committed (r16 T023, research R4). Appended to `UnitCheckpoint.toolCalls` in the SAME commit as its result — never recorded before it ran, never left unrecorded after. */
+export interface ToolCallLogEntry {
+  id: string;
+  name: string;
+  arguments: Record<string, unknown>;
+  /** Declared by the tool itself (FR-010), copied here at the moment it ran — never re-derived later. */
+  replaySafe: boolean;
+  executed: true;
+  result: string;
+  isError: boolean;
+  /** Which model round this call belongs to — groups calls that were requested together in one reply, for faithful history reconstruction on resume. */
+  round: number;
+}
 export interface UnitCheckpoint {
   phase: "work";
   done: number;
   results: string[];
   started?: true;
+  /** r16 T023: every tool call a real-role unit's conversation has made so far, across every round, in commit order. Absent for a scripted (no-role) unit. */
+  toolCalls?: ToolCallLogEntry[];
+  /** r16 T023: tool calls the model's LAST reply asked for that have not yet run — processed one at a time, each its own commit, before the model is asked anything else. Absent once a round's calls are all executed. */
+  pending?: Array<{ id: string; name: string; arguments: Record<string, unknown> }>;
+  /** r16 T023: the round `pending` belongs to, and the last round actually asked for — lets a resume group `toolCalls` back into the rounds the model originally made them in. */
+  round?: number;
 }
 export interface UnitResult {
   label: string;

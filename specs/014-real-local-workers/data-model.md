@@ -32,7 +32,7 @@ interface ToolDecl {
 ## 3. The unit checkpoint — extended (R3, R4)
 
 ```ts
-// r13's shape (unchanged fields in plain text; new field in bold via comment)
+// r13's shape (unchanged fields in plain text; new fields via comment — AS BUILT, T023: richer than first sketched)
 interface UnitCheckpoint {
   phase: "work";
   done: number;
@@ -44,19 +44,27 @@ interface UnitCheckpoint {
     arguments: JsonObject;
     replaySafe: boolean;               // from ToolDecl.replaySafe at the time the call was made
     executed: true;                    // always true once logged — a call is only ever logged after it ran
+    result: string;                    // AS BUILT: the tool's own result text, needed to rebuild the model's conversation history on every call (§4)
+    isError: boolean;                  // AS BUILT: whether the tool call errored — carried into the rebuilt toolResult message
+    round: number;                     // AS BUILT: which model reply this call came from, so calls from one reply regroup into one rebuilt assistant message
   }>;
+  pending?: Array<{ id: string; name: string; arguments: JsonObject }>; // AS BUILT, T023: tool calls the model's LAST reply asked for that have not yet run — processed one at a time, before the model is asked anything else
+  round?: number;                      // AS BUILT: the round `pending` belongs to, and the last round actually asked for
 }
 ```
 
 Appended to `toolCalls` **in the same commit** as the tool's result is recorded (not a separate commit, not after the fact) — the same "an entry and the state it records are never apart" discipline r13/r15 already hold for every other append in this task kind. A unit's `work` phase that is still scripted (no real role, r13/r14's existing scripted units) never populates `toolCalls`; its shape is unchanged.
 
+**AS BUILT (T023), a correction to this section's original sketch**: a real-role `runTurn` no longer resolves a whole multi-round tool-use conversation in one call, as §7's `ProviderRequest` shape and the rest of this document originally implied by omission. Each call does AT MOST one of: run the single next `pending` call and commit it, or ask the model for a fresh round and commit only the FIRST tool call it asks for (queuing the rest in `pending`). `unit.ts`'s `work` phase therefore now commits once per TOOL CALL, not once per model round — the `toolCalls`/`pending`/`round` fields above are what make that resumable. This is why the checkpoint grew `result`/`isError`/`round` beyond the original two-field sketch: without them, the message history in §4 could not be rebuilt faithfully from the checkpoint alone after a kill.
+
 ## 4. The interruption notice (R5)
 
 ```ts
 interface InterruptionNotice {
-  // Not a persisted type: assembled on resume, in-memory, from UnitCheckpoint.toolCalls, then
-  // injected as the first message of the resumed conversation's turn (exact pi-ai Message
-  // variant — UserMessage vs. a per-call ToolResultMessage — confirmed at implementation, R5).
+  // Not a persisted type: assembled on resume, in-memory, from UnitCheckpoint.toolCalls. AS BUILT (T023): rendered
+  // as ONE synthetic UserMessage (not a per-call ToolResultMessage) and inserted right after the initial user
+  // message, before the rebuilt round-by-round assistant/toolResult history — `null` when toolCalls is empty, so
+  // nothing is inserted at all.
   lines: Array<{ name: string; arguments: JsonObject; alreadyExecuted: boolean }>;
 }
 ```

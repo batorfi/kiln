@@ -13,7 +13,10 @@ const PACKAGES = join(KILN, "packages");
 const DURABLE_SRC = join(PACKAGES, "durable", "src");
 const walk = (d: string): string[] => readdirSync(d).flatMap((f) => (f === "node_modules" ? [] : statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : f.endsWith(".ts") ? [join(d, f)] : []));
 const rel = (f: string) => relative(KILN, f).split(sep).join("/");
-const LIBRARY = /^@earendil-works\//;
+// r16: `@earendil-works/pi-ai` is workers' own sanctioned dependency (research R2/R9) — a different seam than this
+// test's own subject (the pi-durable runtime, reached only through durable/src/library/); test (c) below names pi-ai's
+// seam specifically. `chord` (pi-durable's execution context) stays durable-only, so only pi-ai is carved out here.
+const LIBRARY = /^@earendil-works\/(?!pi-ai\b)/;
 
 test("(a) the library is imported ONLY from packages/durable/src/library/ — every package, source and tests", () => {
   const all = walk(PACKAGES);
@@ -40,12 +43,13 @@ test("(b) the package's exported declarations contain NO name of the library (SC
   assert.match(readFileSync(join(DURABLE_SRC, "index.ts"), "utf8"), /export \{ openFactory \}/);
 });
 
-test("(c) no provider is ever registered, and nothing under the tree can make a model request", () => {
+test("(c) the durable seam itself never registers a provider or makes a model request — r16: packages/workers/ is now the ONE sanctioned exception to the tree-wide rule, enforced structurally by kiln check boundaries, not by this file", () => {
   const open = tokenize(readFileSync(join(DURABLE_SRC, "library", "open.ts"), "utf8")).code;
   assert.match(open, /createModels\(\)/, "the models object is built with no argument");
   for (const f of walk(PACKAGES)) {
     const code = tokenize(readFileSync(f, "utf8")).code;
     if (rel(f).includes("/tests/") && /seam\.test\.ts$/.test(f)) continue; // this file names the patterns
+    if (rel(f).startsWith("packages/workers/")) continue; // r16 research R2/R9: the ONE package allowed to import pi-ai's request surface
     assert.doesNotMatch(code, /\.setProvider\s*\(|\bregisterProvider\s*\(|pi-ai\/providers|\bopenaiProvider\b|\banthropicProvider\b|\bcomplete\s*\(\s*model/, `${rel(f)} registers a provider or requests a model`);
     for (const l of moduleLoads(tokenize(readFileSync(f, "utf8")))) if (l.specifier && /^@earendil-works\/pi-ai/.test(l.specifier)) assert.equal(l.specifier, "@earendil-works/pi-ai/models", `${rel(f)} imports ${l.specifier}`);
   }

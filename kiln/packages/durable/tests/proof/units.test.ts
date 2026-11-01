@@ -1,6 +1,11 @@
 // r13 T060 — a unit's step is killed at each of its named points, for each step index (spec US5, FR-020, SC-001): the owner dies by SIGKILL AT that point, a fresh reader sees a unit that is not
 // finished and carries NO result, and a restarted owner resumes from the last checkpoint and finishes with exactly the result an uninterrupted unit has — committed once, never half-recorded. The work of a
 // step that was cut off is redone, so its result appears once, not twice.
+//
+// r16 T026: `unit.tool-call-committed` and `unit.pre-result-commit` fire ONLY inside a real-role unit's conversation
+// branch — this file's SCRIPTED unit never reaches them, so they are excluded here (same pattern
+// walk-kill-points.proof.test.ts already uses for its own role-only points) and proven instead by
+// worker-replay.proof.test.ts, against a real-role unit.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { UNIT_KILL_POINTS } from "#durable/hooks.ts";
@@ -14,8 +19,10 @@ const SPEC = { label: "scan", steps: STEPS, stepMs: 60 };
 const EXPECTED = Array.from({ length: STEPS }, (_, i) => `scan:${i}`);
 const CREATE = { op: "createTask", key: "u1", kind: "kiln.unit", input: SPEC, owner: { kind: "factory" } };
 const fired = new Set<string>();
+const ROLE_ONLY_POINTS = ["unit.tool-call-committed", "unit.pre-result-commit"];
+const SCRIPTED_POINTS = UNIT_KILL_POINTS.filter((p) => !ROLE_ONLY_POINTS.includes(p));
 
-for (const point of UNIT_KILL_POINTS) {
+for (const point of SCRIPTED_POINTS) {
   for (let step = 0; step < STEPS; step++) {
     test(`killed at ${point} in step ${step}: no result is visible before the last commit, and the restart finishes with one complete result`, async () => {
       const ts = makeStore();
@@ -53,11 +60,11 @@ for (const point of UNIT_KILL_POINTS) {
   }
 }
 
-test("NEVER VACUOUS: every unit kill point fired in every step, and the run says how many", () => {
-  const cases = UNIT_KILL_POINTS.flatMap((p) => Array.from({ length: STEPS }, (_, s) => `${p}#${s}`));
+test("NEVER VACUOUS: every scripted-unit kill point fired in every step, and the run says how many", () => {
+  const cases = SCRIPTED_POINTS.flatMap((p) => Array.from({ length: STEPS }, (_, s) => `${p}#${s}`));
   const missing = cases.filter((c) => !fired.has(c));
   assert.deepEqual(missing, [], `declared but never fired: ${missing.join(", ")}`);
-  const { exercised, of } = assertAllFired(UNIT_KILL_POINTS, [...fired].map((c) => c.split("#")[0]));
+  const { exercised, of } = assertAllFired(SCRIPTED_POINTS, [...fired].map((c) => c.split("#")[0]));
   console.log(`unit kill points exercised: ${exercised} of ${of} × ${STEPS} steps = ${fired.size} cases`);
 });
 

@@ -1,7 +1,10 @@
-// r16 T018/T020 — `runTurn`: a fresh pi-ai conversation per call, offered exactly the role's declared tools, seeded
-// with explicit references (never raw text), run through the KILN provider's lease logic, with a deterministic
-// per-(unit,step) requestId. Mocked `complete` and a trivial `kilnProvider` (no live Ollama, T018's own requirement)
-// — the real `bindConversationRole`/`toolsFor` guards and the real tool-execution loop run unmocked.
+// r16 T018/T020/T023/T024/T025 — `runTurn`: a fresh pi-ai conversation per call, offered exactly the role's declared
+// tools, seeded with explicit references (never raw text), run through the KILN provider's lease logic, with a
+// deterministic per-(unit,step) requestId. Since T023, `runTurn` returns `{kind:"continue"}` after EACH tool call —
+// never the whole conversation at once — so a caller drives it to completion by feeding the returned checkpoint back
+// in; `runToCompletion` below is exactly that loop, standing in for what `unit.ts` really does one commit at a time.
+// Mocked `complete` and a trivial `kilnProvider` (no live Ollama, T018's own requirement) — the real
+// `bindConversationRole`/`toolsFor` guards and the real tool-execution loop run unmocked.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -9,9 +12,10 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { AssistantMessage, Context, Model } from "@earendil-works/pi-ai";
 import type { KilnProvider, ProviderRequest } from "#lane/kiln-provider.ts";
+import { GenerationTimeoutError } from "#lane/timeout.ts";
 import type { LaneApi } from "#durable/types.ts";
 import { createKilnProvider } from "#lane/kiln-provider.ts";
-import { createWorkers, requestIdFor, type TurnInput } from "#workers/conversation.ts";
+import { buildInterruptionNotice, createWorkers, requestIdFor, type TurnInput, type TurnResult, type UnitResult } from "#workers/conversation.ts";
 import { UnknownRoleError } from "#workers/roster.ts";
 import { liveModel, probeLiveModel, skipOption } from "../../../tests/live-gate.ts";
 
@@ -27,8 +31,18 @@ function textReply(text: string): AssistantMessage {
   return { role: "assistant", content: [{ type: "text", text }], api: "openai-completions", provider: "kiln-ollama", model: "fake-model", usage: { input: 1, output: 1, cacheRead: 0, cacheWrite: 0, totalTokens: 2, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } }, stopReason: "stop", timestamp: Date.now() };
 }
 
-function toolCallReply(name: string, args: Record<string, unknown>): AssistantMessage {
-  return { role: "assistant", content: [{ type: "toolCall", id: "call-1", name, arguments: args }], api: "openai-completions", provider: "kiln-ollama", model: "fake-model", usage: { input: 1, output: 1, cacheRead: 0, cacheWrite: 0, totalTokens: 2, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } }, stopReason: "toolUse", timestamp: Date.now() };
+function toolCallReply(name: string, args: Record<string, unknown>, id = "call-1"): AssistantMessage {
+  return { role: "assistant", content: [{ type: "toolCall", id, name, arguments: args }], api: "openai-completions", provider: "kiln-ollama", model: "fake-model", usage: { input: 1, output: 1, cacheRead: 0, cacheWrite: 0, totalTokens: 2, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } }, stopReason: "toolUse", timestamp: Date.now() };
+}
+
+function multiToolCallReply(calls: Array<{ name: string; args: Record<string, unknown>; id: string }>): AssistantMessage {
+  return {
+    role: "assistant",
+    content: calls.map((c) => ({ type: "toolCall" as const, id: c.id, name: c.name, arguments: c.args })),
+    api: "openai-completions", provider: "kiln-ollama", model: "fake-model",
+    usage: { input: 1, output: 1, cacheRead: 0, cacheWrite: 0, totalTokens: 2, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 } },
+    stopReason: "toolUse", timestamp: Date.now(),
+  };
 }
 
 function baseInput(overrides: Partial<TurnInput> = {}, workspace = "/tmp"): TurnInput {
@@ -42,6 +56,17 @@ function baseInput(overrides: Partial<TurnInput> = {}, workspace = "/tmp"): Turn
     signal: new AbortController().signal,
     ...overrides,
   };
+}
+
+/** Drives `runTurn` to completion exactly the way `unit.ts` really does: one call per commit, feeding the returned checkpoint back in. Caps iterations so a wrong implementation fails fast instead of hanging. */
+async function runToCompletion(workers: { runTurn(input: TurnInput): Promise<TurnResult> }, input: TurnInput, maxCalls = 20): Promise<{ result: UnitResult; calls: number }> {
+  let checkpoint = input.checkpoint;
+  for (let calls = 1; calls <= maxCalls; calls++) {
+    const turn = await workers.runTurn({ ...input, checkpoint });
+    if (turn.kind === "done") return { result: turn.result, calls };
+    checkpoint = turn.checkpoint;
+  }
+  throw new Error(`runToCompletion: still not done after ${maxCalls} calls`);
 }
 
 test("a fresh Context is built per call, never reused across steps (FR-001)", () =>
@@ -87,12 +112,12 @@ test("explicit inputs are recorded as references only — the message never carr
 test("a model turn with no tool calls finishes done, with its text in the result", () =>
   withWorkspace(async (workspace) => {
     const workers = createWorkers({ kilnProvider: passthroughKilnProvider, complete: async () => textReply("all set") });
-    const result = await workers.runTurn(baseInput({}, workspace));
-    assert.equal(result.kind, "done");
-    if (result.kind === "done") assert.ok(result.result.results.includes("all set"));
+    const { result, calls } = await runToCompletion(workers, baseInput({}, workspace));
+    assert.ok(result.results.includes("all set"));
+    assert.equal(calls, 1, "no tool calls: done on the first call");
   }));
 
-test("a model turn that calls a real tool actually runs it, then finishes done", () =>
+test("a model turn that calls a real tool actually runs it, then finishes done — across two runTurn calls, not one (T023)", () =>
   withWorkspace(async (workspace) => {
     writeFileSync(join(workspace, "notes.md"), "hello from the workspace");
     let round = 0;
@@ -103,12 +128,52 @@ test("a model turn that calls a real tool actually runs it, then finishes done",
         return round === 1 ? toolCallReply("read-file", { path: "notes.md" }) : textReply("read it, done");
       },
     });
-    const result = await workers.runTurn(baseInput({}, workspace));
-    assert.equal(result.kind, "done");
-    if (result.kind === "done") {
-      assert.ok(result.result.results.some((r) => r.includes("hello from the workspace")), "the tool's real result must appear in the step's results");
-      assert.ok(result.result.results.includes("read it, done"));
+    const first = await workers.runTurn(baseInput({}, workspace));
+    assert.equal(first.kind, "continue", "the tool call's result commits on its own — runTurn must not finalize in the same call that ran it");
+    if (first.kind !== "continue") return;
+    assert.equal(first.checkpoint.toolCalls?.length, 1);
+    assert.equal(first.checkpoint.toolCalls?.[0].name, "read-file");
+    assert.equal(first.checkpoint.toolCalls?.[0].replaySafe, true);
+
+    const second = await workers.runTurn({ ...baseInput({}, workspace), checkpoint: first.checkpoint });
+    assert.equal(second.kind, "done");
+    if (second.kind === "done") {
+      assert.ok(second.result.results.some((r) => r.includes("hello from the workspace")), "the tool's real result must appear in the step's results");
+      assert.ok(second.result.results.includes("read it, done"));
     }
+  }));
+
+test("a reply with several tool calls is processed one at a time via `pending`, not all at once", () =>
+  withWorkspace(async (workspace) => {
+    writeFileSync(join(workspace, "a.txt"), "A");
+    writeFileSync(join(workspace, "b.txt"), "B");
+    let asked = 0;
+    const workers = createWorkers({
+      kilnProvider: passthroughKilnProvider,
+      complete: async () => {
+        asked += 1;
+        return asked === 1 ? multiToolCallReply([{ name: "read-file", args: { path: "a.txt" }, id: "c1" }, { name: "read-file", args: { path: "b.txt" }, id: "c2" }]) : textReply("both read");
+      },
+    });
+    const r1 = await workers.runTurn(baseInput({}, workspace));
+    assert.equal(r1.kind, "continue");
+    if (r1.kind !== "continue") return;
+    assert.equal(r1.checkpoint.toolCalls?.length, 1, "only the FIRST of the two calls has run");
+    assert.equal(r1.checkpoint.toolCalls?.[0].id, "c1");
+    assert.equal(r1.checkpoint.pending?.length, 1, "the second call is queued, not yet run");
+    assert.equal(asked, 1, "the model is not asked again until both calls from its last reply are done");
+
+    const r2 = await workers.runTurn({ ...baseInput({}, workspace), checkpoint: r1.checkpoint });
+    assert.equal(r2.kind, "continue");
+    if (r2.kind !== "continue") return;
+    assert.equal(r2.checkpoint.toolCalls?.length, 2, "now the second call has run too");
+    assert.equal(r2.checkpoint.toolCalls?.[1].id, "c2");
+    assert.equal(r2.checkpoint.pending, undefined, "nothing left pending — the round is complete");
+    assert.equal(asked, 1, "still not asked again: the second call didn't need a new model turn, only the next pending one");
+
+    const r3 = await workers.runTurn({ ...baseInput({}, workspace), checkpoint: r2.checkpoint });
+    assert.equal(r3.kind, "done");
+    assert.equal(asked, 2, "now the model is asked for the next round, having seen both results");
   }));
 
 test("an unknown role is refused before any complete() call", () =>
@@ -136,6 +201,87 @@ test("every completion request's lease goes through the KILN provider, not aroun
     assert.equal(requestedStep, 42);
   }));
 
+// ── T024: the structured interruption notice ──────────────────────────────────────────────────────────────────────
+
+test("buildInterruptionNotice: an empty or absent log produces no notice at all", () => {
+  assert.equal(buildInterruptionNotice(undefined), null);
+  assert.equal(buildInterruptionNotice([]), null);
+});
+
+test("buildInterruptionNotice: names every logged call; only non-replay-safe entries are flagged already-executed", () => {
+  const notice = buildInterruptionNotice([
+    { id: "c1", name: "read-file", arguments: { path: "a.txt" }, replaySafe: true, executed: true, result: "A", isError: false, round: 0 },
+    { id: "c2", name: "write-file", arguments: { path: "b.txt", content: "B" }, replaySafe: false, executed: true, result: "wrote", isError: false, round: 0 },
+  ]);
+  assert.ok(notice);
+  assert.equal(notice!.lines.length, 2);
+  assert.deepEqual(notice!.lines[0], { name: "read-file", arguments: { path: "a.txt" }, alreadyExecuted: false });
+  assert.deepEqual(notice!.lines[1], { name: "write-file", arguments: { path: "b.txt", content: "B" }, alreadyExecuted: true });
+});
+
+test("a resumed conversation's next model call is told, by name and argument, which non-replay-safe call already ran", () =>
+  withWorkspace(async (workspace) => {
+    writeFileSync(join(workspace, "out.txt"), "original");
+    let secondCallMessages: Context["messages"] | undefined;
+    let asked = 0;
+    const workers = createWorkers({
+      kilnProvider: passthroughKilnProvider,
+      complete: async (_m, context) => {
+        asked += 1;
+        if (asked === 2) secondCallMessages = context.messages;
+        return asked === 1 ? toolCallReply("write-file", { path: "out.txt", content: "changed" }) : textReply("done");
+      },
+    });
+    const first = await workers.runTurn(baseInput({}, workspace));
+    assert.equal(first.kind, "continue");
+    if (first.kind !== "continue") return;
+
+    // simulate a brand-new process picking up the SAME checkpoint — nothing in `workers` carries state across calls
+    const fresh = createWorkers({ kilnProvider: passthroughKilnProvider, complete: async () => (++asked, textReply("done")) });
+    void fresh; // the real resume uses the SAME workers instance in this test; a fresh instance would behave identically since runTurn is stateless
+    await workers.runTurn({ ...baseInput({}, workspace), checkpoint: first.checkpoint });
+
+    assert.ok(secondCallMessages, "the second ask must have happened");
+    const rendered = secondCallMessages!.map((m) => (typeof m.content === "string" ? m.content : JSON.stringify(m.content))).join("\n");
+    assert.match(rendered, /write-file/);
+    assert.match(rendered, /out\.txt/);
+    assert.match(rendered, /ALREADY EXECUTED/);
+  }));
+
+test("a resume with no prior tool calls asks the model with no interruption notice at all", () =>
+  withWorkspace(async (workspace) => {
+    let messages: Context["messages"] | undefined;
+    const workers = createWorkers({ kilnProvider: passthroughKilnProvider, complete: async (_m, context) => { messages = context.messages; return textReply("done"); } });
+    await workers.runTurn(baseInput({}, workspace));
+    const rendered = messages!.map((m) => (typeof m.content === "string" ? m.content : JSON.stringify(m.content))).join("\n");
+    assert.doesNotMatch(rendered, /interrupted/i);
+  }));
+
+// ── T025: the per-tier generation timeout ─────────────────────────────────────────────────────────────────────────
+
+test("a generation that never resolves fails with GenerationTimeoutError within its (overridden, short) timeout — not a generic abort", () =>
+  withWorkspace(async (workspace) => {
+    const workers = createWorkers({
+      kilnProvider: passthroughKilnProvider,
+      complete: () => new Promise<AssistantMessage>(() => {}), // never settles
+      timeoutMsOverride: 50,
+    });
+    await assert.rejects(() => workers.runTurn(baseInput({}, workspace)), GenerationTimeoutError);
+  }));
+
+test("a factory close (the caller's own signal) is reported as an abort, never recast as a GenerationTimeoutError", () =>
+  withWorkspace(async (workspace) => {
+    const controller = new AbortController();
+    const workers = createWorkers({
+      kilnProvider: passthroughKilnProvider,
+      complete: () => new Promise<AssistantMessage>(() => {}),
+      timeoutMsOverride: 60_000, // long enough that only the abort can win this race
+    });
+    const promise = workers.runTurn(baseInput({ signal: controller.signal }, workspace));
+    controller.abort(new Error("factory closing"));
+    await assert.rejects(() => promise, /factory closing/);
+  }));
+
 function trivialLane(): LaneApi {
   const held = new Set<number>();
   return {
@@ -151,12 +297,10 @@ test("LIVE: a real worker turn against the installed Ollama, through the real pr
   withWorkspace(async (workspace) => {
     writeFileSync(join(workspace, "notes.md"), "hello from a real live test");
     const workers = createWorkers({ kilnProvider: createKilnProvider(trivialLane()) }); // no `complete` override: this is the real pi-ai path
-    const result = await workers.runTurn(
-      baseInput(
-        { role: "worker", model: liveModel(), inputs: [{ ref: "notes.md" }] },
-        workspace,
-      ),
+    const { result } = await runToCompletion(
+      workers,
+      baseInput({ role: "worker", model: liveModel(), inputs: [{ ref: "notes.md" }] }, workspace),
+      8, // a real local model may take a few rounds; still bounded so a runaway fails the test instead of hanging
     );
-    assert.equal(result.kind, "done");
-    if (result.kind === "done") assert.ok(result.result.results.length > 0, "a real run must produce at least the model's own text or a tool's result");
+    assert.ok(result.results.length > 0, "a real run must produce at least the model's own text or a tool's result");
   }));
