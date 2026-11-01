@@ -22,7 +22,7 @@ import type { Consumer } from "./record/consumer.ts";
 import { factoryLogConsumer } from "./record/consumers/factory-log.ts";
 import { archiveKind, ensureArchives } from "./record/archive-task.ts";
 import { makeWalkApi, type WalkApi } from "./walk/api.ts";
-import type { Channel, CommandApi, GateApi, Inspection, LaneApi, TaskApi } from "./types.ts";
+import type { Channel, CommandApi, GateApi, Inspection, LaneApi, TaskApi, WorkersApi } from "./types.ts";
 
 export interface FactoryOptions {
   /** The store directory — one per factory. */
@@ -35,6 +35,8 @@ export interface FactoryOptions {
   tasks?: TaskKind<any, any, any>[] | ((services: Services) => TaskKind<any, any, any>[]);
   /** The lane port: implemented in packages/lane, injected here (durable cannot import lane). */
   lane?: LaneApi;
+  /** r16 T019: the workers port, implemented in packages/workers, injected here (durable cannot import workers). */
+  workers?: WorkersApi;
   /** How long start-up may take before the owner says it is not ready instead of claiming to be (FR-043). Default 5000 ms. */
   readyTimeoutMs?: number;
   /** TESTS ONLY: overrides the installed library version used by the store-version guard (FR-047). There is no environment variable. */
@@ -66,7 +68,7 @@ export async function openFactory(opts: FactoryOptions): Promise<Factory> {
   await hooks.at("recover.start"); // the first step of every start: a kill HERE is a kill during recovery
   const socketPath = channelSocketPath(opts.store);
   const lock = await acquireLock(opts.store, socketPath, { probe: (info) => answers(info.socket) });
-  const services: Services = { store: undefined as unknown as Store, hooks, now: opts.now ?? Date.now, slots: new Slots(), ready: false, lane: opts.lane, watch: new Watch() };
+  const services: Services = { store: undefined as unknown as Store, hooks, now: opts.now ?? Date.now, slots: new Slots(), ready: false, lane: opts.lane, workers: opts.workers, watch: new Watch() };
   const backbone = new Backbone(services);
   services.backbone = backbone;
   let store: Store;

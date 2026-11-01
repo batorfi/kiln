@@ -3,7 +3,7 @@ import type { Slots } from "./gate/slots.ts";
 import type { Watch } from "./walk/watch.ts";
 import type { Hooks } from "./hooks.ts";
 import type { Store } from "./store.ts";
-import type { LaneApi } from "./types.ts";
+import type { LaneApi, WorkersApi } from "./types.ts";
 
 export interface Services {
   store: Store;
@@ -15,6 +15,8 @@ export interface Services {
   slots: Slots;
   /** The lane port, injected by whoever composes the factory (durable cannot import lane). */
   lane?: LaneApi;
+  /** r16 T019: the workers port, injected by whoever composes the factory (durable cannot import workers). A unit with no `role` never reads this — the scripted stand-in is unaffected. */
+  workers?: WorkersApi;
   /** r14: tells a waiting `feature next` that something changed for a feature (never a source of truth; the answer is re-read from the store). */
   watch: Watch;
   /** r15: delivers committed events to consumers (research R8). Set by the factory. */

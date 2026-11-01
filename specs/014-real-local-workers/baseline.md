@@ -31,3 +31,13 @@ Pure proof on top of Foundational's existing machinery — no `unit.ts` change y
 - `cd kiln && npm test` — exit `0`. `new: 865 tests · legacy: 500 tests (30 skipped)` (5 new: `judge-tier-refusal` ×3, `judge-no-fallback` ×2).
 - `npm run check` — all five checks `PASS`, unchanged from T014.
 - Proves: `bindConversationRole`'s tier refusal happens before any provider call (sequencing proof via spy, since the real roster's `reviewer` entry is already `strongest`); a judge's residency failure never substitutes a different model — only a retry of the *same* model can succeed; the tier check happens before residency is ever asked for a model at all.
+
+## Phase 4 checkpoint (T022) — US1: a step runs as a real, fresh conversation (the MVP)
+
+`kiln.unit`'s `work` phase now calls a real conversation for a unit whose spec names a `role`; a scripted (no-role) unit's path is untouched.
+
+- `cd kiln && npm test` — exit `0`. `new: 881 tests · legacy: 500 tests (30 skipped)` (16 new: `conversation` ×9, `unit-worker` ×4, `no-subagent` ×3).
+- `npm run test:live-models` — **82 of 82, exit `0`, 0 skipped** (Ollama 0.35.1 + `gemma4:12b` both present): includes a real end-to-end worker turn — real provider registration, a real `KilnProvider`-mediated lease, a real `read-file` tool call against a real file, ~10–17 s wall time per run (not a skip).
+- `npm run check` — all five checks `PASS` (network/boundaries — 121 files, up from 120: `conversation.ts` is new; legacy/flow/record unchanged).
+- `npm run proof` — exit `0`. `proof: 128 tests`, ~560s — same 128 as T014/T017, all green: `unit.ts`'s new `role` branch (sharing the existing try/catch/lane-release path) caused no regression in any kill-point proof, including the heaviest ones (re-crossing walk × 6 named kill points, random-kill, storm).
+- Judgment calls recorded in `notes.md`: `RoleEntry` gained `systemPrompt`; `Tool.parameters` confirmed to be typebox's empty `TSchema` interface (a plain JSON-schema object is structurally assignable, no builder needed); the tool-round loop is synchronous within one call (not yet kill-safe — that's T023-T027); `UnitCheckpoint`/`UnitResult` moved to `types.ts`; `role` reuses the existing `model` field; `requestId` is `(unit, step)`-keyed, standing in for WORK-5's `(feature, gate, step, attempt)` since a `TaskId` already correlates to one gate's one step.

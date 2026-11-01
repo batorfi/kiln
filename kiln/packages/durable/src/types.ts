@@ -162,6 +162,43 @@ export interface LaneApi {
   holds?(step: TaskId): boolean;
 }
 
+// ── the unit's checkpoint and result (r13; r16 T019 moves these here, unchanged, so the workers port below can name them; T023 extends the checkpoint with a tool-call log) ─────────────
+export interface UnitCheckpoint {
+  phase: "work";
+  done: number;
+  results: string[];
+  started?: true;
+}
+export interface UnitResult {
+  label: string;
+  results: string[];
+}
+
+// ── the workers port (implemented in packages/workers, injected here: durable cannot import workers — r16 T019, research R2/R3) ────────────────────────────────────────────────────────
+/** A real, explicit, recorded reference a conversation is told about — never the referenced content itself (FR-002). */
+export interface ArtifactRef {
+  ref: string;
+}
+export interface TurnInput {
+  unit: TaskId;
+  role: string;
+  /** The model this turn's conversation must run on — resolved by whoever created the unit (today: the unit's own `model` field, same as a scripted `needsLane` unit's). */
+  model: string;
+  /** The conversation's tools' working directory (spec Assumptions: a KILN-managed worktree, assumed already provided — this row only uses it, never builds its lifecycle). */
+  workspace: string;
+  inputs: ArtifactRef[];
+  checkpoint: UnitCheckpoint;
+  signal: AbortSignal;
+}
+/**
+ * `"continue"` is declared now but not yet exercised: nothing before T023 gives a turn's checkpoint anywhere to record
+ * mid-conversation progress, so today's `runTurn` always finishes synchronously within one call and returns `"done"`.
+ */
+export type TurnResult = { kind: "continue"; checkpoint: UnitCheckpoint } | { kind: "done"; result: UnitResult };
+export interface WorkersApi {
+  runTurn(input: TurnInput): Promise<TurnResult>;
+}
+
 // ── inspection: read by a fresh reader with NO owner (data-model §7) ─────────────────────────────────────────────────────
 export interface Inspection {
   store: { libraryVersion: string | null; contract: number | null };

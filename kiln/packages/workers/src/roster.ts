@@ -14,6 +14,8 @@ export interface RoleEntry {
   judge: boolean;
   /** R6/FR-006: the per-tier generation timeout. A step that exceeds it fails by name; it never settles a gate (FR-008). */
   timeoutMs: number;
+  /** r16 T018: the conversation's system prompt — short and functional by design (this roster is provisional; r17's agents/*.md own real prompt authoring). */
+  systemPrompt: string;
 }
 
 export type ProvisionalRoster = Readonly<Record<string, RoleEntry>>;
@@ -22,8 +24,20 @@ export type ProvisionalRoster = Readonly<Record<string, RoleEntry>>;
 export const PROVISIONAL_JUDGES = ["reviewer"] as const;
 
 export const PROVISIONAL_ROSTER: ProvisionalRoster = Object.freeze({
-  worker: Object.freeze({ tier: "standard", tools: ["read-file", "write-file"], judge: false, timeoutMs: 120_000 }),
-  reviewer: Object.freeze({ tier: "strongest", tools: ["read-file"], judge: true, timeoutMs: 180_000 }),
+  worker: Object.freeze({
+    tier: "standard",
+    tools: ["read-file", "write-file"],
+    judge: false,
+    timeoutMs: 120_000,
+    systemPrompt: "You are a KILN worker. Use your tools to complete the step you are given. When you are done, say so in plain text.",
+  }),
+  reviewer: Object.freeze({
+    tier: "strongest",
+    tools: ["read-file"],
+    judge: true,
+    timeoutMs: 180_000,
+    systemPrompt: "You are a KILN judge. Read what you are given with your tools and give a short, honest verdict in plain text. You never write or execute anything.",
+  }),
 });
 
 /** True exactly for `PROVISIONAL_ROSTER`'s own judge entries — kept distinct from the flow's built-in judges, which this roster never touches. */
@@ -66,10 +80,10 @@ export function toolsFor(role: string): (typeof TOOLS)[ToolName][] {
  * Binds a role to its roster tier, re-throwing `contracts/src/roles.ts`'s own `TierPolicyError` unchanged when a judge's
  * roster tier is not `strongest` (constitution II) — checked here, before any `pi-ai` call exists.
  */
-export function bindConversationRole(role: string, roster: RoleRoster): { tier: Tier; timeoutMs: number } {
+export function bindConversationRole(role: string, roster: RoleRoster): { tier: Tier; timeoutMs: number; systemPrompt: string } {
   const entry = entryFor(role);
   const tier = bindRole(role, entry.tier, roster, PROVISIONAL_JUDGES);
-  return { tier, timeoutMs: entry.timeoutMs };
+  return { tier, timeoutMs: entry.timeoutMs, systemPrompt: entry.systemPrompt };
 }
 
 export { isJudge, TierPolicyError };
