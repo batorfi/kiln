@@ -18,6 +18,8 @@ function createResidency(opts: { port?: number; budgetBytes: number }): Residenc
 
 `load`/`unload` are the **only** calls that change what is resident on Ollama; `createLane()`'s `grant()` path (today: records a name) calls `load()` before granting a lease that names a model not already resident, and `release()` calls `unload()` when the lane frees up and nothing pins the model (FR-020, FR-024). A `load()` that would push the resident set over `budgetBytes` is refused or queued (FR-025) — never silently exceeded.
 
+`load()` MUST set an explicit, long `keep_alive` on the underlying Ollama request (research R11) — Ollama's own default (observed ~5 minutes) will otherwise unload a model on its own timer with no KILN-caused event, making `kiln.lane`'s `resident` field false without the lease ever being released. `unload()` is the only caller that lets a model go, via `keep_alive: 0`. `reconcile()` (below) remains the backstop for any residency drift this doesn't prevent (a host-level `ollama stop`, an OOM kill).
+
 `reconcile()` returns non-null exactly when Ollama's actual running-model list contains something this manager never asked to load; its caller commits the OBS-5 broken-guarantee event (FR-026) — `reconcile()` itself does not write to the store, keeping the pure-detection / impure-recording split the rest of the codebase already uses.
 
 ## The KILN provider
