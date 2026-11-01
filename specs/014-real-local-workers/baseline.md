@@ -13,7 +13,7 @@ Readings taken before any implementation (T001), and the Phase 1/2 checkpoint (T
 
 ## Phase 1 + 2 checkpoint (T014)
 
-See `notes.md` for three real findings made while implementing this phase, each with its own fix: the boundary-cycle correction (T004), `lane.transition` turning out to be a read-only/legacy-only event type that cannot be committed (T013 — FR-027 needs a decision), and the empty network allowlist catching `residency.ts`'s direct `fetch` calls (T014's own checkpoint run).
+See `notes.md` for three real findings made while implementing this phase, each with its own fix: the boundary-cycle correction (T004), `lane.transition` turning out to be a read-only/legacy-only event type that cannot be committed (T013 — FR-027 corrected 2026-11-01, decided: rely on existing events and document fields, no new event type), and the empty network allowlist catching `residency.ts`'s direct `fetch` calls (T014's own checkpoint run).
 
 After T001–T013, all new source is built and unit-tested in isolation; `kiln.unit`'s `work` phase is untouched (no user story has touched it yet, as the phase's own purpose states):
 

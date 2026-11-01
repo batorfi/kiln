@@ -8,8 +8,8 @@ Types and signatures only. The residency manager and the KILN provider wrapper l
 
 ```ts
 interface Residency {
-  load(model: string, opts?: { pin?: boolean; signal?: AbortSignal }): Promise<void>;     // explicit; emits lane.transition kind "load"
-  unload(model: string): Promise<void>;                                                     // explicit; emits lane.transition kind "yield"; refused if pinned
+  load(model: string, opts?: { pin?: boolean; signal?: AbortSignal }): Promise<void>;     // explicit; the caller (lane-task.ts) records lane.acquired + kiln.lane's resident field — NOT lane.transition (legacyEntry, read-only; corrected during implementation)
+  unload(model: string): Promise<void>;                                                     // explicit; the caller records lane.released; refused if pinned
   probe(model: string): Promise<Readiness>;                                                  // R8 — a real minimal request, re-run at acquire time (FR-042)
   reconcile(): Promise<BrokenGuaranteeReport | null>;                                        // R10 — compares Ollama's actual running set against this manager's own record
 }

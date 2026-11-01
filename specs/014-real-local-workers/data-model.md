@@ -103,7 +103,7 @@ interface ProviderRequest<T> {
 }
 ```
 
-Not persisted — an in-process call shape. Its *effects* (a swap, a load) are what get recorded, via the existing `lane.acquired`/`lane.swapped` events (r13) and the newly-emitted `lane.transition` (r15's catalog, R-below).
+Not persisted — an in-process call shape. Its *effects* (a swap, a load) are what get recorded, via the existing `lane.acquired`/`lane.swapped`/`lane.released` events (r13) and `kiln.lane`'s document fields (§5) — **not** `lane.transition`, which turned out to be `legacyEntry` (confirmed during implementation; FR-027 corrected, see §8).
 
 ## 8. Events — no new types, one newly emitted
 
@@ -113,8 +113,8 @@ The r15 catalog already declares everything this row needs:
 |---|---|---|
 | `unit.started` / `unit.settled` / `unit.failed` / `unit.aborted` | emitted (scripted) | emitted, same shape, now for real generations too — **no schema change** |
 | `lane.acquired` / `lane.released` / `lane.swapped` | emitted (scripted lease bookkeeping) | emitted, same shape, now reflecting real loads/unloads too |
-| `lane.transition` (`kind: load\|hold\|yield\|swap`) | **declared, never emitted** (r15 R-notes named r16 as the row that would) | **emitted** for every real load, hold, yield and swap (FR-027) |
-| `lane.cost-recorded` | emitted (`switches`, `wallClock`) | **unchanged** — Clarification 2: no token/cost fields added this row |
+| `lane.transition` (`kind: load\|hold\|yield\|swap`) | declared `legacyEntry` | **still never emitted — confirmed, not assumed.** Read-only, reserved for replaying the first program's own streams; `appendEvent` refuses it by name for any new code. FR-027's claim that r16 emits it was wrong and is corrected: real transitions are reported via `lane.acquired`/`lane.swapped`/`lane.released` and `kiln.lane`'s document fields instead (decided 2026-11-01, Option A: no new event type). |
+| `lane.cost-recorded` | declared `legacyEntry` | **unchanged** — also read-only/legacy; Clarification 2 already meant no token/cost fields this row regardless |
 
 No event schema gains a field and no new type is added; `kiln check record`'s catalog check needs no update for this row.
 

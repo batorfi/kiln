@@ -44,7 +44,7 @@ r16 is the first row that makes a real model call, so it is the first row severa
 | **IV** Model affinity | **Yes — newly real** | `affinity.ts`'s pure ordering logic (LANE-2, already built) is reused unmodified (FR-023); a swap is counted only on a genuine tier change, now against a *real* resident model, not an asserted name. |
 | **V** A missing person never approves | **Yes — extended** | The new per-tier timeout (Clarification 1) fails a *step* by name; FR-008 is explicit that it must never settle the *gate* the step belonged to. The gate keeps waiting for a person exactly as it would after any other failed step — proven by the same kill-point style r13/r14 already use (SC-008). |
 | **VI** Roadmap gate human-only | No change | Not touched by this row. |
-| **VII** Everything recorded | **Yes — extended** | `lane.transition` (declared in r15's catalog, never emitted) is emitted for every real load/hold/yield/swap (FR-027); a step's checkpoint now records enough about tool calls to build the interruption notice (FR-013) — still committed atomically with the state it describes, never a separate write. |
+| **VII** Everything recorded | **Yes — extended** | A real load/unload/pin/swap is recorded through the already-committable `lane.acquired`/`lane.swapped`/`lane.released` events and `kiln.lane`'s document fields (FR-027, corrected during implementation — `lane.transition` turned out to be `legacyEntry`, permanently read-only; see T013's note); a step's checkpoint now records enough about tool calls to build the interruption notice (FR-013) — still committed atomically with the state it describes, never a separate write. |
 | **VIII** Local by default | **Yes — newly real** | The residency manager and the KILN provider are the *only* path to Ollama, reached over loopback only (FR-020); a model loaded outside that path is a detected, always-critical broken guarantee (FR-026, OBS-5) — this is the row's hardest new egress-discipline claim, because r13–r15 never made an outbound call of any kind to verify against. |
 | **IX** One committed state, no polling | No change | The backbone/consumer model from r15 is untouched; nothing new polls. |
 | **X** Knowledge is context, never authority | N/A | No knowledge-base interaction in this row. |
@@ -79,7 +79,7 @@ kiln/packages/
 ├── record/                 # unchanged
 ├── durable/src/tasks/unit.ts   # work phase: sleep(stepMs) stand-in → real conversation call via #workers; same checkpoint/commit shape
 ├── lane/src/
-│   ├── lane-task.ts         # extended: real load/unload through the residency manager; lane.transition now emitted
+│   ├── lane-task.ts         # extended: real load/unload through the residency manager; recorded via lane.acquired/swapped/released + kiln.lane's document fields (lane.transition is legacy-only, never emitted — corrected during implementation)
 │   ├── residency.ts         # NEW — the residency manager: explicit load/unload, readiness probes, memory budget
 │   └── kiln-provider.ts     # NEW — the one front for every model request; wraps pi-ai's Models, enforces lease + resident-model targeting
 ├── workers/                 # was a stub (kiln.json only) — this row gives it src/
