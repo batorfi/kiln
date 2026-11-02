@@ -11,7 +11,7 @@
     "host": { "imports": ["contracts", "record", "durable", "lane", "workers", "director"] },
     "server": { "imports": ["contracts", "record", "durable", "lane", "workers", "director", "workshop", "host"] },
     "web": { "imports": ["server"] },
-    "cli": { "imports": ["contracts", "record", "server", "checks", "durable"] },
+    "cli": { "imports": ["contracts", "record", "server", "checks", "durable", "lane", "workers"] },
     "editor": { "imports": ["server"] },
     "team": { "imports": ["contracts", "record", "durable"] },
     "explore": { "imports": ["contracts", "record", "durable", "lane", "workers", "knowledge"] },

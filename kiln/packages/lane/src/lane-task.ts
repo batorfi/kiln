@@ -80,7 +80,10 @@ export function createLane(opts: { residency?: Residency; budgetBytes?: number }
       // manager never asked for is a broken guarantee, reported BY NAME (a refused acquire, never silently adopted
       // as the new resident). Not a new committed event: the record gains no new type this row (data-model.md §8);
       // the broken-guarantee EVENT that OBS-5 ultimately wants belongs to r27 (Health) — see notes.md's T029 entry.
-      const broken = await residency.reconcile();
+      // r16 (found at T039): pass the model this acquire is about to request, so a process restarted after a kill
+      // can adopt a model `keep_alive:-1` kept resident from before it died, instead of reporting its own empty,
+      // fresh-process bookkeeping as a broken guarantee. See residency.ts's `reconcile()` for the full reasoning.
+      const broken = await residency.reconcile(w.opts.model);
       if (broken) throw new LaneError(`broken guarantee: Ollama is running "${broken.model}" outside KILN's residency path — ${broken.detail}`);
       await residency.load(w.opts.model, { pin: w.opts.pin === true, signal: w.opts.signal });
     }
@@ -182,16 +185,27 @@ export function createLane(opts: { residency?: Residency; budgetBytes?: number }
         await sv.hooks.at("lane.release-after-write");
       });
       await sv.hooks.at("lane.release-committed");
-      holder = null;
       // The real unload happens AFTER the lease commit, outside any transaction (same discipline as grant's load):
       // residency.unload() is a no-op when the model is pinned or was never resident through this manager, so a
       // held/pinned judge model survives a release untouched (FR-024). Not tied to a committed event: `lane.transition`
       // (the catalog's type for exactly this) is `legacyEntry`-declared — read-only, kept so the first program's
       // streams replay; `appendEvent` refuses it by name (see notes.md's T013 entry). `residency.unload()`'s own
       // caller (the test suite, via a fake `Residency`) is how a real unload is proven today, not a new event.
+      //
+      // r16 (found during T038): `holder = null` MUST wait until the unload above has resolved, not run before it.
+      // `acquire()` calls `pump()` itself the instant a new waiter is pushed (it does not wait to be told the lane
+      // is free) — if `holder` were cleared before `unload()` finishes, a queued next unit's `grant()` can run its
+      // own `reconcile()`/`load()` for the SAME model concurrently with this unload, racing on `residency`'s own
+      // `own` bookkeeping: whichever of the two `own.set`/`own.delete` calls resolves last silently wins, and a
+      // worker that actually won the race (its load genuinely succeeded) can be left with no record of its own
+      // model — the next reconcile() then reports Ollama's real resident model as a broken guarantee it never asked
+      // for. Serializing unload-before-next-grant removes the overlap entirely; it costs one release's worth of
+      // latency, never a correctness compromise, and matches the comment two lines up ("outside any transaction")
+      // in spirit: the real HTTP effects of a release and the next acquire must not interleave either.
       if (residency && resident !== null && resident !== pinned) {
         await residency.unload(resident).catch(() => ({ unloaded: false }));
       }
+      holder = null;
       void pump();
     },
   };

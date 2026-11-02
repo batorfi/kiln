@@ -11,7 +11,7 @@ interface Residency {
   load(model: string, opts?: { pin?: boolean; signal?: AbortSignal }): Promise<void>;     // explicit; the caller (lane-task.ts) records lane.acquired + kiln.lane's resident field — NOT lane.transition (legacyEntry, read-only; corrected during implementation)
   unload(model: string): Promise<void>;                                                     // explicit; the caller records lane.released; refused if pinned
   probe(model: string): Promise<Readiness>;                                                  // R8 — a real minimal request, re-run at acquire time (FR-042)
-  reconcile(): Promise<BrokenGuaranteeReport | null>;                                        // R10 — compares Ollama's actual running set against this manager's own record
+  reconcile(expected?: string): Promise<BrokenGuaranteeReport | null>;                        // R10 — compares Ollama's actual running set against this manager's own record; `expected` (found at T039) is adopted rather than reported, so a restarted process's own empty bookkeeping never mistakes a keep_alive:-1 survivor for a bypass
 }
 function createResidency(opts: { port?: number; budgetBytes: number }): Residency;            // one per host (single-factory scope this row, LANE-4 later)
 ```
@@ -20,7 +20,7 @@ function createResidency(opts: { port?: number; budgetBytes: number }): Residenc
 
 `load()` MUST set an explicit, long `keep_alive` on the underlying Ollama request (research R11) — Ollama's own default (observed ~5 minutes) will otherwise unload a model on its own timer with no KILN-caused event, making `kiln.lane`'s `resident` field false without the lease ever being released. `unload()` is the only caller that lets a model go, via `keep_alive: 0`. `reconcile()` (below) remains the backstop for any residency drift this doesn't prevent (a host-level `ollama stop`, an OOM kill).
 
-`reconcile()` returns non-null exactly when Ollama's actual running-model list contains something this manager never asked to load; its caller commits the OBS-5 broken-guarantee event (FR-026) — `reconcile()` itself does not write to the store, keeping the pure-detection / impure-recording split the rest of the codebase already uses.
+`reconcile()` returns non-null exactly when Ollama's actual running-model list contains something this manager never asked to load *and* that is not the `expected` model the caller is about to request; its caller commits the OBS-5 broken-guarantee event (FR-026) — `reconcile()` itself does not write to the store, keeping the pure-detection / impure-recording split the rest of the codebase already uses. The `expected` adoption exists specifically for a process restarted after a kill (research, found at T039): its own bookkeeping starts empty, but `keep_alive:-1` means Ollama itself never forgot a model the previous process legitimately loaded.
 
 ## The KILN provider
 

@@ -40,8 +40,19 @@ export interface Residency {
   /** `unloaded: false` when nothing happened — the model is pinned, or was not resident through this manager at all. */
   unload(model: string): Promise<{ unloaded: boolean }>;
   probe(model: string): Promise<Readiness>;
-  /** Compares Ollama's actual running-model list against this manager's own record. Writes nothing itself (FR-026's caller commits the broken-guarantee event). */
-  reconcile(): Promise<BrokenGuaranteeReport | null>;
+  /**
+   * Compares Ollama's actual running-model list against this manager's own record. Writes nothing itself (FR-026's
+   * caller commits the broken-guarantee event).
+   *
+   * `expected`: the model the caller is about to request (if any). Why this parameter exists: a fresh process
+   * restarted after a kill has an empty "own" record by construction, but `keep_alive:-1`
+   * means Ollama itself never forgot a model the PREVIOUS process legitimately loaded. If Ollama's resident set is
+   * exactly `{expected}`, this is adopted (recorded as this manager's own, as if this process had loaded it) rather
+   * than reported as a broken guarantee — the model is the one THIS acquire is about to ask for, and the durable
+   * `kiln.lane` document (read by the caller before this call) already names it as the lane's own resident model;
+   * nothing outside KILN's residency path put it there. Anything resident that is NOT `expected` is still reported.
+   */
+  reconcile(expected?: string): Promise<BrokenGuaranteeReport | null>;
 }
 
 interface OwnRecord {
@@ -128,12 +139,19 @@ export function createResidency(opts: { port?: number; budgetBytes: number }): R
       return { toolCalling, streaming, usageAccounting, contextWindow };
     },
 
-    async reconcile() {
+    async reconcile(expected) {
       const running = await ollamaRunningModels(url);
       for (const model of running) {
-        if (!own.has(model)) {
-          return { model, detail: `Ollama reports "${model}" resident, but the residency manager never asked for it` };
+        if (own.has(model)) continue;
+        if (model === expected) {
+          // Adoption, not a bypass (research, found at T038/T039): a restarted process's own bookkeeping is always
+          // empty, but keep_alive:-1 means Ollama itself never forgot a model the previous process legitimately
+          // loaded. The caller only passes `expected` as the model its own durable kiln.lane document already
+          // names as resident, so adopting it here is recording what is already true, not trusting an outsider.
+          own.set(model, { pin: false, sizeBytes: await ollamaModelSize(url, model) });
+          continue;
         }
+        return { model, detail: `Ollama reports "${model}" resident, but the residency manager never asked for it` };
       }
       return null;
     },

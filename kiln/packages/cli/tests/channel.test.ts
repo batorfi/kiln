@@ -268,9 +268,9 @@ test("the safe-directory rule over a stat result: a directory owned by someone e
   assert.match(directoryProblem(stat({ mode: 0o40750 }), 501)!, /750/);
 });
 
-test("the command line reaches the durable package through exactly four modules: the channel client, the path arithmetic, the owner runner and (r15) the offline record tools — which read through a fresh reader and never own the store", () => {
+test("the command line reaches the durable package through exactly five modules: the channel client, the path arithmetic, the owner runner, (r15) the offline record tools, and (r16) the workers port's pure types — none of which open the store", () => {
   const src = join(fileURLToPath(new URL("../src", import.meta.url)));
-  const allowed = new Set(["#durable/channel/client.ts", "#durable/channel/path.ts", "#durable/owner.ts", "#durable/record/tools.ts"]);
+  const allowed = new Set(["#durable/channel/client.ts", "#durable/channel/path.ts", "#durable/owner.ts", "#durable/record/tools.ts", "#durable/types.ts"]);
   const found = new Set<string>();
   for (const f of readdirSync(src).filter((n) => n.endsWith(".ts"))) {
     const text = readFileSync(join(src, f), "utf8");

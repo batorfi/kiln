@@ -29,7 +29,7 @@ export const PROVISIONAL_ROSTER: ProvisionalRoster = Object.freeze({
     tools: ["read-file", "write-file"],
     judge: false,
     timeoutMs: 120_000,
-    systemPrompt: "You are a KILN worker. Use your tools to complete the step you are given. When you are done, say so in plain text.",
+    systemPrompt: "You are a KILN worker. Use your tools to complete the step you are given. Only call a tool from the list offered to you, by its exact name; if none of them apply, or there is nothing left to do, say so in plain text instead of guessing at a tool. When you are done, say so in plain text.",
   }),
   reviewer: Object.freeze({
     tier: "strongest",

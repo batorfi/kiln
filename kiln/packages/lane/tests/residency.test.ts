@@ -129,6 +129,32 @@ test("reconcile() reports a model Ollama runs that this manager never asked for"
     },
   ));
 
+test("reconcile(expected) adopts a model it is about to request, rather than reporting it — a restarted process's empty bookkeeping must not block resuming after a kill (found at T038/T039)", () =>
+  withFakeFetch(
+    (call) => (call.url.endsWith("/api/tags") ? TAGS([{ name: "gemma4:12b", size: 100 }]) : call.url.endsWith("/api/ps") ? PS(["gemma4:12b"]) : GENERATE_DONE("unload")),
+    async () => {
+      // a FRESH residency instance — exactly a restarted process's own empty "own" map — with the model already
+      // resident through Ollama's own keep_alive:-1 from a PREVIOUS (now-dead) process
+      const residency = createResidency({ budgetBytes: 1_000_000 });
+      const report = await residency.reconcile("gemma4:12b");
+      assert.equal(report, null, "the expected model must be adopted, not reported as a broken guarantee");
+      // proof the adoption is real, not a silent skip: unload() must now actually act on it (own.has is true)
+      const result = await residency.unload("gemma4:12b");
+      assert.equal(result.unloaded, true, "the adopted model must be genuinely tracked — unload() must not be a no-op for it");
+    },
+  ));
+
+test("reconcile(expected) still reports a DIFFERENT model Ollama runs that this manager never asked for, even with an expected model given", () =>
+  withFakeFetch(
+    () => PS(["bypassed-model"]),
+    async () => {
+      const residency = createResidency({ budgetBytes: 1_000_000 });
+      const report = await residency.reconcile("some-other-model");
+      assert.ok(report, "a genuinely unexpected resident model must still be reported");
+      assert.equal(report!.model, "bypassed-model");
+    },
+  ));
+
 test("reconcile() returns null when every running model is this manager's own", () =>
   withFakeFetch(
     (call) => (call.url.endsWith("/api/tags") ? TAGS([{ name: "m1", size: 100 }]) : call.url.endsWith("/api/ps") ? PS(["m1"]) : GENERATE_DONE("load")),
