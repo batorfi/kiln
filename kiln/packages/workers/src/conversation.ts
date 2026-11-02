@@ -13,6 +13,7 @@ import { createModels } from "@earendil-works/pi-ai";
 import type { AssistantMessage, Context, Message, Model, Tool, ToolCall } from "@earendil-works/pi-ai";
 import { flows } from "#contracts/flow/index.ts";
 import type { KilnProvider } from "#lane/kiln-provider.ts";
+import type { Readiness } from "#lane/residency.ts";
 import { withTierTimeout } from "#lane/timeout.ts";
 import { createOllamaProvider, modelFor } from "./provider.ts";
 import { bindConversationRole, toolsFor } from "./roster.ts";
@@ -65,8 +66,18 @@ export class UnknownToolCallError extends Error {
   override name = "UnknownToolCallError";
 }
 
+/** r16 T032, contracts/worker-conversation.md "Readiness refusal", FR-040/041. */
+export class CapabilityRefused extends Error {
+  override name = "CapabilityRefused";
+}
+
+/** r16 T032: the exact contract signature (contracts/worker-conversation.md) — a pure guard over an ALREADY-PROBED `Readiness`; the probing itself happens fresh in `callModel` (T033), never cached here. */
+export function requireCapability(model: Model<"openai-completions">, need: "toolCalling" | "streaming", readiness: Readiness): void {
+  if (!readiness[need]) throw new CapabilityRefused(`"${model.id}" does not support ${need}, required by this role — refused before any conversation opened`);
+}
+
 const MAX_TOOL_ROUNDS = 4;
-const DEFAULT_CONTEXT_WINDOW = 131_072; // provisional default; T032/US5 wires the real readiness-probed value in
+const DEFAULT_CONTEXT_WINDOW = 131_072; // used only when no `probe` is configured (most unit tests); T033 wires the real probed value in whenever one is
 
 /** Deterministic per the spec's own test (WORK-5, FR-005): the same (unit, step) pair always yields the same id — a redone call after a kill reuses it, never mints a new one. */
 export function requestIdFor(unit: TaskId, step: number, attempt = 0): string {
@@ -130,8 +141,18 @@ function buildMessages(input: TurnInput): Message[] {
 export interface WorkersConfig {
   kilnProvider: KilnProvider;
   port?: number;
-  /** Provisional: the real, probed context window arrives with US5 (T032/T033); until then every model uses this one. */
+  /** Used only when no `probe` is configured below — most unit tests have no real Ollama to probe against. */
   defaultContextWindow?: number;
+  /**
+   * r16 T032/T033, FR-040/041/042: a fresh readiness probe, called ONCE PER `runTurn` INVOCATION (never cached
+   * across calls — this IS what "re-checked at the moment a model is actually requested to become resident" means
+   * at this layer: there is nothing stored to go stale, because nothing is ever stored). Deliberately NOT built
+   * into `residency.ts`'s `load()` itself (see notes.md's T033 entry for why): residency has no concept of a
+   * role's required capability, and `load()`'s own existing model-size lookup already independently re-verifies
+   * the model exists at every call. Typically `(model) => residency.probe(model)` in production; absent in most
+   * unit tests, which don't exercise capability refusal or the real context window.
+   */
+  probe?: (model: string) => Promise<Readiness>;
   /**
    * TEST-ONLY injection: replaces the real `models.complete` call with a fake one, so `conversation.test.ts` can run
    * with no live Ollama (T018's own requirement) while still exercising the real `bindConversationRole`/`toolsFor`
@@ -147,10 +168,16 @@ export function createWorkers(config: WorkersConfig): { runTurn(input: TurnInput
   const models = createModels();
   models.setProvider(createOllamaProvider({ port: config.port }));
   const complete = config.complete ?? ((m, c, o) => models.complete(m, c, o));
-  const contextWindow = config.defaultContextWindow ?? DEFAULT_CONTEXT_WINDOW;
+  const defaultContextWindow = config.defaultContextWindow ?? DEFAULT_CONTEXT_WINDOW;
 
   async function callModel(input: TurnInput, timeoutMs: number, systemPrompt: string, requestId: string, messages: Message[], tools: Tool[]): Promise<AssistantMessage> {
+    // T033: probed fresh, this call, from whatever is ACTUALLY installed right now — never a value kept from an
+    // earlier probe or an earlier round of this same conversation. A model removed or downgraded between two
+    // rounds of one step is caught HERE, at the next round's own request, not assumed still valid from round 1.
+    const readiness = config.probe ? await config.probe(input.model) : undefined;
+    const contextWindow = readiness?.contextWindow || defaultContextWindow;
     const model: Model<"openai-completions"> = modelFor(input.model, { contextWindow });
+    if (readiness && tools.length > 0) requireCapability(model, "toolCalling", readiness); // FR-041: refused before any pi-ai call, not discovered mid-generation
     const context: Context = { systemPrompt, messages, tools };
     return config.kilnProvider.requestThroughLane({
       step: input.unit,

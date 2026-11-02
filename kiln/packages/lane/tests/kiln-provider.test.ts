@@ -63,3 +63,21 @@ test("a LaneApi with no holds() at all falls back to always acquiring (optional 
   await provider.requestThroughLane({ step: 4, model: "m4", call: async () => "x" });
   assert.deepEqual(acquireCalls, [{ step: 4, model: "m4" }]);
 });
+
+// ── T030 (US3 acceptance): the harness's own housekeeping shares a step's held lease, never a second acquire ──
+// LANE-3's own wording: "Every model request, including harness-internal ones (compaction), ... holds the lane
+// lease". A unit's real generation (step 5) already acquired the lease via requestThroughLane; a SEPARATE,
+// synthetic call standing in for harness housekeeping (same step id — housekeeping acts ON BEHALF OF the step that
+// is currently running, it is not a step of its own) must see holds()===true and never acquire again.
+
+test("housekeeping (a second requestThroughLane for the SAME already-held step) never acquires a second lease", async () => {
+  const { lane, acquireCalls } = fakeLane({ heldBy: 5 });
+  const provider = createKilnProvider(lane);
+
+  const generation = await provider.requestThroughLane({ step: 5, model: "worker-model", call: async () => "generation result" });
+  const housekeeping = await provider.requestThroughLane({ step: 5, model: "worker-model", call: async () => "compaction result" });
+
+  assert.equal(generation, "generation result");
+  assert.equal(housekeeping, "compaction result");
+  assert.deepEqual(acquireCalls, [], "neither the real generation nor the housekeeping call behind it acquired a second lease — both share the one the step already holds");
+});

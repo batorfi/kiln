@@ -81,6 +81,18 @@ test("a load that would exceed the budget is refused before any /api/generate ca
     },
   ));
 
+test("T034: a second model refused for lack of budget succeeds once the first is released — the budget is never silently exceeded, but never permanently stuck either", () =>
+  withFakeFetch(
+    (call) => (call.url.endsWith("/api/tags") ? TAGS([{ name: "m1", size: 600_000 }, { name: "m2", size: 600_000 }]) : GENERATE_DONE("load")),
+    async () => {
+      const residency = createResidency({ budgetBytes: 1_000_000 }); // room for exactly one of {m1, m2}, never both
+      await residency.load("m1");
+      await assert.rejects(residency.load("m2"), ResidencyBudgetError, "m1 (600k) + m2 (600k) exceeds the 1,000,000-byte budget");
+      await residency.unload("m1");
+      await residency.load("m2"); // now there is room: this must succeed, not stay refused forever — assert.rejects above would have thrown again otherwise
+    },
+  ));
+
 test("asking for an already-resident model is not a load (no second /api/generate call)", () =>
   withFakeFetch(
     (call) => (call.url.endsWith("/api/tags") ? TAGS([{ name: "m1", size: 100 }]) : GENERATE_DONE("load")),

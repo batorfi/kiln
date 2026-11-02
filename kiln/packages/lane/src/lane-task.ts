@@ -76,6 +76,12 @@ export function createLane(opts: { residency?: Residency; budgetBytes?: number }
     // rejects grant() before any state changes — the judged step waits and names the reason (US4), never partially
     // acquires.
     if (residency && w.opts.model !== undefined) {
+      // r16 T029/OBS-5: reconcile() runs immediately before every load — a model Ollama already runs that this
+      // manager never asked for is a broken guarantee, reported BY NAME (a refused acquire, never silently adopted
+      // as the new resident). Not a new committed event: the record gains no new type this row (data-model.md §8);
+      // the broken-guarantee EVENT that OBS-5 ultimately wants belongs to r27 (Health) — see notes.md's T029 entry.
+      const broken = await residency.reconcile();
+      if (broken) throw new LaneError(`broken guarantee: Ollama is running "${broken.model}" outside KILN's residency path — ${broken.detail}`);
       await residency.load(w.opts.model, { pin: w.opts.pin === true, signal: w.opts.signal });
     }
     await sv.store.commit(async (tx) => {

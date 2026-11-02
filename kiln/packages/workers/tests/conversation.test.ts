@@ -12,6 +12,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { AssistantMessage, Context, Model } from "@earendil-works/pi-ai";
 import type { KilnProvider, ProviderRequest } from "#lane/kiln-provider.ts";
+import type { Readiness } from "#lane/residency.ts";
 import { GenerationTimeoutError } from "#lane/timeout.ts";
 import type { LaneApi } from "#durable/types.ts";
 import { createKilnProvider } from "#lane/kiln-provider.ts";
@@ -280,6 +281,47 @@ test("a factory close (the caller's own signal) is reported as an abort, never r
     const promise = workers.runTurn(baseInput({ signal: controller.signal }, workspace));
     controller.abort(new Error("factory closing"));
     await assert.rejects(() => promise, /factory closing/);
+  }));
+
+// ── T032/T033: readiness probed fresh, before any complete() call; never cached across rounds ──
+
+const READY: Readiness = { toolCalling: true, streaming: true, usageAccounting: true, contextWindow: 999 };
+
+test("a role with declared tools is refused when the probed model lacks tool-calling — before any complete() call (FR-041)", () =>
+  withWorkspace(async (workspace) => {
+    let completeCalled = false;
+    const workers = createWorkers({
+      kilnProvider: passthroughKilnProvider,
+      probe: async () => ({ ...READY, toolCalling: false }),
+      complete: async () => { completeCalled = true; return textReply("should never run"); },
+    });
+    await assert.rejects(workers.runTurn(baseInput({ role: "worker" }, workspace)), /CapabilityRefused|toolCalling/);
+    assert.equal(completeCalled, false, "the refusal must happen before any model call — never discovered by the conversation failing partway through");
+  }));
+
+test("readiness is probed fresh on every call, never cached — a capability that disappears between two rounds is caught at the SECOND round, not assumed from the first", () =>
+  withWorkspace(async (workspace) => {
+    let probeCalls = 0;
+    const workers = createWorkers({
+      kilnProvider: passthroughKilnProvider,
+      probe: async () => { probeCalls += 1; return { ...READY, toolCalling: probeCalls === 1 }; }, // ready on round 1, gone by round 2
+      complete: async () => toolCallReply("read-file", { path: "a.txt" }),
+    });
+    const first = await workers.runTurn(baseInput({ role: "worker" }, workspace)); // round 1: probe says ready, call proceeds, tool call queued
+    assert.equal(first.kind, "continue");
+    assert.equal(probeCalls, 1);
+    await assert.rejects(
+      workers.runTurn({ ...baseInput({ role: "worker" }, workspace), checkpoint: first.checkpoint }), // round 2: the model asks again (nothing pending from round 1's single tool call)
+      /CapabilityRefused|toolCalling/,
+    );
+    assert.equal(probeCalls, 2, "the second round re-probed instead of trusting round 1's cached result");
+  }));
+
+test("with no `probe` configured, the capability check is skipped entirely (most unit tests; production always configures one)", () =>
+  withWorkspace(async (workspace) => {
+    const workers = createWorkers({ kilnProvider: passthroughKilnProvider, complete: async () => textReply("fine") });
+    const { result } = await runToCompletion(workers, baseInput({ role: "worker" }, workspace));
+    assert.ok(result);
   }));
 
 function trivialLane(): LaneApi {

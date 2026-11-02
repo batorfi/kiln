@@ -11,19 +11,20 @@ import { openFactory, type Factory } from "#durable/factory.ts";
 import { createLane } from "#lane/lane-task.ts";
 import type { Residency } from "#lane/residency.ts";
 
-function fakeResidency() {
+function fakeResidency(opts: { brokenOnce?: { model: string; detail: string } } = {}) {
   const resident = new Set<string>();
   const pinned = new Set<string>();
   const calls: Array<{ op: "load" | "unload"; model: string }> = [];
+  let broken = opts.brokenOnce ?? null;
   const residency: Residency = {
-    async load(model, opts) {
+    async load(model, loadOpts) {
       if (resident.has(model)) {
-        if (opts?.pin) pinned.add(model);
+        if (loadOpts?.pin) pinned.add(model);
         return { loaded: false };
       }
       calls.push({ op: "load", model });
       resident.add(model);
-      if (opts?.pin) pinned.add(model);
+      if (loadOpts?.pin) pinned.add(model);
       return { loaded: true };
     },
     async unload(model) {
@@ -36,16 +37,24 @@ function fakeResidency() {
       return { toolCalling: true, streaming: true, usageAccounting: true, contextWindow: 1 };
     },
     async reconcile() {
-      return null;
+      // r16 T029: `brokenOnce` fires exactly once then clears, so a test can prove the NEXT load() after the
+      // mismatch is fixed succeeds — matching the real residency manager's reconcile(), which reports what Ollama
+      // is ACTUALLY running right now, not a permanent flag.
+      const r = broken;
+      broken = null;
+      return r;
     },
   };
   return { residency, calls };
 }
 
-async function withResidentLane(run: (ctx: { factory: Factory; api: ReturnType<typeof createLane>["api"]; calls: ReturnType<typeof fakeResidency>["calls"] }) => Promise<void>): Promise<void> {
+async function withResidentLane(
+  run: (ctx: { factory: Factory; api: ReturnType<typeof createLane>["api"]; calls: ReturnType<typeof fakeResidency>["calls"] }) => Promise<void>,
+  residencyOpts: Parameters<typeof fakeResidency>[0] = {},
+): Promise<void> {
   const dir = mkdtempSync(join(tmpdir(), "k16lane-residency-"));
   const store = join(dir, "s");
-  const { residency, calls } = fakeResidency();
+  const { residency, calls } = fakeResidency(residencyOpts);
   const lane = createLane({ residency, budgetBytes: 1_000_000 });
   const factory = await openFactory({ store, lane: lane.api, tasks: lane.kinds });
   try {
@@ -93,3 +102,23 @@ test("a swap (a genuinely different model) is still counted exactly as r13 alrea
     assert.equal(insp.lane.swaps, 1);
     assert.equal(insp.lane.resident, "m2");
   }));
+
+// ── T029: reconcile() wired in before every load() — a bypass fails the acquire closed, never silently adopted ──
+
+const BROKEN_ONCE = { brokenOnce: { model: "bypassed-model", detail: 'Ollama reports "bypassed-model" resident, but the residency manager never asked for it' } };
+
+test("a broken guarantee (Ollama running a model this manager never loaded) refuses the NEXT acquire, by name, before any load call", () =>
+  withResidentLane(async ({ api, calls }) => {
+    await assert.rejects(
+      api.acquire(1, { model: "m1", cause: "unit:1" }),
+      (e: Error) => e.message.includes("broken guarantee") && e.message.includes("bypassed-model"),
+    );
+    assert.deepEqual(calls, [], "the refusal happens before any load() call — never a partial acquire");
+  }, BROKEN_ONCE));
+
+test("once the mismatch is gone, the following acquire succeeds normally — reconcile() reports what is true NOW, not a permanent flag", () =>
+  withResidentLane(async ({ api, calls }) => {
+    await assert.rejects(api.acquire(1, { model: "m1", cause: "unit:1" }));
+    await api.acquire(1, { model: "m1", cause: "unit:1" }); // the SAME step retries: fakeResidency's reconcile() only fires once
+    assert.deepEqual(calls, [{ op: "load", model: "m1" }]);
+  }, BROKEN_ONCE));
