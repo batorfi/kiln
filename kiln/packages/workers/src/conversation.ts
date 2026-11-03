@@ -176,8 +176,19 @@ export function createWorkers(config: WorkersConfig): { runTurn(input: TurnInput
     // rounds of one step is caught HERE, at the next round's own request, not assumed still valid from round 1.
     const readiness = config.probe ? await config.probe(input.model) : undefined;
     const contextWindow = readiness?.contextWindow || defaultContextWindow;
-    const model: Model<"openai-completions"> = modelFor(input.model, { contextWindow });
-    if (readiness && tools.length > 0) requireCapability(model, "toolCalling", readiness); // FR-041: refused before any pi-ai call, not discovered mid-generation
+    // Found at code review, fixed: `port` was never passed through, so every real call silently targeted Ollama's
+    // default port (11434) even when `config.port`/`KILN_OLLAMA_PORT` named a different one — residency's load/
+    // unload/probe calls (which do take `port`) would agree with each other while the actual generation went
+    // somewhere else entirely. On this host's default configuration this never manifested (both are 11434).
+    const model: Model<"openai-completions"> = modelFor(input.model, { contextWindow, port: config.port });
+    if (readiness) {
+      // FR-040/041: refused before any pi-ai call, not discovered mid-generation. `complete()` always streams
+      // under the hood (`Models.complete` is `stream(...).result()` in the pinned library), so streaming is
+      // required exactly as much as tool-calling is when tools are offered — checked unconditionally, not only
+      // for a tool-using round.
+      requireCapability(model, "streaming", readiness);
+      if (tools.length > 0) requireCapability(model, "toolCalling", readiness);
+    }
     const context: Context = { systemPrompt, messages, tools };
     return config.kilnProvider.requestThroughLane({
       step: input.unit,

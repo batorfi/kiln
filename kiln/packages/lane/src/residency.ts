@@ -132,10 +132,18 @@ export function createResidency(opts: { port?: number; budgetBytes: number }): R
       // response consumed as a stream (streaming); the response's own `usage` object's presence (usageAccounting —
       // capability only, Clarification 2: no figures are read beyond presence). `contextWindow` is read from
       // Ollama's own model listing, not probed: it is declared by the model, not discovered by a request.
-      const contextWindow = await ollamaContextWindow(url, model);
-      const toolCalling = await probeToolCalling(url, model);
-      const streaming = await probeStreaming(url, model);
-      const usageAccounting = await probeUsage(url, model);
+      //
+      // Found at code review, fixed: these four checks have no data dependency on each other (each is its own,
+      // independent real round trip, and `callModel` already calls `probe()` fresh on every conversation round,
+      // never cached — a deliberate, documented trade-off, see notes.md/implementation-report.md §7). Running them
+      // concurrently turns four sequential round trips into the time of the slowest one, with no change to what is
+      // checked or how often.
+      const [contextWindow, toolCalling, streaming, usageAccounting] = await Promise.all([
+        ollamaContextWindow(url, model),
+        probeToolCalling(url, model),
+        probeStreaming(url, model),
+        probeUsage(url, model),
+      ]);
       return { toolCalling, streaming, usageAccounting, contextWindow };
     },
 

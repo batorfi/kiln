@@ -11,6 +11,20 @@
 // the commit below happens once per tool call, exactly as it already does once per scripted step — a kill between
 // two tool calls can only lose work that was never committed (CORE-4, now proven for a real generation too).
 //
+// Found at code review, fixed: a real role's lane lease is held ACROSS every round of its own conversation, not
+// re-acquired and released per round. Releasing on `turn.kind === "continue"` (as a scripted step always does, by
+// design — r13) would fire a REAL `residency.unload()` after every single tool call and a REAL `residency.load()`
+// before the next, since release()'s unload is no longer free once a residency manager is wired in (T013): a
+// multi-round conversation would pay a full model unload/reload cycle between every round for no reason, and was
+// the dominant, confirmed cause of this row's own extreme live-walk timings. `acquire()` has NO self-reacquire
+// guard — a task calling it while it already holds the lease (`s.lane!.holds(task.id)`) would queue behind itself
+// and deadlock, since nothing ever sets `holder` back to null to let the queue drain. So BOTH sides changed
+// together: skip `acquire()` when already held, and skip `release()` while a real conversation is still mid-way
+// (`turn.kind === "continue"`) — the lease is acquired once per unit, held for the unit's own whole conversation,
+// and released exactly once, when it is actually done or errors. The scripted path is completely untouched: it
+// never holds a role's checkpoint shape, so `holds()` is never true for it, and its per-step acquire/release stays
+// exactly as r13 built it.
+//
 // r16 T025: a generation that exceeds its tier's timeout rejects `runTurn`'s promise with `GenerationTimeoutError`
 // (research R6) — `run.signal.aborted` is still false for this (it is a SEPARATE signal from the factory's own close
 // signal), so the existing `catch` block below already takes the right path with no special case: the lane is
@@ -42,8 +56,11 @@ export function unitKind(s: Services): TaskKind<UnitSpec, UnitCheckpoint, UnitRe
           return;
         }
         await s.hooks.at("unit.step-begin");
-        if (needsLane) {
-          // the generation (scripted or, with a role, real) runs only while the unit holds the lane; a lease the previous process left behind was released at start, so a redone step simply asks again
+        const alreadyHeld = needsLane === true && s.lane!.holds?.(task.id) === true;
+        if (needsLane && !alreadyHeld) {
+          // the generation (scripted or, with a role, real) runs only while the unit holds the lane; a lease the previous process left behind was released at start, so a redone step simply asks again.
+          // A real role's unit may already hold the lease from a prior round (we no longer release between rounds, below) — asking again would queue behind itself and deadlock, since nothing would ever
+          // free the lane to grant its own repeated request.
           try {
             await s.lane!.acquire(task.id, { model, hold, signal: run.signal, cause: `task:${task.id}/step:${i}` });
           } catch (e) {
@@ -53,6 +70,7 @@ export function unitKind(s: Services): TaskKind<UnitSpec, UnitCheckpoint, UnitRe
         }
         let held = needsLane === true;
         try {
+          let releaseNow = true;
           if (role) {
             // the real generation and any tool calls it makes — all of it, this row's own scope (T018/T019): a
             // kill mid-generation redoing this whole call is exactly the gap US2 (T023-T027) closes next
@@ -69,7 +87,10 @@ export function unitKind(s: Services): TaskKind<UnitSpec, UnitCheckpoint, UnitRe
               await appendUnitEvent(tx, s, "unit.settled", { unit: task.id, label, owner: (await tx.task(task.id))?.owner ?? null, actor: `task:${task.id}`, cause: `task:${task.id}` });
               return { status: "terminal", outcome: { status: "completed", result: turn.result } };
             });
-            if (turn.kind === "continue") await s.hooks.at("unit.tool-call-committed"); // r16 T026: this one tool call's result just committed, before the model's next turn
+            if (turn.kind === "continue") {
+              await s.hooks.at("unit.tool-call-committed"); // r16 T026: this one tool call's result just committed, before the model's next turn
+              releaseNow = false; // hold the lease for the next round of this SAME unit's conversation — see the file header
+            }
           } else {
             // the scripted work of step i — pure in its inputs, so redoing it after a kill gives the same answer
             if (stepMs) await new Promise<void>((resolve) => {
@@ -86,7 +107,7 @@ export function unitKind(s: Services): TaskKind<UnitSpec, UnitCheckpoint, UnitRe
             });
           }
           await s.hooks.at("unit.step-committed");
-          if (held) {
+          if (held && releaseNow) {
             await s.lane!.release(task.id);
             held = false;
           }

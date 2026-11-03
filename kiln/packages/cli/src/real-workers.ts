@@ -14,10 +14,21 @@ export interface RealWorkers {
   workers: WorkersApi;
 }
 
+export class RealWorkersConfigError extends Error {
+  override name = "RealWorkersConfigError";
+}
+
+/** Found at code review, fixed: `Number("abc")` is `NaN`, never throws — an owner misconfigured this way used to print `ready` and only fail later, confusingly, the first time a URL or budget check used the NaN. Refused by name at startup instead. */
+function parsePositiveInt(name: string, raw: string): number {
+  const n = Number(raw);
+  if (!Number.isInteger(n) || n <= 0) throw new RealWorkersConfigError(`${name}="${raw}" is not a positive integer`);
+  return n;
+}
+
 /** Built once per `kiln owner` process; never required — `startOwner`'s `lane`/`tasks`/`workers` options stay optional for every caller that doesn't pass this. */
 export function createRealWorkers(): RealWorkers {
-  const port = process.env.KILN_OLLAMA_PORT ? Number(process.env.KILN_OLLAMA_PORT) : undefined;
-  const budgetBytes = process.env.KILN_MODEL_BUDGET_BYTES ? Number(process.env.KILN_MODEL_BUDGET_BYTES) : DEFAULT_BUDGET_BYTES;
+  const port = process.env.KILN_OLLAMA_PORT ? parsePositiveInt("KILN_OLLAMA_PORT", process.env.KILN_OLLAMA_PORT) : undefined;
+  const budgetBytes = process.env.KILN_MODEL_BUDGET_BYTES ? parsePositiveInt("KILN_MODEL_BUDGET_BYTES", process.env.KILN_MODEL_BUDGET_BYTES) : DEFAULT_BUDGET_BYTES;
   const residency = createResidency({ port, budgetBytes });
   const lane = createLane({ residency, budgetBytes });
   const kilnProvider = createKilnProvider(lane.api);
