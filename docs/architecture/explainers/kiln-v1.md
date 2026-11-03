@@ -7,8 +7,8 @@
 > gate re-opens after every merged feature, where the order and cut of later rows may still be revised. Where this explainer and the PRD or roadmap differ, they govern.
 >
 > Companions: [architecture explainer](./kiln-architecture.md) · [the constitution, explained](./kiln-constitution.md) ·
-> [the flow](../../concepts/the-flow.md) · [the twelve gates, one by one](./gates/README.md) · [decisions, settled and open](../../concepts/open-decisions.md) ·
-> [after `kiln-v1`: `kiln-v1.x`](./kiln-v1x.md)
+> [the flow](../../concepts/the-flow.md) · [the twelve gates, one by one](./gates/README.md) · [the judges and workers, one by one](./roles/README.md) ·
+> [decisions, settled and open](../../concepts/open-decisions.md) · [after `kiln-v1`: `kiln-v1.x`](./kiln-v1x.md)
 
 ## Contents
 
