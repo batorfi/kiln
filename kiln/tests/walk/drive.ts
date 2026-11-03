@@ -22,9 +22,13 @@ export interface Ran { code: number | null; stdout: string; stderr: string }
 // helper had NO process timeout at all, unlike packages/cli/tests/support/kiln.ts's twin. drive()'s own `patienceMs`
 // only bounds its RETRY loop (how long to keep asking again on exit 3/4); it never bounded a single spawned process
 // that never exits. Every caller before r16 only ever drove scripted (ms-scale) work, so a hang here was never
-// reachable in practice — a real generation is the first thing slow enough to expose it. SIGKILL after `timeoutMs`
-// (default 120s: generous for a real conversation, still far short of "forever").
-export function kiln(args: string[], env: Record<string, string | undefined> = {}, timeoutMs = 120_000): Promise<Ran> {
+// reachable in practice — a real generation is the first thing slow enough to expose it. SIGKILL after `timeoutMs`.
+// Default raised from an initial 120s to 300s (found at T047, Polish): a single `kiln feature next` can legitimately
+// block on the owner's private channel while a real unit ahead of it is mid-generation — one real unit can need
+// several tool-call rounds (MAX_TOOL_ROUNDS), each a full model round trip, and a loaded host stretches this
+// further still. 120s genuinely fired on a real (not hung) call under heavy same-machine load; 300s is still far
+// short of "forever" and comfortably clears every real timing this row has measured (worst case ~130s loaded).
+export function kiln(args: string[], env: Record<string, string | undefined> = {}, timeoutMs = 300_000): Promise<Ran> {
   return new Promise((resolve) => {
     const p = spawn(process.execPath, [MAIN, ...args], { env: { ...process.env, NODE_TEST_CONTEXT: undefined, ...env }, stdio: ["ignore", "pipe", "pipe"] });
     let stdout = "";

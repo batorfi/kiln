@@ -1,4 +1,4 @@
 {
   "name": "@kiln/lane",
-  "responsibility": "One lane per factory: the pure affinity logic, and the lane task (lease, resident model, hold flag, swap count) built on the durable seam; the scheduler's runner and the residency manager arrive with r16."
+  "responsibility": "One lane per factory: the pure affinity logic, and the lane task (lease, resident model, hold flag, swap count) built on the durable seam; and (r16) the residency manager (explicit load/unload over loopback, keep_alive always pinned, readiness probes, reconcile() against Ollama's own running set), the per-tier generation timeout, and the KILN provider every model request goes through, including a step sharing its own already-held lease."
 }
