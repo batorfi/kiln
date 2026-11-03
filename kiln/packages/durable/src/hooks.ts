@@ -26,6 +26,9 @@ export const KILL_POINTS = [
   "unit.step-begin",
   "unit.step-after-work",
   "unit.step-committed",
+  // a real role's conversation turn (r16 T026): one tool call's result just committed, before the model is asked again; or the whole generation is finished and about to commit its result
+  "unit.tool-call-committed",
+  "unit.pre-result-commit",
   // the walk (r14): each point is declared by the task that first fires it
   "walk.admit-opened",
   "walk.admission-read",

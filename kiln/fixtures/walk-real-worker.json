@@ -1,0 +1,16 @@
+{
+  "flow": "v2",
+  "facts": { "paths": ["web/app.tsx"], "labels": ["ui"], "journeys": ["J1.3"] },
+  "built": { "ui_files_changed": true },
+  "triage": { "skip": true, "reasoning": "a copy change on one screen" },
+  "script": {
+    "real": {
+      "roles": {
+        "author": { "role": "worker", "model": "gemma4:12b" },
+        "workers": { "role": "worker", "model": "gemma4:12b" },
+        "judge": { "role": "reviewer", "model": "gemma4:12b" }
+      },
+      "workspace": "./kiln-demo-workspace"
+    }
+  }
+}

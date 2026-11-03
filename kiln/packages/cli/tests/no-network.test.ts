@@ -65,6 +65,11 @@ test("the owner has NO network socket while serving, after a move, and after a S
 });
 
 test("no source file anywhere listens or connects with a port or host (asserted independently of the lint)", () => {
+  // r16: `checks/network-allowlist.json` is the one place a loopback-only fetch is reviewed and named; this
+  // independent check reads the SAME allowlist (not a second hardcoded exception) so the two can never silently
+  // diverge — a file only skips the fetch-pattern assertion below if it is actually listed there, loopback-only.
+  const allowlist = JSON.parse(readFileSync(join(kilnDir, "checks", "network-allowlist.json"), "utf8")) as { entries: Array<{ path: string; loopbackOnly: boolean }> };
+  const allowedFetch = new Set(allowlist.entries.filter((e) => e.loopbackOnly).map((e) => e.path));
   const files: string[] = [];
   const walk = (d: string): void => {
     for (const e of readdirSync(d, { withFileTypes: true })) {
@@ -85,8 +90,9 @@ test("no source file anywhere listens or connects with a port or host (asserted 
       assert.match(first, /^(socketPath|path)$/, `${relative(kilnDir, f)}: .${m[1]}(${first}) is not a socket PATH variable`);
       channelCalls++;
     }
-    assert.doesNotMatch(text, /\b(fetch|XMLHttpRequest|WebSocket|EventSource)\s*\(/, relative(kilnDir, f));
+    if (!allowedFetch.has(relative(kilnDir, f))) assert.doesNotMatch(text, /\b(fetch|XMLHttpRequest|WebSocket|EventSource)\s*\(/, relative(kilnDir, f));
     assert.doesNotMatch(text, /node:(http|https|http2|dgram|tls|dns)\b/, relative(kilnDir, f));
   }
   assert.equal(channelCalls, 2, "exactly the two channel calls were seen (server listen, client connect) — the scan is not vacuous");
+  assert.ok(allowedFetch.size >= 1, "the allowlist-aware skip above is exercised for real, not vacuously");
 });

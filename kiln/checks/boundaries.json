@@ -5,13 +5,13 @@
     "record": { "imports": ["contracts"] },
     "durable": { "imports": ["contracts", "record"] },
     "lane": { "imports": ["contracts", "record", "durable"] },
-    "workers": { "imports": ["contracts", "record", "durable"] },
+    "workers": { "imports": ["contracts", "record", "lane"] },
     "director": { "imports": ["contracts", "record", "durable", "lane", "workers"] },
     "workshop": { "imports": ["contracts", "record", "durable", "lane", "workers", "director"] },
     "host": { "imports": ["contracts", "record", "durable", "lane", "workers", "director"] },
     "server": { "imports": ["contracts", "record", "durable", "lane", "workers", "director", "workshop", "host"] },
     "web": { "imports": ["server"] },
-    "cli": { "imports": ["contracts", "record", "server", "checks", "durable"] },
+    "cli": { "imports": ["contracts", "record", "server", "checks", "durable", "lane", "workers"] },
     "editor": { "imports": ["server"] },
     "team": { "imports": ["contracts", "record", "durable"] },
     "explore": { "imports": ["contracts", "record", "durable", "lane", "workers", "knowledge"] },
@@ -29,6 +29,13 @@
         "@earendil-works/pi-ai/models"
       ],
       "onlyIn": ["durable"]
+    },
+    "pi-ai-workers": {
+      "specifiers": [
+        "@earendil-works/pi-ai",
+        "@earendil-works/pi-ai/api/openai-completions"
+      ],
+      "onlyIn": ["workers"]
     }
   },
   "forbidden": { "legacyRoot": "legacy/" }

@@ -1,4 +1,10 @@
 {
   "schema": 1,
-  "entries": []
+  "entries": [
+    {
+      "path": "packages/lane/src/residency.ts",
+      "reason": "r16: the residency manager talks to the host's own Ollama directly (load/unload/probe/reconcile) — the one package besides workers/ that reaches it, loopback only.",
+      "loopbackOnly": true
+    }
+  ]
 }

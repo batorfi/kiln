@@ -18,14 +18,28 @@ export type Script = Record<string, ScriptMove>;
 export interface DriveStep { gateId: string; gateKey: string; round: number; kind: string; answer: any }
 export interface Ran { code: number | null; stdout: string; stderr: string }
 
-export function kiln(args: string[], env: Record<string, string | undefined> = {}): Promise<Ran> {
+// r16: found while diagnosing a real hang (a drive() call stuck for hours, Ollama idle, no resident model) — this
+// helper had NO process timeout at all, unlike packages/cli/tests/support/kiln.ts's twin. drive()'s own `patienceMs`
+// only bounds its RETRY loop (how long to keep asking again on exit 3/4); it never bounded a single spawned process
+// that never exits. Every caller before r16 only ever drove scripted (ms-scale) work, so a hang here was never
+// reachable in practice — a real generation is the first thing slow enough to expose it. SIGKILL after `timeoutMs`.
+// Default raised from an initial 120s to 300s (found at T047, Polish): a single `kiln feature next` can legitimately
+// block on the owner's private channel while a real unit ahead of it is mid-generation — one real unit can need
+// several tool-call rounds (MAX_TOOL_ROUNDS), each a full model round trip, and a loaded host stretches this
+// further still. 120s genuinely fired on a real (not hung) call under heavy same-machine load; 300s is still far
+// short of "forever" and comfortably clears every real timing this row has measured (worst case ~130s loaded).
+export function kiln(args: string[], env: Record<string, string | undefined> = {}, timeoutMs = 300_000): Promise<Ran> {
   return new Promise((resolve) => {
     const p = spawn(process.execPath, [MAIN, ...args], { env: { ...process.env, NODE_TEST_CONTEXT: undefined, ...env }, stdio: ["ignore", "pipe", "pipe"] });
     let stdout = "";
     let stderr = "";
     p.stdout.setEncoding("utf8").on("data", (d: string) => (stdout += d));
     p.stderr.setEncoding("utf8").on("data", (d: string) => (stderr += d));
-    p.on("close", (code) => resolve({ code, stdout, stderr }));
+    const timer = setTimeout(() => p.kill("SIGKILL"), timeoutMs);
+    p.on("close", (code) => {
+      clearTimeout(timer);
+      resolve({ code, stdout, stderr });
+    });
   });
 }
 const line = (r: Ran): any => JSON.parse(r.stdout.trim().split("\n").pop() ?? "null");
@@ -39,6 +53,8 @@ export interface DriveOptions {
   env?: Record<string, string | undefined>;
   /** How long to keep asking again when the owner is away (it may be restarting under a kill test). */
   patienceMs?: number;
+  /** r16: how long a single spawned `kiln` call may run before it is SIGKILLed — a real generation, not patienceMs's retry loop, needs this. Default: kiln()'s own 120s. */
+  subprocessTimeoutMs?: number;
   log?: (s: string) => void;
 }
 export async function drive(o: DriveOptions): Promise<{ steps: DriveStep[]; last: any }> {
@@ -52,7 +68,7 @@ export async function drive(o: DriveOptions): Promise<{ steps: DriveStep[]; last
       // ask for the next gate; if the owner is away (exit 3/4) ask again — the answer is re-derived from the store
       let view: any;
       for (let until = deadline(); ; ) {
-        const r = await kiln(["feature", "next", "--store", o.store, "--feature", o.feature, ...(after ? ["--after", after] : [])], o.env);
+        const r = await kiln(["feature", "next", "--store", o.store, "--feature", o.feature, ...(after ? ["--after", after] : [])], o.env, o.subprocessTimeoutMs);
         if (r.code === 0) { view = line(r); break; }
         if ((r.code === 3 || r.code === 4) && Date.now() < until) { await new Promise((x) => setTimeout(x, 100)); continue; }
         throw new Error(`feature next failed (exit ${r.code}): ${r.stdout}${r.stderr}`);
@@ -72,7 +88,7 @@ export async function drive(o: DriveOptions): Promise<{ steps: DriveStep[]; last
       }
       let answer: any;
       for (let until = deadline(); ; ) {
-        const r = await kiln(args, o.env);
+        const r = await kiln(args, o.env, o.subprocessTimeoutMs);
         if (r.code === 0) { answer = line(r); if (answer.reason === "not-ready" && Date.now() < until) { await new Promise((x) => setTimeout(x, 100)); continue; } break; }
         if ((r.code === 3 || r.code === 4) && Date.now() < until) { await new Promise((x) => setTimeout(x, 100)); continue; } // outcome unknown: the SAME key is retried
         throw new Error(`gate move failed (exit ${r.code}): ${r.stdout}${r.stderr}`);

@@ -28,8 +28,8 @@ test("kiln check boundaries on the real tree exits 0 and reports the rules and t
   const r = cli(kilnDir, "boundaries");
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.match(r.stdout, /^PASS boundaries — scanned \d+ files/m);
-  // r12 said "0 external seams" (no dependency); r13 admits exactly one — the durable seam — and says how many dependencies it holds
-  assert.match(r.stdout, /17 layers declared; 1 external seam;/);
+  // r12 said "0 external seams" (no dependency); r13 admitted the durable seam; r16 adds workers' own seam to pi-ai's request surface — two external seams, and how many dependencies they hold
+  assert.match(r.stdout, /17 layers declared; 2 external seams;/);
   assert.match(r.stdout, /3 dependencies, exact and locked/);
 });
 

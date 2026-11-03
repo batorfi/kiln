@@ -151,8 +151,71 @@ export interface LaneApi {
    * Take the lane for `step`, waiting its turn (at most one holder). One commit: the lease, the resident model, the hold flag, the swap count and the `lane.*` outbox entries (FR-031). Rejects if
    * `opts.signal` aborts while waiting. `hold` defaults to false; `model` left out keeps the resident one.
    */
-  acquire(step: TaskId, opts?: { model?: string; hold?: boolean; signal?: AbortSignal; cause?: string }): Promise<Lease>;
+  /** `pin` (r16, FR-024): the resident model survives a later `release()`'s unload — for a judge that must not cause its strongest model to be unloaded between judged steps. */
+  acquire(step: TaskId, opts?: { model?: string; hold?: boolean; pin?: boolean; signal?: AbortSignal; cause?: string }): Promise<Lease>;
   release(step: TaskId): Promise<void>;
+  /**
+   * r16 T012: true iff `step` currently holds the lease, synchronously, with no wait and no commit — so a caller
+   * (the KILN provider) can tell "I already hold it" apart from "I need to ask" before deciding whether to acquire.
+   * Optional so an implementation without it is simply never asked (`requestThroughLane` falls back to acquiring).
+   */
+  holds?(step: TaskId): boolean;
+}
+
+// ── the unit's checkpoint and result (r13; r16 T019 moves these here, unchanged, so the workers port below can name them) ─────────────
+/** One tool call, already executed and committed (r16 T023, research R4). Appended to `UnitCheckpoint.toolCalls` in the SAME commit as its result — never recorded before it ran, never left unrecorded after. */
+export interface ToolCallLogEntry {
+  id: string;
+  name: string;
+  arguments: Record<string, unknown>;
+  /** Declared by the tool itself (FR-010), copied here at the moment it ran — never re-derived later. */
+  replaySafe: boolean;
+  executed: true;
+  result: string;
+  isError: boolean;
+  /** Which model round this call belongs to — groups calls that were requested together in one reply, for faithful history reconstruction on resume. */
+  round: number;
+}
+export interface UnitCheckpoint {
+  phase: "work";
+  done: number;
+  results: string[];
+  started?: true;
+  /** r16 T023: every tool call a real-role unit's conversation has made so far, across every round, in commit order. Absent for a scripted (no-role) unit. */
+  toolCalls?: ToolCallLogEntry[];
+  /** r16 T023: tool calls the model's LAST reply asked for that have not yet run — processed one at a time, each its own commit, before the model is asked anything else. Absent once a round's calls are all executed. */
+  pending?: Array<{ id: string; name: string; arguments: Record<string, unknown> }>;
+  /** r16 T023: the round `pending` belongs to, and the last round actually asked for — lets a resume group `toolCalls` back into the rounds the model originally made them in. */
+  round?: number;
+}
+export interface UnitResult {
+  label: string;
+  results: string[];
+}
+
+// ── the workers port (implemented in packages/workers, injected here: durable cannot import workers — r16 T019, research R2/R3) ────────────────────────────────────────────────────────
+/** A real, explicit, recorded reference a conversation is told about — never the referenced content itself (FR-002). */
+export interface ArtifactRef {
+  ref: string;
+}
+export interface TurnInput {
+  unit: TaskId;
+  role: string;
+  /** The model this turn's conversation must run on — resolved by whoever created the unit (today: the unit's own `model` field, same as a scripted `needsLane` unit's). */
+  model: string;
+  /** The conversation's tools' working directory (spec Assumptions: a KILN-managed worktree, assumed already provided — this row only uses it, never builds its lifecycle). */
+  workspace: string;
+  inputs: ArtifactRef[];
+  checkpoint: UnitCheckpoint;
+  signal: AbortSignal;
+}
+/**
+ * `"continue"` is declared now but not yet exercised: nothing before T023 gives a turn's checkpoint anywhere to record
+ * mid-conversation progress, so today's `runTurn` always finishes synchronously within one call and returns `"done"`.
+ */
+export type TurnResult = { kind: "continue"; checkpoint: UnitCheckpoint } | { kind: "done"; result: UnitResult };
+export interface WorkersApi {
+  runTurn(input: TurnInput): Promise<TurnResult>;
 }
 
 // ── inspection: read by a fresh reader with NO owner (data-model §7) ─────────────────────────────────────────────────────

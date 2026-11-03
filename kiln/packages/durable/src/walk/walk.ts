@@ -178,9 +178,21 @@ export async function work(s: Services, task: Task<Extract<WalkCheckpoint, { pha
   const [role, ...rest] = todo;
   const round = (w.rounds[w.cursor] ?? 0) + 1;
   const stepMs = task.input.walk.script?.stepMs;
+  // r16 T038: `role` here is the unit-role NAME (unitRoles()'s "author"/"check"/"judge", or a fix-round's "workers"/"judge") —
+  // not the real conversation's role from #workers/roster.ts. `script.real` maps the former to the latter; absent, every
+  // unit is created exactly as before this field existed (byte-identical scripted stand-in).
+  const real = task.input.walk.script?.real;
+  const realBinding = real?.roles[role];
   await run.commit(async (tx) => {
     const label = `${role}:${w.cursor}:${round}`;
-    const id = await tx.createTask("kiln.unit", { label, steps: 1, ...(stepMs ? { stepMs } : {}) } as unknown as JSON, { kind: "task", taskId: task.id });
+    const id = await tx.createTask(
+      "kiln.unit",
+      {
+        label, steps: 1, ...(stepMs ? { stepMs } : {}),
+        ...(realBinding ? { role: realBinding.role, model: realBinding.model, workspace: real!.workspace, needsLane: true } : {}),
+      } as unknown as JSON,
+      { kind: "task", taskId: task.id },
+    );
     await appendUnitEvent(tx, s, "unit.queued", { unit: id, label, owner: task.id, actor: `task:${task.id}`, cause: `task:${task.id}`, correlation: `run:${task.input.feature}` });
     return { status: "waiting", checkpoint: { phase: "work", w, todo: rest, unitId: id }, on: [id] };
   });

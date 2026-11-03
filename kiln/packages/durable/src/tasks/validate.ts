@@ -7,11 +7,17 @@ export interface UnitSpec {
   label: string;
   steps: number;
   needsLane?: boolean;
-  /** With `needsLane`: the model the scripted generation needs resident, and whether the lane must hold it afterwards. */
+  /** With `needsLane`: the model the scripted generation needs resident, and whether the lane must hold it afterwards. With `role` (r16): the real model the conversation runs on — same field, same meaning, now also used for real. */
   model?: string;
   hold?: boolean;
-  /** Scripted duration of each step in ms (0–60000): the work a kill can interrupt. */
+  /** Scripted duration of each step in ms (0–60000): the work a kill can interrupt. Unused when `role` is set. */
   stepMs?: number;
+  /** r16 T019: a real role from `#workers/roster.ts`'s provisional roster — replaces the scripted stand-in with a real conversation. Requires `needsLane`, `model` and `workspace`; `steps` must be 1 (T018's `runTurn` finishes synchronously within one call — `"continue"`'s pausing is T023's, not yet exercised). */
+  role?: string;
+  /** r16: the real conversation's tools' working directory. Required with `role`. */
+  workspace?: string;
+  /** r16: explicit, recorded references the real conversation is told about — never raw text (FR-002). Optional; defaults to none. */
+  inputs?: string[];
 }
 /** A row is EITHER the r13 scripted list of units OR (r14) a walk of the flow — exactly one. */
 export type RowInput = { feature: string; script: UnitSpec[]; walk?: undefined } | { feature: string; walk: WalkInput; script?: undefined };
@@ -27,7 +33,7 @@ const only = (o: Record<string, unknown>, allowed: string[]): string | null => {
 
 export function checkUnit(v: unknown): string | null {
   if (!isObj(v)) return "a unit's input is an object";
-  const extra = only(v, ["label", "steps", "needsLane", "stepMs", "model", "hold"]);
+  const extra = only(v, ["label", "steps", "needsLane", "stepMs", "model", "hold", "role", "workspace", "inputs"]);
   if (extra) return extra;
   if (typeof v.label !== "string" || v.label.trim() === "") return "a unit needs a label";
   if (!Number.isInteger(v.steps) || (v.steps as number) < 1 || (v.steps as number) > 100) return "steps is an integer from 1 to 100";
@@ -36,6 +42,19 @@ export function checkUnit(v: unknown): string | null {
   if (v.hold !== undefined && typeof v.hold !== "boolean") return "hold is a boolean";
   if ((v.model !== undefined || v.hold !== undefined) && v.needsLane !== true) return "model and hold apply only to a unit with needsLane";
   if (v.stepMs !== undefined && (!Number.isInteger(v.stepMs) || (v.stepMs as number) < 0 || (v.stepMs as number) > 60_000)) return "stepMs is an integer from 0 to 60000";
+  if (v.role !== undefined) {
+    if (typeof v.role !== "string" || v.role.trim() === "") return "role is a non-empty string";
+    if (v.needsLane !== true) return "role requires needsLane";
+    if (v.model === undefined) return "role requires model";
+    if (v.workspace === undefined || typeof v.workspace !== "string" || v.workspace.trim() === "") return "role requires a non-empty workspace";
+    if (v.steps !== 1) return "role requires steps to be exactly 1 (runTurn finishes synchronously within one call; T023 is what gives it something to pause with)";
+  }
+  if (v.workspace !== undefined && (typeof v.workspace !== "string" || v.workspace.trim() === "")) return "workspace is a non-empty string";
+  if (v.workspace !== undefined && v.role === undefined) return "workspace applies only to a unit with role";
+  if (v.inputs !== undefined) {
+    if (!Array.isArray(v.inputs) || !v.inputs.every((i) => typeof i === "string")) return "inputs is an array of strings";
+    if (v.role === undefined) return "inputs applies only to a unit with role";
+  }
   return null;
 }
 const RESERVED_FEATURES: readonly string[] = ["lane"];

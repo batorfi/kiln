@@ -7,6 +7,7 @@ import { channelSocketPath } from "#durable/channel/path.ts";
 import { startOwner } from "#durable/owner.ts";
 import { GATE_USAGE } from "./gate-usage.ts";
 import { flags, need } from "./cli-flags.ts";
+import { createRealWorkers } from "./real-workers.ts";
 
 /** `kiln owner --store <dir>`: runs until SIGTERM/SIGINT. Prints `listening`, then `ready`. */
 export async function ownerCommand(args: string[]): Promise<number> {
@@ -14,7 +15,11 @@ export async function ownerCommand(args: string[]): Promise<number> {
   if ("error" in f || need(f, ["store"])) return usage("error" in f ? f.error : need(f, ["store"])!);
   let owner;
   try {
-    owner = await startOwner({ store: f.store });
+    // r16 T037: a real lane and real workers, so a role unit run from THIS binary (not only a test harness) has
+    // somewhere to acquire a lease and open a conversation — additive, never required: a feature with no `role`
+    // unit never calls into either (notes.md, found at T004).
+    const real = createRealWorkers();
+    owner = await startOwner({ store: f.store, lane: real.lane.api, tasks: real.lane.kinds, workers: real.workers });
   } catch (e) {
     console.error(`${(e as Error).name}: ${(e as Error).message}`);
     return 1;

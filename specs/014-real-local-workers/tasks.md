@@ -1,0 +1,250 @@
+---
+
+description: "Task list for real local workers (row r16)"
+---
+
+# Tasks: Real local workers (row r16)
+
+**Input**: Design documents from `/specs/014-real-local-workers/`
+
+**Prerequisites**: [plan.md](./plan.md), [spec.md](./spec.md); [research.md](./research.md) (R1–R11), [data-model.md](./data-model.md), [contracts/](./contracts/) (`worker-conversation.md`, `residency-manager.md`), [quickstart.md](./quickstart.md).
+
+**Tests**: **Included — they are the acceptance.** The row's own words are "a crash mid-generation resumes without double-charging a tool" (SC-002) and "a judge is never silently weaker" (SC-003); a replay-discipline claim nobody tried to break proves nothing (r13–r15's lesson, carried forward). The kill-point proofs, the negative cases and the weakened variants are tasks, not extras.
+
+**Organization**: by user story, in the order the *implementation* needs them, not the spec's P1/P1/P1/P1/P2/P1 display order. After Setup and Foundational (the roster, the tools, the Ollama provider registration, the residency manager, the KILN provider and the per-tier timeout all exist — `kiln.unit` still runs the scripted stand-in): **US4 (judge tier, thin — proves constitution II cheaply before the big mechanism) → US1 (the real conversation, the row's reason to exist) → US2 (replay discipline on top of US1's checkpoint) → US3 (residency ownership's remaining acceptance: broken-guarantee detection, housekeeping sharing a lease) → US5 (readiness probes wired into binding) → US6 (the full real walk — depends on US1–US5 all being done, it is not an independent slice) → Polish**. Spec priorities are P1 for US1–US4 and US6, P2 for US5; this order follows what each story's implementation actually needs to exist first.
+
+## Format: `[ID] [P?] [Story] Description`
+
+- **[P]**: can run in parallel (different files, no dependency on an unfinished task)
+- **[Story]**: US1…US6 as in [spec.md](./spec.md); Setup, Foundational and Polish tasks have none
+- Paths are relative to the repository root. `kiln/` is the codebase. Abbreviations: `C/` = `kiln/packages/contracts/`, `D/` = `kiln/packages/durable/`, `L/` = `kiln/packages/lane/`, `W/` = `kiln/packages/workers/`, `CLI/` = `kiln/packages/cli/`, `K/` = `kiln/checks/`, `T/` = `kiln/tests/`, `S/` = `specs/014-real-local-workers/`.
+
+## Ground rules (from the plan, the Constitution Check and r13–r15's lessons)
+
+- **Every r13/r14/r15 test stays green at every commit.** A scripted (no-role) `UnitSpec` is untouched: it still runs `sleep(stepMs)` exactly as before (plan.md's whole design is "replace the stand-in, not the discipline" — research R3).
+- **One real call site.** Only `W/` imports `@earendil-works/pi-ai`'s request surface (`stream`/`complete`, `createModels`/`setProvider`); `D/src/library/open.ts`'s existing zero-provider `createModels()` call is untouched. `kiln check boundaries` is extended to assert this, never bypassed by convention alone (research R9).
+- **No timer settles a gate (constitution V).** The per-tier timeout (Clarification 1, FR-006–008) fails a *step* through the exact terminal-outcome path a step failure already uses; it never reaches the gate the step belonged to. If a task seems to need a gate-level timeout, stop: the design is wrong.
+- **No new egress beyond loopback (constitution VIII).** Every path to Ollama goes through `W/src/provider.ts` (conversations) or `L/src/residency.ts` (load/unload/probe/reconcile) — nothing else opens a socket to port 11434 or anywhere else.
+- **The provisional roster stays exactly as small as the spec's Assumptions describe** (one producer, one judge) — it is explicitly replaced wholesale by r17; do not grow it "while we're at it."
+- **A judge never silently downgrades (constitution II).** Every task that touches tier binding must prove the refusal happens *before* any `pi-ai` call, not after a failed one.
+- **Kill points are declared and used, never invented informally.** Every new kill point lands in `D/src/hooks.ts` `KILL_POINTS` and the declared-equals-used test, exactly as r13–r15 require.
+- **The record gains no new event type or field this row** (data-model.md §8). `lane.transition` is `legacyEntry` — permanently read-only, reserved for replaying the first program's streams; it is **never** emitted by this or any row (confirmed at T013, corrected 2026-11-01). Real residency transitions are reported via `lane.acquired`/`lane.swapped`/`lane.released` and `kiln.lane`'s document fields instead. If a task seems to need a new schema, stop and check data-model.md §8 again before writing one.
+- Every phase ends with a commit and a recorded checkpoint in `S/baseline.md`. Nothing here edits `specs/ROADMAP.md`: closing r16 is the human's Roadmap-gate move. `legacy/` is not touched.
+
+---
+
+## Phase 1: Setup
+
+**Purpose**: readings, the `workers/` package's first real directories, the boundary edges the design needs, and the live-model test tier every later story's tests rely on.
+
+- [X] T001 Take the **"before"** readings and create `S/baseline.md`: Node/npm versions; `cd kiln && npm test` and `npm run proof` exit codes, counts and seconds (r15's closing state); `npm run check` (five `PASS`); `git rev-parse HEAD:legacy` and the hash of `specs/ROADMAP.md`.
+- [X] T002 [P] Inventory in `S/notes.md`: every call site that would change — `D/src/tasks/unit.ts`'s `work` phase stand-in, `L/src/lane-task.ts`'s `grant()`/`release()`, `L/src/types.ts`'s `WorkUnit`, `W/kiln.json`'s stub text — and what each becomes (research R2, R3).
+- [X] T003 [P] Scaffold `W/src/` and `W/tests/` (currently `W/kiln.json` only, no `src/`); confirm `#workers/*` already resolves via `kiln/package.json`'s `imports` map with a trivial import probe test `W/tests/package-resolves.test.ts`; rewrite `W/kiln.json`'s responsibilities text from "arrives with r16" to what this row actually gives it (research R2).
+- [X] T004 [P] **Corrected during implementation (notes.md T004): as literally written this is a cycle** (`durable → workers → lane → durable`, since `lane → durable` already exists), which `checks/boundaries.ts` itself refuses by name. Built instead: `workers: [contracts, record, lane]` only — **no** `workers → durable` edge; `durable`'s imports stay unchanged (`[contracts, record]`), using the same port-inversion r13 already uses for `lane` (durable never imports workers directly either). `lane` gains **no** edge to `workers`, as planned. `K/tests/boundaries.test.ts`/`boundaries-dependencies.test.ts` needed no changes — both already pass against the corrected rule file, including B1 (the real tree) and B3 (`lane → workers` still correctly forbidden).
+- [X] T005 Add a **live-model test tier** to `T/run.ts`: gated on Ollama reachable at `127.0.0.1:11434` and `KILN_LIVE_MODEL` (default `gemma4:12b`, legacy's convention, Clarification 2) actually pulled; skip by name — never silently pass — when either is missing. Add `npm run test:live-models` to `kiln/package.json`. This is what every US1+ live-tier test below runs under.
+
+**Checkpoint**: `npm test` and `npm run check` unaffected; `npm run test:live-models` prints a clean skip on a host with no Ollama.
+
+---
+
+## Phase 2: Foundational (the roster, the tools, the provider, the residency manager — blocking)
+
+**Purpose**: everything every user story needs before `kiln.unit` can call anything real. **No behavioural change to `kiln.unit` yet** — this phase ends with the new machinery built and unit-tested in isolation, default tier still fully green.
+
+**⚠️ CRITICAL**: no user story work begins until the checkpoint at T014.
+
+- [X] T006 [P] `W/src/roster.ts`: `PROVISIONAL_ROSTER` (research R7, data-model §1) — one producer (`worker`, tier `standard`, tools `["read-file","write-file"]`, `judge: false`, a `timeoutMs`) and one judge (`reviewer`, tier `strongest`, tools `["read-file"]`, `judge: true`, a `timeoutMs`); `judge` feeds `C/src/roles.ts`'s `isJudge` unchanged. Tests `W/tests/roster.test.ts`: the judge entry's tier is `strongest`; the module's own file header states it is provisional and r17 replaces it.
+- [X] T007 [P] `W/src/tools.ts`: `ToolDecl` for `read-file` (`replaySafe: true`) and `write-file` (`replaySafe: false`), each `run(args, {workspace})` scoped to the feature's workspace directory (data-model §2, FR-010, FR-046). Tests `W/tests/tools.test.ts`: `read-file` returns file content; `write-file` writes it; a path resolving outside `workspace` is refused by name for both tools (the workspace-scoping the data model names); classification is read from a declared field, never inferred from the tool's name or from what a given call happened to do.
+- [X] T008 `toolsFor(role, roster)` and `bindConversationRole(role, roster)` in `W/src/roster.ts` (contracts/worker-conversation.md "Role binding", "Tool offering"): `toolsFor` resolves `roster.tools` against T007's declared set, throwing a named config error for an unknown tool name; `bindConversationRole` re-throws `C/src/roles.ts`'s existing `TierPolicyError` unchanged when a judge's roster tier isn't `strongest` — both checked before any `pi-ai` call exists (depends on T006, T007). Tests `W/tests/roster.test.ts`: an unknown tool name is refused at this point, not mid-generation; a judge bound to `standard` throws here, not inside a conversation.
+- [X] T009 [P] `W/src/provider.ts`: register Ollama as a `Provider<"openai-completions">` (research R1) — `baseUrl: http://127.0.0.1:<port>/v1` (port from residency config, default 11434), a placeholder `api_key` auth (Ollama does not check it; every `pi-ai` provider declares an auth type), wired through `createModels()`/`MutableModels.setProvider()`. This is `W/`'s **only** import of `pi-ai`'s request surface. Tests `W/tests/provider.test.ts`: the registered provider's shape (unit-level, no live Ollama needed); a live-tier counterpart (T005's gating) that lists models against a real running Ollama.
+- [X] T010 [P] `L/src/timeout.ts`: `withTierTimeout(ms, signal, work)` (research R6, residency-manager.md "Timeout composition") — races `work` against `AbortSignal.timeout(ms)` composed with the caller's `signal` (a factory close still wins); throws a named `GenerationTimeoutError`, distinct from an abort. Tests `L/tests/timeout.test.ts`: `work` finishing first resolves normally; `ms` expiring first throws `GenerationTimeoutError`, not a generic abort; the caller's own `signal` firing first resolves as an abort, not a timeout — the two are never confused.
+- [X] T011 [P] `L/src/residency.ts`: `createResidency({port, budgetBytes})` → `{load, unload, probe, reconcile}` (research R8, R10, R11, residency-manager.md). `load`/`unload` call Ollama's native API directly, loopback only, and are the **only** way a model becomes or stops being resident; `load()` MUST set an explicit, long `keep_alive` on the request (research R11, confirmed live on 2026-11-01: Ollama's own default unloads a model after ~5 minutes with no KILN-caused event) and `unload()` MUST set `keep_alive: 0` — a model never expires on Ollama's own timer while KILN's bookkeeping still calls it resident. `probe(model)` makes one real minimal round trip (a trivial tool offered, checked for a tool call; a streamed response consumed as a stream; `Usage`'s presence on the response — capability only, Clarification 2) and reads `contextWindow` from the `Model` entry's static field. `reconcile()` compares Ollama's actual running-model list (`/api/ps`) against this manager's own record and returns a `BrokenGuaranteeReport | null`, writing nothing itself — this also catches a model Ollama (or the host) dropped outside any KILN call, not only a stray load (R11). Tests `L/tests/residency.test.ts`: unit-level tests against a fake HTTP layer for `load`/`unload`/`reconcile`'s comparison logic, the budget check, and that `load()`'s request body always carries a non-default `keep_alive` while `unload()`'s carries `0`; a live-tier counterpart (T005) runs `probe` against a real Ollama and a real pulled model, and asserts the model is still resident (via `/api/ps`) after waiting past Ollama's un-pinned default expiry.
+- [X] T012 `L/src/kiln-provider.ts`: `requestThroughLane(req)` (research R9, residency-manager.md "The KILN provider") — resolves the resident model from `kiln.lane`'s document; a tier mismatch goes through the **existing**, unmodified `acquire()` swap path (FR-022/023); a caller whose step already holds the lease is never asked to acquire a second one (depends on T011). Tests `L/tests/kiln-provider.test.ts`: a caller holding its own lease is not re-acquired; a tier mismatch triggers exactly one `acquire()` call with the existing affinity logic unchanged (spied, not re-implemented); a request naming a non-resident model is refused before `req.call` runs.
+- [X] T013 Extended `L/src/lane-task.ts`'s `LaneDoc` with `pin`/`budgetBytes` (data-model §5, FR-024/025); `grant()` calls `residency.load()` before granting a lease for a model not yet resident, and `release()` calls `residency.unload()` when nothing pins the model (depends on T011, T012). **`lane.transition` is NOT emitted — confirmed, not assumed (notes.md T013): the catalog declares it `legacyEntry` (read-only, kept for replaying the first program's own streams); `appendEvent` refuses it by name for any new code. FR-027, as written, could not be satisfied by any implementation. Decided 2026-11-01 (human's call, Option A): struck — spec.md's FR-027 now names `lane.acquired`/`lane.swapped`/`lane.released` plus `kiln.lane`'s document fields as what this row's transitions are observable through; no new event type was added.** Tests `L/tests/residency.test.ts` (load/unload/budget/keep_alive, against a fake HTTP layer and live) and the new `L/tests/lane-task-residency.test.ts` (the lane-task integration: a new model's acquire calls `load()`; an unpinned release calls `unload()`; a pinned model survives release; a swap is still counted correctly with residency wired in) — using spies on a fake `Residency`/the real HTTP layer as the durable evidence a transition happened, in place of the blocked event.
+- [X] T014 **Checkpoint**: `npm test` green (T006–T013's new unit-level tests, default tier, no Ollama required); `npm run check` five `PASS` with the new boundary edges; commit; append to `S/baseline.md`.
+
+**Checkpoint**: the machinery exists and is proven in isolation; no user story has touched `kiln.unit` yet.
+
+---
+
+## Phase 3: User Story 4 — a judge is never silently weaker than the strongest resident model (Priority: P1)
+
+**Goal**: constitution II, provably impossible to violate: a judge's tier refusal happens before any `pi-ai` call, and a residency failure for a judge never falls back to a different model.
+
+**Independent Test**: configure a judge step whose strongest model is deliberately made unavailable; show the step waits and names the reason rather than running on a different resident model; make it available and show it proceeds.
+
+- [X] T015 [P] [US4] Prove T008's `bindConversationRole` refusal happens before any `pi-ai` call: `W/tests/judge-tier-refusal.test.ts` with a spy on `W/src/provider.ts`'s request function — a judge entry bound to anything but `strongest` throws and the spy is never called. **As built**: the real `PROVISIONAL_ROSTER.reviewer` entry is already `strongest`, so the test proves the *sequencing invariant* `runTurn` (T018) will follow — `bindRole`/`bindConversationRole` checked before a spy standing in for the provider call — rather than forcing a weaker tier through the real roster module.
+- [X] T016 [P] [US4] Prove a judge's residency failure never substitutes a different model: new `L/tests/judge-no-fallback.test.ts` — the strongest model's `load()` rejects (fake HTTP layer), never falling back to a different, already-resident model; a later re-ask for the **same** model succeeds once Ollama can load it; a second test confirms the tier check (T015) precedes any residency request at all.
+- [X] T017 [US4] **Checkpoint**: green; commit; `S/baseline.md`. `npm test` 865 new + 500 legacy (30 skipped), exit 0; `npm run check` five `PASS`.
+
+**Checkpoint**: constitution II holds under the new machinery, proven before the big mechanism (US1) exists.
+
+---
+
+## Phase 4: User Story 1 — a step runs as a real, fresh conversation on a local model (Priority: P1) 🎯 MVP
+
+**Goal**: `kiln.unit`'s `work` phase opens a real, fresh `pi-ai` conversation in place of `sleep(stepMs)`, through `requestThroughLane`, producing a real artifact where the stand-in produced `${label}:${i}`.
+
+**Independent Test**: replace one scripted unit's wait with a real worker call against a resident Ollama model; the unit still commits its result exactly once, in the same place the stand-in did.
+
+- [X] T018 [US1] `TurnInput`/`TurnResult`/`runTurn` in `W/src/conversation.ts` (contracts/worker-conversation.md "Opening a turn"): assembles a fresh `pi-ai` `Context` per call — `systemPrompt` from the role's instructions (`RoleEntry` gained a `systemPrompt` field, a judgment call recorded in `S/notes.md`), `messages` seeded from the step's `inputs: ArtifactRef[]` (FR-002, never inlined raw text), `tools` from T008's `toolsFor`; calls `requestThroughLane` (T012) with the role's required tier; returns `{kind:"continue", checkpoint}` or `{kind:"done", result}` — **as built**, any tool calls the model makes are run synchronously within the same call (a small internal round cap), so `"done"` is the only kind actually returned today; `"continue"` is the right declared type but has nothing to pause with until T023's checkpoint field exists (recorded in `S/notes.md`, not a silent scope change). Tests `W/tests/conversation.test.ts` (mocked `complete`, no live Ollama needed for 8 of 9 cases) plus one **LIVE** case proven against the real installed Ollama end to end (real provider, real `KilnProvider`, a real tool call).
+- [X] T019 [US1] `D/src/tasks/unit.ts`'s `work` phase: where the stand-in ran, calls `s.workers!.runTurn(...)` instead for a unit whose spec names a `role` (research R3); the surrounding commit/checkpoint/lane-acquire/release shape is **unchanged** — both branches share the same `try`/`catch`/release-on-error. `UnitCheckpoint`/`UnitResult` moved to `#durable/types.ts` (exported, unchanged shape) so the new `WorkersApi` port there can name them; `unit.ts` imports them from there now instead of declaring them locally. `UnitSpec` (`validate.ts`) gained `role`/`workspace`/`inputs` (reusing the existing `model` field for the real model name — no new field needed there); a `role` unit requires `needsLane`, `model`, `workspace` and `steps === 1` (T018's synchronous-only scope, enforced at validation, not just by convention). `Services`/`FactoryOptions` gained an optional `workers` port, wired through `openFactory` exactly like `lane`. Tests: new `D/tests/tasks/unit-worker.test.ts` (a real-role unit's full event trail and terminal result via a fake `WorkersApi`; the port receives the right role/model/workspace/inputs; a scripted unit's path is untouched, proven by a fake `WorkersApi` that throws if ever called for it).
+- [X] T020 [US1] Deterministic `requestId` in `W/src/conversation.ts`: `requestIdFor(unit, step, attempt)` — reused identically on a redone call because the same `(unit, checkpoint.done)` pair always produces it; passed to `pi-ai` as `options.metadata.requestId`. **Scoping note** (`S/notes.md`): `feature`/`gate` from PRD WORK-5's wording aren't separate inputs here — a unit's `TaskId` already correlates to exactly one gate's one step, so `(unit, step)` carries the same identity WORK-5 asks for. Tests `W/tests/conversation.test.ts`: the same pair yields the same id; a different unit or step yields a different one.
+- [X] T021 [P] [US1] Prove no subagent tool exists anywhere a worker or judge can reach (WORK-3, FR-003): `W/tests/no-subagent.test.ts`, a source-level scan reusing `checks/lex.ts`'s own tokenizer (tests are outside the boundary check's scan roots, so importing it here is fine) — nothing in `W/src/tools.ts`'s declared set imports `conversation.ts` or `pi-ai`'s request surface; every declared tool's `run` is a plain function, never an alias of `runTurn`/`createWorkers`.
+- [X] T022 [US1] **Checkpoint**: `npm test` 881 new + 500 legacy (30 skipped), exit 0. `npm run test:live-models` — 82 of 82, exit 0, **nothing skipped** (Ollama + `gemma4:12b` present on this host): includes a real end-to-end worker turn (provider, KILN provider, a real `read-file` tool call). `npm run check` five `PASS` (121 files scanned). `npm run proof` re-run to confirm the kill-point proofs are unaffected by `unit.ts`'s structural change (results in `S/baseline.md`). Committed.
+
+**Checkpoint**: a real conversation replaces the stand-in. **This is the MVP.**
+
+---
+
+## Phase 5: User Story 2 — a crash mid-generation resumes without double-charging a tool (Priority: P1)
+
+**Goal**: a read-only tool call made before a kill is safe to redo; a write/command call is never re-issued; the resumed conversation is told, by a structured notice, what already happened; a hung generation fails by name without ever touching its gate.
+
+**Independent Test**: script a worker step that calls a read-only tool then a write tool; kill the owner right after the write executes but before the step's result commits; restart; show the write ran exactly once and the resumed conversation received the interruption notice instead of a second identical write.
+
+- [X] T023 [US2] **Not additive — a real restructuring, as flagged going in (notes.md T023).** `runTurn` no longer resolves a whole multi-round tool-use conversation in one call: each invocation does AT MOST one of — run the single next `pending` tool call and commit it, or ask the model for a fresh round and run+commit only the FIRST tool call it asks for, queuing the rest as `pending`. `UnitCheckpoint` (now in `#durable/types.ts`, T019) grows `toolCalls: ToolCallLogEntry[]` (each entry carries its own `round`) and `pending`/`round`; appended in the SAME commit as the tool's result, never a separate one. `W/src/conversation.ts` rebuilds the WHOLE message history from `checkpoint.toolCalls` every call — nothing else is trusted. Tests: `W/tests/conversation.test.ts` rewritten around a `runToCompletion` helper (the old single-call multi-round test no longer describes the real contract) plus a new multi-tool-call-in-one-reply case; `D/tests/tasks/unit-worker.test.ts` unaffected (fake `WorkersApi`, doesn't exercise the real loop).
+- [X] T024 [US2] `buildInterruptionNotice(toolCalls)` and `renderInterruptionNotice` in `W/src/conversation.ts` (research R5): pure function of the log, `null` exactly when empty; `runTurn`'s message-rebuild prepends the rendered notice whenever `checkpoint.toolCalls` is non-empty before asking the model — which, given `runTurn` is fully stateless between calls, is indistinguishable from "the first turn of a resume" every time (there is no cheaper or more honest signal available at this layer). Tests: unit tests on `buildInterruptionNotice` directly, plus an integration test asserting the exact rendered text (tool name, arguments, "ALREADY EXECUTED") reaches the model's next `context.messages`.
+- [X] T025 [US2] Wired `withTierTimeout` (T010) around the model call inside `callModel`, using the role's `timeoutMs` (or `WorkersConfig.timeoutMsOverride`, a test-only seam). **Correction to this task's own wording**: `unit.ts`'s existing generic `catch` block needed NO new code — `GenerationTimeoutError` leaves `run.signal.aborted` false, so the lane is already released by the unconditional `if (held && !run.signal.aborted)` check, and the error then propagates uncaught; the library itself (not our commit) turns that into the task's `unit.failed` outcome (confirmed in `unit-events.ts`'s own comment: "a failed unit's end is written by the library, outside any commit of ours" — there is no `abort`-phase commit of `unit.failed` to "let run"). Tests: `W/tests/conversation.test.ts` (timeout vs. abort never confused) and the proof's own `hanging-worker.ts` case (T026).
+- [X] T026 [US2] Declared `unit.tool-call-committed` and `unit.pre-result-commit` in `D/src/hooks.ts` `KILL_POINTS` (no change needed to `kill-points-declared.test.ts` itself — it scans source for usage, nothing hardcoded); **excluded both from `D/tests/proof/units.test.ts`'s scripted-unit loop** (they only fire in the real-role branch, found immediately when that file's own never-vacuous check would otherwise fail) and proved instead in the new `D/tests/proof/worker-replay.proof.test.ts`, against a real-role unit with a SCRIPTED model reply (`support/scripted-workers.ts`, new) and a real `write-file`. Also proves SC-008 (`support/hanging-worker.ts`, new): a timed-out generation fails the task by name with no kill at all. **Found and fixed while getting this green, all pre-existing from T001–T014, none of it new: three hardcoded literal test assertions (`"1 external seam"`, `"allowlist: 0 entries"`, and `seam.test.ts`'s "nothing in the tree registers a provider") had been failing since T009/T011 — silently, because every prior checkpoint's `npm test` ran through a pipe that swallowed the real exit code. Full account in notes.md.**
+- [X] T027 [P] [US2] `D/tests/proof/support/broken-worker.ts`: ignores `checkpoint.toolCalls`/`pending` entirely, always re-asks and re-runs `write-file` fresh. The proof's weakened-control test confirms it DOES double-write across a kill at `unit.pre-result-commit` (file mtime changes) — the real implementation's test asserts the opposite (mtime unchanged), so the control proves the proof is not vacuous.
+- [X] T028 [US2] **Checkpoint**: default tier green (`npm test` — see `S/baseline.md`), proof tier green including the four new `worker-replay.proof.test.ts` cases; commit; `S/baseline.md`.
+
+**Checkpoint**: the row's hardest guarantee — a crash never double-charges a tool, and a hang never touches a gate — is proven under kill.
+
+---
+
+## Phase 6: User Story 3 — KILN owns residency; a model loaded outside it is a broken guarantee (Priority: P1)
+
+**Goal**: the parts of residency ownership not already exercised by Foundational/US1/US2 — a bypassed load is detected and fails closed, and the harness's own housekeeping shares a step's lease rather than acquiring a second one.
+
+**Independent Test**: load a model directly against Ollama's API outside the KILN provider; show it is detected; separately, trigger housekeeping that needs a model and show it shares the calling step's lease.
+
+- [X] T029 [US3] Wired T011's `reconcile()` immediately before every `residency.load()` call in `L/src/lane-task.ts`'s `grant()` (research R10). A non-null `BrokenGuaranteeReport` throws a `LaneError` naming the mismatch — the acquire is refused, fail-closed, before any load or state change — **not** committed as a new domain event (that belongs to r27/Health, per the T013 decision already recorded above). Tests: `L/tests/lane-task-residency.test.ts` — a `brokenOnce` fake fires exactly once (matching real `reconcile()`'s "true right now" semantics, not a permanent flag): the refusal happens with zero load calls made, and the very next retry (once the mismatch is gone) succeeds normally.
+- [X] T030 [P] [US3] **Checked for a real housekeeping call site — confirmed none applies.** `@earendil-works/pi-durable` genuinely exports a `CompactionTask` (summarization is a real, usable library feature, not vaporware), but it operates on the library's own native conversation/entry abstraction, which `W/src/conversation.ts`'s `runTurn` deliberately never uses (T023 rebuilds context from `UnitCheckpoint.toolCalls` instead, reusing `kiln.unit`'s existing discipline). Since this row creates none of the library's own conversations, there is no compaction call site to wire — not a gap, a genuine non-applicability (full account in `S/notes.md`). The synthetic proof stands: `L/tests/kiln-provider.test.ts`'s new "housekeeping (a second requestThroughLane for the SAME already-held step) never acquires a second lease" case.
+- [X] T031 [US3] **Checkpoint**: green; commit; `S/baseline.md`.
+
+**Checkpoint**: residency is owned end to end — a bypass fails closed, and nothing reaches a model except through the one provider.
+
+---
+
+## Phase 7: User Story 5 — the model pool stays inside a memory budget, with readiness known before a step starts (Priority: P2)
+
+**Goal**: a role needing a capability a model lacks is refused by name before any step runs; a readiness result is re-checked at the moment it is used, not trusted from an earlier probe; the resident set never exceeds its budget.
+
+**Independent Test**: run the readiness probes against the installed models; a model lacking a needed capability is refused for a role that needs it, by name, before any step is scheduled on it.
+
+- [X] T032 [P] [US5] `requireCapability(model, need, readiness)` in `W/src/conversation.ts` (contracts/worker-conversation.md "Readiness refusal", FR-040/041): called before `runTurn`'s model call; throws a named `CapabilityRefused` naming the missing capability. Tests `W/tests/conversation.test.ts`: a role with declared tools (every real roster role has at least one) bound to a model whose probed `toolCalling` is false is refused before `complete()` ever runs.
+- [X] T033 [P] [US5] **Design correction, recorded in `S/notes.md`**: re-checking readiness lives in `W/src/conversation.ts` (a fresh `config.probe(model)` call inside `callModel`, once per `runTurn` invocation, never cached), not inside `L/src/residency.ts`'s `load()` as this task originally sketched — `load()` has no concept of a role's required capability, and its existing model-size lookup already independently re-verifies the model exists at every call. FR-042's guarantee ("re-checked... not cached from an earlier probe") holds because nothing is ever stored to go stale. Tests `W/tests/conversation.test.ts`: a capability present on round 1 but gone by round 2 of the SAME step is caught at round 2's own fresh probe, proven by a probe stub returning a different answer each call.
+- [X] T034 [US5] Memory-budget enforcement (FR-025) — **already built at T011** (`ResidencyBudgetError` in `load()`); this task added the missing acceptance-level test. Tests `L/tests/residency.test.ts`: a second model requested while the budget has no room is refused by name; releasing the first model and retrying the second succeeds.
+- [X] T035 [US5] **Checkpoint**: green; commit; `S/baseline.md`.
+
+**Checkpoint**: a role never runs on a model that cannot do what it needs, and the pool never exceeds its budget.
+
+---
+
+## Phase 8: User Story 6 — a scripted feature walks its gates with real workers and real judges (Priority: P1 — acceptance; depends on US1–US5 all being done)
+
+**Goal**: the row's own "Proven when" line, run for real: the small interface-feature fixture reaches Merge with every worker and judge step a real conversation, a person deciding every gate, and a kill mid-generation resumed per US2 — all inside one full walk, not just one unit in isolation.
+
+**Independent Test**: walk the small interface feature with real models configured, through the CLI, with a person deciding each gate; kill the owner mid-generation at least once during the walk and show it resumes.
+
+- [X] T036 [P] [US6] `kiln/fixtures/walk-real-worker.json`: a minimal feature fixture naming the `worker` and `reviewer` roles from T006's roster on at least one gate each, for use by this phase and by `quickstart.md`'s step 1.
+- [X] T037 [P] [US6] **Added during implementation (notes.md, found at T004): a real `kiln owner` process never constructs a lane or real workers today** — `packages/cli/src/gate-commands.ts`'s `ownerCommand` calls `startOwner({store: f.store})` with no `lane`/`tasks` option; `createLane()` is called only inside test harnesses, never in production `src/`. **Built**: `packages/cli/src/real-workers.ts` composes `createLane`+`createResidency`+`createKilnProvider`+`createWorkers` (default 64 GiB budget, `KILN_OLLAMA_PORT`/`KILN_MODEL_BUDGET_BYTES` overridable), wired into `ownerCommand` — additive, nothing changes for a feature with no `role` unit. Boundary edges `cli → lane, workers` added. **A second, bigger gap found in the same investigation and fixed the same way (notes.md)**: the walk engine itself (`walk.ts`'s `work()`) never threaded a role into any unit it created, in either the old or new code — `WalkInput.script.real` is the additive fix. Test `CLI/tests/owner-wiring.test.ts`: a real CLI-launched owner, given `fixtures/walk-real-worker.json`, really acquires a `lane.acquired` for `gemma4:12b` and really settles a `unit.settled` — proven against the real installed Ollama, not spied (a literal spy on a function inside a separately-spawned process isn't possible; the real committed record is the proof instead).
+- [X] T038 [US6] End-to-end: the small-interface walk fixture (`fixtures/walk-real-worker.json`) with real roles reaches Merge — `D/tests/walk/real-worker-walk.test.ts` (live-model tier, T005), in-process (T037's own `owner-wiring.test.ts` is what proves the identical wiring also works from the real CLI binary — the two together satisfy "through the CLI", not duplicated in this file). **Found and fixed a real bug, not just slowness (notes.md)**: `lane-task.ts`'s `release()` cleared its lease *before* awaiting `residency.unload()`, letting the next unit's acquire race the unload on `residency`'s own bookkeeping — an infinite retry loop that hung every run for its full timeout. Fixed by serializing unload-before-next-acquire. After the fix: Merge reached in ~210s, **0** of the mapped roles' (`author`/`workers`/`judge`) steps use the `stepMs` stand-in (SC-001) — a legitimate scripted `check` step is correctly excluded from that count.
+- [X] T039 [US6] Kill the owner mid-generation at a named point during the full walk (not a unit in isolation) and restart. `D/tests/proof/real-worker-walk-kill.proof.test.ts` (new file, not an extension of T038's in-process test — this one needs a real subprocess to kill). **Found and fixed a second real bug (notes.md)**: a restarted owner's `residency` bookkeeping is always empty, but `keep_alive:-1` means Ollama never forgot a model the dead process legitimately loaded — every real kill-and-restart tripped a false broken-guarantee refusal, making US2's guarantee unreachable for any real-role lease holder. Fixed: `reconcile()` gained an `expected` parameter so the exact model about to be re-requested is adopted, not reported, while anything else unexplained still is. Also found the model occasionally hallucinating an undeclared tool name (correctly refused per FR-005; strengthened the worker's system prompt to reduce it). Confirmed: killed at `unit.pre-result-commit`, restarted, the walk reaches Merge in ~204s.
+- [X] T040 [P] [US6] Record-shape parity (spec User Story 6, acceptance scenario 3): `D/tests/walk/real-worker-record-shape.test.ts`. **Found and corrected while implementing**: a plain scripted todo-role unit never sets `needsLane` at all (unchanged by this row), so it never touches the lane — a byte-for-byte `deepEqual` of event types is impossible by construction, not a bug. Compares the two walks' event-type sequences with `lane.*` entries filtered from both; asserts the real walk has `lane.*` entries and the scripted one has none (so the filtering is proven non-vacuous), matching what spec.md's scenario 3 actually means by "only the lane.*/unit.* events now reflect real residency." No live model needed (the test-only `complete` seam T018 already built).
+- [X] T041 [US6] **Checkpoint**: `npm run proof` green including T026's and T038's proof/live tests; commit; `S/baseline.md`.
+
+**Checkpoint**: the row's acceptance line is true end to end.
+
+---
+
+## Phase 9: Polish
+
+**Purpose**: the guardrails, the documents, the mutations, and the fresh-clone proof that the row is really there.
+
+- [X] T042 `npm run check` still five `PASS` with the new boundary edges (including T037's `cli → lane, workers`); `kiln/DEPENDENCIES.md` unchanged — confirm the existing dependency-equality test still passes with `@earendil-works/pi-ai` at `1.4.0` and no fourth dependency added.
+- [X] T043 [P] Run `S/quickstart.md`'s nine scenarios end to end, ideally from a fresh clone (`git clone`, `cd kiln && npm ci`); record the outcome, including which scenarios ran live against Ollama versus printed a named skip, in `S/baseline.md`.
+- [X] T044 [P] Documents: `W/kiln.json`, `L/kiln.json`, `D/kiln.json` and `CLI/kiln.json` responsibilities brought up to date; `S/overview.md` (the design as built, one reading page) and `S/implementation-report.md` — including the broken-guarantee scoping decision (T029), the compaction-call-site uncertainty (T030), the FR-027/`lane.transition` correction (T013, decided 2026-11-01), the CLI-wiring gap found and fixed (T037), and which of Clarification 2's two tier-swap proofs (one resident model vs. two) the build host actually ran.
+- [X] T045 Mutation checks via `T/tools/mutate.ts` on a committed tree: `residency.load()` skipping the budget check; `residency.load()` omitting `keep_alive` (falls back to Ollama's default, R11); `grant()` skipping `residency.load()` entirely; `runTurn` swallowing a `GenerationTimeoutError` as an ordinary continuation; `buildInterruptionNotice` omitting the already-executed flag; `reconcile()` never called before a load. Each must be **caught** by a named test; record in `S/notes.md`.
+- [X] T046 [P] Re-run the existing Node floor matrix (`^22.19.0 || >=24.1.0`, unchanged by this row) for the default and proof tiers; record seconds against r15's baseline in `S/baseline.md`.
+- [X] T047 Final guardrails: `git diff main -- legacy` empty; `legacy/` tree id unchanged from T001; `specs/ROADMAP.md` hash unchanged from T001; `npm run check` five `PASS`; then the code review before the PR.
+
+---
+
+## Dependencies & Execution Order
+
+### Phase dependencies
+
+- **Setup (1)**: none, but T005's live-model tier is what every later live-tier test runs under.
+- **Foundational (2)**: after Setup; blocks everything. T006, T007, T009, T010, T011 are independent files and run in parallel; T008 needs T006+T007; T012 needs T011; T013 needs T011+T012; T014 last.
+- **US4 (3)** after Foundational only — it needs T008 and T011/T012's failure path, nothing from US1.
+- **US1 (4)** after Foundational — needs T008 (role binding, tools), T009 (provider), T012 (the KILN provider US1's `runTurn` calls through).
+- **US2 (5)** after US1 — extends the same files (`unit.ts`, `conversation.ts`) US1 just changed; also needs T010 (timeout).
+- **US3 (6)** after Foundational for its core (already built in T011–T013); this phase's tasks are its remaining acceptance-level proofs, so sequence it after US2 to keep `lane-task.ts` changes from colliding mid-flight.
+- **US5 (7)** after US1 (needs `conversation.ts`'s `runTurn` to wire `requireCapability` into) and T011 (the probe).
+- **US6 (8)** after **US1, US2, US3, US4, US5 all complete** — it is the integration story, not an independent slice (spec's own framing: "the row's own 'Proven when' line").
+- **Polish (9)** after US6.
+
+### Within each story
+
+Tests ride with the code they judge; negative and weakened variants land in the same phase as the behaviour they attack, so `npm run check` and the default tier are green at every commit, never because nobody tried to break them.
+
+### Parallel opportunities
+
+- Setup: T002, T003, T004 together.
+- Foundational: T006, T007, T009, T010, T011 together.
+- US4: T015, T016 together.
+- US1: T021 alongside T018–T020.
+- US2: T027 alongside T023–T026.
+- US3: T030 alongside T029.
+- US5: T032, T033 together.
+- US6: T036 and T037 (the CLI wiring) can both start immediately; T040 (record-shape parity) can start as soon as the fixture format is agreed, ahead of T038/T039.
+- Polish: T043, T044, T046 together.
+
+---
+
+## Parallel example: Foundational
+
+```bash
+# Launch together once Setup is done:
+Task: "W/src/roster.ts — PROVISIONAL_ROSTER (T006)"
+Task: "W/src/tools.ts — read-file/write-file with replay-safety (T007)"
+Task: "W/src/provider.ts — register Ollama as a pi-ai provider (T009)"
+Task: "L/src/timeout.ts — withTierTimeout (T010)"
+Task: "L/src/residency.ts — load/unload/probe/reconcile (T011)"
+```
+
+---
+
+## Implementation Strategy
+
+### MVP first (Foundational + US4 + US1)
+
+1. Setup, then Foundational → the machinery exists, unit-tested in isolation (**T014**).
+2. US4 → constitution II proven cheaply. US1 → a real conversation replaces the stand-in (**T022**, the MVP).
+3. **Stop and validate**: `npm test` green, `npm run test:live-models` runs for real when Ollama is present. This alone is a shippable improvement: one real step, safely, is better than none.
+
+### Incremental delivery
+
+4. US2 (replay discipline + the timeout) → US3 (residency's remaining proofs) → US5 (readiness wired into binding).
+5. US6 → the full walk, real end to end — only once everything it depends on is green.
+6. Polish.
+7. Each phase's checkpoint re-runs the whole default tier; the live-model tier runs wherever Ollama is actually available.
+
+### Stop conditions
+
+- If a task needs a new event schema or field, stop: data-model.md §8 says this row adds none — re-check before writing one.
+- If a task needs a timer that can settle a gate, stop: the design is wrong (constitution V).
+- If T029's reconcile wiring tempts inventing a new committed event type for the broken-guarantee signal, stop and re-read the note there: that type is r27's.
+
+---
+
+## Notes
+
+- [P] tasks = different files, no dependencies.
+- [Story] maps a task to a user story for traceability.
+- Commit after each task or logical group; stop at any checkpoint to validate a story independently.
+- Same-file sequencing: `D/src/tasks/unit.ts` is touched by T019, T023, T025 (sequential); `L/src/lane-task.ts` by T013, T029 (sequential); `W/src/conversation.ts` by T018, T020, T024, T025, T032 (sequential).
+- Avoid: vague tasks, same-file conflicts beyond those listed above, and treating US6 as independently startable before US1–US5 are done.

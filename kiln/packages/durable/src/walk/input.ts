@@ -18,7 +18,21 @@ export interface WalkInput {
   /** The scripted verifier's verdicts, consumed in order; default: always pass. */
   verifier?: ("pass" | "fail")[];
   /** Test knobs. `sameContent`: a fresh author at these gates yields identical content (research R9). `stepMs`: work a kill can interrupt. */
-  script?: { sameContent?: GateKey[]; stepMs?: number };
+  script?: {
+    sameContent?: GateKey[];
+    stepMs?: number;
+    /**
+     * r16 T038 (found, not in the original task text — `work()` created every unit with no `role` at all; nothing
+     * threaded a real conversation's binding through a flow walk, only through the flat `script: UnitSpec[]` row
+     * shape T019 built). PROVISIONAL, same status as `#workers/roster.ts`: maps a unit-role name as `unitRoles()`
+     * names it ("author", "check", "judge") or as a fix-round names it ("workers", "judge") to a real role and
+     * model. Absent — every walk before this field existed, and every walk that omits it — means every unit stays
+     * the scripted stand-in, byte-identical to before. r18's director replaces this wholesale with a real
+     * per-feature assignment once it exists; until then this is the only way a walk (not a flat script) can use a
+     * real conversation.
+     */
+    real?: { roles: Record<string, { role: string; model: string }>; workspace: string };
+  };
 }
 
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === "object" && v !== null && !Array.isArray(v);
@@ -56,10 +70,25 @@ export function checkWalk(v: unknown): string | null {
   if (v.verifier !== undefined && !(Array.isArray(v.verifier) && v.verifier.length <= 50 && v.verifier.every((x) => x === "pass" || x === "fail"))) return "walk.verifier is a list of at most 50 verdicts, each pass or fail";
   if (v.script !== undefined) {
     if (!isObj(v.script)) return "walk.script is an object";
-    const se = only(v.script, ["sameContent", "stepMs"]);
+    const se = only(v.script, ["sameContent", "stepMs", "real"]);
     if (se) return `walk.script: ${se}`;
     if (v.script.sameContent !== undefined && !(strings(v.script.sameContent) && v.script.sameContent.every((k) => (BUILTIN_ORDER as readonly string[]).includes(k)))) return "walk.script.sameContent is a list of gate keys of the flow";
     if (v.script.stepMs !== undefined && (!Number.isInteger(v.script.stepMs) || (v.script.stepMs as number) < 0 || (v.script.stepMs as number) > 60_000)) return "walk.script.stepMs is an integer from 0 to 60000";
+    if (v.script.real !== undefined) {
+      const real = v.script.real;
+      if (!isObj(real)) return "walk.script.real is an object";
+      const re = only(real, ["roles", "workspace"]);
+      if (re) return `walk.script.real: ${re}`;
+      if (typeof real.workspace !== "string" || real.workspace.trim() === "") return "walk.script.real.workspace is a non-empty string";
+      if (!isObj(real.roles)) return "walk.script.real.roles is an object";
+      for (const [k, entry] of Object.entries(real.roles)) {
+        if (!isObj(entry)) return `walk.script.real.roles.${k} is an object`;
+        const ee = only(entry, ["role", "model"]);
+        if (ee) return `walk.script.real.roles.${k}: ${ee}`;
+        if (typeof entry.role !== "string" || entry.role.trim() === "") return `walk.script.real.roles.${k}.role is a non-empty string`;
+        if (typeof entry.model !== "string" || entry.model.trim() === "") return `walk.script.real.roles.${k}.model is a non-empty string`;
+      }
+    }
   }
   // FR-054: never start on a flow the check would refuse
   const faults = validateFlow(flowOf("v2"));
